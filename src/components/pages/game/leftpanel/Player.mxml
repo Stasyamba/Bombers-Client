@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         creationComplete="init();"
+         width="61" height="80">
+
+
+    <fx:Declarations>
+        <s:Parallel id="apearingA" effectStart="{readyGroup.alpha = 0;}"
+                    duration="150">
+            <s:Animate target="{readyGroup}">
+                <s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1.0"/>
+            </s:Animate>
+
+            <s:Animate target="{blurFilter}">
+                <s:SimpleMotionPath property="blurX" valueFrom="70" valueTo="0.0"/>
+                <s:SimpleMotionPath property="blurY" valueFrom="70" valueTo="0.0"/>
+            </s:Animate>
+
+            <s:Sequence repeatCount="1000">
+                <s:Parallel duration="{pulseAnimationDuration}">
+
+                    <s:Animate target="{readyGroup}">
+                        <s:SimpleMotionPath property="scaleX" valueFrom="{readyGroup.scaleX}"
+                                            valueTo="{scaleAnimationSize}"/>
+                    </s:Animate>
+                    <s:Animate target="{readyGroup}">
+                        <s:SimpleMotionPath property="scaleY" valueFrom="{readyGroup.scaleY}"
+                                            valueTo="{scaleAnimationSize}"/>
+                    </s:Animate>
+                    <s:Animate target="{readyGroup}">
+                        <s:SimpleMotionPath property="y" valueFrom="{startYPostion}" valueTo="{differenceYPosition}"/>
+                    </s:Animate>
+
+
+                </s:Parallel>
+
+                <s:Parallel duration="{pulseAnimationDuration}">
+
+                    <s:Animate target="{readyGroup}">
+                        <s:SimpleMotionPath property="scaleX" valueFrom="{scaleAnimationSize}" valueTo="1"/>
+                    </s:Animate>
+                    <s:Animate target="{readyGroup}">
+                        <s:SimpleMotionPath property="scaleY" valueFrom="{scaleAnimationSize}" valueTo="1"/>
+                    </s:Animate>
+                    <s:Animate target="{readyGroup}">
+                        <s:SimpleMotionPath property="y" valueFrom="{differenceYPosition}" valueTo="{startYPostion}"/>
+                    </s:Animate>
+
+
+                </s:Parallel>
+
+            </s:Sequence>
+
+        </s:Parallel>
+
+        <s:Parallel id="disapearingA" effectEnd="{readyGroup.alpha = 0;}"
+                    duration="150">
+            <s:Animate target="{readyGroup}">
+                <s:SimpleMotionPath property="alpha" valueFrom="1" valueTo="0.0"/>
+            </s:Animate>
+
+            <s:Animate target="{blurFilter}">
+                <s:SimpleMotionPath property="blurX" valueFrom="0" valueTo="70"/>
+                <s:SimpleMotionPath property="blurY" valueFrom="0" valueTo="70"/>
+            </s:Animate>
+        </s:Parallel>
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.utils.adjustcolor.ColorMatrix
+        import components.common.utils.adjustcolor.ColorMatrixObject
+
+        import engine.profiles.GameProfile
+
+        private var _profile:GameProfile;
+
+        [Bindable]
+        private var _isReady:Boolean = false;
+        [Bindable]
+        private var isProfileNull:Boolean = false;
+        [Bindable]
+        private var levelStringView:String = "0";
+
+        [Bindable]
+        private var readyGroupHeight:Number = 0;
+        [Bindable]
+        private var scaleAnimationSize:Number = 1.05;
+        [Bindable]
+        private var pulseAnimationDuration:Number = 200;
+        [Bindable]
+        private var differenceYPosition:Number;
+        [Bindable]
+        private var startYPostion:Number = -10;
+
+        public function set isReady(value:Boolean):void {
+            _isReady = value;
+
+            if (value) {
+                disapearingA.stop();
+                apearingA.stop();
+                apearingA.play();
+            } else {
+                disapearingA.stop();
+                apearingA.stop();
+                disapearingA.play();
+            }
+        }
+
+        public function get profile():GameProfile {
+            return _profile;
+        }
+
+        public function set profile(value:GameProfile):void {
+            _profile = value;
+            isProfileNull = (value == null ? true : false);
+
+            if (value != null) {
+                levelStringView = Context.Model.expiranceManager.getLevel(value.expirance).toString();
+                userImage.source = _profile.vkProfile.photoSrc;
+                bgRect.alpha = 1;
+            } else {
+                userImage.source = "";
+                levelStringView = "";
+                bgRect.alpha = 0.3;
+            }
+        }
+
+        private function init():void {
+            profile = null;
+            readyGroupHeight = readyGroup.height;
+            differenceYPosition = -10 + readyGroupHeight - readyGroupHeight * scaleAnimationSize;
+
+            var cmo:ColorMatrixObject = new ColorMatrixObject(80);
+            var cm:ColorMatrix = new ColorMatrix();
+            cm.applyColorMatrixObject(cmo);
+
+            colorMatrixFilter.matrix = cm.matrix;
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Rect width="61" height="80"
+            alpha="0.3"
+            id="bgRect">
+        <s:fill>
+            <s:SolidColor color="0x000000"/>
+        </s:fill>
+        <s:stroke>
+            <s:SolidColorStroke color="0x939393"/>
+        </s:stroke>
+    </s:Rect>
+
+    <s:HGroup width="61" height="80"
+              horizontalAlign="center" verticalAlign="middle"
+              visible="{isProfileNull}"
+            >
+        <s:Label text="Никого" fontSize="12" fontFamily="mpr" color="0x7ca8d6"/>
+    </s:HGroup>
+
+    <s:HGroup width="61" height="80"
+              paddingTop="1" paddingLeft="1"
+              horizontalAlign="center" verticalAlign="top"
+              visible="{!isProfileNull}"
+            >
+        <mx:Image id="userImage" maxWidth="61" mask="{userImageMask}"
+                />
+    </s:HGroup>
+
+    <s:BorderContainer id="userImageMask"
+                       width="60" height="79"
+                       x="1" y="1"
+                       contentBackgroundColor="0x000000"/>
+
+
+    <s:Group id="levelGroup" visible="{!isProfileNull}"
+             x="34" y="59"
+            >
+        <s:BitmapImage id="bgLevelImage" source="@Embed(source='assets/pagegame/leftpanel/levelBg.png')"/>
+
+        <s:HGroup width="{bgLevelImage.width}" height="{bgLevelImage.height}"
+                  horizontalAlign="center" verticalAlign="middle"
+                >
+            <s:Label text="{levelStringView} ур." fontSize="14" fontFamily="mpbc" color="0xffffff"/>
+        </s:HGroup>
+    </s:Group>
+
+    <s:Group id="readyGroup" y="{startYPostion}" x="65"
+             visible="{_isReady}"
+            >
+        <s:BitmapImage id="readyBg"
+                       source="@Embed(source='assets/pagegame/leftpanel/readyBg.png')"
+                       smooth="true"
+                />
+        <s:Label text="Готов" x="33" y="8" fontFamily="mpbc" fontSize="20" color="0xffffff"/>
+
+        <s:filters>
+            <s:BlurFilter id="blurFilter" blurX="0" blurY="0"/>
+            <s:ColorMatrixFilter id="colorMatrixFilter"/>
+        </s:filters>
+
+    </s:Group>
+
+</s:Group>

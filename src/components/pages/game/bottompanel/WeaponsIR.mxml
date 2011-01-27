@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:mx1="http://ns.adobe.com/mxml/mx"
+                xmlns:mx="library://ns.adobe.com/flex/mx"
+                xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:s="library://ns.adobe.com/flex/spark"
+                autoDrawBackground="false"
+                useHandCursor="true" buttonMode="true"
+                width="141" height="42"
+        >
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+    <fx:Declarations>
+
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import mx.controls.Alert
+        ]]>
+	</fx:Script>
+
+    <s:states>
+        <s:State name="normal"/>
+        <s:State name="hovered"/>
+        <s:State name="selected"/>
+    </s:states>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemObject
+        import components.common.items.ItemProfileObject
+
+        import mx.core.IVisualElement
+
+        private var slot:IVisualElement = null
+
+        override public function set data(value:Object):void {
+            super.data = value;
+            if (data is ItemProfileObject) {
+                var itemObject:ItemObject = Context.Model.itemsManager.getItem((data as ItemProfileObject).itemType);
+
+                if (itemObject != null) {
+                    slot = new WeaponSlot();
+                    (slot as WeaponSlot).initContent(data as ItemProfileObject);
+
+                    if (slot != null) {
+                        slotGroup.removeAllElements();
+                        slotGroup.addElement(slot);
+
+                    } else {
+                        Alert.show("Немогу распознать предмет ищи в game.bottompanel.WeaponsIR.mxml");
+                    }
+
+                } else {
+                    // show error
+                }
+            } else {
+                Alert.show("Объекты data не того типа в game.bottompanel.WeaponsIR.mxml");
+            }
+        }
+        ]]>
+	</fx:Script>
+
+    <s:HGroup id="slotGroup"
+              width="141" height="42"
+              paddingLeft="10"
+              horizontalAlign="left" verticalAlign="middle">
+
+    </s:HGroup>
+
+
+</s:ItemRenderer>

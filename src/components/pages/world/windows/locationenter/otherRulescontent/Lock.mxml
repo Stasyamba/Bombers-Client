@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         creationComplete="init();">
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        private var _isLock:Boolean;
+
+        private function init():void {
+            //isLock = false;
+        }
+
+        [Bindable]
+        public function get isLock():Boolean {
+            return _isLock;
+        }
+
+        public function set isLock(value:Boolean):void {
+            if (value) {
+                redLock.visible = false;
+                greenLock.visible = true;
+            } else {
+                greenLock.visible = false;
+                redLock.visible = true;
+            }
+
+
+            _isLock = value;
+        }
+        ]]>
+	</fx:Script>
+
+
+    <s:BitmapImage id="greenLock"
+                   scaleX="0.8" scaleY="0.8"
+                   smooth="true"
+                   source="@Embed(source='assets/pageworld/worlds/locationenter/greenLock.png')"
+                   visible="false"/>
+
+    <s:BitmapImage id="redLock"
+                   scaleX="0.8" scaleY="0.8"
+                   smooth="true"
+                   source="@Embed(source='assets/pageworld/worlds/locationenter/redLock.png')"
+                   visible="true"
+            />
+
+</s:Group>

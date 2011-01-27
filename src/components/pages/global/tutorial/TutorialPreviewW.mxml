@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:mx1="library://ns.adobe.com/flex/halo"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:fx="http://ns.adobe.com/mxml/2009"
+         creationComplete="panelCreationComplete();"
+         borderVisible="false"
+         dropShadowVisible="false"
+         skinClass="skins.common.EmptyPopUpS"
+         implements="components.common.base.window.IWindow" xmlns:flexcomponents="components.common.flexcomponents.*"
+        >
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.utils.adjustcolor.ColorMatrixObject
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+
+
+        <s:Animate id="disapearingAnimation" target="{this}" duration="300"
+                   effectEnd="{close();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="1"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingAnimation" target="{this}" duration="1000">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.bombers.BomberType
+
+        import mx.managers.PopUpManager
+
+        public function close():void {
+            Context.Model.windowsManager.deleteWindow(this);
+            PopUpManager.removePopUp(this);
+        }
+
+        public function closeWrapper():void {
+            disapearingAnimation.play();
+        }
+
+        private function panelCreationComplete():void {
+            Context.Model.windowsManager.closeAll(true);
+            Context.Model.windowsManager.addWindow(this);
+
+
+            apearingAnimation.play();
+            bomberImage.source = Context.Model.bomberManager.getBomber(BomberType.FURY_JOE).viewObject.bigImageURL;
+        }
+        ]]>
+	</fx:Script>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+
+    <s:Rect width="576" height="192"
+            >
+        <s:fill>
+            <s:SolidColor color="0x000000"/>
+        </s:fill>
+        <s:stroke>
+            <s:SolidColorStroke color="0x312308" weight="4"/>
+        </s:stroke>
+        <s:filters>
+            <s:DropShadowFilter blurX="20" blurY="20" distance="0"/>
+        </s:filters>
+    </s:Rect>
+
+
+    <s:Group width="576" height="192">
+
+        <s:BorderContainer backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+                           backgroundImageFillMode="repeat"
+                           width="100%" height="100%"
+                           borderVisible="false"
+                />
+        <s:HGroup width="100%" height="100%"
+                  verticalAlign="middle" horizontalAlign="center"
+                >
+            <mx:Image id="bomberImage"/>
+            <s:VGroup gap="24" horizontalAlign="left">
+                <s:Label text="Ну привет. Хочешь пройти обучение и получить ресурсов в подарок?"
+                         fontFamily="mpbc" fontSize="28"
+                         color="0xffe7bb"
+                         maxWidth="367"
+                        />
+
+                <s:HGroup width="100%" height="100%"
+                          horizontalAlign="left" verticalAlign="middle">
+
+                    <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+                                                  customLabel="Потом"
+                                                  fontSize="28" fontSizeOver="28"
+                                                  colorMatrixObject="{new ColorMatrixObject(0,0.4)}"
+                                                  click="closeWrapper();"
+                            />
+                    <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+                                                  customLabel="Ресурсы!"
+                                                  fontSize="28" fontSizeOver="28"
+                            />
+
+                </s:HGroup>
+            </s:VGroup>
+        </s:HGroup>
+
+    </s:Group>
+
+
+    <s:controlBarContent/>
+
+
+</s:Panel>

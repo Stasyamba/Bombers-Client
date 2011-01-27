@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+          xmlns:topmenu="components.pages.global.inventory.topmenu.*"
+          creationComplete="init();"
+        >
+
+    <fx:Metadata>
+        [Event(name="IMCategoryIsChanged", type="ContextEvent")]
+    </fx:Metadata>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.categories.MarketCategory
+
+        public static const STATE_SELECTED:int = 0;
+        public static const STATE_OVER:int = 1;
+        public static const STATE_UP:int = 2;
+
+        [Bindable]
+        private var isBlocked:Boolean = false;
+
+        private function init():void {
+            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, function (e:ContextEvent):void {
+                turnOffAllTabs();
+            });
+        }
+
+        private function turnOffAllTabs():void {
+            for (var i:int = 0; i <= mainTabGroup.numElements - 1; i++) {
+                var el:* = mainTabGroup.getElementAt(i);
+                if (el is IToggleMenu) {
+                    (el as IToggleMenu).changeState(STATE_UP, true);
+                }
+            }
+        }
+
+        private function stateTabChanged(e:ContextEvent):void {
+            if (!isBlocked) {
+                switch (e.data) {
+                    case STATE_SELECTED:
+                        for (var i:int = 0; i <= mainTabGroup.numElements - 1; i++) {
+                            var el:* = mainTabGroup.getElementAt(i);
+                            if (el is IToggleMenu) {
+                                if (el != e.currentTarget) {
+                                    (el as IToggleMenu).changeState(STATE_UP, true);
+                                } else {
+                                    if (el is TopMenuTemplateElement) {
+                                        dispatchEvent(new ContextEvent(
+                                                ContextEvent.IM_CATEGORY_TAB_CHANGED, false, false,
+                                                (el as TopMenuTemplateElement).marketCategory
+                                                ));
+                                    }
+                                }
+
+
+                            }
+                        }
+
+
+
+                        break;
+                    case STATE_OVER:
+                        break;
+                    case STATE_UP:
+                        break;
+                }
+            }
+        }
+
+        public function block(block:Boolean):void {
+            isBlocked = block;
+        }
+        ]]>
+	</fx:Script>
+    <s:Group>
+        <s:HGroup id="mainTabGroup" gap="20">
+            <topmenu:TopMenuTemplateElement menuText="Бомбы и зелья"
+                                            marketCategory="{MarketCategory.BOMBS_AND_POISONS}"
+                                            IMInventoryTabStateChanged="stateTabChanged(event);"
+                    />
+
+            <topmenu:TopMenuTemplateElement menuText="Метаморфы"
+                                            marketCategory="{MarketCategory.METAMORPHS}"
+                                            IMInventoryTabStateChanged="stateTabChanged(event);"
+                    />
+
+            <topmenu:TopMenuTemplateElement menuText="Разное"
+                                            marketCategory="{MarketCategory.VARIOUS}"
+                                            IMInventoryTabStateChanged="stateTabChanged(event);"
+                    />
+        </s:HGroup>
+
+        <s:HGroup width="{mainTabGroup.width + 30}" height="{mainTabGroup.height + 10}"
+                  x="-20" y="-8"
+                  alpha="0.5"
+                  visible="{isBlocked}">
+            <s:Rect width="100%" height="100%"
+                    radiusX="10" radiusY="10">
+                <s:fill>
+                    <s:SolidColor color="0x8c7556"/>
+                </s:fill>
+            </s:Rect>
+        </s:HGroup>
+
+    </s:Group>
+
+
+</s:HGroup>

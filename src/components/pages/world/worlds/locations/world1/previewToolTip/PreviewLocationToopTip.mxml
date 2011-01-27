@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         visible="{_previewVisible}">
+
+    <fx:Declarations>
+
+        <s:Parallel id="apearingA">
+            <s:Animate target="{this}" duration="200"
+                       effectStart="{this.alpha = 0; _previewVisible = true;}"
+                    >
+                <s:SimpleMotionPath property="alpha" valueFrom="{this.alpha}" valueTo="1.0"/>
+            </s:Animate>
+
+            <!--	<s:Animate target="{blurFilter}" duration="20">
+                   <s:SimpleMotionPath property="blurX" valueFrom="20" valueTo="0" />
+                   <s:SimpleMotionPath property="blurY" valueFrom="20" valueTo="0" />
+               </s:Animate>-->
+        </s:Parallel>
+
+        <s:Parallel id="disapearingA">
+            <s:Animate target="{this}" duration="200"
+                       effectEnd="{ _previewVisible = false;}"
+                    >
+                <s:SimpleMotionPath property="alpha" valueFrom="{this.alpha}" valueTo="0.0"/>
+            </s:Animate>
+        </s:Parallel>
+
+    </fx:Declarations>
+
+    <s:filters>
+        <s:BlurFilter id="blurFilter" blurX="0" blurY="0"/>
+    </s:filters>
+
+    <fx:Script>
+		<![CDATA[
+        [Bindable]
+        private var _previewVisible:Boolean = false;
+
+        [Bindable]
+        public var locationName:String = "";
+
+        public function get previewVisible():Boolean {
+            return _previewVisible;
+
+        }
+
+        public function set previewVisible(value:Boolean):void {
+            apearingA.stop();
+            disapearingA.stop();
+
+            if (value) {
+                apearingA.play();
+            } else {
+                disapearingA.play();
+            }
+            //_previewVisible = value;
+        }
+
+
+        // 120 - blue
+        // 40 - green
+        //
+        //			var cm1: ColorMatrix = new ColorMatrix();
+        //			var cmo1: ColorMatrixObject = new ColorMatrixObject(-40,18);
+        //			cm1.applyColorMatrixObject(cmo1);
+        //
+        //			previewToolTip.filters = [cm1.filter];
+        //
+        ]]>
+	</fx:Script>
+
+
+    <s:BitmapImage id="bgToolTipImage"
+                   source="@Embed(source='assets/pageworld/worlds/locationsworld1/locationPreviewToolTip.png')"/>
+    <s:HGroup width="133" height="33" paddingTop="25"
+              horizontalAlign="center" verticalAlign="middle">
+        <s:Label text="{locationName}"
+                 fontSize="12" fontFamily="mpr"
+                 color="0xffffff"
+                />
+    </s:HGroup>
+
+
+</s:Group>

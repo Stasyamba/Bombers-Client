@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:mx1="library://ns.adobe.com/flex/halo"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:fx="http://ns.adobe.com/mxml/2009"
+         creationComplete="panelCreationComplete();"
+         borderVisible="false"
+         dropShadowVisible="false"
+         skinClass="skins.common.EmptyPopUpS"
+         xmlns:healingcore="components.healingcore.*"
+         xmlns:gamewithfriends="windows.gamescreen.gamewithfriends.*"
+         xmlns:common="common.*"
+         xmlns:friendsgame="components.pages.world.windows.friendsgame.*"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         xmlns:preloaders="components.common.utils.preloaders.*"
+         xmlns:resourcemarket="components.pages.global.resourcemarket.*"
+         width="769" height="425" xmlns:topmenu="components.pages.global.itemsmarket.topmenu.*"
+         implements="components.common.base.window.IWindow" xmlns:left="components.pages.global.inventory.left.*"
+         xmlns:topmenu1="components.pages.global.inventory.topmenu.*"
+        >
+
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+
+
+        <s:Animate id="disapearingAnimation" target="{this}" duration="300"
+                   effectEnd="{close();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="1"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingAnimation" target="{this}" duration="1000">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemType
+        import components.common.items.categories.MarketCategory
+        import components.pages.global.inventory.left.BomberEquipButton
+        import components.pages.global.inventory.right.equip.BomberContent
+        import components.pages.global.inventory.right.equip.submenu.ConfirmContentSubMenu
+        import components.pages.global.inventory.right.equip.submenu.ItemInfoContentSubMenu
+        import components.pages.global.inventory.right.equip.submenu.WarningContentSubMenu
+        import components.pages.global.inventory.right.market.MarketContent
+
+        import mx.controls.Alert
+        import mx.core.IVisualElement
+        import mx.managers.PopUpManager
+
+        /* For ConfirmContent */
+
+        public static const ACTION_TYPE_DELETE:int = 0;
+        public static const ACTION_TYPE_REPLACE_WEAPON:int = 1;
+        public static const ACTION_TYPE_PUT_WEAPON_IN_PACK:int = 2;
+
+
+        private var rightContent:IVisualElement = null;
+        [Bindable]
+        public var isOpenedFromGamePage:Boolean = false;
+
+        public function close():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY, true);
+            Context.Model.windowsManager.deleteWindow(this);
+            PopUpManager.removePopUp(this);
+        }
+
+        public function closeWrapper():void {
+            disapearingAnimation.play();
+        }
+
+        private function panelCreationComplete():void {
+            Context.Model.windowsManager.closeAll(true);
+            Context.Model.windowsManager.addWindow(this);
+
+
+            apearingAnimation.play();
+
+            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, function (e:ContextEvent):void {
+                if (!(rightContent is BomberContent)) {
+                    rightContent = new BomberContent();
+                    (rightContent as BomberContent).initContent();
+
+                    rightContentGroup.removeAllElements();
+                    rightContentGroup.addElement(rightContent);
+                }
+            });
+
+            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_MARKET_CONTENT, function (e:ContextEvent):void {
+                //(e.data as ItemCategory)
+                rightContent = new MarketContent();
+                (rightContent as MarketContent).initContent(e.data as MarketCategory);
+
+                rightContentGroup.removeAllElements();
+                rightContentGroup.addElement(rightContent);
+            });
+
+            Context.Model.addCustomListener(ContextEvent.IM_SERVERREQUEST, function (e:ContextEvent):void {
+                if (e.data != null) {
+                    preloaderVisible(e.data);
+                    topMenu.block(e.data as Boolean);
+                } else {
+                    Alert.show("Error with pass event data");
+                }
+            });
+
+
+            Context.Model.addCustomListener(ContextEvent.IM_REMOVE_RIGHT_CONTENT_SUB_MENU, function (e:ContextEvent):void {
+                subMenuContentGroup.removeAllElements();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_WARNING, function (e:ContextEvent):void {
+                subMenuContentGroup.removeAllElements();
+
+                var content:WarningContentSubMenu = new WarningContentSubMenu();
+                if (e.data != null) {
+                    content.initContent(e.data);
+                } else {
+                    Alert.show("Error with pass data");
+                }
+
+                subMenuContentGroup.addElement(content);
+            });
+
+            Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_CONFIRM, function (e:ContextEvent):void {
+                subMenuContentGroup.removeAllElements();
+
+                var content:ConfirmContentSubMenu = new ConfirmContentSubMenu();
+                if (e.data != null) {
+                    content.initContent(e.data);
+                } else {
+                    Alert.show("Error with pass data look in InventoryW.mxml");
+                }
+
+                subMenuContentGroup.addElement(content);
+            });
+
+            Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_INFO, function (e:ContextEvent):void {
+                subMenuContentGroup.removeAllElements();
+
+                var content:ItemInfoContentSubMenu = new ItemInfoContentSubMenu();
+                if (e.data != null && e.data is ItemType) {
+                    content.initContent(e.data);
+                } else {
+                    Alert.show("Error with pass data look in InventoryW.mxml");
+                }
+
+                subMenuContentGroup.addElement(content);
+            });
+
+            Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT);
+            Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_CHANGE_BOMBER_BUTTON_EQUIP_STATE, BomberEquipButton.STATE_ON);
+
+            // immitation
+            // Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
+
+        }
+
+        private function switchMarketContent(e:ContextEvent):void {
+            Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_SHOW_MARKET_CONTENT, e.data);
+            Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_CHANGE_BOMBER_BUTTON_EQUIP_STATE, BomberEquipButton.STATE_OFF);
+        }
+
+        private function preloaderVisible(visible:Boolean):void {
+            serverRequestPreloaderGroup.visible = visible;
+        }
+        ]]>
+	</fx:Script>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+
+    <s:Rect width="770" height="425"
+            radiusX="27" radiusY="27"
+            alpha="0.87"
+            >
+        <s:fill>
+            <s:SolidColor color="0x000000"/>
+        </s:fill>
+        <s:stroke>
+            <s:SolidColorStroke color="0x272727" weight="3"/>
+        </s:stroke>
+    </s:Rect>
+
+    <s:Group width="769" height="68"
+             y="3" x="3">
+
+        <s:BitmapImage source="@Embed(source='assets/windows/global/inventory/topBG.png')"/>
+        <s:HGroup width="100%" height="100%"
+                  verticalAlign="middle" horizontalAlign="left"
+                >
+
+            <s:HGroup verticalAlign="middle"
+                      paddingLeft="20" gap="15"
+                    >
+
+                <s:BitmapImage source="@Embed(source='assets/windows/global/inventory/bag.png')"
+                               alpha="0.7"
+                        />
+                <s:Label text="Ваш рюкзак:" color="0xf4c895"
+                         fontFamily="mpbc" fontSize="20"
+                        />
+
+            </s:HGroup>
+
+            <topmenu1:WeaponCategoriesTopMenu id="topMenu" paddingLeft="180" paddingTop="5"
+                                              IMCategoryIsChanged="switchMarketContent(event);"/>
+
+        </s:HGroup>
+
+    </s:Group>
+
+    <s:HGroup y="73"
+              height="354" width="769"
+              horizontalAlign="left"
+              paddingLeft="20" paddingTop="20"
+              gap="30">
+
+        <left:Pack isOpenedFromGamePage="{isOpenedFromGamePage}"/>
+
+
+        <s:HGroup gap="0">
+            <s:Rect alpha="0.82"
+                    width="1" height="300">
+                <s:fill>
+                    <s:SolidColor color="0x020301"/>
+                </s:fill>
+            </s:Rect>
+            <s:Rect alpha="0.82"
+                    width="1" height="300">
+                <s:fill>
+                    <s:SolidColor color="0x2c2d2a"/>
+                </s:fill>
+            </s:Rect>
+        </s:HGroup>
+
+        <s:HGroup paddingLeft="-10" id="rightContentGroup" width="430"
+                  horizontalAlign="center"/>
+
+
+    </s:HGroup>
+
+
+    <s:HGroup id="subMenuContentGroup"
+              y="90" x="317"
+              horizontalAlign="left"
+            />
+
+
+    <s:HGroup id="serverRequestPreloaderGroup"
+              y="73"
+              width="100%" height="100%"
+              horizontalAlign="center"
+              visible="false"
+              alpha="0.7"
+            >
+
+        <s:Group>
+            <s:Rect width="730" height="354">
+                <s:fill>
+                    <s:SolidColor color="0x000000"/>
+                </s:fill>
+            </s:Rect>
+
+            <s:HGroup width="730" height="334"
+                      horizontalAlign="center" verticalAlign="middle"
+                      visible="true"
+                      gap="40"
+                    >
+
+                <preloaders:Spinner tickColor="0xffffff" tickWidth="10" size="60"/>
+                <s:Label fontFamily="mpbc" fontSize="40"
+                         color="0xffffff"
+                         text="Подождите"
+                        />
+
+            </s:HGroup>
+        </s:Group>
+    </s:HGroup>
+
+    <flexcomponents:CloseButton x="709" y="17"
+                                skinClass="skins.buttons.CloseButtonBlackS"
+                                click="closeWrapper();"
+            />
+
+
+    <s:controlBarContent/>
+
+
+</s:Panel>

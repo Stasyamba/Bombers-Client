@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+          xmlns:left="components.pages.global.inventory.left.*"
+          xmlns:slots="components.pages.global.inventory.left.slots.*"
+          width="250"
+          gap="20"
+        >
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        [Bindable]
+        public var isOpenedFromGamePage:Boolean = false;
+        ]]>
+	</fx:Script>
+
+    <s:Label text="Сюда будут складываться добытые или купленные вами предметы"
+             color="0xf4be80"
+             fontFamily="mpbc" fontSize="14"
+             maxWidth="243"
+            />
+
+    <slots:Slots/>
+    <left:BomberEquipButton changeButtonVisible="{!isOpenedFromGamePage}"/>
+
+
+</s:VGroup>

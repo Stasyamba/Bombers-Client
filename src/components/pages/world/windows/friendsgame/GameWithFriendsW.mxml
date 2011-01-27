@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:mx1="library://ns.adobe.com/flex/halo"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:fx="http://ns.adobe.com/mxml/2009"
+         creationComplete="panelCreationComplete();"
+         borderVisible="false"
+         dropShadowVisible="false"
+         skinClass="skins.common.EmptyPopUpS"
+         xmlns:healingcore="components.healingcore.*"
+         xmlns:gamewithfriends="windows.gamescreen.gamewithfriends.*"
+         xmlns:common="common.*"
+         xmlns:friendsgame="components.pages.world.windows.friendsgame.*"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         implements="components.common.base.window.IWindow"
+        >
+
+    <fx:Declarations>
+
+
+        <s:Animate id="showCreateContentA"
+                   target="{createContent}" duration="300"
+                   effectStart="{enjoyContent.alpha = 0; enjoyContent.visible = false; createContent.visible = true;}"
+                >
+            <s:SimpleMotionPath property="alpha" valueFrom="{createContent.alpha}" valueTo="1"/>
+        </s:Animate>
+
+        <s:Animate id="showEnjoyContentA"
+                   target="{enjoyContent}" duration="300"
+                   effectStart="{createContent.alpha = 0; createContent.visible = false; enjoyContent.visible = true;}"
+                >
+            <s:SimpleMotionPath property="alpha" valueFrom="{enjoyContent.alpha}" valueTo="1"/>
+        </s:Animate>
+
+
+        <s:Animate id="disapearingAnimation" target="{this}" duration="300"
+                   effectEnd="{close();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="1"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingAnimation" target="{this}" duration="1200">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import mx.managers.PopUpManager
+
+        private var warningColor:uint = 0x000000;
+
+
+        public function close():void {
+
+            Context.Model.dispatchCustomEvent(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY, true);
+            Context.Model.windowsManager.deleteWindow(this);
+            PopUpManager.removePopUp(this);
+        }
+
+        public function closeWrapper():void {
+            disapearingAnimation.play();
+        }
+
+        private function panelCreationComplete():void {
+            apearingAnimation.play();
+
+
+            Context.Model.windowsManager.closeAll(true);
+            Context.Model.windowsManager.addWindow(this);
+
+
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW, function(e:ContextEvent):void {
+                showWarning(e.data.text, e.data.type);
+            });
+        }
+
+        private function toggleStateChanged(e:ContextEvent):void {
+            showCreateContentA.stop();
+            showEnjoyContentA.stop();
+
+
+            switch (e.data) {
+                case TypeGameToggle.TOGGLE_STATE_CREATE:
+                    showCreateContentA.play();
+
+                    break;
+                case TypeGameToggle.TOGGLE_STATE_ENJOY:
+                    showEnjoyContentA.play();
+
+                    break;
+            }
+
+
+        }
+
+        private function hideWarning():void {
+            warning.hide();
+        }
+
+        private function showWarning(text:String, type:int):void {
+            switch (type) {
+                case TypeGameToggle.TOGGLE_STATE_CREATE:
+                    warningColor = 0x6ba220;
+                    break;
+                case TypeGameToggle.TOGGLE_STATE_ENJOY:
+                    warningColor = 0xe2cf3e;
+                    break;
+            }
+
+
+            warning.show(Warning.PRELOADER_TYPE, "Пытаюсь создать подходящую игру", warningColor);
+        }
+        ]]>
+	</fx:Script>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+    <s:BitmapImage source="@Embed(source='assets/windows/pageworld/playwithfriends/friendsGamePopUpBG.png')"/>
+
+    <flexcomponents:CloseButton
+            skinClass="skins.buttons.CloseButtonOriginS"
+            x="590" y="20"
+            scale="0.9"
+            click="closeWrapper();"/>
+
+
+    <s:VGroup width="100%" horizontalAlign="center" paddingTop="30" gap="30">
+
+        <friendsgame:TypeGameToggle stateChanged="toggleStateChanged(event);"/>
+
+        <s:Group>
+            <friendsgame:EnjoyGameContent id="enjoyContent"/>
+            <friendsgame:CreateGameContent id="createContent"/>
+        </s:Group>
+
+    </s:VGroup>
+    <!--
+     <s:Button label="test"
+               click="{warning.show(Warning.WARNING_TYPE, 'Игра с таким именем уже существует, придумайте имя пооригинальнее и не стесняйтесь в выражениях!', warningColor);}"
+               />-->
+    <friendsgame:Warning id="warning"/>
+
+    <s:controlBarContent/>
+</s:Panel>

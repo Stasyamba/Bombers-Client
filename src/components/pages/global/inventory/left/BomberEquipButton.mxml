@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:flexcomponents="components.common.flexcomponents.*"
+         creationComplete="init();"
+        >
+
+    <fx:Declarations>
+
+
+        <s:Parallel id="stateOnA" duration="500">
+
+            <s:Animate target="{bgMask}">
+                <s:SimpleMotionPath property="width"
+                                    valueFrom="{bgMask.width}"
+                                    valueTo="{endWidth}"
+                        />
+            </s:Animate>
+
+            <s:Animate target="{contentMask}">
+                <s:SimpleMotionPath property="width"
+                                    valueFrom="{contentMask.width}"
+                                    valueTo="{endWidth}"
+                        />
+            </s:Animate>
+
+
+        </s:Parallel>
+
+        <s:Parallel id="stateOffA" duration="500">
+
+            <s:Animate target="{bgMask}">
+                <s:SimpleMotionPath property="width"
+                                    valueFrom="{bgMask.width}"
+                                    valueTo="{startWidth}"
+                        />
+            </s:Animate>
+
+            <s:Animate target="{contentMask}">
+                <s:SimpleMotionPath property="width"
+                                    valueFrom="{contentMask.width}"
+                                    valueTo="{startWidth}"
+                        />
+            </s:Animate>
+
+
+        </s:Parallel>
+
+
+    </fx:Declarations>
+
+
+    <fx:Script>
+		<![CDATA[
+        public static const STATE_ON:int = 0;
+        public static const STATE_OFF:int = 1;
+
+        [Bindable]
+        public var changeButtonVisible:Boolean = true;
+
+        [Bindable]
+        private var startWidth:int = 130;
+
+        [Bindable]
+        private var endWidth:int = 243;
+
+
+        private var state:int = STATE_OFF;
+
+        private function init():void {
+            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_CHANGE_BOMBER_BUTTON_EQUIP_STATE, function(e:ContextEvent):void {
+                changeState(e.data);
+            });
+        }
+
+        public function showBomberContent():void {
+            changeState(BomberEquipButton.STATE_ON);
+            Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT);
+        }
+
+        private function changeState(newState:int):void {
+            if (state != newState) {
+                switch (newState) {
+                    case STATE_ON:
+                        stateOffA.stop();
+                        stateOnA.play();
+                        state = newState;
+
+                        break;
+
+                    case STATE_OFF:
+                        stateOnA.stop();
+                        stateOffA.play();
+                        state = newState;
+
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+        }
+        ]]>
+	</fx:Script>
+
+    <s:BitmapImage id="bg" source="@Embed(source='assets/windows/global/inventory/myBombasterBG.png')"
+                   mask="{bgMask}"
+            />
+    <s:BorderContainer id="bgMask"
+                       width="{startWidth}" height="{bg.height}"
+                       backgroundColor="0xffffff"
+            />
+    <s:BorderContainer id="contentMask"
+                       width="{startWidth}" height="{bg.height}"
+                       backgroundColor="0xffffff"
+            />
+    <s:BitmapImage id="bgArrow" source="@Embed(source='assets/windows/global/inventory/myBombasterArrowBG.png')"
+                   x="{bgMask.width - 1}"
+                   smooth="true"
+            />
+
+
+    <s:HGroup mask="{contentMask}"
+              height="100%" width="100%"
+              horizontalAlign="left" verticalAlign="middle"
+              paddingLeft="20"
+            >
+
+        <s:Label text="Мой бомбастер"
+                 fontFamily="mpbc" fontSize="18"
+                 color="0xf5d6b4"
+                 click="showBomberContent();"
+                 useHandCursor="true" buttonMode="true"
+                />
+
+        <s:HGroup width="100%" horizontalAlign="right"
+                  paddingRight="30">
+            <flexcomponents:UnderlinedText skinClass="skins.common.UnderlineTextButtonS"
+                                           text="Сменить"
+                                           textColor="0xf1ba5e"
+                                           textSize="18"
+                                           textFontFamily="mpbc"
+                                           textUnderlineGap="0"
+                                           visible="{changeButtonVisible}"
+                    />
+        </s:HGroup>
+
+    </s:HGroup>
+
+
+</s:Group>

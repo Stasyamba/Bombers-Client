@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:mx1="library://ns.adobe.com/flex/halo"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:fx="http://ns.adobe.com/mxml/2009"
+         skinClass="skins.common.EmptyPopUpS"
+         implements="components.common.base.window.IWindow"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         creationComplete="panelCreationComplete();"
+         borderVisible="false"
+         dropShadowVisible="false"
+        >
+
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+
+
+        <s:Animate id="disapearingAnimation" target="{this}" duration="300"
+                   effectEnd="{close();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="1"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingAnimation" target="{this}" duration="1000">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.bombers.BomberType
+
+        import mx.core.IVisualElement
+        import mx.managers.PopUpManager
+
+        public function close():void {
+            Context.Model.windowsManager.deleteWindow(this);
+            PopUpManager.removePopUp(this);
+        }
+
+        public function closeWrapper():void {
+            disapearingAnimation.play();
+        }
+
+        private function panelCreationComplete():void {
+            Context.Model.windowsManager.closeAll(true);
+            Context.Model.windowsManager.addWindow(this);
+
+
+            apearingAnimation.play();
+            bomberImage.source = Context.Model.bomberManager.getBomber(BomberType.FURY_JOE).viewObject.bigImageURL;
+        }
+
+        private function setStepWrapper(step:int):void {
+            setStep(step);
+        }
+
+        private function setStep(step:int):void {
+            var content:IVisualElement = null;
+            content = new Step1();
+
+
+            if (content != null) {
+                tutorialStepContent.addElement(content);
+            }
+        }
+        ]]>
+	</fx:Script>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+
+    <s:BorderContainer backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+                       backgroundImageFillMode="repeat"
+                       width="100%" height="100%"
+                       borderVisible="false"
+            />
+
+    <s:HGroup id="tutorialStepContent"
+              width="100%" height="100%"
+              verticalAlign="middle" horizontalAlign="center"
+            />
+
+
+    <s:controlBarContent/>
+
+
+</s:Panel>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:BorderContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+                   xmlns:s="library://ns.adobe.com/flex/spark"
+                   xmlns:mx="library://ns.adobe.com/flex/mx"
+
+                   xmlns:fields="components.pages.world.worlds.locations.world1.fields.*"
+                   xmlns:mines="components.pages.world.worlds.locations.world1.mines.*"
+                   xmlns:castle="components.pages.world.worlds.locations.world1.castle.*"
+                   xmlns:sea="components.pages.world.worlds.locations.world1.sea.*"
+                   xmlns:snowpeak="components.pages.world.worlds.locations.world1.snowpeak.*"
+                   xmlns:ufo="components.pages.world.worlds.locations.world1.ufo.*"
+                   xmlns:rocket="components.pages.world.worlds.locations.world1.rocket.*"
+                   xmlns:sattelite="components.pages.world.worlds.locations.world1.sattelite.*"
+                   xmlns:moon="components.pages.world.worlds.locations.world1.moon.*"
+
+                   width="100%" height="444"
+                   backgroundColor="0x000000"
+                   creationComplete="init();"
+
+        >
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.base.access.AccessManager
+        import components.common.base.access.rules.AccessRuleObject
+        import components.common.base.access.rules.AccessRuleType
+        import components.common.utils.HitTester
+        import components.common.worlds.locations.ILocationPreview
+        import components.common.worlds.locations.LocationType
+
+        import mx.managers.CursorManager
+
+        /* sounds */
+
+        [Embed(source="assets/sounds/pageworld/bg3.mp3")]
+        [Bindable]
+        public var sndBgClass:Class;
+
+        public var sndBg:Sound = new sndBgClass() as Sound;
+        public var sndChannel:SoundChannel;
+
+        /* for cursors */
+
+        private var cursorID:int = 0;
+
+        [Embed(source="assets/pageworld/worlds/cursors/redLock.png")]
+        private var redLockCursorSymbol:Class;
+
+        [Embed(source="assets/pageworld/worlds/cursors/greenLock.png")]
+        private var greenLockCursorSymbol:Class;
+
+        [Embed(source="assets/pageworld/worlds/cursors/thumbsUp.png")]
+        private var thumbsUpCursorSymbol:Class;
+
+
+        [Bindable]
+        private var test:String = "";
+
+        private var selectedLocation:ILocationPreview = null;
+
+        private function init():void {
+            // NOTHERE!!
+            //var sTrans: SoundTransform = new SoundTransform(0.2);
+            //sndChannel = sndBg.play(0,1000, sTrans);
+
+
+            if (!mainWorldGroup.hasEventListener(MouseEvent.MOUSE_MOVE)) {
+                mainWorldGroup.addEventListener(MouseEvent.MOUSE_MOVE, mouseMoveHandler);
+            }
+
+            if (!mainWorldGroup.hasEventListener(MouseEvent.CLICK)) {
+                mainWorldGroup.addEventListener(MouseEvent.CLICK, mouseClickHandler);
+            }
+        }
+
+
+        private function mouseMoveHandler(e:MouseEvent):void {
+            var locationFinded:Boolean = false;
+
+            for (var i:int = 0; i <= mainWorldGroup.numElements - 1; i++) {
+                var gl:* = mainWorldGroup.getElementAt(i);
+                if (gl is ILocationPreview) {
+                    if (HitTester.realHitTest(gl, new Point(mouseX, mouseY + 40))) // y="40" - parent
+                    {
+                        locationFinded = true;
+                        mainWorldGroup.getElementAt(i) as DisplayObject
+
+                        selectedLocation = mainWorldGroup.getElementAt(i) as ILocationPreview;
+                        setLocationPreviewOverState(selectedLocation);
+
+                        // set over = false for rest locations
+                        for (var j:int = i - 1; j >= 0; j--) {
+                            (mainWorldGroup.getElementAt(j) as ILocationPreview).setOver(false);
+                        }
+
+                    } else {
+                        (mainWorldGroup.getElementAt(i) as ILocationPreview).setOver(false);
+                    }
+                }
+            }
+
+            if (!locationFinded) {
+                selectedLocation = null;
+
+                // set normal cursor
+                CursorManager.removeAllCursors();
+            }
+        }
+
+
+        private function setLocationPreviewOverState(location:ILocationPreview):void {
+            var lType:LocationType = (location as ILocationPreview).getLocationType();
+            var rObjects:Array = AccessManager.checkAccessLocation(lType);
+
+
+            var betaRuleDone:Boolean = true;
+            var openedLocationsRuleDone:Boolean = true;
+            var allRuleDone:Boolean = true;
+
+            var isLocationOpenedInProfile:Boolean = false;
+            for each(var ol:LocationType in Context.Model.currentSettings.ownGameProfile.openedLocations) {
+                if (ol == selectedLocation.getLocationType()) {
+                    isLocationOpenedInProfile = true;
+                    break;
+                }
+            }
+
+
+            for each(var o:AccessRuleObject in rObjects) {
+                if (o.accessRule.getAccessRuleType() == AccessRuleType.BETA_RULE) {
+                    betaRuleDone = o.isSuccess;
+                }
+
+                if (o.accessRule.getAccessRuleType() == AccessRuleType.OPENED_LOCATIONS_RULE) {
+                    openedLocationsRuleDone = o.isSuccess;
+                }
+
+                if (!o.isSuccess) {
+                    allRuleDone = false;
+                }
+
+            }
+
+            var saturationShift:Number = 1;
+            var hueShift:int = 0;
+
+
+            if (!betaRuleDone) {
+                // RED
+
+                saturationShift = 4;
+                hueShift = -45;
+
+                if (selectedLocation.getLocationType() == LocationType.WORLD1_MOON) {
+                    hueShift = -155;
+                    saturationShift = 15;
+                }
+
+            } else if (!openedLocationsRuleDone) {
+                // RED
+
+                saturationShift = 4;
+                hueShift = -45;
+
+                if (selectedLocation.getLocationType() == LocationType.WORLD1_MOON) {
+                    hueShift = 80;
+                }
+
+            } else if (!allRuleDone || !isLocationOpenedInProfile) {
+                // YELLOW
+                // by default
+
+            } else if (allRuleDone) {
+                // GREEN
+                saturationShift = 3.5;
+                hueShift = 35;
+            }
+
+
+            location.setOver(true, hueShift, saturationShift);
+        }
+
+
+        private function mouseClickHandler(e:MouseEvent):void {
+            if (selectedLocation != null) {
+                selectedLocation.setOver(false);
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_LOCATION_ENTER, selectedLocation.getLocationType());
+                //selectedLocation.openLocation();
+            }
+        }
+        ]]>
+	</fx:Script>
+
+    <s:BitmapImage source="@Embed(source='assets/pageworld/worlds/mapWorld1BG.jpg')"/>
+
+    <s:Group id="mainWorldGroup" width="100%" height="100%">
+        <fields:LocationPreview x="240" y="249"/>
+        <mines:LocationPreview x="0" y="270"/>
+        <castle:LocationPreview x="477" y="247"/>
+        <sea:LocationPreview x="664" y="221"/>
+        <snowpeak:LocationPreview x="355" y="120"/>
+        <ufo:LocationPreview x="194" y="124"/>
+        <rocket:LocationPreview x="623" y="25"/>
+        <sattelite:LocationPreview x="372" y="0"/>
+        <moon:LocationPreview x="124" y="10"/>
+    </s:Group>
+
+    <!-- <s:Label text="{test}" fontSize="20" color="0xffffff" y="20" x="20" /> -->
+
+
+</s:BorderContainer>

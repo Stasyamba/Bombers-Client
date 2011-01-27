@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:buttons="skins.buttons.*"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         width="100%" height="100%" xmlns:slots="components.pages.global.inventory.right.market.slots.*">
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.resources.ResourcePrice
+
+        private var resourcePrice:ResourcePrice;
+
+        public function initContent(price:ResourcePrice):void {
+            resourcePrice = new ResourcePrice(0, 0, 0, 0);
+            resourcePrice.cloneFrom(price);
+            priceViewPanel.initContent(resourcePrice);
+        }
+
+        private function close():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.IM_REMOVE_ITEM_RULES_DENIED_CONTENT);
+        }
+
+        private function openResourceMarket():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_RESOURCE_MARKET, resourcePrice);
+        }
+        ]]>
+	</fx:Script>
+
+    <s:BitmapImage source="@Embed(source='assets/windows/global/inventory/itemMarketRedBG.png')"
+                   width="394" height="130"
+            />
+    <s:VGroup width="394" height="100%"
+              paddingLeft="15" paddingTop="10"
+              gap="10"
+            >
+        <s:Label text="Не хватает ресурсов"
+                 fontSize="32" fontFamily="mpbc"
+                 color="0xffffff"
+                />
+        <s:Label text="Вам не хватает ресурсов чтобы купить этот предмет. Вы можете докупить их прямо отсюда."
+                 fontSize="13" fontFamily="mpr"
+                 color="0xffffff"
+                 maxWidth="300"
+                />
+
+        <s:HGroup width="100%"
+                  horizontalAlign="left" verticalAlign="middle"
+                  gap="0"
+                >
+
+            <s:HGroup verticalAlign="middle">
+                <s:Label text="Не хватает:"
+                         fontSize="16" fontFamily="mpbc"
+                         color="0xffffff"
+                        />
+                <s:Group>
+
+                    <s:Rect width="{priceViewPanel.width + 40}" height="{priceViewPanel.height + 10}"
+                            radiusX="15" radiusY="15">
+                        <s:fill>
+                            <s:SolidColor color="0x000000"/>
+                        </s:fill>
+                        <s:stroke>
+                            <s:SolidColorStroke color="0x932837" weight="2"/>
+                        </s:stroke>
+                    </s:Rect>
+
+                    <s:HGroup width="100%" height="100%"
+                              x="20" y="5">
+                        <slots:PriceView id="priceViewPanel"/>
+                    </s:HGroup>
+
+                </s:Group>
+            </s:HGroup>
+            <s:HGroup width="100%" paddingRight="20"
+                      horizontalAlign="right">
+                <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+                                              customLabel="Докупить"
+                                              scale="0.7"
+                                              click="openResourceMarket();"
+                        />
+            </s:HGroup>
+
+        </s:HGroup>
+    </s:VGroup>
+
+    <flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonOriginS"
+                                scale="0.8"
+                                y="10" x="345"
+                                click="close();"
+            />
+
+</s:Group>

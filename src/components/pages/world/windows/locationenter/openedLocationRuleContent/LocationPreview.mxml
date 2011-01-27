@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:preloaders="components.common.utils.preloaders.*"
+         click="openLocation();"
+         buttonMode="true" useHandCursor="true"
+        >
+
+    <fx:Declarations>
+
+
+        <s:Parallel id="overStateEnabledA">
+            <s:Animate target="{glowOverState}" duration="200">
+                <s:SimpleMotionPath property="blurX"
+                                    valueFrom="0" valueTo="20"
+                        />
+                <s:SimpleMotionPath property="blurY"
+                                    valueFrom="0" valueTo="20"
+                        />
+            </s:Animate>
+            <s:Animate target="{locationIsClosedImage}" duration="200">
+                <s:SimpleMotionPath property="alpha"
+                                    valueFrom="0.9" valueTo="0.5"
+                        />
+            </s:Animate>
+        </s:Parallel>
+
+
+        <s:Parallel id="overStateDisabledA">
+            <s:Animate target="{glowOverState}" duration="200">
+                <s:SimpleMotionPath property="blurX"
+                                    valueTo="0"
+                        />
+                <s:SimpleMotionPath property="blurY"
+                                    valueTo="0"
+                        />
+            </s:Animate>
+            <s:Animate target="{locationIsClosedImage}" duration="200">
+                <s:SimpleMotionPath property="alpha"
+                                    valueTo="0.9"
+                        />
+            </s:Animate>
+        </s:Parallel>
+
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.worlds.locations.LocationType
+
+        [Bindable]
+        private var previewImageLocationURL:String = "";
+        private var locationType:LocationType;
+        [Bindable]
+        private var locationIsOpened:Boolean = false;
+        [Bindable]
+        private var locationName:String = "";
+
+        [Bindable]
+        private var baseColor:uint;
+
+        /* animations vars */
+        private var isCursorOnFromObject:Boolean = false;
+        private var isCursorOnBG:Boolean = false;
+
+
+        public function initContent(locationTypeP:LocationType, isOpened:Boolean, color:uint):void {
+            locationType = locationTypeP;
+            previewImageLocationURL = Context.Model.locationViewManager.getLocationViewObject(locationTypeP).imagePreviewURL;
+            locationIsOpened = isOpened;
+            locationName = Context.Model.locationViewManager.getLocationViewObject(locationTypeP).name;
+
+            baseColor = color;
+        }
+
+        private function openLocation():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_LOCATION_ENTER, locationType);
+        }
+
+        private function setOverState(isOver:Boolean):void {
+            //overStateDisabledA.stop();
+            //overStateEnabledA.stop();
+            if (!locationIsOpened) {
+                if (isOver) {
+                    if (isCursorOnFromObject) {
+                        overStateEnabledA.play();
+                    }
+                } else {
+                    overStateDisabledA.play();
+                }
+            }
+//				mx.controls.Alert.show(
+//					"onFront: "+isCursorOnBG.toString() +" onBG: "+isCursorOnFromObject.toString()
+//					);
+        }
+        ]]>
+	</fx:Script>
+
+    <!--mouseOver="setOverState(true);"
+     mouseOut="setOverState(false);"-->
+
+    <s:Group id="peviewGroup"
+            >
+
+
+        <s:VGroup horizontalAlign="center">
+            <s:Group>
+                <s:Rect width="142" height="133"
+                        radiusX="7" radiusY="7">
+                    <s:fill>
+                        <s:SolidColor color="{baseColor}"/>
+                    </s:fill>
+                    <s:filters>
+                        <s:GlowFilter id="glowOverState" color="{baseColor}" blurX="0" blurY="0"/>
+                    </s:filters>
+                </s:Rect>
+
+
+                <s:HGroup width="142" height="133"
+                          horizontalAlign="center" verticalAlign="middle"
+                        >
+                    <preloaders:Spinner/>
+                </s:HGroup>
+
+
+                <s:HGroup width="142" height="133"
+                          horizontalAlign="center" verticalAlign="middle"
+                          mouseOver="{isCursorOnBG = true; setOverState(true);}"
+                          mouseOut="{isCursorOnBG = false; setOverState(false);}"
+                        >
+                    <mx:Image id="locationPreview"
+                              source="{previewImageLocationURL}"
+                            />
+                </s:HGroup>
+            </s:Group>
+            <s:Label text="{locationName}"
+                     color="{baseColor}"
+                     fontFamily="mpbc" fontSize="16"/>
+        </s:VGroup>
+
+
+        <s:HGroup width="142" height="133"
+                  paddingTop="10"
+                  horizontalAlign="center" verticalAlign="middle"
+                  visible="{locationIsOpened}"
+                  alpha="1"
+                  mouseOver="{isCursorOnFromObject = true;setOverState(true);}"
+                  mouseOut="{isCursorOnFromObject= false;setOverState(false);}"
+                >
+            <s:Label text="OK"
+                     fontFamily="mpbc" fontSize="110"
+                     color="0x59d95c"/>
+        </s:HGroup>
+
+        <s:HGroup id="locationIsClosedImage"
+                  width="142" height="133"
+                  horizontalAlign="center" verticalAlign="middle"
+                  visible="{!locationIsOpened}"
+                  alpha="0.8"
+                  mouseOver="{isCursorOnFromObject = true;setOverState(true);}"
+                  mouseOut="{isCursorOnFromObject= false;setOverState(false);}"
+                >
+            <s:BitmapImage source="@Embed(source='assets/pageworld/worlds/locationenter/locationIsClosedPreview.png')"/>
+        </s:HGroup>
+
+    </s:Group>
+
+</s:Group>

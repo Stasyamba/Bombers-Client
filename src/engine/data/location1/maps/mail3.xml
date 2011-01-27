@@ -1,0 +1,30 @@
+<!--
+  ~ Copyright (c) 2010.
+  ~ Pavkin Vladimir
+  -->
+
+<Map>
+    <id val="11"/>
+    <name>testSingle</name>
+    <type>SINGLE</type>
+    <size width="17" height="11"/>
+    <spawns>
+        <Spawn x="0" y="0"/>
+        <Spawn x="16" y="0"/>
+        <Spawn x="16" y="10"/>
+        <Spawn x="0" y="10"/>
+    </spawns>
+    <rows>
+        <Row val="ffbwbbwbbbwbbwbff"/>
+        <Row val="fbfbwbbbwbbbwbfbf"/>
+        <Row val="bwbwbfbbbbbfbwbwb"/>
+        <Row val="bbfbwbwbfbwbwbfbb"/>
+        <Row val="bbbfbbbwfwbbbfbbb"/>
+        <Row val="wbwbwbfffffbwbwbw"/>
+        <Row val="bbbfbbbwfwbbbfbbb"/>
+        <Row val="bbfbwbwbfbwbwbfbb"/>
+        <Row val="bwbwbfbbbbbfbwbwb"/>
+        <Row val="fbfbwbbbwbbbwbfbf"/>
+        <Row val="ffbwbbwbbbwbbwbff"/>
+    </rows>
+</Map>

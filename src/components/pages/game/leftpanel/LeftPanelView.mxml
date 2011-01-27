@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:leftpanel="components.pages.game.leftpanel.*"
+         creationComplete="init();"
+         height="444" width="106">
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import appmodel.ApplicationModel
+
+        import components.common.VkontakteProfile
+        import components.common.game.multygameresult.GameResults
+        import components.common.game.multygameresult.Result
+
+        import engine.profiles.GameProfile
+
+        import mx.core.IVisualElement
+
+        private var players:Array = new Array();
+
+        private function deletePlayer(id:String):void {
+            var el:* = null;
+            for (var i:int = 0; i <= playersGroup.numChildren - 1; i++) {
+                el = playersGroup.getChildAt(i);
+                if (el is Player) {
+                    if ((el as Player).profile.id == id) {
+                        playersGroup.removeElement(el as IVisualElement);
+                        break;
+                    }
+                }
+            }
+        }
+
+        private function addPlayer(newProfile:GameProfile):void {
+            var el:* = null;
+            var profileFinded:Boolean = false;
+            var profileAdded:Boolean = false;
+
+            for (var i:int = 0; i <= playersGroup.numChildren - 1; i++) {
+                el = playersGroup.getChildAt(i);
+                if (el is Player) {
+                    if ((el as Player).profile != null) {
+                        if ((el as Player).profile.id == newProfile.id) {
+                            profileFinded = true;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (!profileFinded) {
+                for (i = 0; i <= playersGroup.numChildren - 1; i++) {
+                    el = playersGroup.getChildAt(i);
+                    if (el is Player) {
+                        if ((el as Player).profile == null) {
+                            profileAdded = true;
+                            (el as Player).profile = newProfile;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private function setReady(isReady:Boolean, id:String):void {
+            var el:* = null;
+            for (var i:int = 0; i <= playersGroup.numChildren - 1; i++) {
+                el = playersGroup.getChildAt(i);
+                if (el is Player) {
+                    if ((el as Player).profile != null) {
+                        if ((el as Player).profile.id == id) {
+                            (el as Player).isReady = isReady;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        private function init():void {
+            // immitation
+            addPlayer(Context.Model.currentSettings.ownGameProfile);
+            var gp:GameProfile = new GameProfile();
+            gp.id = "1";
+            gp.vkProfile = new VkontakteProfile("1");
+            gp.vkProfile.photoSrc = "http://cs10562.vkontakte.ru/u120102480/a_a87bc1bd.jpg";
+            addPlayer(gp);
+        }
+
+
+        // imitation
+
+        private function showResults():void {
+            var res:Array = new Array();
+            res.push(new Result(Context.Model.currentSettings.ownGameProfile, 10));
+
+            var r:GameResults = new GameResults(res, []);
+            Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, r);
+        }
+        ]]>
+	</fx:Script>
+
+    <s:BitmapImage source="@Embed(source='assets/pagegame/leftpanel/bg.jpg')"
+                   height="444"
+                   smooth="true">
+        <s:filters>
+            <s:DropShadowFilter distance="1"
+                                alpha="0.85"
+                                angle="0"
+                                blurY="5"
+                    />
+        </s:filters>
+    </s:BitmapImage>
+
+    <s:VGroup width="104" height="444"
+              verticalAlign="middle" horizontalAlign="center"
+              gap="20"
+              id="playersGroup"
+            >
+
+        <leftpanel:Player id="player1"/>
+        <leftpanel:Player id="player2"/>
+        <leftpanel:Player id="player3"/>
+        <leftpanel:Player id="player4"/>
+
+    </s:VGroup>
+
+    <s:VGroup x="200" y="200">
+        <s:Button label="Ready" click="setReady(true,ApplicationModel.APPLICATION_AUTHOR_ID);"/>
+        <s:Button label="NOT Ready" click="setReady(false,ApplicationModel.APPLICATION_AUTHOR_ID);"/>
+
+        <s:Button label="Ready1" click="setReady(true,'1');"/>
+        <s:Button label="NOT Ready1" click="setReady(false,'1');"/>
+        <s:Button label="Game created"
+                  click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);}"/>
+        <s:Button label="GetResults" click="showResults()"/>
+
+    </s:VGroup>
+
+
+</s:Group>

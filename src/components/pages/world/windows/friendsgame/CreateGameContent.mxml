@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         width="743" xmlns:friendsgame="components.pages.world.windows.friendsgame.*"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+        >
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        private function generatingGameName(visible:Boolean):void {
+            gameNameTextInput.isWarning = visible;
+        }
+
+        private function generatingGamePass(visible:Boolean):void {
+        }
+
+        private function tryToCreateGame():void {
+
+            Context.Model.dispatchCustomEvent(
+                    ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
+            {
+                text: "Игра с таким названием уже существует, все что вы можете сделать это расплакаться как девчoнка или создать новую игру =)",
+                type: TypeGameToggle.TOGGLE_STATE_CREATE
+            });
+        }
+        ]]>
+	</fx:Script>
+
+    <s:VGroup width="100%"
+              horizontalAlign="center"
+              gap="20">
+
+        <s:Label text="Создать игру, и пригласить туда друзей."
+                 fontSize="18" fontFamily="mpbc"
+                 color="0xffffff"
+                />
+
+        <s:HGroup gap="40">
+            <s:Group>
+                <s:HGroup verticalAlign="middle"
+                          gap="10">
+                    <s:Label text="Введите имя игры:"
+                             fontSize="24" fontFamily="mpbc"
+                             color="0xffffff"
+                            />
+
+                    <friendsgame:TextInputWithPreloader
+                            id="gameNameTextInput"
+                            textFieldBorderColor="0xe1e3de" textFieldBorderVisible="true"
+                            textFieldWidth="211" textFieldHeight="32"
+                            textFieldFontSize="24"
+                            textFieldFontFamily="mpr"
+
+                            warningBGColor="0xe1e3de" warningTickColor="0x000000"
+                            warningText="Подбираем название"/>
+
+                </s:HGroup>
+
+                <s:VGroup y="45">
+
+                    <flexcomponents:UnderlinedText text="Сгенерировать"
+                                                   skinClass="skins.common.UnderlineTextButtonS"
+                                                   textColor="0x2db5d2"
+                                                   textSize="14"
+                                                   textFontFamily="mpbc"
+                                                   textUnderlineGap="-1"
+                                                   width="90" height="17"
+                                                   click="generatingGameName(true);"
+                            />
+
+                    <flexcomponents:UnderlinedText text="Сгенерировать пароль"
+                                                   skinClass="skins.common.UnderlineTextButtonS"
+                                                   textColor="0x2db5d2"
+                                                   textSize="14"
+                                                   textFontFamily="mpbc"
+                                                   textUnderlineGap="-1"
+                                                   width="123" height="17"
+                                                   click="generatingGamePass(true)"
+                            />
+                </s:VGroup>
+
+
+                <s:HGroup gap="0" x="114" y="44">
+                    <s:Label color="0x62b535"
+                             fontFamily="mpbc" fontSize="24"
+                             text="*"
+                            />
+                    <s:Label color="0x62b535"
+                             fontFamily="mpbc" fontSize="15"
+                             text="Только английские буквы (от 4 до 9 символов)"
+                            />
+                </s:HGroup>
+
+            </s:Group>
+
+            <s:Group>
+
+                <s:HGroup verticalAlign="middle"
+                          gap="10">
+                    <s:Label text="Пароль:"
+                             fontSize="24" fontFamily="mpbc"
+                             color="0xffffff"
+                            />
+
+                    <s:TextInput borderVisible="true" fontSize="24" fontFamily="mpr"
+                                 height="32"
+                                 width="191" borderColor="0xe1e3de"
+                                 focusSkin="skins.common.NoFocusS"/>
+                </s:HGroup>
+
+                <s:HGroup gap="0" y="44">
+                    <s:Label color="0x62b535"
+                             fontFamily="mpbc" fontSize="24"
+                             text="*"
+                            />
+                    <s:Label color="0x62b535"
+                             fontFamily="mpbc" fontSize="15"
+                             width="250"
+                             text="Если не поставить пароль, к игре сможет присоединиться кто-попало!"
+                            />
+                </s:HGroup>
+
+
+            </s:Group>
+        </s:HGroup>
+
+        <s:HGroup paddingTop="-10">
+
+            <flexcomponents:PatternButton
+                    skinClass="skins.buttons.Pattern2ButtonS"
+                    customLabel="Создать"
+                    fontSize="24"
+                    fontSizeOver="24"
+                    click="tryToCreateGame();"
+                    />
+
+        </s:HGroup>
+
+    </s:VGroup>
+
+</s:Group>

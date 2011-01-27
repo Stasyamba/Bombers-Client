@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ui="engine.ui.*">
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+    <fx:Script><![CDATA[
+        import components.ApplicationView
+
+        import engine.EngineContext
+        import engine.ui.GameFieldView
+        import engine.ui.GameResultsView
+        import engine.ui.ThreeSecondsToStart
+
+        import mx.managers.PopUpManager
+
+        private var now:int,then:int;
+
+        private var gameView:GameFieldView;
+
+        //temporary ui elements
+        private var threeSecsToStart:ThreeSecondsToStart = new ThreeSecondsToStart();
+        private var preGameView:PreGameView = new PreGameView();
+        private var gameResultsView:GameResultsView = new GameResultsView();
+
+        function init():void {
+
+            if (Context.gameModel.gameType.isMultiplayer) {
+                initMultiPlayer();
+            } else {
+                initSinglePlayer();
+            }
+
+            subscribeEnterFrameEvent();
+
+            Context.gameModel.gameStarted.add(function ():void {
+                PopUpManager.removePopUp(threeSecsToStart);
+            });
+            Context.gameModel.readyToCreateGame.dispatch();
+        }
+
+        private function initMultiPlayer():void {
+//            PopUpManager.addPopUp(preGameView, this);
+//            preGameView.updateReadyLabels();
+//
+//            Context.gameServer.leftGame.addOnce(function ():void {
+//                PopUpManager.removePopUp(preGameView);
+//            });
+//
+//            Context.gameModel.gameReady.add(function ():void {
+//                PopUpManager.removePopUp(preGameView);
+//                gameView = new GameFieldView(Context.game);
+//                addElement(gameView);
+//                PopUpManager.addPopUp(threeSecsToStart, gameView);
+//
+//                subscribeEnterFrameEvent();
+//            });
+//
+//            Context.gameModel.gameEnded.add(function ():void {
+//
+//                endGame();
+//                Context.gameModel.readyToPlayAgain.addOnce(function ():void {
+//                    PopUpManager.removePopUp(gameResultsView);
+//                    PopUpManager.addPopUp(preGameView, group);
+//                    preGameView.updateReadyLabels();
+//                })
+//            });
+//
+//            initChat();
+        }
+
+        // comment
+        private function initSinglePlayer():void {
+            Context.gameModel.gameReady.add(function ():void {
+                PopUpManager.addPopUp(threeSecsToStart, group);
+
+                gameView = new GameFieldView(Context.game);
+                addElement(gameView);
+            });
+
+            Context.gameModel.gameEnded.add(function ():void {
+
+                endGame();
+
+                Context.gameModel.readyToPlayAgain.addOnce(function ():void {
+                    changeTabBack();
+                })
+            });
+        }
+
+
+        private function endGame():void {
+
+            PopUpManager.addPopUp(gameResultsView, gameView);
+
+            gameView.destroy();
+            removeElement(gameView)
+            gameView = null;
+        }
+
+        //        private function onSend(event:ContextEvent):void {
+        //            Context.gameServer.sendInGameMessage(event.data.message);
+        //        }
+
+        //        private function initChat():void {
+        //            for each (var user:User in Context.gameServer.gameRoom.userList) {
+        //                if (user.isItMe) continue;
+        //                chat.printSomeoneCame(user.name)
+        //            }
+        //            chat.printICame()
+        //            Context.gameServer.someoneJoinedToGame.add(onSomeoneJoinedGame)
+        //            Context.gameServer.someoneLeftGame.add(function(user:User):void {
+        //                chat.printSomeoneLeft(user.name)
+        //            })
+        //            Context.gameServer.inGameMessageReceived.add(function(user:User, message:String):void {
+        //                chat.printMessage(user.name, message);
+        //            })
+        //            Context.gameModel.gameStarted.add(function():void {
+        //                chat.printGameStarted();
+        //            })
+        //            Context.gameModel.gameEnded.add(function():void {
+        //                chat.printGameEnded();
+        //            })
+        //        }
+        //
+        //        private function onSomeoneJoinedGame(user:User):void {
+        //            chat.printSomeoneCame(user.name)
+        //        }
+
+
+        private function subscribeEnterFrameEvent():void {
+
+            now = then = getTimer();
+            addEventListener(Event.ENTER_FRAME, onEnterFrame)
+        }
+
+        private function onEnterFrame(e:Event):void {
+            now = getTimer();
+            var elapsed:int = now - then;
+            then = now;
+            EngineContext.frameEntered.dispatch(elapsed);
+        }
+
+        private function unsubscribeEnterFrameEvent():void {
+            removeEventListener(Event.ENTER_FRAME, onEnterFrame)
+        }
+
+        //change tab back
+        private function changeTabBack():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_WORLD);
+            gameView.destroy();
+            if (hasEventListener(Event.ENTER_FRAME))
+                unsubscribeEnterFrameEvent();
+        }
+
+        public function destroy():void {
+            Context.gameModel.gameStarted.removeAll();
+            Context.gameModel.gameEnded.removeAll();
+            Context.gameModel.gameReady.removeAll();
+            Context.gameServer.leftGame.removeAll();
+        }
+        ]]></fx:Script>
+    <mx:Image source="http://www.vensella.ru/eg/testmap.jpg"/>
+    <s:Group id="group"/>
+
+</s:Group>

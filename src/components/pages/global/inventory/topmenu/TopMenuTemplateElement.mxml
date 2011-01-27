@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         implements="components.pages.global.inventory.topmenu.IToggleMenu"
+         creationComplete="init();"
+         buttonMode="true" useHandCursor="true"
+        >
+
+    <fx:Metadata>
+        [Event(name="IMInventoryTabStateChanged", type="ContextEvent")]
+    </fx:Metadata>
+
+
+    <fx:Declarations>
+
+        <s:Parallel id="toOverA">
+            <s:Animate target="{bgRect}" duration="200"
+                       effectStart="{bgRect.alpha = 0; bgRect.visible = true;}">
+                <s:SimpleMotionPath property="alpha"
+                                    valueFrom="0"
+                                    valueTo="1"
+                        />
+
+
+            </s:Animate>
+            <s:Animate target="{glowTextFilter}" duration="200">
+                <s:SimpleMotionPath property="blurX"
+                                    valueFrom="0"
+                                    valueTo="15"
+                        />
+
+                <s:SimpleMotionPath property="blurY"
+                                    valueFrom="0"
+                                    valueTo="15"
+                        />
+            </s:Animate>
+        </s:Parallel>
+        <!-- glowTextFilter -->
+
+        <s:Parallel id="toUpA">
+            <s:Animate target="{bgRect}" duration="200"
+                       effectEnd="{bgRect.alpha = 0; bgRect.visible = false;}">
+                <s:SimpleMotionPath property="alpha"
+                                    valueFrom="{bgRect.alpha}"
+                                    valueTo="0"
+                        />
+            </s:Animate>
+            <s:Animate target="{glowTextFilter}" duration="200">
+                <s:SimpleMotionPath property="blurX"
+                                    valueFrom="15"
+                                    valueTo="0"
+                        />
+
+                <s:SimpleMotionPath property="blurY"
+                                    valueFrom="15"
+                                    valueTo="0"
+                        />
+            </s:Animate>
+        </s:Parallel>
+
+
+        <s:Parallel id="toUpFromSelectedA">
+            <s:Animate target="{bgRect}" duration="200"
+                       effectEnd="{bgRect.alpha = 0; bgRect.visible = false;}">
+                <s:SimpleMotionPath property="alpha"
+                                    valueFrom="{bgRect.alpha}"
+                                    valueTo="0"
+                        />
+            </s:Animate>
+        </s:Parallel>
+
+
+    </fx:Declarations>
+
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.categories.MarketCategory
+
+        public var state:int;
+        [Bindable]
+        public var menuText:String = "Menu";
+        [Bindable]
+        public var menuTextColor:uint = 0xe3c18c;
+
+        [Bindable]
+        public var menuTextColorUp:uint = 0xe3c18c;
+        [Bindable]
+        public var menuTextColorOver:uint = 0xffffff;
+
+        [Bindable]
+        public var menuTextGlowColor:uint = 0xffffff;
+
+        public var marketCategory:MarketCategory;
+
+
+        public function changeState(newState:int, enforced:Boolean = false):void {
+            if (state != WeaponCategoriesTopMenu.STATE_SELECTED || enforced) {
+                switch (newState) {
+                    case WeaponCategoriesTopMenu.STATE_OVER:
+                        setOver();
+                        state = newState;
+                        break;
+                    case WeaponCategoriesTopMenu.STATE_UP:
+                        if (!enforced) {
+                            setUp();
+                        } else {
+                            if (state != WeaponCategoriesTopMenu.STATE_SELECTED) {
+                                setUpFromSelected();
+                            } else {
+                                setUp();
+                            }
+                        }
+
+                        state = newState;
+                        break;
+                    case WeaponCategoriesTopMenu.STATE_SELECTED:
+                        state = newState;
+                        break;
+                }
+
+
+                dispatchEvent(new ContextEvent(
+                        ContextEvent.IM_CATEGORY_TAB_STATE_CHANGED, false, false,
+                        newState
+                        ));
+            }
+        }
+
+        private function setOver():void {
+            toUpA.stop();
+            toOverA.play();
+        }
+
+        private function setUp():void {
+            toOverA.stop();
+            toUpA.play();
+        }
+
+        private function setUpFromSelected():void {
+            toUpFromSelectedA.play();
+        }
+
+        private function setSelected():void {
+            bgRect.visible = true;
+            bgRect.alpha = 1;
+        }
+
+        private function init():void {
+            changeState(WeaponCategoriesTopMenu.STATE_UP, true);
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Group id="bgRect" visible="false"
+             x="-10" y="-7">
+
+        <s:Rect width="{menuLabel.width + 20}" height="26"
+                radiusX="15" radiusY="15"
+                >
+            <s:fill>
+                <s:SolidColor color="0x000000"/>
+            </s:fill>
+            <s:stroke>
+                <s:SolidColorStroke color="0x6b5d46" weight="2"/>
+            </s:stroke>
+
+        </s:Rect>
+    </s:Group>
+
+
+    <s:Group>
+
+    </s:Group>
+    <s:Label id="menuLabel" fontFamily="mpr" fontSize="14"
+             text="{menuText}" color="{menuTextColor}"
+
+             mouseOver="changeState(WeaponCategoriesTopMenu.STATE_OVER);"
+             mouseOut="changeState(WeaponCategoriesTopMenu.STATE_UP);"
+             click="changeState(WeaponCategoriesTopMenu.STATE_SELECTED);"
+
+            >
+        <s:filters>
+            <s:GlowFilter id="glowTextFilter" color="{menuTextGlowColor}" blurX="0" blurY="0"/>
+        </s:filters>
+    </s:Label>
+
+</s:Group>

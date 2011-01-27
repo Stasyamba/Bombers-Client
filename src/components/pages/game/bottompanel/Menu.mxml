@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:flexcomponents="components.common.flexcomponents.*">
+
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        /* popup section */
+        private var isMouseOnPopUp:Boolean = false;
+        private var isMouseOnPreview:Boolean = false;
+
+        private function checkPopUp():void {
+            if (!isMouseOnPreview && !isMouseOnPopUp) {
+                hidePopUp();
+            }
+        }
+
+        private function showPopUp():void {
+            //strokeColor.color = 0xe3bd8b;
+            submenuPopUp.displayPopUp = true;
+        }
+
+        private function hidePopUp():void {
+            //strokeColor.color = 0x8c7459;
+            submenuPopUp.displayPopUp = false;
+        }
+
+
+        private function showInventoryW():void {
+            hidePopUp();
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, true);
+        }
+
+        private function changeTheGame():void {
+            hidePopUp();
+        }
+
+
+        private function quitTheGame():void {
+            hidePopUp();
+        }
+        ]]>
+	</fx:Script>
+
+    <s:PopUpAnchor id="submenuPopUp"
+            >
+        <s:Group id="popUpContent"
+                 mouseOver="{ isMouseOnPopUp = true; showPopUp();}"
+                 mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"
+                 alpha="1"
+                >
+            <s:Group y="-98" x="-32">
+
+                <s:Rect width="100" height="100"
+                        radiusX="15" radiusY="15"
+                        alpha="0.8"
+                        id="subMenuBG"
+                        >
+                    <s:fill>
+                        <s:SolidColor color="0x000000"/>
+                    </s:fill>
+                </s:Rect>
+
+                <s:VGroup width="100" height="100"
+                          horizontalAlign="center" verticalAlign="middle"
+                        >
+
+                    <flexcomponents:TextButton text="Инвентарь" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="showInventoryW();"/>
+                    <flexcomponents:TextButton text="Сменить игру" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="changeTheGame();"
+                            />
+                    <flexcomponents:TextButton text="Покинуть игру" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="quitTheGame();"
+                            />
+
+                </s:VGroup>
+            </s:Group>
+
+
+        </s:Group>
+
+    </s:PopUpAnchor>
+
+
+    <flexcomponents:UnderlinedText skinClass="skins.common.UnderlineTextButtonS"
+                                   text="Меню"
+                                   textColor="0xe1b55b"
+                                   textUnderlineGap="-2"
+                                   textSize="18"
+                                   textFontFamily="mpbc"
+                                   mouseOver="{isMouseOnPreview = true; showPopUp();}"
+                                   mouseOut="{isMouseOnPreview = false; checkPopUp();}"
+            />
+
+</s:Group>

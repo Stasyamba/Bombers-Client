@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+          xmlns:slots="components.pages.global.inventory.right.equip.slots.*"
+          xmlns:equip="components.pages.global.inventory.right.equip.*"
+          creationComplete="init()"
+        >
+
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.bombers.BomberObject
+        import components.common.items.ItemType
+        import components.common.items.categories.ItemCategory
+
+        import mx.collections.ArrayCollection
+
+        [Bindable]
+        private var aursCollection:ArrayCollection = new ArrayCollection();
+
+        //			[Bindable]
+        //			private var selectedWeaponLeftHand: ItemProfileObject;
+        //			[Bindable]
+        //			private var selectedWeaponRightHand: ItemProfileObject;
+
+        private var bomberObject:BomberObject;
+
+        private function init():void {
+            // register handlers on profile changing
+
+            Context.Model.addCustomListener(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED, function(e:ContextEvent):void {
+                initContent();
+//					
+//					var rText: String = "";
+//					if(Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand == null)
+//					{
+//						rText = "null";
+//					}else
+//					{
+//						rText = Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand.toString();
+//					}
+//					mx.controls.Alert.show("left weapon is "+rText);
+
+            });
+
+            Context.Model.addCustomListener(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED, function(e:ContextEvent):void {
+                initAurs();
+            });
+        }
+
+        public function initContent():void {
+            initAurs();
+
+            leftWeapon.itemProfileObject = Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand;
+            rightWeapon.itemProfileObject = Context.Model.currentSettings.ownGameProfile.selectedWeaponRightHand;
+            //selectedWeaponLeftHand = Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand;
+            //selectedWeaponRightHand = Context.Model.currentSettings.ownGameProfile.selectedWeaponRightHand;
+
+
+            bomberObject = Context.Model.bomberManager.getBomber(Context.Model.currentSettings.ownGameProfile.currentBomberType);
+            bomberImage.source = bomberObject.viewObject.bigImageURL;
+        }
+
+        public function initAurs():void {
+            var index:int = 0;
+            aursCollection = new ArrayCollection();
+
+            for each(var a:ItemType in Context.Model.currentSettings.ownGameProfile.aursTurnedOn) {
+                if (Context.Model.itemsCategoryManager.getItemCategory(a) == ItemCategory.AURA && index < 3) {
+                    aursCollection.addItem(a);
+                    index++;
+                }
+            }
+
+            if (aursCollection.length <= 2) {
+                for (var i:int = aursCollection.length - 1; i <= 3 - aursCollection.length; i++) {
+                    aursCollection.addItem(null);
+                }
+            }
+
+            aursCollection.refresh();
+        }
+        ]]>
+	</fx:Script>
+
+    <s:HGroup verticalAlign="middle" gap="10">
+        <s:VGroup horizontalAlign="center">
+            <s:Label text="Ауры" color="0xbd9566"
+                     fontFamily="mpbc" fontSize="16"
+                    />
+            <s:Label text="(Работают во время боя)"
+                     maxWidth="73"
+                     color="0xbd9566"
+                     fontFamily="mpr" fontSize="12"
+                     textAlign="center"
+                    />
+        </s:VGroup>
+
+        <s:List dataProvider="{aursCollection}" itemRenderer="components.pages.global.inventory.right.equip.AursIR"
+                contentBackgroundAlpha="0" borderVisible="false">
+            <s:layout>
+                <s:HorizontalLayout requestedColumnCount="3" gap="10"/>
+            </s:layout>
+        </s:List>
+    </s:HGroup>
+
+    <s:HGroup verticalAlign="middle">
+        <s:VGroup>
+            <s:Label text="Осн. оружие" color="0xbd9566"
+                     fontFamily="mpbc" fontSize="16"
+                    />
+            <slots:WeaponEquipSlot id="rightWeapon"/>
+        </s:VGroup>
+
+        <s:Group width="200" height="183">
+            <mx:Image id="bomberImage"
+                      trustContent="{Context.Model.trustContent}"
+                    />
+        </s:Group>
+
+        <s:VGroup>
+            <s:Label text="Доп. оружие" color="0xbd9566"
+                     fontFamily="mpbc" fontSize="16"
+                    />
+            <slots:WeaponEquipSlot id="leftWeapon"/>
+        </s:VGroup>
+    </s:HGroup>
+
+    <equip:BomberNamePanel/>
+
+</s:VGroup>

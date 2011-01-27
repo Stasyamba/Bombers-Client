@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+        >
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.ApplicationView
+        import components.common.utils.adjustcolor.ColorMatrixObject
+        import components.common.worlds.locations.LocationType
+
+        import engine.games.GameType
+
+        private var locationType:LocationType;
+
+        public function initContent(locationType:LocationType, cmg:ColorMatrixObject, csg:ColorMatrixObject):void {
+            this.locationType = locationType;
+
+            multyGameButton.colorMatrixObject = cmg;
+            singleGameButton.colorMatrixObject = csg;
+        }
+
+        private function init():void {
+
+        }
+
+        private function singleGameButton_clickHandler(event:MouseEvent):void {
+            trace("asdfsadfasdfasdf");
+            if (locationType == LocationType.WORLD1_GRASSFIELDS) {
+                Context.gameModel.gameType = GameType.SINGLE;
+                Context.Model.windowsManager.closeAll(true);
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+                Context.gameModel.readyToCreateGame.addOnce(function ():void {
+                    Context.gameModel.createSinglePlayerGame("test");
+                })
+            }
+        }
+        ]]>
+	</fx:Script>
+    <s:VGroup>
+        <flexcomponents:PatternButton id="multyGameButton"
+                                      customLabel="В бой"
+                                      skinClass="skins.buttons.Pattern3ButtonS"
+                                      fontSize="24"
+                                      fontSizeOver="24"
+                />
+
+        <flexcomponents:PatternButton id="singleGameButton"
+                                      customLabel="Одиночная игра"
+                                      skinClass="skins.buttons.Pattern3ButtonS"
+                                      click="singleGameButton_clickHandler(event)"
+                />
+        <s:Button label="Test" click="{Context.Model.windowsManager.closeAll(true);}" />
+    </s:VGroup>
+
+</s:Group>

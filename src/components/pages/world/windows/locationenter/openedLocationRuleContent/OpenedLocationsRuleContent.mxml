@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx">
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.worlds.locations.LocationType
+        import components.common.worlds.locations.LocationViewObject
+
+        /*
+         pass data: neededLocations type = [{locationType: LocationType, isOpened: Boolean}]
+         */
+
+        [Bindable]
+        private var locationViewObject:LocationViewObject = null;
+
+        public function initContent(thisLocationType:LocationType, neededLocations:Array, allLocationsIsNessesory:Boolean = false):void {
+            // will readed only two first locations
+
+            locationViewObject = Context.Model.locationViewManager.getLocationViewObject(thisLocationType);
+
+
+            if (neededLocations.length != 0) {
+                var firstPreview:LocationPreview;
+                var secondPreview:LocationPreview;
+
+                if (neededLocations.length == 1) {
+                    firstPreview = new LocationPreview();
+                    firstPreview.initContent(neededLocations[0].locationType, neededLocations[0].isOpened, locationViewObject.previewTextColor);
+
+                    locationsPreviewGroup.addElement(firstPreview);
+                } else {
+                    firstPreview = new LocationPreview();
+                    firstPreview.initContent(neededLocations[0].locationType, neededLocations[0].isOpened, locationViewObject.previewTextColor);
+
+                    secondPreview = new LocationPreview();
+                    secondPreview.initContent(neededLocations[1].locationType, neededLocations[1].isOpened, locationViewObject.previewTextColor);
+
+                    var label:Label = new Label();
+                    label.setStyle("color", locationViewObject.previewTextColor);
+                    label.setStyle("fontFamily", "mpbc");
+
+
+                    if (allLocationsIsNessesory) {
+                        label.text = "";
+                        label.setStyle("fontSize", 36);
+                    } else {
+                        label.text = "ИЛИ";
+                        label.setStyle("fontSize", 24);
+                    }
+
+                    locationsPreviewGroup.addElement(firstPreview);
+                    locationsPreviewGroup.addElement(label);
+                    locationsPreviewGroup.addElement(secondPreview);
+                }
+
+
+            }
+        }
+        ]]>
+	</fx:Script>
+
+    <s:VGroup horizontalAlign="center" gap="15">
+        <s:Label text="Необходимо открыть локации:"
+                 fontFamily="mpbc" fontSize="22"
+                 color="{locationViewObject.previewTextColor}"
+                />
+
+        <s:HGroup id="locationsPreviewGroup"
+                  width="100%" height="100%"
+                  verticalAlign="middle" horizontalAlign="center"
+                  gap="25">
+
+        </s:HGroup>
+
+    </s:VGroup>
+
+</s:Group>

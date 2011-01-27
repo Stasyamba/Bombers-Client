@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:flexcomponents="components.common.flexcomponents.*">
+
+
+    <fx:Declarations>
+
+        <s:Animate id="apearingA" target="{this}" duration="600"
+                   effectStart="{this.alpha = 0;}"
+                >
+            <s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1.0"/>
+        </s:Animate>
+
+        <s:Animate id="disapearingA" target="{this}" duration="600"
+                >
+            <s:SimpleMotionPath property="alpha" valueFrom="1" valueTo="0.0"/>
+        </s:Animate>
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemObject
+        import components.common.items.ItemProfileObject
+        import components.common.items.ItemViewObject
+        import components.pages.global.inventory.InventoryW
+
+        private var itemProfileObject:ItemProfileObject = null;
+
+        [Bindable]
+        private var itemViewObject:ItemViewObject = null;
+
+        /* popup section */
+        private var isMouseOnPopUp:Boolean = false;
+        private var isMouseOnPreview:Boolean = false;
+
+        private function checkPopUp():void {
+            if (!isMouseOnPreview && !isMouseOnPopUp) {
+                hidePopUp();
+            }
+        }
+
+        private function showPopUp():void {
+            submenuPopUp.displayPopUp = true;
+        }
+
+        private function hidePopUp():void {
+            submenuPopUp.displayPopUp = false;
+        }
+
+        public function initContent(itemProfileObjectP:ItemProfileObject):void {
+            itemProfileObject = itemProfileObjectP;
+
+            var itemObject:ItemObject = Context.Model.itemsManager.getItem(itemProfileObject.itemType);
+            itemViewObject = itemObject.viewObject;
+
+            apearingA.play();
+        }
+
+        public function auraOn():void {
+            hidePopUp();
+
+//				var isAuraAlreadyOn: Boolean = false;
+//				for each(var it: ItemType in Context.Model.currentSettings.ownGameProfile.aursTurnedOn)
+//				{
+//					if(itemViewObject.type == it)
+//					{
+//						isAuraAlreadyOn = true;
+//					}
+//				}
+//				
+//				if(isAuraAlreadyOn)
+//				{
+//					Context.Model.dispatchCustomEvent(
+//						ContextEvent.IM_RIGHT_CONTENT_WARNING, 
+//						"Эта аура уже включена и работает на вас. Чтобы ее выключить и осободить слот, в разделе мой бомбер" +
+//						" наведите мышку на ауру и выберите пункт 'Выключить'."
+//					);
+//				}else
+//				{
+//					Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
+//				}
+
+            Context.Model.currentSettings.ownGameProfile.setAura(null, itemProfileObject.itemType);
+        }
+
+        private function auraInfo():void {
+            Context.Model.dispatchCustomEvent(
+                    ContextEvent.IM_RIGHT_CONTENT_INFO, itemViewObject.type
+                    );
+        }
+
+        private function deleteAura():void {
+            Context.Model.dispatchCustomEvent(
+                    ContextEvent.IM_RIGHT_CONTENT_CONFIRM,
+            {
+                message: "Вы уверены что хотите выбросить ауру из рюкзака? Оно будет безвозвратно утрачена, но освободиться лишний слот!",
+                itemType: itemViewObject.type,
+                actionType: InventoryW.ACTION_TYPE_DELETE
+            }
+                    );
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Group id="baseGroup"
+             mouseOver="{ isMouseOnPopUp = true; showPopUp();}"
+             mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"
+            >
+        <s:BitmapImage id="bgImage" source="@Embed(source='assets/windows/global/inventory/auraBG.png')"/>
+
+        <s:HGroup width="{bgImage.width}" height="{bgImage.height}"
+                  horizontalAlign="center" verticalAlign="middle"
+                  paddingTop="10"
+                >
+            <s:Rect id="bgRect" width="24" height="24">
+                <s:fill>
+                    <s:SolidColor color="0x000000"/>
+                </s:fill>
+                <s:stroke>
+                    <s:SolidColorStroke color="0x955b28" weight="2"/>
+                </s:stroke>
+            </s:Rect>
+        </s:HGroup>
+
+
+        <s:HGroup width="{bgImage.width}"
+                  horizontalAlign="center"
+                  id="imageGroup"
+                  y="{bgRect.y + bgRect.height - imageGroup.height - 3}"
+                >
+            <mx:Image source="{itemViewObject.smallImageURL}"
+                      trustContent="{Context.Model.trustContent}"
+                    />
+        </s:HGroup>
+    </s:Group>
+
+
+    <s:PopUpAnchor id="submenuPopUp"
+            >
+        <s:Group id="popUpContent"
+                 mouseOver="{ isMouseOnPopUp = true; showPopUp();}"
+                 mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"
+                 alpha="1"
+
+                >
+            <s:Group
+                    y="-30" x="40">
+                <s:BitmapImage id="subMenuBG"
+                               source="@Embed(source='assets/windows/global/inventory/subMenuBG.png')"
+                        />
+
+                <s:VGroup width="{subMenuBG.width}" height="{subMenuBG.height}"
+                          horizontalAlign="left" verticalAlign="middle"
+                          paddingLeft="36"
+                        >
+                    <flexcomponents:TextButton text="Включить" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="auraOn();"
+                            />
+                    <flexcomponents:TextButton text="Аура" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="auraInfo();"
+                            />
+
+                    <flexcomponents:TextButton text="Выбросить" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="deleteAura();"
+                            />
+
+                </s:VGroup>
+            </s:Group>
+
+
+        </s:Group>
+
+    </s:PopUpAnchor>
+
+</s:Group>

@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:flexcomponents="components.common.flexcomponents.*"
+        >
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+        <s:Animate id="showWeaponImageA" target="{weaponImage}" duration="400">
+            <s:SimpleMotionPath property="alpha" valueFrom="0" valueTo="1.0"/>
+        </s:Animate>
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemProfileObject
+
+        private var _itemProfileObject:ItemProfileObject = null;
+
+        [Bindable]
+        private var itemCountStringView:String = "0";
+
+        /* popup section */
+        private var isMouseOnPopUp:Boolean = false;
+        private var isMouseOnPreview:Boolean = false;
+
+        private function checkPopUp():void {
+            if (!isMouseOnPreview && !isMouseOnPopUp) {
+                hidePopUp();
+            }
+        }
+
+        private function showPopUp():void {
+            if (_itemProfileObject != null) {
+                if (!Context.Model.itemsCategoryManager.isBombBase(_itemProfileObject.itemType)) {
+                    submenuPopUp.displayPopUp = true;
+                }
+            }
+        }
+
+        private function hidePopUp():void {
+            submenuPopUp.displayPopUp = false;
+        }
+
+
+        public function set itemProfileObject(value:ItemProfileObject):void {
+            _itemProfileObject = value;
+
+            if (value != null) {
+
+                weaponImage.source = Context.Model.itemsManager.getItem(_itemProfileObject.itemType).viewObject.smallImageURL;
+
+                if (_itemProfileObject.itemCount < 0) {
+                    itemCountStringView = "Б";
+                    bgCountRectColor.color = 0x00ff00;
+                } else {
+                    itemCountStringView = _itemProfileObject.itemCount.toString();
+                }
+
+
+                //countGroup.visible = true;
+                baseContentGroup.visible = true;
+                //baseBGRect.visible = true;
+
+            } else {
+                weaponImage.source = "";
+
+                //countGroup.visible = false;
+                baseContentGroup.visible = false;
+                //baseBGRect.visible = false;
+
+                itemCountStringView = "";
+            }
+
+        }
+
+        private function weaponInfo():void {
+            hidePopUp();
+            Context.Model.dispatchCustomEvent(
+                    ContextEvent.IM_RIGHT_CONTENT_INFO, _itemProfileObject.itemType
+                    );
+        }
+
+
+        private function deleteWeapon():void {
+            hidePopUp();
+
+            // immitation
+
+//				Context.Model.dispatchCustomEvent(
+//					ContextEvent.IM_SERVERREQUEST, true
+//				);
+
+            Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand = null;
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Group id="baseGroup"
+             mouseOver="{ isMouseOnPopUp = true; showPopUp();}"
+             mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"
+            >
+        <s:BitmapImage id="bgImage" source="@Embed(source='assets/windows/global/inventory/auraSlotBG.jpg')"/>
+        <s:HGroup width="{bgImage.width}" height="{bgImage.height}"
+                  horizontalAlign="center" verticalAlign="middle">
+
+            <s:Group id="baseContentGroup">
+                <s:Rect width="43" height="43"
+                        id="baseBGRect">
+                    <s:fill>
+                        <s:SolidColor color="0x000000"/>
+                    </s:fill>
+                    <s:stroke>
+                        <s:SolidColorStroke color="0x8c7459" weight="1"/>
+                    </s:stroke>
+                </s:Rect>
+
+
+                <s:HGroup width="43" height="43"
+                          horizontalAlign="center" verticalAlign="middle"
+                        >
+                    <mx:Image id="weaponImage"
+                              smoothBitmapContent="true"
+                              scaleX="1" scaleY="1"
+                              trustContent="{Context.Model.trustContent}"
+                              complete="{showWeaponImageA.play();}"
+                            />
+                </s:HGroup>
+
+                <s:Group alpha="0.7"
+                         id="countGroup"
+                         x="{43 - bgCountRect.width/2}" y="{-bgCountRect.height/2 + 3}"
+                        >
+                    <s:Rect id="bgCountRect"
+                            width="{countLabel.width + 4}" height="13"
+                            minWidth="10" minHeight="13"
+                            radiusX="2" radiusY="2"
+                            >
+                        <s:fill>
+                            <s:SolidColor id="bgCountRectColor" color="0xffffff"/>
+                        </s:fill>
+                    </s:Rect>
+
+                    <s:Label id="countLabel"
+                             x="2" y="2"
+                             text="{itemCountStringView}"
+                             color="0x000000" fontFamily="mpr" fontSize="10"
+                            />
+
+                </s:Group>
+            </s:Group>
+
+        </s:HGroup>
+    </s:Group>
+
+    <s:PopUpAnchor id="submenuPopUp"
+            >
+        <s:Group id="popUpContent"
+                 mouseOver="{ isMouseOnPopUp = true; showPopUp();}"
+                 mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"
+                 alpha="1"
+
+                >
+            <s:Group
+                    y="-10" x="-115">
+                <s:BitmapImage id="subMenuBG"
+                               source="@Embed(source='assets/windows/global/inventory/subMenuRightBG.png')"
+                        />
+
+                <s:VGroup width="{subMenuBG.width}" height="{subMenuBG.height}"
+                          horizontalAlign="left" verticalAlign="middle"
+                          paddingLeft="29"
+                        >
+
+                    <flexcomponents:TextButton text="Сменить" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="deleteWeapon();"
+                            />
+                    <flexcomponents:TextButton text="Докупить" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="weaponInfo();"
+                            />
+
+                </s:VGroup>
+            </s:Group>
+
+
+        </s:Group>
+
+    </s:PopUpAnchor>
+
+</s:Group>

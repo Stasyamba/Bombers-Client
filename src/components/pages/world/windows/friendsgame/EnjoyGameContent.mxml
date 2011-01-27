@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         width="734"
+         xmlns:flexcomponents="components.common.flexcomponents.*">
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        public function setStartFocus():void {
+            gameNameTextInput.setFocus();
+        }
+
+        private function tryToEnjoyGame():void {
+            Context.Model.dispatchCustomEvent(
+                    ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
+            {
+                text: "Игры с таким названием вообще нету! Не выдумывайте =)",
+                type: TypeGameToggle.TOGGLE_STATE_ENJOY
+            });
+        }
+        ]]>
+	</fx:Script>
+
+    <s:VGroup width="100%"
+              horizontalAlign="center"
+              gap="20">
+
+        <s:Label text="Присоединиться к игре, которую уже создали ваши друзья."
+                 fontSize="18" fontFamily="mpbc"
+                 color="0xffffff"
+                />
+
+
+        <s:HGroup gap="40">
+            <s:Group>
+                <s:HGroup verticalAlign="middle"
+                          gap="10">
+                    <s:Label text="Введите имя игры:"
+                             fontSize="24" fontFamily="mpbc"
+                             color="0xffffff"
+                            />
+                    <s:TextInput id="gameNameTextInput" borderVisible="true" fontSize="24" fontFamily="mpr"
+                                 width="191" borderColor="0xe1e3de"
+                                 focusSkin="skins.common.NoFocusS"/>
+                </s:HGroup>
+
+                <s:HGroup gap="0" x="0" y="40">
+                    <s:Label color="0xe2cf3e"
+                             fontFamily="mpbc" fontSize="24"
+                             text="*"
+                            />
+                    <s:Label color="0xe2cf3e"
+                             fontFamily="mpbc" fontSize="15"
+                             text="Только английские буквы (от 4 до 9 символов)"
+                            />
+                </s:HGroup>
+
+            </s:Group>
+
+            <s:Group>
+                <s:HGroup verticalAlign="middle"
+                          gap="10">
+                    <s:Label text="Пароль:"
+                             fontSize="24" fontFamily="mpbc"
+                             color="0xffffff"
+                            />
+                    <s:TextInput borderVisible="true" fontSize="24" fontFamily="mpr"
+                                 width="191" borderColor="0xe1e3de"
+                                 focusSkin="skins.common.NoFocusS"/>
+                </s:HGroup>
+
+                <s:HGroup gap="0" x="0" y="40">
+                    <s:Label color="0xe2cf3e"
+                             fontFamily="mpbc" fontSize="24"
+                             text="*"
+                            />
+                    <s:Label color="0xe2cf3e"
+                             fontFamily="mpbc" fontSize="15"
+                             width="250"
+                             text="Какой пароль поставили ваши друзья? Если пароля нет, оставьте поле пустым"
+                            />
+                </s:HGroup>
+            </s:Group>
+
+        </s:HGroup>
+
+        <s:HGroup paddingTop="0">
+
+            <flexcomponents:PatternButton
+                    skinClass="skins.buttons.Pattern3ButtonS"
+                    customLabel="Погнали"
+                    fontSize="24"
+                    fontSizeOver="24"
+                    click="tryToEnjoyGame();"
+                    />
+
+        </s:HGroup>
+
+    </s:VGroup>
+</s:Group>

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         width="808" height="41"
+         xmlns:toppanel="toppanel.*"
+         xmlns:resources="toppanel.resources.*"
+         xmlns:bottompanel="components.pages.world.bottompanel.*"
+         creationComplete="init();"
+        >
+    <fx:Script>
+		<![CDATA[
+        import components.ApplicationView
+        import components.pages.world.windows.friendsgame.GameWithFriendsW
+        import components.pages.world.windows.randomgame.CreatingRandomGameW
+
+        import mx.managers.PopUpManager
+
+        public static const OPEN_MARKET_TYPE:int = 0;
+        public static const OPEN_RANDOM_GAME_TYPE:int = 1;
+        public static const OPEN_FRIENDS_GAME_TYPE:int = 2;
+
+        public function bottomMenuButtonClickHandler(type:int):void {
+            switch (type) {
+                case OPEN_MARKET_TYPE:
+                    showInventoryMarket();
+                    setButtonsEnabled(false);
+                    break;
+
+                case OPEN_RANDOM_GAME_TYPE:
+                    //showRandomGameCreating();
+                    //setButtonsEnabled(false);
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+                    break;
+
+                case OPEN_FRIENDS_GAME_TYPE:
+                    showFriendsPopUp();
+                    setButtonsEnabled(false);
+                    break;
+            }
+
+
+        }
+
+        public function showFriendsPopUp():void {
+            var fw:GameWithFriendsW = new GameWithFriendsW();
+            fw.x = 20;
+            fw.y = 50;
+
+            PopUpManager.addPopUp(fw, this, true);
+        }
+
+        private function showInventoryMarket():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, false);
+        }
+
+        public function showRandomGameCreating():void {
+            showWarningWrapper(
+                    CreatingRandomGameW.PRELOADER_TYPE,
+                    "Ищем вам подходящую игру",
+                    "Я деловой человек, и не буду больше ждать ответа от сервера, какая бы классная ни была эта игра!"
+                    );
+        }
+
+        public function showWarningWrapper(type:int, message:String, closeMessage:String):void {
+            var ww:CreatingRandomGameW = new CreatingRandomGameW();
+            ww.x = 150;
+            ww.y = 163;
+
+            switch (type) {
+                case CreatingRandomGameW.PRELOADER_TYPE:
+                    ww.isPreloader = true;
+                    break;
+                case CreatingRandomGameW.WARNING_TYPE:
+                    ww.isPreloader = false;
+                    break;
+            }
+
+            ww.warningText = message;
+            ww.closeText = closeMessage;
+
+            PopUpManager.addPopUp(ww, this, true);
+        }
+
+        private function init():void {
+            if (!Context.Model.hasCustomListener(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY)) {
+                Context.Model.addCustomListener(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY, function (e:ContextEvent):void {
+                    setButtonsEnabled(e.data);
+                });
+            }
+        }
+
+        public function setButtonsEnabled(enabled:Boolean):void {
+            inventoryMarketButton.setEnabled(enabled);
+            killFriendsButton.setEnabled(enabled);
+            randomGameButton.setEnabled(enabled);
+        }
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+
+    <s:BitmapImage source="@Embed(source='assets/pageworld/bottompanel/common/bottomPanelBG.jpg')"
+                   width="808" height="41"
+            >
+        <s:filters>
+            <s:DropShadowFilter distance="1"
+                                alpha="0.85"
+                                angle="-90"
+                                blurY="5"
+                    />
+        </s:filters>
+
+    </s:BitmapImage>
+
+    <s:HGroup width="100%" height="100%"
+              verticalAlign="middle" horizontalAlign="right"
+              paddingRight="20">
+
+        <bottompanel:MarketButton id="inventoryMarketButton" click="bottomMenuButtonClickHandler(OPEN_MARKET_TYPE);"/>
+        <bottompanel:KillFriendsButton id="killFriendsButton"
+                                       click="bottomMenuButtonClickHandler(OPEN_FRIENDS_GAME_TYPE);"/>
+        <bottompanel:RandomGameButton id="randomGameButton"
+                                      click="bottomMenuButtonClickHandler(OPEN_RANDOM_GAME_TYPE);"/>
+
+    </s:HGroup>
+
+</s:Group>

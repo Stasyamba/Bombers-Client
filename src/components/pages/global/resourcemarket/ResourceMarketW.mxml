@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:mx1="library://ns.adobe.com/flex/halo"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:fx="http://ns.adobe.com/mxml/2009"
+         creationComplete="panelCreationComplete();"
+         borderVisible="false"
+         dropShadowVisible="false"
+         skinClass="skins.common.EmptyPopUpS"
+         xmlns:healingcore="components.healingcore.*"
+         xmlns:gamewithfriends="windows.gamescreen.gamewithfriends.*"
+         xmlns:common="common.*"
+         xmlns:friendsgame="components.pages.world.windows.friendsgame.*"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         xmlns:preloaders="components.common.utils.preloaders.*"
+         xmlns:resourcemarket="components.pages.global.resourcemarket.*"
+         width="715" height="416"
+        >
+    <fx:Script>
+		<![CDATA[
+        import components.common.utils.adjustcolor.ColorMatrixObject
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+
+
+        <s:Animate id="disapearingAnimation" target="{this}" duration="300"
+                   effectEnd="{close();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="1"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingAnimation" target="{this}" duration="1200">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+        <s:Animate id="describeCostLabelApearingAnimation" target="{describeCostLabel}" duration="600">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.resources.ResourcePrice
+        import components.common.resources.ResourceType
+        import components.common.resources.resourcemarket.ResourcePriceToolTip
+
+        import mx.controls.Alert
+        import mx.managers.PopUpManager
+
+        [Bindable]
+        public var rp:ResourcePrice = new ResourcePrice(0, 0, 0, 0);
+
+        [Bindable]
+        public var costText:String = "";
+        [Bindable]
+        public var describeCostText:String = "";
+
+
+        private function close():void {
+            PopUpManager.removePopUp(this);
+        }
+
+        private function closeWrapper():void {
+            disapearingAnimation.play();
+        }
+
+        private function panelCreationComplete():void {
+            apearingAnimation.play();
+        }
+
+        private function resourceValueChanged(e:ContextEvent):void {
+            rp.setResourceValue(e.data.resourceType, e.data.value);
+
+            //price = Market.getPrice(rp) = immitation now:
+            var price:int = rp.gold.value + rp.adamant.value + rp.crystals.value + rp.antimatter.value;
+            costText = ResourcePriceToolTip.getToolTipCost(price);
+
+
+            var describeCostTextNew:String = ResourcePriceToolTip.getToolTipDescibe(price);
+            if (describeCostTextNew != describeCostText) {
+                describeCostText = describeCostTextNew;
+                describeCostLabelApearingAnimation.play();
+            }
+
+        }
+
+        private function buyProgressVisible(visible:Boolean):void {
+            buyButton.visible = !visible;
+            buyPreloader.visible = visible;
+        }
+
+        public function test():void {
+            Alert.show(rp.toString());
+            buyProgressVisible(true);
+        }
+        ]]>
+	</fx:Script>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+
+    <s:Rect width="715" height="416"
+            radiusX="35" radiusY="35">
+        <s:fill>
+            <s:SolidColor color="0x000000"/>
+        </s:fill>
+    </s:Rect>
+
+
+    <s:Group id="topGroup"
+             width="715" height="54"
+            >
+
+        <s:BitmapImage source="@Embed(source='assets/windows/global/resourcemarket/resourceMarketTopBG.png')"/>
+
+        <s:HGroup width="715" height="54"
+                  verticalAlign="middle" horizontalAlign="center"
+                >
+
+            <s:Label text="Это рынок, здесь вы можете купить ресурсы:"
+                     fontSize="24" fontFamily="mpbc" color="0xffffff"
+                    />
+
+
+        </s:HGroup>
+    </s:Group>
+
+    <flexcomponents:CloseButton
+            skinClass="skins.buttons.CloseButtonOriginS"
+            scale="1"
+            click="closeWrapper();"
+            x="648" y="5"
+            hueShift="60"
+            />
+
+
+    <s:Group id="resourceScrollerGroup"
+             y="54" width="715" height="100%"
+            >
+
+        <s:Rect width="715" height="200">
+            <s:fill>
+                <s:SolidColor color="0x2d2523"/>
+            </s:fill>
+        </s:Rect>
+
+        <s:VGroup width="100%" height="200">
+            <s:VGroup width="100%" height="200"
+                      horizontalAlign="center" verticalAlign="middle"
+                    >
+                <resourcemarket:ResourceScrollerTemplate resourceType="{ResourceType.GOLD}" value="@{rp.gold.value}"
+                                                         resourceValueChanged="resourceValueChanged(event);"
+                        />
+                <resourcemarket:ResourceScrollerTemplate resourceType="{ResourceType.CRYSTALS}"
+                                                         value="@{rp.crystals.value}"
+                                                         resourceValueChanged="resourceValueChanged(event);"
+                        />
+                <resourcemarket:ResourceScrollerTemplate resourceType="{ResourceType.ADAMANT}"
+                                                         value="@{rp.adamant.value}"
+                                                         resourceValueChanged="resourceValueChanged(event);"
+                        />
+                <resourcemarket:ResourceScrollerTemplate resourceType="{ResourceType.ANTIMATTER}"
+                                                         value="@{rp.antimatter.value}"
+                                                         resourceValueChanged="resourceValueChanged(event);"
+                        />
+            </s:VGroup>
+
+            <s:HGroup width="715" height="160"
+                      paddingTop="-15"
+                      verticalAlign="middle" horizontalAlign="center"
+                      gap="25">
+
+                <s:BitmapImage source="@Embed(source='assets/windows/global/resourcemarket/speaker.png')"/>
+                <s:VGroup gap="8" verticalAlign="top"
+                          height="130" paddingTop="10">
+
+                    <s:Label color="0xffffff" fontSize="24"
+                             fontFamily="mpbc"
+                             text="{costText}"/>
+                    <s:Label id="describeCostLabel"
+                             width="307" color="0xffffff" fontSize="14"
+                             fontFamily="mpr" textAlign="left"
+                             text="{describeCostText}"
+                            />
+
+                </s:VGroup>
+
+                <s:Group>
+                    <flexcomponents:PatternButton id="buyButton"
+                                                  customLabel="Купить"
+                                                  skinClass="skins.buttons.Pattern3ButtonS"
+                                                  fontSize="24" fontSizeOver="24"
+                                                  colorMatrixObject="{new ColorMatrixObject(0, 0.6)}"
+                                                  visible="true"
+                                                  click="test();"
+                            />
+
+                    <!-- hueShift="0" saturationShift="0.6" -->
+
+                    <s:VGroup id="buyPreloader"
+                              visible="false"
+                              horizontalAlign="center"
+                              width="{buyButton.width}" height="{buyButton.height}"
+                              gap="10"
+                            >
+                        <preloaders:Spinner tickColor="0xffffff"/>
+                        <s:Label text="Идет покупка"
+                                 fontFamily="mpbc" fontSize="14" color="0xffffff"/>
+                    </s:VGroup>
+                </s:Group>
+            </s:HGroup>
+        </s:VGroup>
+
+
+    </s:Group>
+
+
+    <s:controlBarContent/>
+</s:Panel>

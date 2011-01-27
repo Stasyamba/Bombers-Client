@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Button xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+          useHandCursor="true" buttonMode="true"
+        >
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.utils.adjustcolor.ColorMatrixObject
+
+        public static const TYPE_NONE:int = -1;
+        public static const TYPE_BUY_TOPMENU:int = 0;
+        public static const TYPE_BUY_MARKET:int = 1;
+
+        private var _type:int = TYPE_NONE;
+
+        public var customLabel:String = "Label";
+
+        public var fontSize:int = 20;
+        public var fontSizeOver:int = 20;
+        public var fontFamily:String = "mpbc"
+        public var fontColor:uint = 0xffffff;
+
+        public var colorMatrixObject:ColorMatrixObject = new ColorMatrixObject();
+
+        public var scale:Number = 1;
+
+        //public var hueShift: int = 0;
+        //public var saturationShift: Number = 1;
+
+        public function get type():int {
+            return _type;
+        }
+
+        public function set type(value:int):void {
+            _type = value;
+
+            // set all params by type
+        }
+        ]]>
+	</fx:Script>
+
+
+</s:Button>

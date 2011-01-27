@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://blog.flexexamples.com/2009/07/28/displaying-icons-in-a-spark-buttonbar-control-in-flex-4/ -->
+<s:SparkSkin name="MoreUserButtonSkin"
+             xmlns:fx="http://ns.adobe.com/mxml/2009"
+             xmlns:s="library://ns.adobe.com/flex/spark"
+             xmlns:mx="library://ns.adobe.com/flex/mx"
+             minWidth="21" minHeight="21"
+             creationComplete="init();"
+        >
+
+    <!-- states -->
+    <s:states>
+        <s:State name="up"/>
+        <s:State name="over"/>
+        <s:State name="down"/>
+        <s:State name="disabled"/>
+    </s:states>
+
+    <!-- host component -->
+    <fx:Metadata>
+		<![CDATA[
+        [HostComponent("components.common.flexcomponents.CloseButton")]
+        ]]>
+	</fx:Metadata>
+
+    <s:transitions>
+
+        <s:Transition toState="over">
+            <s:Fade target="{closeImageOver}" alphaFrom="0" alphaTo="1" duration="200"/>
+        </s:Transition>
+
+
+        <s:Transition toState="up">
+            <s:Fade target="{closeImageOver}" alphaFrom="1" alphaTo="0" duration="200"/>
+        </s:Transition>
+
+    </s:transitions>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.flexcomponents.CloseButton
+        import components.common.utils.adjustcolor.ColorMatrix
+
+        /* Define the skin elements that should not be colorized.
+         For toggle button, the graphics are colorized but the label is not. */
+        static private const exclusions:Array = [];
+
+        override public function get colorizeExclusions():Array {
+            return exclusions;
+        }
+
+        [Bindable]
+        private var scale:Number = 1;
+
+        // may be need color matrix filter
+
+        private function init():void {
+            switch (hostComponent.type) {
+                case CloseButton.TYPE_GAME_WITH_FRIEND_WINDOW:
+                    break;
+                default:
+                    scale = hostComponent.scale;
+                    break;
+            }
+
+
+            var cm:ColorMatrix = new ColorMatrix();
+            cm.adjustHue(hostComponent.hueShift);
+            cm.adjustSaturation(hostComponent.saturationShift);
+            imagesGroup.filters = [cm.filter];
+
+        }
+        ]]>
+	</fx:Script>
+
+
+    <s:Group id="imagesGroup">
+        <s:BitmapImage id="closeImage"
+                       scaleX="{scale}" scaleY="{scale}"
+                       source="@Embed(source='assets/commonbuttons/closeButtonBlack.png')"
+                       smooth="true"
+                />
+
+        <s:BitmapImage id="closeImageOver"
+                       scaleX="{scale}" scaleY="{scale}"
+                       source="@Embed(source='assets/commonbuttons/closeButtonBlackOver.png')"
+                       smooth="true"
+                       alpha="0"
+                />
+    </s:Group>
+
+    <s:Label id="labelDisplay"
+             visible="false"
+            />
+
+
+</s:SparkSkin>

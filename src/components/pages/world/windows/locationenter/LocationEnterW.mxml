@@ -1,0 +1,336 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:mx1="library://ns.adobe.com/flex/halo"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:fx="http://ns.adobe.com/mxml/2009"
+         creationComplete="panelCreationComplete();"
+         borderVisible="false"
+         dropShadowVisible="false"
+         skinClass="skins.common.EmptyPopUpS"
+         width="535" height="350"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         implements="components.common.base.window.IWindow" xmlns:preloaders="components.common.utils.preloaders.*"
+        >
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+
+        <s:Sequence id="disapearingAnimation" effectEnd="{close();}">
+            <s:Animate target="{this}" duration="500">
+                <s:SimpleMotionPath property="x"
+                                    valueFrom="100"
+                                    valueTo="800"
+                        />
+            </s:Animate>
+        </s:Sequence>
+
+        <s:Sequence id="apearingAnimation">
+            <s:Animate target="{this}" duration="750">
+                <s:SimpleMotionPath property="x"
+                                    valueFrom="800" valueTo="50"
+                        />
+            </s:Animate>
+            <s:Animate target="{this}" duration="200">
+                <s:SimpleMotionPath property="x"
+                                    valueFrom="50" valueTo="140"
+                        />
+            </s:Animate>
+        </s:Sequence>
+
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.base.access.AccessManager
+        import components.common.base.access.rules.AccessRuleObject
+        import components.common.base.access.rules.AccessRuleType
+        import components.common.base.access.rules.IAccessRule
+        import components.common.base.access.rules.itemrule.AccessItemRule
+        import components.common.base.access.rules.levelrule.AccessLevelRule
+        import components.common.base.access.rules.locationrule.AccessOpenedLocationsRule
+        import components.common.items.ItemProfileObject
+        import components.common.items.ItemType
+        import components.common.worlds.locations.LocationType
+        import components.common.worlds.locations.LocationViewObject
+        import components.pages.world.windows.locationenter.openedLocationRuleContent.OpenedLocationsRuleContent
+        import components.pages.world.windows.locationenter.otherRulescontent.OtherRulesContent
+
+        import mx.controls.Alert
+        import mx.core.IVisualElement
+        import mx.managers.PopUpManager
+
+        /*   set from outside when windows is creatig   */
+        [Bindable]
+        public var locationViewObject:LocationViewObject = null;
+
+        [Bindable]
+        private var locationBG:String;
+        [Bindable]
+        private var locationBGAbove:String;
+
+
+        [Bindable]
+        private var isLocationBGVisible:Boolean = false;
+        [Bindable]
+        private var isLocationBGAboveVisible:Boolean = true;
+        [Bindable]
+        private var isLocationBGPreloaderVisible:Boolean = false;
+
+
+        public function close():void {
+            Context.Model.windowsManager.deleteWindow(this);
+            PopUpManager.removePopUp(this);
+        }
+
+        public function closeWrapper():void {
+            disapearingAnimation.play();
+        }
+
+        private function panelCreationComplete():void {
+            Context.Model.windowsManager.closeAll(true);
+            Context.Model.windowsManager.addWindow(this);
+
+            initContent();
+
+            // addlistener gameProfileChanged = initContent();
+        }
+
+        private function initContent():void {
+            if (locationViewObject != null) {
+                contentLocationActionsGroup.removeAllElements();
+
+                locationBG = locationViewObject.bgEnterURL;
+                locationBGAbove = locationViewObject.bgAboveEnterURL;
+
+                var accessObjects:Array = AccessManager.checkAccessLocation(locationViewObject.locationType);
+
+                var betaRuleDone:Boolean = true;
+                var openedLocationsRuleDone:Boolean = true;
+                var levelRuleDone:Boolean = true;
+                var itemsRuleDone:Boolean = true;
+
+
+                var betaRule:IAccessRule = null;
+                var levelRule:IAccessRule = null;
+                var itemsRule:IAccessRule = null;
+                var priceRule:IAccessRule = null;
+                var openedLocationsRule:IAccessRule = null;
+
+
+                for each(var aro:AccessRuleObject in accessObjects) {
+                    switch (aro.accessRule.getAccessRuleType()) {
+                        case AccessRuleType.BETA_RULE:
+                            betaRuleDone = aro.isSuccess;
+                            betaRule = aro.accessRule;
+                            break;
+                        case AccessRuleType.LEVEL_RULE:
+                            levelRuleDone = aro.isSuccess;
+                            levelRule = aro.accessRule;
+                            break;
+                        case AccessRuleType.OPENED_LOCATIONS_RULE:
+                            openedLocationsRuleDone = aro.isSuccess;
+                            openedLocationsRule = aro.accessRule;
+                            break;
+                        case AccessRuleType.ITEM_RULE:
+                            itemsRuleDone = aro.isSuccess;
+                            itemsRule = aro.accessRule;
+                            break;
+                    }
+                }
+
+
+                var isLocationOpenedInProfile:Boolean = false;
+                for each(var ol:LocationType in Context.Model.currentSettings.ownGameProfile.openedLocations) {
+                    if (ol == locationViewObject.locationType) {
+                        isLocationOpenedInProfile = true;
+                        break;
+                    }
+                }
+
+                //mx.controls.Alert.show(isLocationOpenedInProfile.toString());
+                /*
+
+                 we know that check access function was failed!
+                 do action in order of priority:
+                 - beta rule
+                 - opened locations rule
+                 - other rules + location is opened
+
+                 */
+
+                var content:IVisualElement = null;
+
+                if (!betaRuleDone) {
+                    content = new BetaRuleContent();
+
+                } else if (!openedLocationsRuleDone) {
+
+                    content = new OpenedLocationsRuleContent();
+
+                    var allLocationIsNess:Boolean = (openedLocationsRule as AccessOpenedLocationsRule).allLocationsIsNessesory;
+                    var nessLocations:Array = (openedLocationsRule as AccessOpenedLocationsRule).nessesoryLocations;
+
+                    var nessLocationsPassObject:Array = new Array();
+
+                    for each(var lt:LocationType in nessLocations) {
+                        var locationIsOpened:Boolean = false;
+                        for each(var ltu:LocationType in Context.Model.currentSettings.ownGameProfile.openedLocations) {
+                            if (lt == ltu) {
+                                locationIsOpened = true;
+                            }
+                        }
+
+                        nessLocationsPassObject.push({locationType: lt, isOpened: locationIsOpened});
+                    }
+
+
+                    (content as OpenedLocationsRuleContent).initContent(
+                            locationViewObject.locationType,
+                            nessLocationsPassObject,
+                            allLocationIsNess
+                            );
+
+                } else if (!isLocationOpenedInProfile || (!levelRuleDone || !itemsRuleDone)) {
+                    isLocationBGPreloaderVisible = true;
+
+
+                    var itemsNeededPassObject:Array = new Array();
+                    var isLevelRached:Boolean = false;
+                    var minimumLevel:int = -1;
+
+                    if (levelRule != null) {
+                        minimumLevel = (levelRule as AccessLevelRule).minimumLevel;
+
+                        if (minimumLevel <= Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.ownGameProfile.expirance)) {
+                            isLevelRached = true;
+                        }
+                    }
+
+                    if (itemsRule != null) {
+
+                        var itemsNeeded:Array = (itemsRule as AccessItemRule).items;
+                        var gotItem:Boolean = false;
+
+                        for each(var it:ItemType in itemsNeeded) {
+                            for each(var git:ItemProfileObject in Context.Model.currentSettings.ownGameProfile.packItems) {
+                                if (it == git.itemType) {
+                                    gotItem = true;
+                                }
+                            }
+
+                            itemsNeededPassObject.push({itemType: it, isGot: gotItem});
+                        }
+                    }
+
+                    content = new OtherRulesContent();
+
+                    (content as OtherRulesContent).initContent(
+                            locationViewObject.locationType,
+                            minimumLevel,
+                            isLevelRached,
+                            itemsNeededPassObject,
+                            locationViewObject.cmoSinglePlayerButton
+                            );
+
+                    isLocationBGVisible = true;
+                } else {
+                    isLocationBGPreloaderVisible = true;
+
+                    content = new LocationIsOpenedContent();
+
+                    (content as LocationIsOpenedContent).initContent(
+                            locationViewObject.locationType,
+                            locationViewObject.cmoMultyPlayerButton,
+                            locationViewObject.cmoSinglePlayerButton
+                            );
+
+                    isLocationBGVisible = true;
+                }
+
+
+                if (content != null) {
+                    contentLocationActionsGroup.addElement(content);
+                }
+
+                apearingAnimation.play();
+            } else {
+                Alert.show("Error = try to open without content");
+                close();
+            }
+        }
+        ]]>
+	</fx:Script>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+
+    <s:BitmapImage id="mainBG" source="@Embed(source='assets/pageworld/worlds/locationenter/bg.png')"/>
+
+    <s:BitmapImage x="{mainBG.width}" y="81"
+                   source="@Embed(source='assets/pageworld/worlds/locationenter/zebraLineBG.png')"/>
+    <s:BitmapImage x="{mainBG.width}" y="236"
+                   source="@Embed(source='assets/pageworld/worlds/locationenter/zebraLineBG.png')"/>
+
+    <flexcomponents:CloseButton x="17" y="17"
+                                skinClass="skins.buttons.CloseButtonOriginS"
+                                hueShift="37"
+                                scale="0.8"
+                                saturationShift="1"
+                                click="closeWrapper();"
+            />
+
+    <s:VGroup width="100%"
+              horizontalAlign="center"
+              paddingTop="20"
+              paddingLeft="20" paddingRight="20"
+              gap="15">
+        <s:Label text="{locationViewObject.name}"
+                 fontFamily="mpbc" fontSize="24"
+                 color="0xd1d1d1"
+                />
+
+        <s:HGroup width="100%" horizontalAlign="center">
+            <s:Label text="{locationViewObject.describe}" textAlign="center"
+                     fontFamily="mpr" fontSize="14"
+                     color="0xd1d1d1"
+                     maxWidth="497"
+                    />
+        </s:HGroup>
+
+    </s:VGroup>
+
+    <s:HGroup id="bgPreloaderGroup"
+              y="101" x="20"
+              visible="{isLocationBGPreloaderVisible}"
+            >
+        <preloaders:Spinner tickColor="0xffffff"/>
+        <s:Label text="Загрузка"
+                 fontFamily="mpbc" fontSize="18"
+                 color="0xffffff"/>
+    </s:HGroup>
+
+    <mx:Image complete="{isLocationBGPreloaderVisible = false;}"
+              y="101" x="20"
+              source="{locationBG}" visible="{isLocationBGVisible}"/>
+
+    <mx:Image complete="{isLocationBGPreloaderVisible = false;}"
+              y="101" x="20"
+              source="{locationBGAbove}" visible="{isLocationBGAboveVisible}"/>
+
+
+    <s:HGroup id="contentLocationActionsGroup"
+              y="101" x="20"
+              width="488" height="228"
+              horizontalAlign="center" verticalAlign="middle"
+            >
+
+    </s:HGroup>
+
+
+    <s:controlBarContent/>
+</s:Panel>

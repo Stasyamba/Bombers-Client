@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:flexcomponents="components.common.flexcomponents.*"
+        >
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemViewObject
+
+        private var itemViewObject:ItemViewObject = null;
+
+        /* popup section */
+        private var isMouseOnPopUp:Boolean = false;
+        private var isMouseOnPreview:Boolean = false;
+
+        private function checkPopUp():void {
+            if (!isMouseOnPreview && !isMouseOnPopUp) {
+                hidePopUp();
+            }
+        }
+
+        private function showPopUp():void {
+            if (itemViewObject != null) {
+                submenuPopUp.displayPopUp = true;
+            }
+        }
+
+        private function hidePopUp():void {
+            submenuPopUp.displayPopUp = false;
+        }
+
+
+        public function initContent(itemViewObjectP:ItemViewObject):void {
+            if (itemViewObjectP != null) {
+                bgEmptyAura.visible = false;
+                itemViewObject = itemViewObjectP;
+                auraImage.source = itemViewObject.anotherImageURL;
+            }
+        }
+
+
+        private function deleteAura():void {
+            hidePopUp();
+
+            // immitation
+
+            //				Context.Model.dispatchCustomEvent(
+            //					ContextEvent.IM_SERVERREQUEST, true
+            //				);
+
+
+            Context.Model.currentSettings.ownGameProfile.setAura(itemViewObject.type, null);
+        }
+
+        private function auraInfo():void {
+            hidePopUp();
+            Context.Model.dispatchCustomEvent(
+                    ContextEvent.IM_RIGHT_CONTENT_INFO, itemViewObject.type
+                    );
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Group id="baseGroup"
+             mouseOver="{ isMouseOnPopUp = true; showPopUp();}"
+             mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"
+            >
+
+        <s:BitmapImage id="bgImage" source="@Embed(source='assets/windows/global/inventory/auraSlotBG.jpg')"/>
+        <s:BitmapImage id="bgEmptyAura" source="@Embed(source='assets/windows/global/inventory/auraSlotEmptyBG.png')"/>
+
+        <s:HGroup width="{bgImage.width}" height="{bgImage.height}"
+                  horizontalAlign="center" verticalAlign="middle">
+            <mx:Image id="auraImage"
+                      trustContent="{Context.Model.trustContent}"
+                    />
+        </s:HGroup>
+
+    </s:Group>
+
+    <s:PopUpAnchor id="submenuPopUp"
+            >
+        <s:Group id="popUpContent"
+                 mouseOver="{ isMouseOnPopUp = true; showPopUp();}"
+                 mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"
+                 alpha="1"
+
+                >
+            <s:Group
+                    y="-10" x="-115">
+                <s:BitmapImage id="subMenuBG"
+                               source="@Embed(source='assets/windows/global/inventory/subMenuRightBG.png')"
+                        />
+
+                <s:VGroup width="{subMenuBG.width}" height="{subMenuBG.height}"
+                          horizontalAlign="left" verticalAlign="middle"
+                          paddingLeft="29"
+                        >
+
+                    <flexcomponents:TextButton text="Сменить" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="deleteAura();"
+                            />
+                    <flexcomponents:TextButton text="Аура" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                                               textFontSize="16"
+                                               click="auraInfo();"
+                            />
+
+                </s:VGroup>
+            </s:Group>
+
+
+        </s:Group>
+
+    </s:PopUpAnchor>
+
+
+</s:Group>

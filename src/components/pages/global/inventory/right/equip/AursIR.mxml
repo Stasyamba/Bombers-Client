@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:mx1="http://ns.adobe.com/mxml/mx"
+                xmlns:mx="library://ns.adobe.com/flex/mx"
+                xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:s="library://ns.adobe.com/flex/spark"
+                autoDrawBackground="false"
+                useHandCursor="true" buttonMode="true"
+                width="74" height="72"
+        >
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+    <fx:Declarations>
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
+
+    <s:states>
+        <s:State name="normal"/>
+        <s:State name="hovered"/>
+        <s:State name="selected"/>
+    </s:states>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemObject
+        import components.common.items.ItemType
+        import components.pages.global.inventory.right.equip.slots.AuraEquipSlot
+
+        import mx.core.IVisualElement
+
+        private var slot:IVisualElement = null
+
+        override public function set data(value:Object):void {
+            super.data = value;
+            var aes:AuraEquipSlot = new AuraEquipSlot();
+
+            if (data != null) {
+                var itemObject:ItemObject = Context.Model.itemsManager.getItem(data as ItemType);
+                aes.initContent(itemObject.viewObject);
+            } else {
+                aes.initContent(null);
+            }
+
+            slot = aes;
+
+            slotGroup.removeAllElements();
+            slotGroup.addElement(slot);
+
+        }
+        ]]>
+	</fx:Script>
+
+    <s:HGroup id="slotGroup"
+              width="100%" height="100%"
+              horizontalAlign="center" verticalAlign="middle">
+
+    </s:HGroup>
+
+
+</s:ItemRenderer>

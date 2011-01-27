@@ -1,0 +1,19 @@
+<!--
+  ~ Copyright (c) 2010.
+  ~ Pavkin Vladimir
+  -->
+<Map>
+    <id val="TUTORIAL_1"/>
+    <name>testSingle</name>
+    <type>SINGLE</type>
+    <size width="7" height="4"/>
+    <spawns>
+        <Spawn x="0" y="0"/>
+    </spawns>
+    <rows>
+        <Row val="ffbffff"/>
+        <Row val="wfbfbbf"/>
+        <Row val="fffffbf"/>
+        <Row val="bfbbfff"/>
+    </rows>
+</Map>

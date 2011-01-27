@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:mx1="http://ns.adobe.com/mxml/mx"
+                xmlns:mx="library://ns.adobe.com/flex/mx"
+                xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:s="library://ns.adobe.com/flex/spark"
+                autoDrawBackground="false"
+        >
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+    <fx:Declarations>
+        <!--	<s:Animate id="appearingA" target="{popUpContent}" duration="300"
+          effectStart="{popUpContent.alpha = 0;namePopUp.displayPopUp = true;}"
+          effectEnd="{namePopUp.displayPopUp = true;}"
+          >
+          <s:SimpleMotionPath property="alpha" valueFrom="{popUpContent.alpha}" valueTo="1.0" />
+          </s:Animate>
+
+          <s:Animate id="disapearingA" target="{popUpContent}" duration="300"
+          effectEnd="{namePopUp.displayPopUp = false;}">
+          <s:SimpleMotionPath property="alpha" valueFrom="{popUpContent.alpha}" valueTo="0.0" />
+          </s:Animate>-->
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import mx.controls.Alert
+        ]]>
+	</fx:Script>
+
+    <s:states>
+        <s:State name="normal"/>
+        <s:State name="hovered"/>
+        <s:State name="selected"/>
+    </s:states>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemObject
+        import components.common.items.ItemType
+        import components.common.items.categories.ItemCategory
+        import components.pages.global.inventory.right.market.slots.ItemMarketSlot
+
+        import mx.core.IVisualElement
+
+        private var slot:IVisualElement = null
+
+        override public function set data(value:Object):void {
+            super.data = value;
+
+            var itemObject:ItemObject = Context.Model.itemsManager.getItem(data as ItemType);
+
+
+            if (itemObject != null) {
+                var itemCategory:ItemCategory = Context.Model.itemsCategoryManager.getItemCategory(data as ItemType);
+
+                switch (itemCategory) {
+                    case ItemCategory.AURA:
+                    case ItemCategory.QUEST_ITEM:
+                    case ItemCategory.WEAPON:
+
+                        var ws:ItemMarketSlot = new ItemMarketSlot()
+                        ws.initContent(data as ItemType);
+                        slot = ws;
+
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (slot != null) {
+                    slotGroup.removeAllElements();
+                    slotGroup.addElement(slot);
+                } else {
+                    Alert.show("Не могу создать представление для данного типа предмета ищи в ItemMarketIR.mxml");
+                }
+            } else {
+                // show error
+            }
+
+        }
+        ]]>
+	</fx:Script>
+
+    <s:HGroup id="slotGroup"
+              horizontalAlign="center" verticalAlign="middle">
+
+    </s:HGroup>
+
+
+</s:ItemRenderer>

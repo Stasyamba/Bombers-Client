@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009"
+                    xmlns:s="library://ns.adobe.com/flex/spark"
+                    xmlns:mx="library://ns.adobe.com/flex/mx"
+                    contentCreationComplete="init();"
+                    xmlns:toppanel="components.pages.world.toppanel.*"
+                    xmlns:subbottompanel="components.pages.world.subbottompanel.*"
+                    xmlns:leftpanel="components.pages.game.leftpanel.*"
+                    xmlns:bottompanel="components.pages.game.bottompanel.*"
+                    xmlns:rightpanel="components.pages.game.rightpanel.*"
+                    xmlns:game="components.pages.game.*"
+                    width="100%" height="100%"
+        >
+
+    <fx:Declarations>
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.ApplicationView
+        import components.common.game.multygameresult.GameResults
+        import components.pages.game.windows.common.PackIsPlayingW
+        import components.pages.game.windows.common.QuitTheGameW
+        import components.pages.game.windows.create.GameGreatedW
+        import components.pages.game.windows.results.ResultsW
+
+        import mx.managers.PopUpManager
+
+        private var now:int,then:int;
+
+        //temporary ui elements
+        //        private var threeSecsToStart:ThreeSecondsToStart = new ThreeSecondsToStart();
+        //        private var preGameView:GameView = new GameView();
+        //        private var gameResultsView:GameResultsView = new GameResultsView();
+        //
+        // init function
+        private function init():void {
+
+            Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function (e:ContextEvent):void {
+                if (e.data == ApplicationView.TAB_NAME_GAME) {
+                    // this tab
+                    // read game context
+                    // create game
+                    gameView.init();
+                }
+            });
+
+            Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW, function (e:ContextEvent):void {
+                showCreatedGameWindow();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_QUIT_THE_GAME_WINDOW, function (e:ContextEvent):void {
+                showQuitTheGameWindow();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_IS_PLAYING_PACK_WINDOW, function (e:ContextEvent):void {
+                showPackIsPlayingWindow();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, function (e:ContextEvent):void {
+                if (e.data != null) {
+                    if (e.data is GameResults) {
+                        showResultsWindow(e.data as GameResults);
+                    }
+                }
+            });
+        }
+
+        private function showCreatedGameWindow():void {
+            var cgw:GameGreatedW = new GameGreatedW();
+            cgw.x = 215;
+            cgw.y = 66;
+
+            PopUpManager.addPopUp(cgw, this, false);
+        }
+
+        private function showResultsWindow(gr:GameResults):void {
+            var rw:ResultsW = new ResultsW();
+            rw.gameResults = gr;
+            rw.x = 265;
+            rw.y = 86;
+
+            PopUpManager.addPopUp(rw, this, true);
+        }
+
+        private function showQuitTheGameWindow():void {
+            var qgw:QuitTheGameW = new QuitTheGameW();
+            qgw.x = 265;
+            qgw.y = 186;
+
+            PopUpManager.addPopUp(qgw, this, true);
+        }
+
+
+        private function showPackIsPlayingWindow():void {
+            var pipw:PackIsPlayingW = new PackIsPlayingW();
+            pipw.x = 265;
+            pipw.y = 186;
+
+            PopUpManager.addPopUp(pipw, this, true);
+        }
+
+        private function showConnectToGameW():void {
+
+        }
+        ]]>
+    </fx:Script>
+
+
+    <!--  
+     <s:VGroup id="group">
+         <s:BitmapImage id="background"
+                        source="{MapBlocks.MAP_GRASS()}"
+                        width="680" height="440"/>
+         <ui:ChatControl left="10" id="chat" messageSent="onSend(event)"/>
+     </s:VGroup>
+     -->
+
+    <s:Rect width="100%" height="100%">
+        <s:fill>
+            <s:SolidColor color="0x000000"/>
+        </s:fill>
+    </s:Rect>
+
+    <game:GameView id="gameView" y="{topPanel.height + 2}" x="{leftPanel.width}"/>
+
+    <toppanel:TopPanelView id="topPanel" y="0"/>
+    <subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>
+
+
+    <bottompanel:BottomPanelView y="485"/>
+    <leftpanel:LeftPanelView id="leftPanel" y="41"/>
+    <rightpanel:RightPanelView y="41" x="787"/>
+
+
+</s:NavigatorContent>

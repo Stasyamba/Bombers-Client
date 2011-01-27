@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:preloaders="components.common.utils.preloaders.*">
+
+    <fx:Declarations>
+
+        <s:Animate id="showWarningA"
+                   target="{warning}" duration="300"
+                   effectStart="{warning.alpha = 0;warning.visible = true;}">
+            <s:SimpleMotionPath property="alpha" valueFrom="{warning.alpha}" valueTo="1"/>
+        </s:Animate>
+
+
+        <s:Animate id="hideWarningA"
+                   target="{warning}" duration="300"
+                   effectEnd="{warning.visible = false;}">
+            <s:SimpleMotionPath property="alpha" valueFrom="{warning.alpha}" valueTo="0"/>
+        </s:Animate>
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        [Bindable]
+        public var textFieldBorderColor:uint = 0xffffff;
+
+        [Bindable]
+        public var textFieldBorderVisible:Boolean = false;
+
+        [Bindable]
+        public var textFieldWidth:int = 100;
+        [Bindable]
+        public var textFieldHeight:int = 20;
+
+        [Bindable]
+        public var textFieldFontFamily:String = "mpbc";
+        [Bindable]
+        public var textFieldFontSize:int = 24;
+
+
+        /* not realize yet */
+        public var needToShowCloseButton:Boolean = false;
+        public var timeToShowCloseButton:int = 5000;
+        public var closeButtonText:String = "Соединение идет слишком долго";
+
+
+        [Bindable]
+        public var warningBGColor:uint = 0x000000;
+        [Bindable]
+        public var warningTickColor:uint = 0xffffff;
+        [Bindable]
+        public var warningText:String = "";
+
+        private var _isWarning:Boolean = false;
+
+        public function get isWarning():Boolean {
+            return _isWarning;
+        }
+
+        public function setStartFocus():void {
+            textField.setFocus();
+        }
+
+        public function set isWarning(value:Boolean):void {
+            _isWarning = value;
+
+            if (!showWarningA.isPlaying && !hideWarningA.isPlaying) {
+                if (value) {
+                    showWarningA.play();
+                } else {
+                    hideWarningA.play();
+                }
+            }
+        }
+        ]]>
+	</fx:Script>
+
+    <s:TextInput id="textField"
+                 width="{textFieldWidth}" height="{textFieldHeight}"
+                 borderColor="{textFieldBorderColor}" borderVisible="{textFieldBorderVisible}"
+                 fontFamily="{textFieldFontFamily}"
+                 fontSize="{textFieldFontSize}"
+                 focusSkin="skins.common.NoFocusS"
+            />
+
+    <s:Group id="warning"
+             width="{textFieldWidth}" height="{textFieldHeight}"
+             visible="false">
+
+        <s:Rect width="100%" height="100%">
+            <s:fill>
+                <s:SolidColor color="{warningBGColor}"/>
+            </s:fill>
+        </s:Rect>
+
+        <s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+            <preloaders:Spinner tickColor="{warningTickColor}"/>
+
+            <s:Label color="{warningTickColor}" text="{warningText}"
+                     fontFamily="mpr" fontSize="{textFieldFontSize - 8}"/>
+        </s:HGroup>
+    </s:Group>
+
+
+</s:Group>

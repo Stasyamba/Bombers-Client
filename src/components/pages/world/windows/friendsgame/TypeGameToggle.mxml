@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         creationComplete="init();"
+        >
+
+    <fx:Declarations>
+
+        <s:Parallel id="changeStateToCreateA">
+            <s:Animate target="{enjoyGroup}" duration="{fadeDuration}"
+                       effectStart="{enjoyArrow.visible = false;}">
+                <s:SimpleMotionPath property="alpha" valueFrom="{enjoyGroup.alpha}" valueTo="{minAlpha}"/>
+            </s:Animate>
+            <s:Animate target="{createGroup}" duration="{fadeDuration}"
+                       effectStart="{createArrow.visible = true;}">
+                <s:SimpleMotionPath property="alpha" valueFrom="{createGroup.alpha}" valueTo="1.0"/>
+            </s:Animate>
+        </s:Parallel>
+
+
+        <s:Parallel id="changeStateToEnjoyA">
+
+            <s:Animate target="{enjoyGroup}" duration="{fadeDuration}"
+                       effectStart="{enjoyArrow.visible = true;}">
+                <s:SimpleMotionPath property="alpha" valueFrom="{enjoyGroup.alpha}" valueTo="1.0"/>
+            </s:Animate>
+            <s:Animate target="{createGroup}" duration="{fadeDuration}"
+                       effectStart="{createArrow.visible = false;}">
+                <s:SimpleMotionPath property="alpha" valueFrom="{createGroup.alpha}" valueTo="{minAlpha}"/>
+            </s:Animate>
+        </s:Parallel>
+
+
+    </fx:Declarations>
+
+    <fx:Metadata>
+        [Event(name="stateChanged", type="ContextEvent")]
+    </fx:Metadata>
+
+    <fx:Script>
+		<![CDATA[
+        public static const TOGGLE_STATE_CREATE:int = 0;
+        public static const TOGGLE_STATE_ENJOY:int = 1;
+
+        /* anitation properties */
+        [Bindable]
+        private var minAlpha:Number = 0.4;
+        [Bindable]
+        private var fadeDuration:int = 300;
+
+        private var _currentToggleState:int = -1;
+
+        public function get currentToggleState():int {
+            return _currentToggleState;
+        }
+
+        public function set currentToggleState(value:int):void {
+            if (value != _currentToggleState && (value == TOGGLE_STATE_CREATE || value == TOGGLE_STATE_ENJOY)) {
+                _currentToggleState = value;
+                dispatchEvent(new ContextEvent("stateChanged", false, false, value));
+
+                changeStateToEnjoyA.stop();
+                changeStateToCreateA.stop();
+
+                switch (value) {
+                    case TOGGLE_STATE_CREATE:
+                        changeStateToCreateA.play();
+                        break;
+                    case TOGGLE_STATE_ENJOY:
+                        changeStateToEnjoyA.play();
+                        break;
+                }
+
+            }
+        }
+
+        private function init():void {
+            currentToggleState = TOGGLE_STATE_CREATE;
+            //mx.controls.Alert.show("HE!");
+        }
+        ]]>
+	</fx:Script>
+    <s:HGroup gap="20">
+
+        <s:VGroup width="161"
+                  horizontalAlign="center" gap="0"
+                  id="createGroup"
+                  useHandCursor="true" buttonMode="true"
+                  click="{currentToggleState = TOGGLE_STATE_CREATE;}">
+            <s:BitmapImage id="createImage"
+                           source="@Embed(source='assets/windows/pageworld/playwithfriends/toggleCreateGameImage.png')"/>
+            <s:BitmapImage id="createArrow"
+                           source="@Embed(source='assets/windows/pageworld/playwithfriends/toggleCreateGameArrow.png')"/>
+        </s:VGroup>
+
+        <s:VGroup width="161"
+                  horizontalAlign="center" gap="0"
+                  id="enjoyGroup"
+                  useHandCursor="true" buttonMode="true"
+                  click="{currentToggleState = TOGGLE_STATE_ENJOY;}"
+                  alpha="{minAlpha}"
+                >
+            <s:BitmapImage id="enjoyImage"
+                           source="@Embed(source='assets/windows/pageworld/playwithfriends/toggleEnjoyGameImage.png')"/>
+            <s:BitmapImage id="enjoyArrow"
+                           source="@Embed(source='assets/windows/pageworld/playwithfriends/toggleEnjoyGameArrow.png')"/>
+        </s:VGroup>
+
+    </s:HGroup>
+
+
+</s:Group>

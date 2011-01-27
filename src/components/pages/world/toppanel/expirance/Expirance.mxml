@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+          creationComplete="init();"
+          width="400" height="100%"
+          verticalAlign="middle" horizontalAlign="left"
+          gap="15"
+        >
+
+
+    <fx:Declarations>
+
+        <s:Parallel id="openingProccessA">
+            <s:Animate id="appearingPopUpA" target="{mainPopUpContent}" duration="300"
+                       effectStart="{mainPopUpContent.alpha = 0; isOpeningProccess = true; openToolTip(); }"
+                       effectEnd="{isOpeningProccess = false;}"
+                    >
+
+                <s:SimpleMotionPath property="alpha" valueFrom="{mainPopUpContent.alpha}" valueTo="1.0"/>
+            </s:Animate>
+
+            <s:Animate id="appearingPreviewOver" target="{previewOver}" duration="200">
+                <s:SimpleMotionPath property="alpha" valueFrom="{previewOver.alpha}" valueTo="1.0"/>
+            </s:Animate>
+
+        </s:Parallel>
+
+        <s:Animate id="blurDisapearing" target="{blurMask}" duration="200">
+            <s:SimpleMotionPath property="blurX" valueFrom="70" valueTo="0.0"/>
+            <s:SimpleMotionPath property="blurY" valueFrom="70" valueTo="0.0"/>
+        </s:Animate>
+
+        <s:Parallel id="closingProccessA" duration="200">
+            <s:Animate id="disAppearingPopUpA" target="{mainPopUpContent}"
+                       effectStart="{isClosingProccess = true;}"
+                       effectEnd="{closeToolTip(); isClosingProccess = false;}"
+                    >
+
+                <s:SimpleMotionPath property="alpha" valueFrom="{mainPopUpContent.alpha}" valueTo="0.0"/>
+            </s:Animate>
+
+            <s:Animate id="disppearingPreviewOver" target="{previewOver}">
+                <s:SimpleMotionPath property="alpha" valueFrom="{previewOver.alpha}" valueTo="0.0"/>
+            </s:Animate>
+
+
+            <!--<s:Animate id="blurApearing" target="{blurMask}" duration="200">
+               <s:SimpleMotionPath property="blurX" valueFrom="{blurMask.blurX}" valueTo="50" />
+               <s:SimpleMotionPath property="blurY" valueFrom="{blurMask.blurY}" valueTo="50" />
+               </s:Animate>-->
+        </s:Parallel>
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        [Bindable]
+        private var levelStringView:String = "1";
+
+        private var minExpiranceWidth:int = 18;
+        private var maxExpiranceWidth:int = 210;
+
+        /* animation params */
+
+        private var isMouseOnPopUp:Boolean = false;
+        private var isMouseOnPreview:Boolean = false;
+
+        private var isOpeningProccess:Boolean = false;
+        private var isClosingProccess:Boolean = false;
+
+        private var closeTimer:Timer = new Timer(100, 2);
+
+        private function init():void {
+            closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
+            closeTimer.stop();
+
+            levelStringView = Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.ownGameProfile.expirance).toString();
+        }
+
+        private function timerCompleteHandler(e:TimerEvent):void {
+            closeTimer.reset();
+            closeTimer.stop();
+
+            if (!isMouseOnPreview && !isMouseOnPopUp && !isClosingProccess) {
+                openingProccessA.stop();
+                closingProccessA.play();
+            }
+        }
+
+        /* open/close processes */
+
+        private function openToolTipWrapper():void {
+            if (!isOpeningProccess) {
+                openingToolTipProcess();
+
+                if (!isClosingProccess && !closeTimer.running) {
+                    //dispatchEvent(new Event("toolTipCalledFirst"));
+                    blurDisapearing.play();
+                }
+            }
+        }
+
+        private function closeToolTipWrapper():void {
+            closeTimer.start();
+        }
+
+        private function openingToolTipProcess():void {
+            closingProccessA.stop();
+            openingProccessA.play();
+        }
+
+        private function closingToolTipProcess():void {
+            openingProccessA.stop();
+            closingProccessA.play();
+        }
+
+        public function openToolTip():void {
+            expirancePopUp.displayPopUp = true;
+        }
+
+        public function closeToolTip():void {
+            expirancePopUp.displayPopUp = false;
+        }
+
+        /* expirance */
+
+        private function expiranceChanged():void {
+            // e type = ContextEvent;
+            // read e.data.expirance
+
+
+        }
+
+        private function setExpirance(exp:int):void {
+            // get LevelInformationObject by expirance
+            //
+
+
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Label id="levelLabel"
+             text="Уровень {levelStringView}" color="0xffffff"
+             fontFamily="mpbc" fontSize="16"
+            />
+
+    <s:Group mouseOver="{ isMouseOnPreview = true; openToolTipWrapper(); }"
+             mouseOut="{ isMouseOnPreview = false; closeToolTipWrapper(); }"
+             useHandCursor="true" buttonMode="true"
+            >
+
+        <s:Group id="previewOver"
+                 alpha="0">
+            <s:Rect height="21" width="212">
+
+                <s:fill>
+                    <s:SolidColor color="0x000000"/>
+                </s:fill>
+                <s:stroke>
+                    <s:SolidColorStroke weight="2" color="0x3c3c3c"/>
+                </s:stroke>
+                <s:filters>
+                    <s:BlurFilter blurX="20" blurY="20"/>
+                </s:filters>
+            </s:Rect>
+        </s:Group>
+
+        <s:Rect height="21" width="212"
+                alpha="0.9"
+                >
+
+            <s:fill>
+                <s:SolidColor color="0x000000"/>
+            </s:fill>
+            <s:stroke>
+                <s:SolidColorStroke weight="2" color="0x3c3c3c"/>
+            </s:stroke>
+            <s:filters>
+                <s:BlurFilter blurX="2" blurY="2"/>
+            </s:filters>
+        </s:Rect>
+
+
+        <s:BitmapImage x="3" y="3"
+                       source="@Embed(source='assets/pageworld/toppanel/expirance/expiranceProgressBar.jpg')"
+                       mask="{expiranceMask}"
+                />
+
+        <s:Group id="expiranceMask">
+            <s:Rect height="18" width="170"
+                    minWidth="18"
+                    maxWidth="210"
+                    y="2" x="1"
+                    >
+
+                <s:fill>
+                    <s:LinearGradient rotation="-90">
+                        <s:GradientEntry color="0x311c38" ratio="0.0"/>
+                        <s:GradientEntry color="0xab55a9" ratio="1.0"/>
+                    </s:LinearGradient>
+                </s:fill>
+
+            </s:Rect>
+        </s:Group>
+
+        <!--<s:HGroup height="100%" verticalAlign="middle" x="{expiranceMask.width - expiranceCountLabel.width - 15}"
+                    paddingTop="3">
+
+              <s:Group>
+                  <s:Rect width="{expiranceCountLabel.width + 6}" height="{expiranceCountLabel.height + 6}"
+                          alpha="0.5"
+                          x="-3" y="-3">
+                      <s:fill>
+                          <s:SolidColor color="0x000000" />
+                      </s:fill>
+                  </s:Rect>
+                  <s:Label id="expiranceCountLabel" text="300 опыта" color="0xffffff" fontFamily="mpr" fontSize="12" />
+              </s:Group>
+
+          </s:HGroup>-->
+
+        <s:PopUpAnchor id="expirancePopUp"
+                       y="25" x="-40">
+
+            <s:Group id="mainPopUpContent"
+                     alpha="0"
+                     mouseOver="{ isMouseOnPopUp = true; }"
+                     mouseOut="{ isMouseOnPopUp = false; closeToolTipWrapper(); }"
+                    >
+
+                <s:filters>
+                    <s:BlurFilter id="blurMask" blurX="50" blurY="50"/>
+                </s:filters>
+
+                <s:BitmapImage source="@Embed(source='assets/pageworld/toppanel/expirance/popUpBG.png')"/>
+                <s:VGroup width="100%" height="100%"
+                          horizontalAlign="left" verticalAlign="top"
+                          gap="10" paddingLeft="50"
+                          paddingTop="44"
+                        >
+                    <s:HGroup gap="10">
+                        <s:Label text="Ваш опыт:"
+                                 fontSize="24" fontFamily="mpbc"
+                                 color="0xcfcfcf"
+                                />
+                        <s:Label text="50 / 200 опыта"
+                                 fontSize="24" fontFamily="mpbc"
+                                 color="0xd57ceb"
+                                />
+
+                    </s:HGroup>
+
+                    <s:VGroup gap="5" paddingTop="10">
+                        <s:Label
+                                text="Максимальный опыт который вы сможете набрать в бете 100 опыта, ждите релиза игры!"
+                                fontSize="18" fontFamily="mpbc"
+                                color="0xcfcfcf"
+                                maxWidth="300"
+
+                                />
+                    </s:VGroup>
+
+                </s:VGroup>
+
+            </s:Group>
+        </s:PopUpAnchor>
+
+    </s:Group>
+
+
+</s:HGroup>

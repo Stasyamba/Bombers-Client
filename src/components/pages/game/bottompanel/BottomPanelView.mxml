@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         width="808" height="41"
+         xmlns:toppanel="toppanel.*"
+         xmlns:resources="toppanel.resources.*"
+         creationComplete="init();"
+         xmlns:bottompanel="components.pages.game.bottompanel.*"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+        >
+    <fx:Script>
+		<![CDATA[
+        private function init():void {
+            Context.Model.addCustomListener(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED, function(e:ContextEvent):void {
+                leftHandWeapon.initContent(Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand);
+            });
+
+            rightHandWeapon.initContent(Context.Model.currentSettings.ownGameProfile.selectedWeaponRightHand);
+            leftHandWeapon.initContent(Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand);
+        }
+
+        private function openInventoryW():void {
+            // check Context isPlaying now!
+            // then
+
+            Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_IS_PLAYING_PACK_WINDOW);
+
+            // else
+
+            //Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, true);
+        }
+
+        private function quitTheGame():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_QUIT_THE_GAME_WINDOW);
+        }
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+
+    <s:BitmapImage source="@Embed(source='assets/pageworld/bottompanel/common/bottomPanelBG.jpg')"
+                   width="808" height="41"
+            >
+        <s:filters>
+            <s:DropShadowFilter distance="1"
+                                alpha="0.85"
+                                angle="-90"
+                                blurY="5"
+                    />
+        </s:filters>
+
+    </s:BitmapImage>
+
+    <s:HGroup width="100%" height="100%"
+              verticalAlign="middle" horizontalAlign="left"
+              paddingLeft="30"
+              gap="43">
+
+        <s:HGroup>
+            <bottompanel:BomberBasePropertyTemplate propertyType="{BomberBasePropertyTemplate.TYPE_SPEED}" count="10"/>
+            <bottompanel:BomberBasePropertyTemplate propertyType="{BomberBasePropertyTemplate.TYPE_WAVE_POWER}"
+                                                    count="2"/>
+            <bottompanel:BomberBasePropertyTemplate propertyType="{BomberBasePropertyTemplate.TYPE_BOBMS_COUNT}"
+                                                    count="4"/>
+            <bottompanel:BomberBasePropertyTemplate propertyType="{BomberBasePropertyTemplate.TYPE_HEALTH}" count="15"/>
+        </s:HGroup>
+
+        <s:HGroup verticalAlign="middle">
+            <s:Button skinClass="skins.buttons.PackButtonS" buttonMode="true" useHandCursor="true"
+                      click="openInventoryW();"
+                    />
+            <!--<s:Button skinClass="skins.buttons.RefreshButtonS" />-->
+            <flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonOriginS" scale="0.5"
+                                        click="quitTheGame();"/>
+        </s:HGroup>
+
+        <!--
+              <bottompanel:MenuView />
+          -->
+
+        <bottompanel:Time/>
+
+        <s:HGroup gap="25">
+            <s:HGroup verticalAlign="middle">
+                <bottompanel:Weapon id="rightHandWeapon"/>
+                <s:VGroup>
+                    <s:Label text="Пробел" fontFamily="mpbc" fontSize="14" color="0xffffff"/>
+                    <s:Label text="Первое оружие" fontFamily="mpbc" fontSize="12" color="0xa5a5a5"/>
+
+                </s:VGroup>
+            </s:HGroup>
+            <s:HGroup verticalAlign="middle">
+                <bottompanel:Weapon id="leftHandWeapon" buttonMode="true" useHandCursor="true"/>
+                <s:VGroup>
+                    <s:Label text="X" fontFamily="mpbc" fontSize="14" color="0xffffff"/>
+                    <s:Label text="Второе оружие" fontFamily="mpbc" fontSize="12" color="0xa5a5a5"/>
+
+                </s:VGroup>
+            </s:HGroup>
+        </s:HGroup>
+
+
+    </s:HGroup>
+
+</s:Group>

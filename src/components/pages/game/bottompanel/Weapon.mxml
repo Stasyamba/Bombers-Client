@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         xmlns:bottompanel="components.pages.game.bottompanel.*"
+         height="33" width="37"
+        >
+
+    <fx:Declarations>
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemObject
+        import components.common.items.ItemProfileObject
+        import components.common.items.ItemViewObject
+        import components.common.items.categories.ItemCategory
+        import components.common.utils.adjustcolor.Color
+        import components.common.utils.adjustcolor.ColorMatrix
+        import components.common.utils.adjustcolor.ColorMatrixObject
+
+        import mx.collections.ArrayCollection
+
+        import spark.events.IndexChangeEvent
+
+        private var _itemProfileObject:ItemProfileObject = null;
+
+        [Bindable]
+        private var itemViewObject:ItemViewObject = null;
+        [Bindable]
+        private var itemCountStringView:String = "0";
+        [Bindable]
+        private var noneGroupVisible:Boolean = false;
+        [Bindable]
+        private var countGroupVisible:Boolean = false;
+        [Bindable]
+        private var bgCountRectColor:uint = 0xffffff;
+
+
+        /* popup section */
+        public static const ITEMS_PER_PAGE:int = 3;
+
+        private var isMouseOnPopUp:Boolean = false;
+        private var isMouseOnPreview:Boolean = false;
+        private var currentPage:int = 0;
+        [Bindable]
+        private var currentItemsCollection:ArrayCollection = new ArrayCollection();
+        [Bindable]
+        private var allItemsWeapon:Array = new Array();
+
+        private function checkPopUp():void {
+            if (!isMouseOnPreview && !isMouseOnPopUp) {
+                hidePopUp();
+            }
+        }
+
+        private function togglePopUp():void {
+            if (submenuPopUp.displayPopUp) {
+                hidePopUp();
+            } else {
+                showPopUp();
+            }
+        }
+
+        private function showPopUp():void {
+            if (!Context.Model.itemsCategoryManager.isBombBase(_itemProfileObject.itemType)) {
+                setBorderSelection(true);
+                submenuPopUp.displayPopUp = true;
+            }
+        }
+
+        private function hidePopUp():void {
+            setBorderSelection(false);
+            submenuPopUp.displayPopUp = false;
+        }
+
+        private function setBorderSelectionWrapper(selection:Boolean):void {
+            if (!Context.Model.itemsCategoryManager.isBombBase(_itemProfileObject.itemType)) {
+                if (selection) {
+                    setBorderSelection(selection);
+                } else {
+                    if (!submenuPopUp.displayPopUp) {
+                        setBorderSelection(selection);
+                    }
+                }
+            }
+        }
+
+
+        private function setBorderSelection(selection:Boolean):void {
+            if (selection) {
+                strokeColor.color = 0xffffff;
+            } else {
+                strokeColor.color = 0x3e3e3e;
+            }
+        }
+
+
+        private function setPage(page:int):void {
+            var tmp:Array = new Array();
+            var pagesCount:int = Math.floor(allItemsWeapon.length / ITEMS_PER_PAGE);
+            pagesCount += allItemsWeapon.length % ITEMS_PER_PAGE;
+
+            if (page >= 0 && page <= pagesCount) {
+                for (var i:int = page * ITEMS_PER_PAGE; i <= (page + 1) * ITEMS_PER_PAGE - 1; i++) {
+                    if (i <= allItemsWeapon.length - 1) {
+                        tmp.push(allItemsWeapon[i]);
+                    }
+                }
+
+                if (tmp.length != 0) {
+                    currentItemsCollection = new ArrayCollection(tmp);
+                }
+
+                currentPage = page;
+
+                backPageButton.enabled = true;
+                forwardPageButton.enabled = true;
+
+                if (currentPage == 0) {
+                    backPageButton.enabled = false;
+                }
+
+                if (page == pagesCount - 1) {
+                    forwardPageButton.enabled = false;
+                }
+            }
+        }
+
+        private function setNextPage(sign:int):void {
+            setPage(currentPage + sign);
+        }
+
+
+        public function initContent(itemProfileObjectP:ItemProfileObject):void {
+            _itemProfileObject = itemProfileObjectP;
+
+            if (_itemProfileObject != null) {
+
+                var itemObject:ItemObject = Context.Model.itemsManager.getItem(_itemProfileObject.itemType);
+
+                itemViewObject = itemObject.viewObject;
+                noneGroupVisible = false;
+
+                weaponImage.smoothBitmapContent = true;
+                weaponImage.source = itemViewObject.smallImageURL;
+
+
+                if (_itemProfileObject.itemCount < 0) {
+                    itemCountStringView = "Б";
+                    bgCountRectColor = 0x00ff00;
+                } else {
+                    itemCountStringView = _itemProfileObject.itemCount.toString();
+                }
+                countGroupVisible = true;
+            } else {
+                weaponImage.source = "";
+                noneGroupVisible = true;
+                countGroupVisible = false;
+            }
+
+            allItemsWeapon = new Array();
+            for each(var ipo:ItemProfileObject in Context.Model.currentSettings.ownGameProfile.gotItems) {
+                if (Context.Model.itemsCategoryManager.getItemCategory(ipo.itemType) == ItemCategory.WEAPON) {
+                    allItemsWeapon.push(ipo);
+                }
+            }
+
+            setPage(currentPage);
+
+            var cm:ColorMatrix = new ColorMatrix();
+            var cmo:ColorMatrixObject = new ColorMatrixObject(0, 0, null, 0, new Color(-20, -20, -20));
+            cm.applyColorMatrixObject(cmo);
+
+            subMenuBG.filters = [cm.filter];
+        }
+
+        private function changeWeapon(e:IndexChangeEvent):void {
+            //weaponsList.selectedItem
+            if (currentItemsCollection.getItemAt(e.newIndex) is ItemProfileObject) {
+                if ((currentItemsCollection.getItemAt(e.newIndex) as ItemProfileObject).itemType != Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand.itemType) {
+                    Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand = (currentItemsCollection.getItemAt(e.newIndex) as ItemProfileObject);
+                }
+
+                hidePopUp();
+            }
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Group id="baseGroup"
+             click="togglePopUp();"
+             mouseOver="setBorderSelectionWrapper(true);"
+             mouseOut="setBorderSelectionWrapper(false);"
+            >
+
+        <s:Rect width="33" height="33">
+            <s:fill>
+                <s:SolidColor color="0x000000"/>
+            </s:fill>
+            <s:stroke>
+                <s:SolidColorStroke id="strokeColor" color="0x3e3e3e" weight="2"/>
+            </s:stroke>
+            <s:filters>
+                <s:BlurFilter blurX="1" blurY="2"/>
+            </s:filters>
+        </s:Rect>
+
+        <s:HGroup width="33" height="33"
+                  horizontalAlign="center" verticalAlign="middle"
+                >
+            <mx:Image id="weaponImage"
+                      smoothBitmapContent="true"
+                      scaleX="0.81" scaleY="0.81"
+                      trustContent="{Context.Model.trustContent}"
+                    />
+        </s:HGroup>
+
+        <s:HGroup width="33" height="33"
+                  horizontalAlign="center" verticalAlign="middle"
+                  visible="{noneGroupVisible}"
+
+                >
+            <s:Label text="Пусто" color="0xffffff" fontFamily="mpr" fontSize="11"/>
+        </s:HGroup>
+
+
+        <s:Group alpha="0.7"
+                 x="{-bgCountRect.width/2}" y="{-bgCountRect.height + 33}"
+                 visible="{countGroupVisible}"
+                >
+            <s:Rect id="bgCountRect"
+                    width="{countLabel.width + 4}" height="{countLabel.height + 4}"
+                    radiusX="2" radiusY="2"
+                    >
+                <s:fill>
+                    <s:SolidColor color="{bgCountRectColor}"/>
+                </s:fill>
+            </s:Rect>
+
+            <s:Label id="countLabel"
+                     x="2" y="2"
+                     text="{itemCountStringView}"
+                     color="0x000000" fontFamily="mpr" fontSize="10"
+                    />
+
+        </s:Group>
+    </s:Group>
+
+    <!--mouseOver="{ isMouseOnPopUp = true; showPopUp();}"
+     mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"-->
+
+    <s:PopUpAnchor id="submenuPopUp">
+        <!--<s:Group id="submenuPopUp" visible="false">-->
+        <s:Group id="popUpContent"
+                 alpha="1"
+                >
+            <s:Group
+                    y="{-(weaponsList.height + 43)}" x="-18">
+
+
+                <s:BorderContainer id="subMenuBG"
+                                   width="160" height="{weaponsList.height + 40}"
+                                   backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+                                   backgroundImageFillMode="repeat"
+                                   borderVisible="false"
+                        />
+
+                <flexcomponents:CloseButton id="closeButton"
+                                            skinClass="skins.buttons.CloseButtonBlackS"
+                                            scale="0.7"
+                                            x="-10" y="-10"
+                                            click="hidePopUp();"
+                        />
+
+                <!--<s:Rect width="160" height="{weaponsList.height + 40}"
+                                alpha="0.85">
+                            <s:fill>
+                                <s:SolidColor color="0x000000" />
+                            </s:fill>
+                        </s:Rect>-->
+
+                <s:VGroup width="160" height="{weaponsList.height + 40}"
+                          horizontalAlign="center"
+                          verticalAlign="middle">
+
+                    <s:List id="weaponsList"
+                            dataProvider="{currentItemsCollection}"
+                            itemRenderer="components.pages.game.bottompanel.WeaponsIR"
+                            contentBackgroundAlpha="0" borderVisible="false"
+                            change="changeWeapon(event);"
+                            >
+                        <!-- minHeight="136" -->
+                        <s:layout>
+                            <s:VerticalLayout/>
+                        </s:layout>
+                    </s:List>
+                    <s:HGroup width="100%" horizontalAlign="right">
+                        <s:HGroup gap="0">
+                            <s:Button id="backPageButton" label="Back" click="setNextPage(-1);"
+                                      skinClass="skins.buttons.ListButtonLeftS"
+                                      buttonMode="true" useHandCursor="true"
+                                    />
+                            <s:Button id="forwardPageButton" label="Forward" click="setNextPage(1);"
+                                      skinClass="skins.buttons.ListButtonRightS"
+                                      buttonMode="true" useHandCursor="true"
+                                    />
+                        </s:HGroup>
+                    </s:HGroup>
+                </s:VGroup>
+
+
+            </s:Group>
+
+
+        </s:Group>
+        <!--</s:Group>-->
+    </s:PopUpAnchor>
+
+
+    <!--<bottompanel:WeaponsPopUp  id="submenuPopUp"
+                                mouseOver="{ isMouseOnPopUp = true; showPopUp();}"
+                                mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"
+                                />-->
+
+</s:Group>

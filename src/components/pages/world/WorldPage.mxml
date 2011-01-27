@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:NavigatorContent xmlns:fx="http://ns.adobe.com/mxml/2009"
+                    xmlns:s="library://ns.adobe.com/flex/spark"
+                    xmlns:mx="library://ns.adobe.com/flex/mx"
+                    xmlns:worlds="components.pages.world.worlds.*"
+                    xmlns:world="components.pages.world.*"
+                    xmlns:toppanel="components.pages.world.toppanel.*"
+                    xmlns:bottompanel="components.pages.world.bottompanel.*"
+                    width="100%" height="100%"
+                    contentCreationComplete="init();" xmlns:subbottompanel="components.pages.world.subbottompanel.*"
+        >
+
+    <fx:Declarations>
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.ApplicationView
+
+        private function init():void {
+
+            Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function (e:ContextEvent):void {
+                if (e.data == ApplicationView.TAB_NAME_WORLD) {
+                    // this tab case
+                }
+            });
+
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_CHANGE_WORLD, function (e:ContextEvent):void {
+                worlds.loadWorld(e.data);
+            });
+
+
+            // do once in loading time
+            worlds.loadWorld(Context.Model.currentSettings.ownGameProfile.currentWorld, true);
+        }
+        ]]>
+	</fx:Script>
+
+
+    <worlds:WorldsView id="worlds" y="40"/>
+    <toppanel:TopPanelView id="topPanel" y="0"/>
+    <bottompanel:BottomPanelView id="bottomPanel" y="485"/>
+    <subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>
+
+
+</s:NavigatorContent>

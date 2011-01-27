@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         xmlns:bottompanel="components.pages.game.bottompanel.*"
+         alpha="0.8"
+         mouseOver="{upA.stop(); overA.play();}"
+         mouseOut="{overA.stop(); upA.play();}"
+
+        >
+
+    <fx:Declarations>
+
+
+        <s:Parallel id="overA">
+            <s:Animate target="{this}" duration="200">
+                <s:SimpleMotionPath property="alpha" valueFrom="{this.alpha}" valueTo="1"/>
+            </s:Animate>
+
+        </s:Parallel>
+
+        <s:Parallel id="upA">
+            <s:Animate target="{this}" duration="200">
+                <s:SimpleMotionPath property="alpha" valueFrom="{this.alpha}" valueTo="0.8"/>
+            </s:Animate>
+
+        </s:Parallel>
+
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemObject
+        import components.common.items.ItemProfileObject
+        import components.common.items.ItemViewObject
+
+        private var _itemProfileObject:ItemProfileObject = null;
+
+        [Bindable]
+        private var itemViewObject:ItemViewObject = null;
+        [Bindable]
+        private var itemCountStringView:String = "0";
+        [Bindable]
+        private var noneGroupVisible:Boolean = false;
+        [Bindable]
+        private var countGroupVisible:Boolean = false;
+        [Bindable]
+        private var bgCountRectColor:uint = 0xffffff;
+        [Bindable]
+        private var weaponName:String = "";
+
+        public function initContent(itemProfileObjectP:ItemProfileObject):void {
+            _itemProfileObject = itemProfileObjectP;
+
+            if (_itemProfileObject != null) {
+                var itemObject:ItemObject = Context.Model.itemsManager.getItem(_itemProfileObject.itemType);
+
+                weaponName = itemObject.viewObject.name;
+
+                itemViewObject = itemObject.viewObject;
+                noneGroupVisible = false;
+
+                weaponImage.smoothBitmapContent = true;
+                weaponImage.source = itemViewObject.smallImageURL;
+
+
+                if (_itemProfileObject.itemCount < 0) {
+                    itemCountStringView = "Б";
+                    bgCountRectColor = 0x00ff00;
+                } else {
+                    itemCountStringView = _itemProfileObject.itemCount.toString();
+                }
+                countGroupVisible = true;
+            } else {
+                weaponImage.source = "";
+                noneGroupVisible = true;
+                countGroupVisible = false;
+            }
+        }
+        ]]>
+	</fx:Script>
+
+    <s:HGroup verticalAlign="middle">
+        <s:Group id="baseGroup">
+
+            <s:Rect width="33" height="33">
+                <s:fill>
+                    <s:SolidColor color="0x000000"/>
+                </s:fill>
+                <s:stroke>
+                    <s:SolidColorStroke id="strokeColor" color="0x3e3e3e" weight="2"/>
+                </s:stroke>
+                <s:filters>
+                    <s:BlurFilter blurX="1" blurY="2"/>
+                </s:filters>
+            </s:Rect>
+
+            <s:HGroup width="33" height="33"
+                      horizontalAlign="center" verticalAlign="middle"
+                    >
+                <mx:Image id="weaponImage"
+                          smoothBitmapContent="true"
+                          scaleX="0.81" scaleY="0.81"
+                          trustContent="{Context.Model.trustContent}"
+                        />
+            </s:HGroup>
+
+            <s:HGroup width="33" height="33"
+                      horizontalAlign="center" verticalAlign="middle"
+                      visible="{noneGroupVisible}"
+
+                    >
+                <s:Label text="Пусто" color="0xffffff" fontFamily="mpr" fontSize="11"/>
+            </s:HGroup>
+
+
+            <s:Group alpha="0.7"
+                     x="{-bgCountRect.width/2}" y="{-bgCountRect.height + 33}"
+                     visible="{countGroupVisible}"
+                    >
+                <s:Rect id="bgCountRect"
+                        width="{countLabel.width + 4}" height="{countLabel.height + 4}"
+                        radiusX="2" radiusY="2"
+                        >
+                    <s:fill>
+                        <s:SolidColor color="{bgCountRectColor}"/>
+                    </s:fill>
+                </s:Rect>
+
+                <s:Label id="countLabel"
+                         x="2" y="2"
+                         text="{itemCountStringView}"
+                         color="0x000000" fontFamily="mpr" fontSize="10"
+                        />
+
+            </s:Group>
+        </s:Group>
+        <s:Label text="{weaponName}" fontFamily="mpbc" fontSize="14" color="0xffffff"
+                 width="91" maxWidth="91" textAlign="left"
+                />
+
+    </s:HGroup>
+
+</s:Group>

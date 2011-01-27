@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         creationComplete="init();"
+         width="100%" height="100%">
+
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.worlds.WorldsType
+        import components.common.worlds.locations.LocationType
+        import components.common.worlds.locations.LocationViewObject
+        import components.pages.world.windows.locationenter.LocationEnterW
+        import components.pages.world.worlds.worlds.world1.World1
+
+        import mx.managers.PopUpManager
+
+        private function init():void {
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_LOCATION_ENTER, function(e:ContextEvent):void {
+                if (e.data is LocationType) {
+                    var locationViewObject:LocationViewObject = Context.Model.locationViewManager.getLocationViewObject(e.data);
+
+                    if (locationViewObject != null) {
+                        var lew:LocationEnterW = new LocationEnterW();
+                        lew.locationViewObject = locationViewObject;
+                        lew.y = 78;
+
+                        PopUpManager.addPopUp(lew, DisplayObject(mainWorldGroup), false);
+                    }
+                }
+            });
+        }
+
+
+        public function loadWorld(world:WorldsType, enforced:Boolean = false):void {
+            if (enforced) {
+                var content:* = null;
+                switch (world) {
+                    case WorldsType.WORLD1:
+
+                        content = new World1();
+                        break;
+
+                    default:
+                        break;
+                }
+
+                if (content != null) {
+                    mainWorldGroup.removeAllElements();
+                    mainWorldGroup.addElement(content);
+                }
+            } else {
+                if (Context.Model.currentSettings.ownGameProfile.currentWorld != world) {
+                    loadWorld(Context.Model.currentSettings.ownGameProfile.currentWorld, true);
+                }
+            }
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Group width="100%" height="100%"
+             id="mainWorldGroup"
+            />
+
+</s:Group>

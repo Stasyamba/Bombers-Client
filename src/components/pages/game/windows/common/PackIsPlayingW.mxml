@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:mx1="library://ns.adobe.com/flex/halo"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:fx="http://ns.adobe.com/mxml/2009"
+         creationComplete="panelCreationComplete();"
+         borderVisible="false"
+         dropShadowVisible="false"
+         skinClass="skins.common.EmptyPopUpS"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         xmlns:create="components.pages.game.windows.create.*"
+        >
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+
+        <s:Animate id="disapearingAnimation" target="{this}" duration="300"
+                   effectEnd="{close();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="1"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingAnimation" target="{this}" duration="1200">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.utils.adjustcolor.Color
+        import components.common.utils.adjustcolor.ColorMatrix
+        import components.common.utils.adjustcolor.ColorMatrixObject
+
+        import mx.managers.PopUpManager
+
+        public function close():void {
+            PopUpManager.removePopUp(this);
+        }
+
+        public function closeWrapper():void {
+            disapearingAnimation.play();
+        }
+
+        private function panelCreationComplete():void {
+            apearingAnimation.play();
+
+            var cm:ColorMatrix = new ColorMatrix();
+            var cmo:ColorMatrixObject = new ColorMatrixObject(0, 0, null, 0, new Color(-20, -20, -20));
+            cm.applyColorMatrixObject(cmo);
+
+            var cm1:ColorMatrix = new ColorMatrix();
+            var cmo1:ColorMatrixObject = new ColorMatrixObject(0, 0);
+            cm1.applyColorMatrixObject(cmo1);
+
+            lightBorderContainer.filters = [cm1.filter];
+            darkBorderContainer.filters = [cm.filter];
+
+
+        }
+        ]]>
+	</fx:Script>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+    <s:BorderContainer id="lightBorderContainer"
+                       backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+                       backgroundImageFillMode="repeat"
+                       width="335" height="146"
+                       borderVisible="false"
+            />
+
+    <s:BorderContainer id="darkBorderContainer"
+                       backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+                       backgroundImageFillMode="repeat"
+                       width="319" height="130"
+                       borderVisible="false"
+                       x="8" y="8"
+            />
+
+    <s:VGroup width="319" height="130"
+              x="8" y="8"
+              horizontalAlign="center"
+              verticalAlign="middle"
+            >
+        <s:Label
+                text="Вы не можете зайти в инвентарь, потому что сейчас находитесь в игре. Поробуйте повторить когда вас вздуют или вы их ;)"
+                fontFamily="mpbc" fontSize="20" color="0xffffff"
+                textAlign="center"
+                maxWidth="276"
+                />
+    </s:VGroup>
+
+    <s:Rect width="811" height="97" alpha="0.76"
+            y="152" x="-400">
+        <s:fill>
+            <s:SolidColor color="0x000000"/>
+        </s:fill>
+    </s:Rect>
+
+    <s:Rect width="811" height="97" alpha="0.76"
+            y="-111" x="-108">
+        <s:fill>
+            <s:SolidColor color="0x000000"/>
+        </s:fill>
+    </s:Rect>
+
+    <s:Label y="190" x="-177"
+             fontFamily="mpbc" fontSize="24" color="0xffffff"
+             text="Чтобы сменить оружие во время боя, просто нажмите сюда."
+            />
+
+    <s:Label y="-77" x="-71"
+             fontFamily="mpbc" fontSize="24" color="0xffffff"
+             text="А тут ваши включенные ауры, их во время боя менять нельзя."
+            />
+
+    <s:BitmapImage x="377" y="152"
+                   source="@Embed(source='assets/pagegame/windows/arrowPattern.png')"/>
+
+
+    <s:BitmapImage x="-108" y="-112"
+                   rotation="90"
+                   smooth="true"
+                   source="@Embed(source='assets/pagegame/windows/arrowPattern.png')"/>
+
+
+    <flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS"
+                                x="300" y="10"
+                                scale="0.7"
+                                click="closeWrapper();"
+            />
+
+    <s:controlBarContent/>
+</s:Panel>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:flexcomponents="components.common.flexcomponents.*"
+          verticalAlign="middle"
+          gap="20"
+          creationComplete="init();">
+
+
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        public function init():void {
+            initContent();
+        }
+
+        public function initContent():void {
+            bomberNameTextInput.text = Context.Model.currentSettings.ownGameProfile.name;
+        }
+        ]]>
+	</fx:Script>
+
+    <s:Label text="Ваш псевдоним" color="0xbd9566"
+             fontFamily="mpbc" fontSize="18"/>
+
+    <s:Group>
+        <s:BitmapImage id="bgTextInput" source="@Embed(source='assets/windows/global/inventory/bomberNameBG.jpg')"
+                       width="127"
+                       height="29"
+                />
+        <s:TextInput width="{bgTextInput.width}" height="{bgTextInput.height}"
+                     contentBackgroundAlpha="0"
+                     fontFamily="mpbc"
+                     fontSize="18"
+                     color="0xffe9af"
+                     focusSkin="skins.common.NoFocusS"
+                     borderColor="0x2f2a21"
+                     textAlign="center"
+                     id="bomberNameTextInput"
+                />
+    </s:Group>
+
+    <flexcomponents:UnderlinedText skinClass="skins.common.UnderlineTextButtonS"
+                                   text="Сохранить"
+                                   textUnderlineGap="-2"
+                                   textFontFamily="mpbc"
+                                   textColor="0xbd9566"
+                                   textSize="18"
+            />
+
+</s:HGroup>

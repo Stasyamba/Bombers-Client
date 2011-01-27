@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+        >
+
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.items.ItemObject
+        import components.common.items.categories.MarketCategory
+
+        import mx.collections.ArrayCollection
+
+        import spark.events.IndexChangeEvent
+
+        [Bindable]
+        private var itemsCollection:ArrayCollection = new ArrayCollection();
+        private var categoryItems:Array = new Array();
+
+        [Bindable]
+        private var pagesCollection:ArrayCollection = new ArrayCollection();
+        private var pagesCount:int = 0;
+        private var currentPage:int = 0;
+
+        [Bindable]
+        private var emptyContentGroupVisible:Boolean = false;
+
+        public static const ITEMS_PER_PAGE:int = 2;
+
+        public function initContent(marketCategory:MarketCategory):void {
+            var allItems:Array = Context.Model.itemsManager.getItems();
+            categoryItems = new Array();
+
+            itemsCollection = new ArrayCollection();
+
+            for each(var it:ItemObject in allItems) {
+                if (Context.Model.itemsCategoryManager.getItemMarketCategory(it.type) == marketCategory) {
+                    categoryItems.push(it.type);
+                }
+            }
+
+            if (categoryItems.length == 0) {
+                emptyContentGroupVisible = true;
+            } else {
+                emptyContentGroupVisible = false;
+            }
+
+            pagesCollection = new ArrayCollection();
+            pagesCount = Math.ceil(categoryItems.length / ITEMS_PER_PAGE);
+
+            for (var i:int = 1; i <= pagesCount; i++) {
+                pagesCollection.addItem(i);
+            }
+
+            pagesList.selectedIndex = 0;
+            setPage(0);
+        }
+
+        public function setPage(page:int):int {
+            var itemsCount:int = 0;
+            var itemIndex:int = page * ITEMS_PER_PAGE;
+
+            if (page >= 0 && itemIndex < categoryItems.length) {
+                itemsCollection = new ArrayCollection();
+
+                for (var i:int = itemIndex; i < itemIndex + ITEMS_PER_PAGE; i++) {
+                    if (i <= categoryItems.length - 1 && i >= 0) {
+                        itemsCollection.addItem(categoryItems[i]);
+                        itemsCount++;
+                    }
+                }
+
+                itemsCollection.refresh();
+            }
+
+            return itemsCount;
+        }
+
+        private function pageChanged(e:IndexChangeEvent):void {
+            setPage(e.newIndex);
+        }
+        ]]>
+	</fx:Script>
+
+    <s:HGroup height="275">
+        <s:Group height="100%" width="100%">
+            <s:List dataProvider="{itemsCollection}"
+                    itemRenderer="components.pages.global.inventory.right.market.ItemMarketIR"
+                    contentBackgroundAlpha="0" borderColor="0">
+                <s:layout>
+                    <s:VerticalLayout requestedRowCount="2"/>
+                </s:layout>
+            </s:List>
+
+            <s:HGroup width="100%" height="100%"
+                      verticalAlign="middle" horizontalAlign="center"
+                      visible="{emptyContentGroupVisible}">
+                <s:Label text="Закрыт на бета тестированние" color="0xffffff"
+                         fontFamily="mpbc" fontSize="30"/>
+            </s:HGroup>
+
+        </s:Group>
+
+    </s:HGroup>
+
+    <s:HGroup id="pagesGourp" paddingTop="10">
+        <s:List id="pagesList"
+                dataProvider="{pagesCollection}"
+                itemRenderer="components.pages.global.inventory.right.market.PagesMarketIR"
+                contentBackgroundAlpha="0" borderVisible="false"
+                change="pageChanged(event);">
+            <s:layout>
+                <s:HorizontalLayout gap="0"/>
+            </s:layout>
+        </s:List>
+    </s:HGroup>
+
+</s:VGroup>

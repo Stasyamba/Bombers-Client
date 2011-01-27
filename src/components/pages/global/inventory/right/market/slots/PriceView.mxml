@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx">
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.resources.ResourceObject
+        import components.common.resources.ResourcePrice
+
+        import spark.components.Label
+        import spark.layouts.VerticalAlign
+        import spark.primitives.BitmapImage
+
+        private var price:ResourcePrice;
+
+        public function initContent(priceP:ResourcePrice):void {
+            price = new ResourcePrice(0, 0, 0, 0);
+            price.cloneFrom(priceP);
+            priceGroup.removeAllElements();
+
+            var arr:Array = price.getResourceObjectArr();
+
+            for each(var ro:ResourceObject in arr) {
+                if (ro.value > 0) {
+                    var hg:HGroup = new HGroup();
+                    var lab:Label = new Label();
+                    var resourceImage:BitmapImage = new BitmapImage();
+
+                    lab.setStyle("fontFamily", "mpbc");
+                    lab.setStyle("fontSize", 14);
+                    lab.setStyle("color", 0xffffff);
+
+                    lab.text = ro.value.toString();
+
+                    hg.addElement(lab);
+                    hg.addElement(resourceImage);
+
+                    resourceImage.source = Context.Model.resourceViewManager.getResource(ro.type).smallImage;
+
+
+                    hg.verticalAlign = VerticalAlign.MIDDLE;
+
+                    priceGroup.addElement(hg);
+                }
+            }
+
+        }
+        ]]>
+	</fx:Script>
+
+    <s:HGroup id="priceGroup"/>
+
+</s:HGroup>

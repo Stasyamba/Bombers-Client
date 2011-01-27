@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx">
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        //			private var _timeMilliseconds: int;
+        //			public function start();
+        //			public function stop();
+        //			public function pause();
+
+        [Bindable]
+        private var timeStringView:String = "3 : 15";
+        ]]>
+	</fx:Script>
+
+    <s:Rect width="95" height="30"
+            radiusX="15">
+        <s:fill>
+            <s:SolidColor color="0x000000"/>
+        </s:fill>
+        <s:stroke>
+            <s:SolidColorStroke color="0x3e3e3e" weight="2"/>
+        </s:stroke>
+        <s:filters>
+            <s:BlurFilter blurX="1" blurY="2"/>
+        </s:filters>
+    </s:Rect>
+
+    <s:HGroup width="100%" height="100%"
+              verticalAlign="middle" horizontalAlign="center"
+              paddingTop="3">
+        <s:Label text="{timeStringView}"
+                 fontFamily="mpbc" fontSize="28" color="0x8ed300"
+                />
+    </s:HGroup>
+
+</s:Group>

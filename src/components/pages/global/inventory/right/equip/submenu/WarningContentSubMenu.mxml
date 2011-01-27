@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         creationComplete="init();"
+        >
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.utils.adjustcolor.Color
+        import components.common.utils.adjustcolor.ColorMatrix
+        import components.common.utils.adjustcolor.ColorMatrixObject
+
+        [Bindable]
+        private var warningText:String = "";
+
+        public function initContent(message:String):void {
+            warningText = message;
+        }
+
+        private function init():void {
+            apearingA.play();
+
+            var cm:ColorMatrix = new ColorMatrix();
+            cm.applyColorMatrixObject(new ColorMatrixObject(0, 1, null, 0, new Color(40, 0, 0)));
+
+            bgBorderContainer.filters = [cm.filter];
+        }
+
+        private function close():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.IM_REMOVE_RIGHT_CONTENT_SUB_MENU);
+        }
+
+        private function closeWrapper():void {
+            disapearingA.play();
+        }
+        ]]>
+	</fx:Script>
+
+    <fx:Declarations>
+
+        <s:Animate id="disapearingA" target="{this}" duration="600"
+                   effectEnd="{close();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="1"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingA" target="{this}" duration="600">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+    </fx:Declarations>
+
+    <s:BorderContainer id="bgBorderContainer"
+                       width="431" height="315"
+                       backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+                       backgroundImageFillMode="repeat"
+                       borderAlpha="0.3"
+            />
+
+    <s:VGroup width="100%" height="100%"
+              horizontalAlign="center"
+            >
+        <s:VGroup width="100%" height="100%"
+                  horizontalAlign="center" verticalAlign="middle"
+                  gap="30">
+
+            <s:Label text="{warningText}"
+                     fontFamily="mpbc" fontSize="20"
+                     color="0xfad9a8"
+                     maxWidth="391"
+                     textAlign="center"
+                    />
+
+
+        </s:VGroup>
+        <s:HGroup paddingBottom="20">
+            <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+                                          colorMatrixObject="{new ColorMatrixObject(0,0.5)}"
+                                          customLabel="Крутотень"
+                                          fontSize="24"
+                                          fontSizeOver="24"
+                                          click="closeWrapper();"
+                    />
+        </s:HGroup>
+
+
+    </s:VGroup>
+
+
+</s:Group>

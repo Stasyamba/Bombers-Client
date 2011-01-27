@@ -1,0 +1,11 @@
+/html-template/
+/.actionScriptProperties
+/.flexProperties
+/.idea/
+/.settings/
+/bin-debug/
+/libs/
+/*.DS_Store
+/*.project
+/*.xml
+/*.iml

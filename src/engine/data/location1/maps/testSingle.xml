@@ -1,0 +1,56 @@
+<!--
+  ~ Copyright (c) 2010.
+  ~ Pavkin Vladimir
+  -->
+<Map>
+    <id val="TEST"/>
+    <name>testSingle</name>
+    <type>SINGLE</type>
+    <size width="20" height="14"/>
+    <spawns>
+        <Spawn x="0" y="0"/>
+        <Spawn x="19" y="0"/>
+        <Spawn x="19" y="13"/>
+        <Spawn x="0" y="13"/>
+    </spawns>
+    <rows>
+        <!--<Row val="fffwbbwbbbwbbwbfffff"/>-->
+        <!--<Row val="ffffwbbbwbbbwbfbffff"/>-->
+        <!--<Row val="bwfwbfbbbbbfbwbwbfff"/>-->
+        <!--<Row val="bbfbwbwbfbwbwbfbbfff"/>-->
+        <!--<Row val="bbbfbbbwfwbbbfbbbfff"/>-->
+        <!--<Row val="wbwbwbfffffbwbwbwfff"/>-->
+        <!--<Row val="bbbfbbbwfwbbbfbbbfff"/>-->
+        <!--<Row val="bbfbwbwbfbwbwbfbbfff"/>-->
+        <!--<Row val="bwbwbfbbbbbfbwbwbfff"/>-->
+        <!--<Row val="fbfbwbbbwbbbwbfbffff"/>-->
+        <!--<Row val="ffbwbbwbbbwbbwbfffff"/>-->
+        <!--<Row val="ffbwbbwbbbwbbwbfffff"/>-->
+        <!--<Row val="ffbwbbwbbbwbbwbfffff"/>-->
+        <!--<Row val="ffbwbbwbbbwbbwbfffff"/>-->
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+        <Row val="ffffffffffffffffffff"/>
+    </rows>
+    <objects>
+        <!--разные одноклеточные объекты: бонусы,всякие взрывы динамитов и т.д. -->
+    </objects>
+    <decorations>
+        <Decoration id="vk" x="7" y="4"/>
+    </decorations>
+    <bigObjects>
+        <BigObject id="vk" life="2" x="10" y="5" layer="lower"/>
+        <BigObject id="vk" life="2" x="5" y="9" layer="higher"/>
+    </bigObjects>
+</Map>

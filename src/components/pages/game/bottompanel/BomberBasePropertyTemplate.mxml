@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx">
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        [Embed(source="assets/pagegame/bottompanel/bombsCountPropertyBg.png")]
+        public static var bombsCountClass:Class;
+
+        [Embed(source="assets/pagegame/bottompanel/healthPropertyBg.png")]
+        public static var healthClass:Class;
+
+        [Embed(source="assets/pagegame/bottompanel/speedPropertyBg.png")]
+        public static var speedClass:Class;
+
+        [Embed(source="assets/pagegame/bottompanel/wavePowerPropertyBg.png")]
+        public static var wavePowerClass:Class;
+
+
+        public static const TYPE_SPEED:int = 0;
+        public static const TYPE_WAVE_POWER:int = 1;
+        public static const TYPE_BOBMS_COUNT:int = 2;
+        public static const TYPE_HEALTH:int = 3;
+
+
+        private var _propertyType:int;
+        [Bindable]
+        public var count:int = 0;
+
+        public function get propertyType():int {
+            return _propertyType;
+        }
+
+        public function set propertyType(value:int):void {
+            var isUnknownProperty:Boolean = false;
+
+            switch (value) {
+                case TYPE_BOBMS_COUNT:
+                    propertyImage.source = new bombsCountClass() as Bitmap;
+                    break;
+                case TYPE_HEALTH:
+                    propertyImage.source = new healthClass() as Bitmap;
+                    break;
+                case TYPE_SPEED:
+                    propertyImage.source = new speedClass() as Bitmap;
+                    break;
+                case TYPE_WAVE_POWER:
+                    propertyImage.source = new wavePowerClass() as Bitmap;
+                    break;
+
+                default:
+                    isUnknownProperty = true;
+                    break;
+            }
+
+            if (!isUnknownProperty) {
+                _propertyType = value;
+            }
+        }
+        ]]>
+	</fx:Script>
+    <s:HGroup width="100%" height="100%" verticalAlign="middle"
+              x="{propertyImage.width - 10}">
+        <s:Group>
+            <s:Rect width="27" height="27"
+                    radiusX="5" radiusY="5">
+                <s:fill>
+                    <s:SolidColor color="0x484743"/>
+                </s:fill>
+            </s:Rect>
+            <s:HGroup width="100%" height="100%"
+                      verticalAlign="middle" horizontalAlign="center">
+                <s:Label fontFamily="mpbc" fontSize="18" color="0xffffff"
+                         alpha="0.9"
+                         text="{count}"
+                        />
+            </s:HGroup>
+        </s:Group>
+    </s:HGroup>
+
+    <s:BitmapImage id="propertyImage">
+        <!--<s:filters>
+              <s:GlowFilter blurX="5" color="0xffffff" alpha="1" />
+              <s:GlowFilter blurX="4" color="0xffffff" alpha="1" />
+              <s:GlowFilter blurX="3" color="0xffffff" alpha="1" />
+              <s:GlowFilter blurX="2" color="0xffffff" alpha="1" />
+              <s:GlowFilter blurX="1" color="0xffffff" alpha="1" />
+          </s:filters>-->
+    </s:BitmapImage>
+
+</s:Group>

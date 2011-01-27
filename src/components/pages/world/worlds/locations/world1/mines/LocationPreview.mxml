@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         implements="components.common.worlds.locations.ILocationPreview"
+         xmlns:previewToolTip="components.pages.world.worlds.locations.world1.previewToolTip.*"
+        >
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.utils.adjustcolor.ColorMatrix
+        import components.common.worlds.locations.LocationType
+
+        import mx.controls.Alert
+
+        public function setOver(visible:Boolean, hueShift:int = 0, saturationShift:Number = 1):void {
+
+            var cm:ColorMatrix = new ColorMatrix();
+            cm.adjustHue(hueShift);
+            cm.adjustSaturation(saturationShift);
+
+            imageUpGlow.filters = [cm.filter];
+
+            imageUpGlow.visible = visible;
+            previewToolTip.previewVisible = visible;
+        }
+
+        public function openLocation():void {
+            // dispatch some event
+            Alert.show("Gold mine fuck yeah!");
+        }
+
+        public function getLocationType():LocationType {
+            return LocationType.WORLD1_MINE;
+        }
+        ]]>
+	</fx:Script>
+
+
+    <s:BitmapImage id="imageUp" source="@Embed(source='assets/pageworld/worlds/locationsworld1/mineLocation.png')"
+            />
+    <s:BitmapImage id="imageUpGlow"
+                   source="@Embed(source='assets/pageworld/worlds/locationsworld1/mineLocationOver.png')"
+                   visible="false"
+            />
+
+    <previewToolTip:PreviewLocationToopTip y="110" x="40" locationName="Шахты" id="previewToolTip"/>
+
+
+</s:Group>

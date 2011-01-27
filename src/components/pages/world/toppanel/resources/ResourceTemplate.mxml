@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         implements="components.pages.world.toppanel.resources.IResourceView"
+         creationComplete="init();"
+         xmlns:common="common.*"
+         height="25" width="86" xmlns:flexcomponents="components.common.flexcomponents.*"
+        >
+
+    <fx:Metadata>
+        [Event(name="toolTipCalledFirst", type="flash.events.Event")]
+    </fx:Metadata>
+
+    <fx:Declarations>
+
+        <s:Parallel id="openingProccessA">
+            <s:Animate id="appearingPopUpA" target="{mainPopUpContent}" duration="300"
+                       effectStart="{mainPopUpContent.alpha = 0; isOpeningProccess = true; openToolTip(); }"
+                       effectEnd="{isOpeningProccess = false;}"
+                    >
+
+                <s:SimpleMotionPath property="alpha" valueFrom="{mainPopUpContent.alpha}" valueTo="1.0"/>
+            </s:Animate>
+
+            <s:Animate id="appearingPreviewOver" target="{previewOver}" duration="200">
+                <s:SimpleMotionPath property="alpha" valueFrom="{previewOver.alpha}" valueTo="1.0"/>
+            </s:Animate>
+
+        </s:Parallel>
+
+        <s:Animate id="blurDisapearing" target="{blurMask}" duration="200">
+            <s:SimpleMotionPath property="blurX" valueFrom="70" valueTo="0.0"/>
+            <s:SimpleMotionPath property="blurY" valueFrom="70" valueTo="0.0"/>
+        </s:Animate>
+
+        <s:Parallel id="closingProccessA" duration="200">
+            <s:Animate id="disAppearingPopUpA" target="{mainPopUpContent}"
+                       effectStart="{isClosingProccess = true;}"
+                       effectEnd="{closeToolTip(); isClosingProccess = false;}"
+                    >
+
+                <s:SimpleMotionPath property="alpha" valueFrom="{mainPopUpContent.alpha}" valueTo="0.0"/>
+            </s:Animate>
+
+            <s:Animate id="disppearingPreviewOver" target="{previewOver}">
+                <s:SimpleMotionPath property="alpha" valueFrom="{previewOver.alpha}" valueTo="0.0"/>
+            </s:Animate>
+
+
+            <!--<s:Animate id="blurApearing" target="{blurMask}" duration="200">
+               <s:SimpleMotionPath property="blurX" valueFrom="{blurMask.blurX}" valueTo="50" />
+               <s:SimpleMotionPath property="blurY" valueFrom="{blurMask.blurY}" valueTo="50" />
+               </s:Animate>-->
+        </s:Parallel>
+
+        <s:Parallel id="acceleratedClosingProccessA">
+            <s:Animate id="acceleratedDisAppearingPopUpA" target="{mainPopUpContent}"
+                       effectStart="{isClosingProccess = true;}"
+                       effectEnd="{closeToolTip(); isClosingProccess = false;}"
+                       duration="100"
+                    >
+
+                <s:SimpleMotionPath property="alpha" valueFrom="{mainPopUpContent.alpha}" valueTo="0.0"/>
+            </s:Animate>
+
+            <s:Animate id="acceleratedDisppearingPreviewOver" target="{previewOver}" duration="20">
+                <s:SimpleMotionPath property="alpha" valueFrom="{previewOver.alpha}" valueTo="0.0"/>
+            </s:Animate>
+
+        </s:Parallel>
+
+        <s:Parallel id="resourceChangedA">
+            <s:Animate id="scaleChangingA" target="{resourceChanging}"
+                       duration="900"
+                    >
+
+                <s:SimpleMotionPath property="scaleX" valueFrom="{mainPopUpContent.scaleX}" valueTo="0.3"/>
+                <s:SimpleMotionPath property="scaleY" valueFrom="{mainPopUpContent.scaleY}" valueTo="0.3"/>
+            </s:Animate>
+
+            <s:Animate id="xyChangingA" target="{resourceChanging}" duration="700">
+                <s:SimpleMotionPath property="x" valueFrom="{resourceChanging.x}" valueTo="50"/>
+                <s:SimpleMotionPath property="y" valueFrom="{resourceChanging.y}" valueTo="10"/>
+                <!--(old font size / 2) 24/2 - 24*0.3/2 (result font size / 2)-->
+            </s:Animate>
+
+            <s:Animate id="alphaChangingA" target="{resourceChanging}" duration="700">
+                <s:SimpleMotionPath property="alpha" valueFrom="{resourceChanging.alpha}" valueTo="0.0"/>
+            </s:Animate>
+
+            <s:Sequence id="previewPulse">
+                <s:Animate id="appearPreviewOver" target="{previewOver}" duration="450">
+                    <s:SimpleMotionPath property="alpha" valueFrom="{previewOver.alpha}" valueTo="1.0"/>
+                </s:Animate>
+                <s:Animate id="disAppearPreviewOver" target="{previewOver}" duration="150">
+                    <s:SimpleMotionPath property="alpha" valueFrom="{previewOver.alpha}" valueTo="0.0"/>
+                </s:Animate>
+            </s:Sequence>
+
+        </s:Parallel>
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.resources.ResourcePrice
+        import components.common.resources.ResourceType
+        import components.common.resources.ResourceViewObject
+        import components.common.utils.adjustcolor.ColorMatrixObject
+
+        /* resource type with template will be filled */
+
+        private var _resourceType:ResourceType;
+
+        [Bindable]
+        private var resourceObject:ResourceViewObject = null;
+        [Bindable]
+        private var colorMatrixObject:ColorMatrixObject = new ColorMatrixObject();
+
+        //			[Bindable]
+        //			private var hueShift: int = 0;
+        //			[Bindable]
+        //			private var saturationShift: Number = 1;
+
+        /* animation params */
+
+        private var isMouseOnPopUp:Boolean = false;
+        private var isMouseOnPreview:Boolean = false;
+
+        private var isOpeningProccess:Boolean = false;
+        private var isClosingProccess:Boolean = false;
+
+        private var closeTimer:Timer = new Timer(300, 2);
+
+        /* initilize resource */
+
+        public function get resourceType():ResourceType {
+            return _resourceType;
+        }
+
+        public function set resourceType(value:ResourceType):void {
+            _resourceType = value;
+            initResource(value);
+        }
+
+
+        public function initResource(type:ResourceType):void {
+            if (resourceObject == null) {
+                resourceObject = Context.Model.resourceViewManager.getResource(type);
+
+                switch (resourceObject.type) {
+                    case ResourceType.GOLD:
+                        colorMatrixObject = new ColorMatrixObject(0, 0.7);
+                        break;
+                    case ResourceType.ADAMANT:
+                        colorMatrixObject = new ColorMatrixObject(80, 0.2);
+                        break;
+                    case ResourceType.CRYSTALS:
+                        colorMatrixObject = new ColorMatrixObject(230, 0.4);
+                        break
+                    case ResourceType.ANTIMATTER:
+                        colorMatrixObject = new ColorMatrixObject(190, 0.4);
+                        break;
+                }
+            }
+        }
+
+
+        /* initilize animation */
+
+
+        private function init():void {
+            closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
+            closeTimer.stop();
+        }
+
+        private function timerCompleteHandler(e:TimerEvent):void {
+            closeTimer.reset();
+            closeTimer.stop();
+
+            if (!isMouseOnPreview && !isMouseOnPopUp && !isClosingProccess) {
+                openingProccessA.stop();
+                closingProccessA.play();
+            }
+        }
+
+
+        /* wrappers for opening */
+
+        private function openToolTipWrapper():void {
+            if (!isOpeningProccess) {
+                openingToolTipProcess();
+
+                if (!isClosingProccess && !closeTimer.running) {
+                    dispatchEvent(new Event("toolTipCalledFirst"));
+                    blurDisapearing.play();
+                }
+            }
+        }
+
+        private function closeToolTipWrapper():void {
+            closeTimer.start();
+        }
+
+
+        /* open/close processes */
+
+        private function openingToolTipProcess():void {
+            closingProccessA.stop();
+            openingProccessA.play();
+        }
+
+        private function closingToolTipProcess():void {
+            openingProccessA.stop();
+            closingProccessA.play();
+        }
+
+        /* implement interface */
+
+        public function resourceChanged(value:int):void {
+            if (value != 0) {
+                resourceChanging.text = value.toString();
+
+                if (value > 0) {
+                    resourceChanging.text = "+" + resourceChanging.text;
+                } else if (value < 0) {
+                    resourceChanging.text = "-" + resourceChanging.text;
+                }
+
+
+                resourceChanging.x = 20;
+                resourceChanging.y = -5;
+                resourceChanging.scaleX = 1;
+                resourceChanging.scaleY = 1;
+                resourceChanging.alpha = 1;
+
+                resourceChangedA.play();
+
+            }
+        }
+
+        public function openToolTip():void {
+            resourcePopUp.displayPopUp = true;
+        }
+
+        public function closeToolTip():void {
+            resourcePopUp.displayPopUp = false;
+        }
+
+        public function acceleratedCloseToolTip():void {
+            resourcePopUp.displayPopUp = false;
+            acceleratedDisppearingPreviewOver.play();
+        }
+
+        public function openMarket():void {
+            resourcePopUp.displayPopUp = false;
+            var rp:ResourcePrice = new ResourcePrice(0, 0, 0, 0);
+            rp.setResourceValue(resourceObject.type, 1);
+
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_RESOURCE_MARKET, rp);
+        }
+
+        public function setResource(amount:int):void {
+            resourceAmount.text = amount.toString();
+        }
+        ]]>
+	</fx:Script>
+
+
+    <s:Group width="86" height="25"
+             id="mainPreviewContent"
+             mouseOver="{ isMouseOnPreview = true; openToolTipWrapper(); }"
+             mouseOut="{ isMouseOnPreview = false; closeToolTipWrapper(); }"
+            >
+
+        <s:Rect id="previewUp"
+                width="86" height="25"
+                radiusX="5"
+                >
+
+            <s:fill>
+                <s:SolidColor color="0x000000"/>
+            </s:fill>
+            <s:stroke>
+                <s:SolidColorStroke color="0x6b6c6b" weight="1"/>
+            </s:stroke>
+            <s:filters>
+                <s:BlurFilter blurX="2" blurY="2"/>
+            </s:filters>
+
+        </s:Rect>
+
+        <s:Group id="previewOver" alpha="0">
+
+            <s:Rect width="86" height="25"
+                    radiusX="5"
+                    >
+
+                <s:fill>
+                    <s:SolidColor color="0x000000"/>
+                </s:fill>
+                <s:stroke>
+                    <s:SolidColorStroke color="{resourceObject.color}" weight="3"/>
+                </s:stroke>
+                <s:filters>
+                    <s:BlurFilter blurX="5" blurY="5"/>
+                </s:filters>
+
+            </s:Rect>
+
+            <s:Rect width="86" height="25"
+                    radiusX="5"
+                    >
+
+                <s:fill>
+                    <s:SolidColor color="0x000000"/>
+                </s:fill>
+                <s:stroke>
+                    <s:SolidColorStroke color="{resourceObject.color}" weight="2"/>
+                </s:stroke>
+            </s:Rect>
+
+
+        </s:Group>
+
+        <s:HGroup width="86" height="25" verticalAlign="middle"
+                  paddingLeft="4" paddingRight="7">
+            <s:BitmapImage source="{resourceObject.smallImage}"
+                           scaleX="0.8" scaleY="0.8"
+                           smooth="true"
+                    />
+            <mx:Spacer width="100%"/>
+            <s:Label id="resourceAmount" fontFamily="mpbc" text="23" fontSize="16" color="0xffffff"/>
+        </s:HGroup>
+
+    </s:Group>
+
+    <s:Label id="resourceChanging" y="-5" x="10" alpha="0" color="0xffd307" fontSize="45"/>
+
+
+    <s:PopUpAnchor id="resourcePopUp"
+                   popUpPosition="below"
+                   x="-270" y="25">
+
+        <s:Group id="mainPopUpContent"
+                 alpha="0"
+                 mouseOver="{ isMouseOnPopUp = true; }"
+                 mouseOut="{ isMouseOnPopUp = false; closeToolTipWrapper(); }"
+                >
+
+            <s:filters>
+                <s:BlurFilter id="blurMask" blurX="50" blurY="50"/>
+            </s:filters>
+
+            <s:BitmapImage source="@Embed(source='assets/pageworld/toppanel/common/resourceOpenedBG.png')"/>
+            <s:VGroup width="100%" height="100%"
+                      horizontalAlign="center" verticalAlign="top"
+                      gap="25"
+                      paddingTop="40"
+                    >
+                <s:HGroup gap="12"
+                          verticalAlign="middle" horizontalAlign="center"
+                          width="100%" height="130">
+
+                    <s:HGroup width="113" height="113"
+                              horizontalAlign="center" verticalAlign="middle">
+                        <s:BitmapImage source="{resourceObject.bigImage}"/>
+                    </s:HGroup>
+
+                    <s:VGroup gap="13">
+                        <s:Label text="{resourceObject.name}"
+                                 width="191"
+                                 fontSize="30" fontFamily="mpbc"
+                                 color="0xffffff"
+                                />
+
+                        <s:Label text="{resourceObject.describe}"
+
+                                 width="191"
+                                 fontSize="13" fontFamily="mpr"
+                                 color="0xffffff"
+                                />
+                    </s:VGroup>
+
+                </s:HGroup>
+
+                <flexcomponents:PatternButton
+                        customLabel="Купить" fontSize="24" fontSizeOver="24"
+                        skinClass="skins.buttons.Pattern3ButtonS"
+                        colorMatrixObject="{colorMatrixObject}"
+                        click="openMarket();"
+                        />
+
+            </s:VGroup>
+
+        </s:Group>
+    </s:PopUpAnchor>
+
+
+</s:Group>

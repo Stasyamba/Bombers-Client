@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         creationComplete="init();"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         xmlns:preloaders="components.common.utils.preloaders.*">
+
+
+    <fx:Declarations>
+
+        <s:Animate id="disapearingAnimation" target="{this}" duration="300"
+                   effectEnd="{this.alpha = 0; hideWarning();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="{this.alpha}"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingAnimation" target="{this}" duration="700"
+                   effectStart="{showWarning();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        public static const PRELOADER_TYPE:int = 0;
+        public static const WARNING_TYPE:int = 1;
+
+        public static const PRELOADER_STATE:int = 0;
+        public static const WARNING_STATE:int = 1;
+        public static const NONE_STATE:int = 2;
+
+
+        public var state:int = NONE_STATE;
+
+
+        [Bindable]
+        public var warningColor:uint;
+        [Bindable]
+        public var closeButtonVisible:Boolean = true;
+        [Bindable]
+        public var warningText:String = "";
+        [Bindable]
+        public var preloaderText:String = "";
+
+        [Bindable]
+        public var contentVisible:Boolean = false;
+        [Bindable]
+        public var preloaderVisible:Boolean = false;
+
+
+        private var timer:Timer = new Timer(5000, 1);
+
+
+        private function init():void {
+            this.visible = false;
+            timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
+        }
+
+        private function timerCompleteHandler(e:TimerEvent):void {
+            timer.reset();
+            timer.stop();
+        }
+
+
+        private function showWarning():void {
+            this.visible = true;
+        }
+
+        private function hideWarning():void {
+            state = NONE_STATE;
+
+            this.visible = false;
+        }
+
+        private function showWarningWrapper():void {
+            disapearingAnimation.stop();
+            apearingAnimation.play();
+        }
+
+        private function hideWarningWrapper():void {
+            apearingAnimation.stop();
+            disapearingAnimation.play();
+        }
+
+        public function hide():void {
+            if (this.visible && !disapearingAnimation.isPlaying) {
+                hideWarningWrapper();
+            }
+        }
+
+
+        public function show(type:int, message:String, color:uint):void {
+            warningColor = color;
+            contentVisible = false;
+            preloaderVisible = false;
+
+            switch (type) {
+                case PRELOADER_TYPE:
+
+
+                    closeButtonVisible = false;
+                    preloaderText = message;
+                    preloaderVisible = true;
+                    if (!this.visible) {
+                        showWarningWrapper();
+                    }
+
+                    state = PRELOADER_STATE;
+
+
+                    break;
+                case WARNING_TYPE:
+
+                    closeButtonVisible = true;
+                    warningText = message;
+                    contentVisible = true;
+
+                    if (!this.visible) {
+                        showWarningWrapper();
+                    }
+
+
+                    state = WARNING_STATE;
+
+
+                    break;
+                default:
+                    hideWarning();
+                    break;
+            }
+        }
+        ]]>
+	</fx:Script>
+
+
+    <s:Group id="warningGroup" x="25" y="220"
+             visible="true">
+        <s:Rect width="730" height="170" radiusX="20" radiusY="20">
+            <s:fill>
+                <s:SolidColor color="0x000000"/>
+            </s:fill>
+            <s:stroke>
+                <s:SolidColorStroke color="{warningColor}" weight="2"/>
+            </s:stroke>
+        </s:Rect>
+
+
+        <flexcomponents:CloseButton id="closeButton"
+                                    visible="{closeButtonVisible}"
+                                    x="680" y="13"
+                                    skinClass="skins.buttons.CloseButtonOriginS"
+                                    scale="0.8"
+                                    click="hideWarningWrapper();"
+                />
+
+        <s:HGroup id="warningContent"
+                  visible="{contentVisible}"
+                  width="100%" height="100%"
+                  horizontalAlign="center" verticalAlign="middle">
+
+            <s:Label id="warningTextLabel" text="{warningText}" color="{warningColor}" fontFamily="mpbc" fontSize="24"
+                     width="600" textAlign="center"
+                    />
+        </s:HGroup>
+
+        <s:HGroup id="reloaderContent"
+                  visible="{preloaderVisible}"
+                  width="100%" height="100%"
+                  horizontalAlign="center" verticalAlign="middle">
+
+            <preloaders:Spinner tickWidth="7" size="50" tickColor="{warningColor}"/>
+
+            <s:Label id="preloaderTextLabel" text="{preloaderText}" color="{warningColor}" fontFamily="mpbc"
+                     fontSize="24"
+                     maxWidth="600" textAlign="center"
+                    />
+        </s:HGroup>
+
+
+    </s:Group>
+
+</s:Group>
