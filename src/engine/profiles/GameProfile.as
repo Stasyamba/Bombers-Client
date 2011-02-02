@@ -1,5 +1,5 @@
 package engine.profiles {
-import components.common.VkontakteProfile;
+import components.common.profiles.VkontakteProfile;
 import components.common.bombers.BomberType;
 import components.common.items.ItemProfileObject;
 import components.common.items.ItemType;

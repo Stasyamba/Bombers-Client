@@ -2,7 +2,7 @@ package appmodel {
 import api.vkontakte.constant.UserProfileField
 import api.vkontakte.model.VkontakteApplicationModel
 
-import components.common.VkontakteProfile
+import components.common.profiles.VkontakteProfile
 import components.common.base.expirance.ExpiranceManager
 import components.common.base.market.MarketManager
 import components.common.base.window.WindowsManager

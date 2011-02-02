@@ -83,7 +83,7 @@
         
         import components.ApplicationView;
         import components.WallView;
-        import components.common.VkontakteProfile;
+        import components.common.profiles.VkontakteProfile;
         import components.common.utils.enviroment.FlashVars;
         
         import mx.core.IVisualElement;
