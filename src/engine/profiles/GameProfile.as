@@ -16,10 +16,10 @@ import engine.bombers.skin.BomberSkin
 
 public class GameProfile {
 
-    private var _name:String;
+    private var _name:String="";
     public var expirance:int;
     public var energy:int = 5;
-    public var id:int;
+    public var id:int = 1;
     public var photoURL:String;
 
     public var currentLocation:LocationType;
@@ -33,12 +33,12 @@ public class GameProfile {
      * BomberType
      */
     public var currentBomberType:BomberType;
-    public var resources:ResourcePrice;
+    public var resources:ResourcePrice = new ResourcePrice(20,20,20,20);
 
     /**
      * content = [LocationType, ...]
      */
-    public var openedLocations:Array = new Array();
+    public var openedLocations:Array = [LocationType.WORLD1_GRASSFIELDS,LocationType.WORLD1_CASTLE];
     /**
      * content = [ItemProfileObject, ...]
      */
@@ -232,11 +232,14 @@ public class GameProfile {
             res.gotItems.push(modelItem);
         }
         var a:int = obj.getInt("AuraOne");
-        res.setAura(null, ItemType.byValue(a))
+        if(a != 0)
+            res.setAura(null, ItemType.byValue(a))
         a = obj.getInt("AuraTwo");
-        res.setAura(null, ItemType.byValue(a))
+        if(a != 0)
+            res.setAura(null, ItemType.byValue(a))
         a = obj.getInt("AuraThree");
-        res.setAura(null, ItemType.byValue(a))
+        if(a != 0)
+            res.setAura(null, ItemType.byValue(a))
 
         res.resources = new ResourcePrice(obj.getInt("Gold"), obj.getInt("Crystal"), obj.getInt("Adamantium"), obj.getInt("Antimatter"))
 

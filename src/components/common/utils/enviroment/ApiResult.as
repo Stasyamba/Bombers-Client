@@ -1,8 +1,7 @@
 package components.common.utils.enviroment {
 import api.vkontakte.util.json.JSON
 
-import components.common.VkontakteProfile
-
+import components.common.profiles.VkontakteProfile
 
 public class ApiResult {
     public var settingsResponde:Number;

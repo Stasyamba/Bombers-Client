@@ -21,8 +21,8 @@
 		<![CDATA[
 			import api.vkontakte.VkontakteGlobals;
 
-            import components.common.VkontakteProfile
-			import components.common.resources.ResourcePrice;
+            import components.common.profiles.VkontakteProfile
+            import components.common.resources.ResourcePrice;
 			import components.pages.global.inventory.InventoryW;
 			import components.pages.global.resourcemarket.ResourceMarketW;
 			import components.pages.global.tutorial.TutorialPreviewW;
