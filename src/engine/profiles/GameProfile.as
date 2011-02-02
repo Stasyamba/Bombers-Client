@@ -1,25 +1,27 @@
 package engine.profiles {
-import components.common.bombers.BomberType;
-import components.common.items.ItemProfileObject;
-import components.common.items.ItemType;
-import components.common.profiles.VkontakteProfile;
-import components.common.resources.ResourcePrice;
-import components.common.worlds.WorldsType;
-import components.common.worlds.locations.LocationType;
 
-import engine.bombers.interfaces.IGameSkills;
-import engine.bombers.mapInfo.GameSkills;
-import engine.bombers.skin.BomberSkin;
-import engine.profiles.interfaces.IGameProfile;
+import com.smartfoxserver.v2.entities.data.ISFSArray
+import com.smartfoxserver.v2.entities.data.ISFSObject
 
-public class GameProfile implements IGameProfile {
+import components.common.bombers.BomberType
+import components.common.items.ItemProfileObject
+import components.common.items.ItemType
+import components.common.resources.ResourcePrice
+import components.common.worlds.WorldsType
+import components.common.worlds.locations.LocationType
 
-    private var _name:String = "";
+import engine.bombers.interfaces.IGameSkills
+import engine.bombers.mapInfo.GameSkills
+import engine.bombers.skin.BomberSkin
+
+public class GameProfile {
+
+    private var _name:String="";
     public var expirance:int;
-	public var energy: int = 5;
-    public var id:String = "";
-	public var photoURL: String = "";
-	
+    public var energy:int = 5;
+    public var id:int = 1;
+    public var photoURL:String;
+
     public var currentLocation:LocationType;
     public var currentWorld:WorldsType = WorldsType.WORLD1;
 
@@ -31,13 +33,12 @@ public class GameProfile implements IGameProfile {
      * BomberType
      */
     public var currentBomberType:BomberType;
-    public var resources:ResourcePrice = new ResourcePrice(20, 20, 0, 0);
+    public var resources:ResourcePrice = new ResourcePrice(20,20,20,20);
 
     /**
      * content = [LocationType, ...]
      */
-    public var openedLocations:Array = [LocationType.WORLD1_GRASSFIELDS, LocationType.WORLD1_CASTLE];
-
+    public var openedLocations:Array = [LocationType.WORLD1_GRASSFIELDS,LocationType.WORLD1_CASTLE];
     /**
      * content = [ItemProfileObject, ...]
      */
@@ -51,7 +52,10 @@ public class GameProfile implements IGameProfile {
      */
     private var _aursTurnedOn:Array = new Array();
 
-
+    /*
+    * content = [BomberType,...]
+    * */
+    public var bombersOpened = new Array();
     //public var vkProfile:VkontakteProfile;
 
 
@@ -213,6 +217,44 @@ public class GameProfile implements IGameProfile {
         return Context.imageService.getBomberSkin("robot")
     }
 
+    public static function fromISFSObject(obj:ISFSObject):GameProfile {
+        var res:GameProfile = new GameProfile();
+        res.id = obj.getInt("Id");
+        res.name = obj.getUtfString("Nick");
+        res.expirance = obj.getInt("Experience")
+        var items:ISFSArray = obj.getSFSArray("WeaponsOpen");
+        for (var i:int = 0; i < items.size(); i++) {
+            var objItem:ISFSObject = items.getSFSObject(i);
+            var itemId:int = objItem.getInt("WeaponId");
+            var itemCount:int = objItem.getInt("Count");
+            var modelItem:ItemProfileObject = new ItemProfileObject(ItemType.byValue(itemId), itemCount);
+            res.packItems.push(modelItem);
+            res.gotItems.push(modelItem);
+        }
+        var a:int = obj.getInt("AuraOne");
+        if(a != 0)
+            res.setAura(null, ItemType.byValue(a))
+        a = obj.getInt("AuraTwo");
+        if(a != 0)
+            res.setAura(null, ItemType.byValue(a))
+        a = obj.getInt("AuraThree");
+        if(a != 0)
+            res.setAura(null, ItemType.byValue(a))
 
+        res.resources = new ResourcePrice(obj.getInt("Gold"), obj.getInt("Crystal"), obj.getInt("Adamantium"), obj.getInt("Antimatter"))
+
+        items = obj.getSFSArray("LocationsOpen");
+        for (i = 0; i < items.size(); i++) {
+           res.openedLocations.push(LocationType.byValue(items.getInt(i)))
+        }
+
+        items = obj.getSFSArray("BombersOpen");
+        for (i = 0; i < items.size(); i++) {
+           res.openedLocations.push(BomberType.byValue(items.getInt(i)))
+        }
+        return res;
+    }
 }
 }
+
+

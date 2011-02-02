@@ -83,7 +83,6 @@
         
         import components.ApplicationView;
         import components.WallView;
-        import components.common.profiles.VkontakteProfile;
         import components.common.utils.enviroment.FlashVars;
         
         import mx.core.IVisualElement;
@@ -144,9 +143,6 @@
             } else {
                 // local testing
 
-                //Context.Model.currentSettings.gameProfile.vkProfile = new VkontakteProfile(ApplicationModel.APPLICATION_AUTHOR_ID);
-                Context.Model.currentSettings.gameProfile.id = ApplicationModel.APPLICATION_AUTHOR_ID;
-                //Context.Model.currentSettings.apiResult = new ApiResult("", true);
                 Context.Model.viewer.id = "72969483";
 
 

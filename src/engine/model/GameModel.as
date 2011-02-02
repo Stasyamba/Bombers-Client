@@ -80,7 +80,7 @@ public class GameModel {
 
     private function onGameServerConnected():void {
         //todo: here should be special login process
-        Context.gameServer.login(profileManager.name)
+        Context.gameServer.login(Context.Model.currentSettings.socialProfile.vkProfile.id,Context.Model.currentSettings.socialProfile.vkProfile.id)
     }
 
 

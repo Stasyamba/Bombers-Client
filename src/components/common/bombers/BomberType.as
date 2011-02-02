@@ -21,5 +21,14 @@ public class BomberType {
         return _name;
     }
 
+    public static function byValue(value:int):BomberType {
+        switch(value){
+            case FURY_JOE.value:
+                return FURY_JOE
+            case R2D3.value:
+                return R2D3
+        }
+        throw new ArgumentError("no BomberType found with value = " + value);
+    }
 }
 }

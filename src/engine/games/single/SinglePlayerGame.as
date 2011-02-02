@@ -35,10 +35,7 @@ import engine.model.managers.singlePlayer.SinglePlayerExplosionsManager
 import engine.model.managers.singlePlayer.SinglePlayerObjectManager
 import engine.playerColors.PlayerColor
 import engine.profiles.GameProfile
-import engine.profiles.interfaces.IGameProfile
 import engine.utils.greensock.TweenMax
-import engine.weapons.AtomBombWeapon
-import engine.weapons.RegularMineWeapon
 import engine.weapons.WeaponBuilder
 import engine.weapons.WeaponType
 import engine.weapons.interfaces.IDeactivatableWeapon
@@ -71,7 +68,7 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
         _bombsManager = new SinglePlayerBombsManager(mapManager);
         _explosionsManager = new SinglePlayerExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
         _objectManager = new SinglePlayerObjectManager(playerManager, enemiesManager, mapManager);
-        weaponBuilder = new WeaponBuilder(bombsBuilder,_mapManager,mapObjectBuilder,objectManager)
+        weaponBuilder = new WeaponBuilder(bombsBuilder, _mapManager, mapObjectBuilder, objectManager)
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
             EngineContext.frameEntered.add(playerManager.movePlayer);
@@ -151,10 +148,10 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
 
     public function addPlayer(mySelf:User, color:PlayerColor):void {
         //todo:here player's profile will be taken as user variable
-        var profile:IGameProfile = new GameProfile();
+        var profile:GameProfile = new GameProfile();
         var gameSkills:IGameSkills = profile.getGameSkills();
         var gameSkin:BomberSkin = profile.getSkin(1);
-        playerManager.setPlayer(playersBuilder.makePlayer(this, 1, profile.name, color, gameSkills, weaponBuilder.makeMine(20,WeaponType.REGULAR_MINE), gameSkin));
+        playerManager.setPlayer(playersBuilder.makePlayer(this, 1, profile.name, color, gameSkills, weaponBuilder.makeSpecialBomb(20, WeaponType.DYNAMITE_WEAPON), gameSkin));
     }
 
     public function addBot(color:PlayerColor):void {

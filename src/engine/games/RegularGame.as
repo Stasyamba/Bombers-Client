@@ -31,7 +31,6 @@ import engine.model.managers.regular.MapObjectManager
 import engine.model.managers.regular.PlayerManager
 import engine.playerColors.PlayerColor
 import engine.profiles.GameProfile
-import engine.profiles.interfaces.IGameProfile
 import engine.utils.Direction
 import engine.weapons.AtomBombWeapon
 import engine.weapons.WeaponBuilder
@@ -92,7 +91,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
     public function addPlayer(user:User, color:PlayerColor):void {
         //todo:here player's profile will be taken as user variable
-        var profile:IGameProfile = new GameProfile();
+        var profile:GameProfile = new GameProfile();
         var gameSkills:IGameSkills = profile.getGameSkills();
         var gameSkin:BomberSkin = profile.getSkin(user.playerId);
         if (user.isItMe) {

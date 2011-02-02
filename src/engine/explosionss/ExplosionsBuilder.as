@@ -23,6 +23,10 @@ public class ExplosionsBuilder {
                 return new AtomExplosion(mapManager.map, centerX, centerY)
             case ExplosionType.BOX:
                 return new BoxExplosion(mapManager.map, centerX, centerY)
+            case ExplosionType.DYNAMITE:
+                var e:Explosion = new Explosion(mapManager.map, centerX, centerY, 4)
+                e.damage = 2;
+                return e
             case ExplosionType.NULL:
                 return NullExplosion.getInstance();
         }

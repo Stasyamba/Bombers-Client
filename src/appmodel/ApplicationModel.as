@@ -2,13 +2,13 @@ package appmodel {
 import api.vkontakte.constant.UserProfileField
 import api.vkontakte.model.VkontakteApplicationModel
 
-import components.common.profiles.VkontakteProfile
 import components.common.base.expirance.ExpiranceManager
 import components.common.base.market.MarketManager
 import components.common.base.window.WindowsManager
 import components.common.bombers.BombersManager
 import components.common.items.ItemsManager
 import components.common.items.categories.ItemsCategoriesManager
+import components.common.profiles.VkontakteProfile
 import components.common.resources.ResourceViewManager
 import components.common.worlds.locations.LocationManager
 import components.common.worlds.locations.LocationViewManager

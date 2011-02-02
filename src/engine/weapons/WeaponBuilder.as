@@ -21,8 +21,8 @@ public class WeaponBuilder {
     private var _objectBuilder:MapObjectBuilder
     private var _objectManager:IObjectManager
 
-    public function WeaponBuilder(bombsBUilder:BombsBuilder, mapManager:MapManager, objectBuilder:MapObjectBuilder, objectManager:IObjectManager) {
-        _bombsBuilder = bombsBUilder
+    public function WeaponBuilder(bombsBuilder:BombsBuilder, mapManager:MapManager, objectBuilder:MapObjectBuilder, objectManager:IObjectManager) {
+        _bombsBuilder = bombsBuilder
         _mapManager = mapManager
         _objectBuilder = objectBuilder
         _objectManager = objectManager
@@ -34,6 +34,8 @@ public class WeaponBuilder {
                 return new AtomBombWeapon(_mapManager,_bombsBuilder,charges);
             case WeaponType.BOX_BOMB_WEAPON:
                 return new BoxBombWeapon(_mapManager,_bombsBuilder,charges);
+            case WeaponType.DYNAMITE_WEAPON:
+                return new DynamiteWeapon(_mapManager,_bombsBuilder,charges);
         }
         throw new ArgumentError("unknown special bomb type");
     }
