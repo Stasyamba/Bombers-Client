@@ -99,7 +99,7 @@
         public function hasAnyPlayer():Boolean {
             return !isProfileNull;
         }
-        public function hasPlayer(id:String):Boolean {
+        public function hasPlayer(id:int):Boolean {
             return !isProfileNull && (_profile.id == id);
         }
         public function set isReady(value:Boolean):void {

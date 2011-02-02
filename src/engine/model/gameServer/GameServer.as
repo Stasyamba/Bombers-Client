@@ -52,26 +52,27 @@ import org.osflash.signals.Signal
 public class GameServer extends SmartFox {
 
     //output
-    public static const VIEW_DIRECTION_CHANGED:String = "view_direction_changed";
-    public static const TRY_SET_BOMB:String = 'try_set_bomb';
+    private static const VIEW_DIRECTION_CHANGED:String = "view_direction_changed";
+    private static const TRY_SET_BOMB:String = 'try_set_bomb';
     //input
-    public static const GAME_STARTED:String = "game_started";
-    public static const THREE_SECONDS_TO_START:String = "3_seconds_to_start";
-    public static const BOMB_SET:String = 'set_bomb';
-    public static const BOMB_EXPLODED:String = "bomb_exploded";
-    public static const BONUS_APPEARED:String = "bonus_appeared";
+    private static const GAME_STARTED:String = "game_started";
+    private static const THREE_SECONDS_TO_START:String = "3_seconds_to_start";
+    private static const BOMB_SET:String = 'set_bomb';
+    private static const BOMB_EXPLODED:String = "bomb_exploded";
+    private static const BONUS_APPEARED:String = "bonus_appeared";
 
     private static const DEATH_WALL_APPEARED:String = "death_wall_appeared";
 
-    public static const PLAYER_DIED:String = "player_died";
+    private static const PLAYER_DIED:String = "player_died";
     private static const GAME_ENDED:String = "game_ended";
 
     //bidirectional
-    public static const INPUT_DIRECTION_CHANGED:String = "input_direction_changed";
-    public static const PLAYER_DAMAGED:String = "player_damaged";
-    public static const ACTIVATE_DYNAMIC_OBJECT:String = "activate_dynamic_object";
-    public static const BONUS_TAKEN:String = "bonus_taken";
-    public static const PING:String = "ping";
+    private static const INPUT_DIRECTION_CHANGED:String = "input_direction_changed";
+    private static const PLAYER_DAMAGED:String = "player_damaged";
+    private static const ACTIVATE_DYNAMIC_OBJECT:String = "activate_dynamic_object";
+    private static const BONUS_TAKEN:String = "bonus_taken";
+    private static const PING:String = "ping";
+    private static const GAME_PROFILE_LOADED:String = "interface.gameProfileLoaded";
 
     public var ip:String;
     public var port:int;
@@ -91,6 +92,7 @@ public class GameServer extends SmartFox {
 
     public var roomCreationError:Signal = new Signal(String);
     public var inGameMessageReceived:InGameMessageReceivedSignal = new InGameMessageReceivedSignal();
+
 
     public function GameServer() {
         super(true)
@@ -136,8 +138,8 @@ public class GameServer extends SmartFox {
         connect(ip, port);
     }
 
-    public function login(withName:String):void {
-        send(new LoginRequest(withName, "", zone));
+    public function login(withName:String,pass:String):void {
+        send(new LoginRequest(withName, pass, zone));
     }
 
     public function joinDefaultRoom():void {
@@ -417,6 +419,8 @@ public class GameServer extends SmartFox {
                 })
                 timer.start();
                 break;
+            case GAME_PROFILE_LOADED:
+                //var profileSFS : ISFSObject = responseParams.get
         }
 
     }
