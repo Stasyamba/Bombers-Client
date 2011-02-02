@@ -1,5 +1,7 @@
 package components.common.utils.enviroment {
 public class FlashVars {
+	
+	public var auth_key:String;
     public var viewerType:String;
     public var groupId:String;
     public var referrer:String;

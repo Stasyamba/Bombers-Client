@@ -57,7 +57,7 @@
         private function panelCreationComplete():void {
             apearingAnimation.play();
 
-            bomberImage.source = Context.Model.bomberManager.getBomber(Context.Model.currentSettings.ownGameProfile.currentBomberType).viewObject.bigImageURL;
+            bomberImage.source = Context.Model.bomberManager.getBomber(Context.Model.currentSettings.gameProfile.currentBomberType).viewObject.bigImageURL;
 
             var cm:ColorMatrix = new ColorMatrix();
             var cmo:ColorMatrixObject = new ColorMatrixObject(80);

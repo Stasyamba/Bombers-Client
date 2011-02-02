@@ -31,7 +31,7 @@
 
 
             // do once in loading time
-            worlds.loadWorld(Context.Model.currentSettings.ownGameProfile.currentWorld, true);
+            worlds.loadWorld(Context.Model.currentSettings.gameProfile.currentWorld, true);
         }
         ]]>
 	</fx:Script>

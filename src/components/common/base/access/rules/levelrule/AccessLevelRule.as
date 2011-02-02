@@ -19,7 +19,7 @@ public class AccessLevelRule implements IAccessRule {
         type = AccessRuleType.LEVEL_RULE;
 
         var res:Boolean = false;
-        var currentLevel:int = Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.ownGameProfile.expirance);
+        var currentLevel:int = Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.gameProfile.expirance);
 
         if (currentLevel >= minimumLevel) {
             res = true;

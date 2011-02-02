@@ -79,7 +79,7 @@ public final class Context extends VyanaContext {
     public static function getSigObject():Object {
         var time:Number = Math.round(Math.random() * 100000);
         var rand:Number = Math.round(Math.random() * 400000);
-        var sig:String = MD5.encrypt(Context.Model.currentSettings.ownGameProfile.vkProfile.id.toString() + time.toString() + rand.toString() + Context.Model.currentSettings.applicationSecret);
+        var sig:String = MD5.encrypt(Context.Model.currentSettings.gameProfile.id + time.toString() + rand.toString() + Context.Model.currentSettings.applicationSecret);
 
         var res:Object = new Object();
         res["time"] = time;

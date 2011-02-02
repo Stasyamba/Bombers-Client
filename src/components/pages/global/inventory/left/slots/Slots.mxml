@@ -28,7 +28,7 @@
         private function initContent():void {
             itemsCollection = new ArrayCollection();
 
-            for each(var io:ItemProfileObject in Context.Model.currentSettings.ownGameProfile.packItems) {
+            for each(var io:ItemProfileObject in Context.Model.currentSettings.gameProfile.packItems) {
                 itemsCollection.addItem(io);
             }
 

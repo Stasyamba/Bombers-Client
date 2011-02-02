@@ -94,7 +94,7 @@
 //					ContextEvent.IM_SERVERREQUEST, true
 //				);
 
-            Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand = null;
+            Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand = null;
         }
         ]]>
 	</fx:Script>

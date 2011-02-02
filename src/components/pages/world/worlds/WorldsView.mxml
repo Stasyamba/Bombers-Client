@@ -56,8 +56,8 @@
                     mainWorldGroup.addElement(content);
                 }
             } else {
-                if (Context.Model.currentSettings.ownGameProfile.currentWorld != world) {
-                    loadWorld(Context.Model.currentSettings.ownGameProfile.currentWorld, true);
+                if (Context.Model.currentSettings.gameProfile.currentWorld != world) {
+                    loadWorld(Context.Model.currentSettings.gameProfile.currentWorld, true);
                 }
             }
         }

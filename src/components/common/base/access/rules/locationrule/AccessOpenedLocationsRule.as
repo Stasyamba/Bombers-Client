@@ -38,7 +38,7 @@ public class AccessOpenedLocationsRule implements IAccessRule {
 
         // check for all location
         for each(var ltn:LocationType in _nessesoryLocations) {
-            for each(var lt:LocationType in Context.Model.currentSettings.ownGameProfile.openedLocations) {
+            for each(var lt:LocationType in Context.Model.currentSettings.gameProfile.openedLocations) {
                 if (lt != ltn) {
                     res = false;
                 } else {

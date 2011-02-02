@@ -94,7 +94,7 @@
 
         private function showResults():void {
             var res:Array = new Array();
-            res.push(new Result(Context.Model.currentSettings.ownGameProfile, 10));
+            res.push(new Result(Context.Model.currentSettings.gameProfile, 10));
 
             var r:GameResults = new GameResults(res, []);
             Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, r);

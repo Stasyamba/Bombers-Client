@@ -54,7 +54,7 @@
             //				);
 
 
-            Context.Model.currentSettings.ownGameProfile.setAura(itemViewObject.type, null);
+            Context.Model.currentSettings.gameProfile.setAura(itemViewObject.type, null);
         }
 
         private function auraInfo():void {

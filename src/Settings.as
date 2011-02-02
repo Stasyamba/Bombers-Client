@@ -1,8 +1,9 @@
 package {
-import components.common.utils.enviroment.ApiResult
-import components.common.utils.enviroment.FlashVars
+import components.common.utils.SocialProfile;
+import components.common.utils.enviroment.ApiResult;
+import components.common.utils.enviroment.FlashVars;
 
-import engine.profiles.GameProfile
+import engine.profiles.GameProfile;
 
 [Bindable]
 public class Settings {
@@ -12,8 +13,11 @@ public class Settings {
     public var applicationSecret:String = "";
     public var authKey:String = "";
 
-    public var ownGameProfile:GameProfile = new GameProfile();
-
+    public var gameProfile:GameProfile = new GameProfile();
+	public var socialProfile: SocialProfile = new SocialProfile();
+	
+	
+	
     public function Settings() {
     }
 

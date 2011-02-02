@@ -122,7 +122,7 @@
             var allRuleDone:Boolean = true;
 
             var isLocationOpenedInProfile:Boolean = false;
-            for each(var ol:LocationType in Context.Model.currentSettings.ownGameProfile.openedLocations) {
+            for each(var ol:LocationType in Context.Model.currentSettings.gameProfile.openedLocations) {
                 if (ol == selectedLocation.getLocationType()) {
                     isLocationOpenedInProfile = true;
                     break;

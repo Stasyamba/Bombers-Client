@@ -122,12 +122,15 @@
 
         public function setPlayer(value:GameProfile):void {
             if (value == null)
+			{
                 removePlayer();
-            _profile = value;
+			}
+			
+			_profile = value;
             isProfileNull = false;
 
             levelStringView = Context.Model.expiranceManager.getLevel(value.expirance).toString();
-            userImage.source = _profile.vkProfile.photoSrc;
+            userImage.source = _profile.photoURL;
             bgRect.alpha = 1;
         }
 

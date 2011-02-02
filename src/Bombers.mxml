@@ -76,19 +76,19 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals
-        import api.vkontakte.util.json.JSON
-
-        import appmodel.ApplicationModel
-
-        import components.ApplicationView
-        import components.WallView
-        import components.common.VkontakteProfile
-        import components.common.utils.enviroment.FlashVars
-
-        import mx.core.IVisualElement
-        import mx.rpc.events.FaultEvent
-        import mx.rpc.events.ResultEvent
+        import api.vkontakte.VkontakteGlobals;
+        import api.vkontakte.util.json.JSON;
+        
+        import appmodel.ApplicationModel;
+        
+        import components.ApplicationView;
+        import components.WallView;
+        import components.common.VkontakteProfile;
+        import components.common.utils.enviroment.FlashVars;
+        
+        import mx.core.IVisualElement;
+        import mx.rpc.events.FaultEvent;
+        import mx.rpc.events.ResultEvent;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
@@ -114,8 +114,9 @@
 
 
                 //Context.Model.currentSettings.ownVkProfile = 
-                Context.Model.currentSettings.ownGameProfile.vkProfile = new VkontakteProfile(VkontakteGlobals.wrapper.application.parameters.viewer_id);
-                Context.Model.currentSettings.ownGameProfile.id = ApplicationModel.APPLICATION_AUTHOR_ID;
+                //Context.Model.currentSettings.ownGameProfile.vkProfile = new VkontakteProfile(VkontakteGlobals.wrapper.application.parameters.viewer_id);
+                //Context.Model.currentSettings.socialProfile.vkProfile = new VkontakteProfile(
+				//Context.Model.currentSettings.gameProfile.id = ApplicationModel.APPLICATION_AUTHOR_ID;
 
                 Context.Model.viewer.id = VkontakteGlobals.wrapper.application.parameters.viewer_id;
 
@@ -143,8 +144,8 @@
             } else {
                 // local testing
 
-                Context.Model.currentSettings.ownGameProfile.vkProfile = new VkontakteProfile(ApplicationModel.APPLICATION_AUTHOR_ID);
-                Context.Model.currentSettings.ownGameProfile.id = ApplicationModel.APPLICATION_AUTHOR_ID;
+                //Context.Model.currentSettings.gameProfile.vkProfile = new VkontakteProfile(ApplicationModel.APPLICATION_AUTHOR_ID);
+                Context.Model.currentSettings.gameProfile.id = ApplicationModel.APPLICATION_AUTHOR_ID;
                 //Context.Model.currentSettings.apiResult = new ApiResult("", true);
                 Context.Model.viewer.id = "72969483";
 

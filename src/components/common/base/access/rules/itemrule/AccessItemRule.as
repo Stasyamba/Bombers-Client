@@ -35,7 +35,7 @@ public class AccessItemRule implements IAccessRule {
 
         // check for all items
         for each(var itn:ItemType in _items) {
-            for each(var it:ItemProfileObject in Context.Model.currentSettings.ownGameProfile.gotItems) {
+            for each(var it:ItemProfileObject in Context.Model.currentSettings.gameProfile.gotItems) {
                 if (it.itemType != itn) {
                     res = false;
                 } else {

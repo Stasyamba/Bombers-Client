@@ -161,7 +161,7 @@
             }
 
             allItemsWeapon = new Array();
-            for each(var ipo:ItemProfileObject in Context.Model.currentSettings.ownGameProfile.gotItems) {
+            for each(var ipo:ItemProfileObject in Context.Model.currentSettings.gameProfile.gotItems) {
                 if (Context.Model.itemsCategoryManager.getItemCategory(ipo.itemType) == ItemCategory.WEAPON) {
                     allItemsWeapon.push(ipo);
                 }
@@ -179,8 +179,8 @@
         private function changeWeapon(e:IndexChangeEvent):void {
             //weaponsList.selectedItem
             if (currentItemsCollection.getItemAt(e.newIndex) is ItemProfileObject) {
-                if ((currentItemsCollection.getItemAt(e.newIndex) as ItemProfileObject).itemType != Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand.itemType) {
-                    Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand = (currentItemsCollection.getItemAt(e.newIndex) as ItemProfileObject);
+                if ((currentItemsCollection.getItemAt(e.newIndex) as ItemProfileObject).itemType != Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand.itemType) {
+                    Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand = (currentItemsCollection.getItemAt(e.newIndex) as ItemProfileObject);
                 }
 
                 hidePopUp();

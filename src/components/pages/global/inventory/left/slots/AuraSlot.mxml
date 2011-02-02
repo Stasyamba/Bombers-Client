@@ -81,7 +81,7 @@
 //					Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
 //				}
 
-            Context.Model.currentSettings.ownGameProfile.setAura(null, itemProfileObject.itemType);
+            Context.Model.currentSettings.gameProfile.setAura(null, itemProfileObject.itemType);
         }
 
         private function auraInfo():void {

@@ -80,7 +80,7 @@
                 l.setStyle("fontFamily", "mpbc");
 
 
-                if (Context.Model.currentSettings.ownGameProfile.id == r.gameProfile.id) {
+                if (Context.Model.currentSettings.gameProfile.id == r.gameProfile.id) {
                     l.setStyle("fontSize", 18);
                     l.setStyle("color", 0xfbb044);
                 } else {

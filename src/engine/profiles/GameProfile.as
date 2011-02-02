@@ -1,16 +1,16 @@
 package engine.profiles {
-import components.common.VkontakteProfile
-import components.common.bombers.BomberType
-import components.common.items.ItemProfileObject
-import components.common.items.ItemType
-import components.common.resources.ResourcePrice
-import components.common.worlds.WorldsType
-import components.common.worlds.locations.LocationType
+import components.common.VkontakteProfile;
+import components.common.bombers.BomberType;
+import components.common.items.ItemProfileObject;
+import components.common.items.ItemType;
+import components.common.resources.ResourcePrice;
+import components.common.worlds.WorldsType;
+import components.common.worlds.locations.LocationType;
 
-import engine.bombers.interfaces.IGameSkills
-import engine.bombers.mapInfo.GameSkills
-import engine.bombers.skin.BomberSkin
-import engine.profiles.interfaces.IGameProfile
+import engine.bombers.interfaces.IGameSkills;
+import engine.bombers.mapInfo.GameSkills;
+import engine.bombers.skin.BomberSkin;
+import engine.profiles.interfaces.IGameProfile;
 
 public class GameProfile implements IGameProfile {
 
@@ -18,7 +18,8 @@ public class GameProfile implements IGameProfile {
     public var expirance:int;
 
     public var id:String = "";
-
+	public var photoURL: String = "";
+	
     public var currentLocation:LocationType;
     public var currentWorld:WorldsType = WorldsType.WORLD1;
 
@@ -51,7 +52,7 @@ public class GameProfile implements IGameProfile {
     private var _aursTurnedOn:Array = new Array();
 
 
-    public var vkProfile:VkontakteProfile;
+    //public var vkProfile:VkontakteProfile;
 
 
     public function GameProfile() {

@@ -144,7 +144,7 @@
 
 
                 var isLocationOpenedInProfile:Boolean = false;
-                for each(var ol:LocationType in Context.Model.currentSettings.ownGameProfile.openedLocations) {
+                for each(var ol:LocationType in Context.Model.currentSettings.gameProfile.openedLocations) {
                     if (ol == locationViewObject.locationType) {
                         isLocationOpenedInProfile = true;
                         break;
@@ -178,7 +178,7 @@
 
                     for each(var lt:LocationType in nessLocations) {
                         var locationIsOpened:Boolean = false;
-                        for each(var ltu:LocationType in Context.Model.currentSettings.ownGameProfile.openedLocations) {
+                        for each(var ltu:LocationType in Context.Model.currentSettings.gameProfile.openedLocations) {
                             if (lt == ltu) {
                                 locationIsOpened = true;
                             }
@@ -205,7 +205,7 @@
                     if (levelRule != null) {
                         minimumLevel = (levelRule as AccessLevelRule).minimumLevel;
 
-                        if (minimumLevel <= Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.ownGameProfile.expirance)) {
+                        if (minimumLevel <= Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.gameProfile.expirance)) {
                             isLevelRached = true;
                         }
                     }
@@ -216,7 +216,7 @@
                         var gotItem:Boolean = false;
 
                         for each(var it:ItemType in itemsNeeded) {
-                            for each(var git:ItemProfileObject in Context.Model.currentSettings.ownGameProfile.packItems) {
+                            for each(var git:ItemProfileObject in Context.Model.currentSettings.gameProfile.packItems) {
                                 if (it == git.itemType) {
                                     gotItem = true;
                                 }

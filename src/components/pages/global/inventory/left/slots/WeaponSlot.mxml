@@ -76,7 +76,7 @@
             // immitation
 
             //Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
-            Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand = itemProfileObject;
+            Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand = itemProfileObject;
 
         }
 

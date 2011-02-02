@@ -56,13 +56,13 @@
         public function initContent():void {
             initAurs();
 
-            leftWeapon.itemProfileObject = Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand;
-            rightWeapon.itemProfileObject = Context.Model.currentSettings.ownGameProfile.selectedWeaponRightHand;
+            leftWeapon.itemProfileObject = Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand;
+            rightWeapon.itemProfileObject = Context.Model.currentSettings.gameProfile.selectedWeaponRightHand;
             //selectedWeaponLeftHand = Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand;
             //selectedWeaponRightHand = Context.Model.currentSettings.ownGameProfile.selectedWeaponRightHand;
 
 
-            bomberObject = Context.Model.bomberManager.getBomber(Context.Model.currentSettings.ownGameProfile.currentBomberType);
+            bomberObject = Context.Model.bomberManager.getBomber(Context.Model.currentSettings.gameProfile.currentBomberType);
             bomberImage.source = bomberObject.viewObject.bigImageURL;
         }
 
@@ -70,7 +70,7 @@
             var index:int = 0;
             aursCollection = new ArrayCollection();
 
-            for each(var a:ItemType in Context.Model.currentSettings.ownGameProfile.aursTurnedOn) {
+            for each(var a:ItemType in Context.Model.currentSettings.gameProfile.aursTurnedOn) {
                 if (Context.Model.itemsCategoryManager.getItemCategory(a) == ItemCategory.AURA && index < 3) {
                     aursCollection.addItem(a);
                     index++;

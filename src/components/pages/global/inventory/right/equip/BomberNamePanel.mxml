@@ -22,7 +22,7 @@
         }
 
         public function initContent():void {
-            bomberNameTextInput.text = Context.Model.currentSettings.ownGameProfile.name;
+            bomberNameTextInput.text = Context.Model.currentSettings.gameProfile.name;
         }
         ]]>
 	</fx:Script>

@@ -76,7 +76,7 @@
             var accessRulesObject:Array = AccessManager.checkAccessItem(itemType);
 
             if (itemCategory == ItemCategory.AURA || itemCategory == ItemCategory.QUEST_ITEM) {
-                for each(var item:ItemProfileObject in Context.Model.currentSettings.ownGameProfile.gotItems) {
+                for each(var item:ItemProfileObject in Context.Model.currentSettings.gameProfile.gotItems) {
                     if (item.itemType == itemType) {
                         isGotItem = true;
                         break;
@@ -106,7 +106,7 @@
         }
 
         private function tryToBuyItem():void {
-            var ownResources:ResourcePrice = Context.Model.currentSettings.ownGameProfile.resources;
+            var ownResources:ResourcePrice = Context.Model.currentSettings.gameProfile.resources;
 
             if (!ownResources.isBiggerOrEqual(thisItemPrice)) {
                 rulesDenied.removeAllElements();
@@ -124,7 +124,7 @@
                 switch (itemCategory) {
                     case ItemCategory.AURA:
                     case ItemCategory.QUEST_ITEM:
-                        for each(var item:ItemProfileObject in Context.Model.currentSettings.ownGameProfile.gotItems) {
+                        for each(var item:ItemProfileObject in Context.Model.currentSettings.gameProfile.gotItems) {
                             if (item.itemType == itemType) {
                                 gotItem = true;
                             }
