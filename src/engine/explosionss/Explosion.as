@@ -17,6 +17,7 @@ public class Explosion extends ExplosionBase implements IExplosion {
      * */
 
     private var initialPower:int;
+    private var _damage:int = 1
 
     public function Explosion(map:IMap, centerX:int = -1, centerY:int = -1, power:int = -1) {
         super(map, centerX, centerY)
@@ -69,9 +70,15 @@ public class Explosion extends ExplosionBase implements IExplosion {
         return ExplosionType.REGULAR;
     }
 
-    public function get damage():int {
-        return 1;
+    public function set damage(value:int):void {
+        _damage = value
     }
+
+    public function get damage():int {
+        return _damage;
+    }
+
+
 
 }
 }

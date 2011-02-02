@@ -420,7 +420,9 @@ public class GameServer extends SmartFox {
                 timer.start();
                 break;
             case GAME_PROFILE_LOADED:
-                //var profileSFS : ISFSObject = responseParams.get
+                    trace("profile recieved !!!!!!!!!!!!!!!!!!!!");
+                var gp : GameProfile = GameProfile.fromISFSObject(responseParams);
+                //profileLoaded.dispatch(gp);
         }
 
     }

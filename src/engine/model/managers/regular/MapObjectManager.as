@@ -38,8 +38,6 @@ public class MapObjectManager implements IObjectManager {
     }
 
     public function addObject(object:IMapObject):void {
-        //todo: check bonuses in reg game
-        //object.block.setObject(object);
         _objects.addItem(object);
         trace("added")
     }

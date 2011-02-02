@@ -151,7 +151,7 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
         var profile:GameProfile = new GameProfile();
         var gameSkills:IGameSkills = profile.getGameSkills();
         var gameSkin:BomberSkin = profile.getSkin(1);
-        playerManager.setPlayer(playersBuilder.makePlayer(this, 1, profile.name, color, gameSkills, weaponBuilder.makeMine(20, WeaponType.REGULAR_MINE), gameSkin));
+        playerManager.setPlayer(playersBuilder.makePlayer(this, 1, profile.name, color, gameSkills, weaponBuilder.makeSpecialBomb(20, WeaponType.DYNAMITE_WEAPON), gameSkin));
     }
 
     public function addBot(color:PlayerColor):void {

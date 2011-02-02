@@ -36,6 +36,8 @@ public class RegularMineWeapon implements IMineWeapon {
     }
 
     public function canActivate(x:uint, y:uint, by:IBomber):Boolean {
+        if (!_mapManager.canUseMap)
+            return false;
         var block:IMapBlock = _mapManager.map.getBlock(x, y);
         return block.canSetBomb() && (block.bomb.type == BombType.NULL) && (block.object.type == MapObjectType.NULL) && (charges > 0);
     }

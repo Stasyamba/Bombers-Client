@@ -78,6 +78,7 @@ public class ImageService {
         switch (explType) {
             case ExplosionType.REGULAR:
             case ExplosionType.ATOM:
+            case ExplosionType.DYNAMITE:
                 return Explosions[explPointType.value]
         }
         return null;

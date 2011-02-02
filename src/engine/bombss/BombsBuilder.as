@@ -28,6 +28,8 @@ public class BombsBuilder {
                 return new AtomBomb(mapManager, explosionsBuilder, block, player);
             case BombType.BOX:
                 return new BoxBomb(mapManager, explosionsBuilder, block, player);
+            case BombType.DYNAMITE:
+                return new DynamiteBomb(mapManager, explosionsBuilder, block, player);
         }
         throw new ArgumentError(" don't support this bomb type");
     }
