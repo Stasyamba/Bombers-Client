@@ -1,5 +1,5 @@
 package {
-import components.common.profiles.SocialProfile;
+import components.common.utils.SocialProfile
 import components.common.utils.enviroment.ApiResult;
 import components.common.utils.enviroment.FlashVars;
 

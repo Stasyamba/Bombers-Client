@@ -1,15 +1,15 @@
 package components.common.items {
 public class ItemType {
-    public static const QUEST_ITEM_CANARY:ItemType = new ItemType(0, "QUEST_ITEM_CANARY");
-    public static const QUEST_ITEM_SNOWBOOTS:ItemType = new ItemType(1, "QUEST_ITEM_SNOWBOOTS");
-    public static const NUCLEAR_BOMB:ItemType = new ItemType(2, "WEAPON_ITEM_NUCLEAR_BOMB");
-    public static const AURA_FIRE:ItemType = new ItemType(3, "FIRE_AURA");
+    public static const QUEST_ITEM_CANARY:ItemType = new ItemType(1001, "QUEST_ITEM_CANARY");
+    public static const QUEST_ITEM_SNOWBOOTS:ItemType = new ItemType(1002, "QUEST_ITEM_SNOWBOOTS");
+    public static const NUCLEAR_BOMB:ItemType = new ItemType(01, "WEAPON_ITEM_NUCLEAR_BOMB");
+    public static const AURA_FIRE:ItemType = new ItemType(61, "FIRE_AURA");
 
-    public static const BASE_BOMB:ItemType = new ItemType(4, "BASE_BOMB");
+    public static const BASE_BOMB:ItemType = new ItemType(0, "BASE_BOMB");
 
-    public static const HAMELEON_POISON:ItemType = new ItemType(5, "HAMELEON_POISON");
-    public static const X_RAY_BOMB:ItemType = new ItemType(6, "X_RAY_BOMB");
-    public static const MINA_BOMB:ItemType = new ItemType(7, "MINA_BOMB");
+    public static const HAMELEON_POISON:ItemType = new ItemType(21, "HAMELEON_POISON");
+    public static const X_RAY_BOMB:ItemType = new ItemType(-1, "X_RAY_BOMB");
+    public static const MINA_BOMB:ItemType = new ItemType(41, "MINA_BOMB");
 
     private var _value:int;
     private var _name:String;
@@ -32,5 +32,26 @@ public class ItemType {
         return "value: " + _value.toString() + " name: " + _name.toString();
     }
 
+    public static function byValue(value:int) : ItemType{
+        switch (value){
+            case QUEST_ITEM_CANARY.value:
+                return QUEST_ITEM_CANARY
+            case QUEST_ITEM_SNOWBOOTS.value:
+                return QUEST_ITEM_SNOWBOOTS
+            case NUCLEAR_BOMB.value:
+                return NUCLEAR_BOMB
+            case AURA_FIRE.value:
+                return AURA_FIRE
+            case BASE_BOMB.value:
+                return BASE_BOMB
+            case HAMELEON_POISON.value:
+                return HAMELEON_POISON
+            case X_RAY_BOMB.value:
+                return X_RAY_BOMB
+            case MINA_BOMB.value:
+                return MINA_BOMB
+        }
+        throw new ArgumentError("no ItemType found with value = " + value);
+    }
 }
 }

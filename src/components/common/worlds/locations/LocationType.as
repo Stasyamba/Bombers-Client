@@ -31,5 +31,29 @@ public class LocationType {
     public function toString():String {
         return "Value: " + _value.toString() + "name: " + name;
     }
+
+    public static function byValue(value:int):LocationType {
+        switch(value){
+            case WORLD1_GRASSFIELDS:
+                return WORLD1_GRASSFIELDS
+            case WORLD1_CASTLE:
+                return WORLD1_CASTLE
+            case WORLD1_MINE:
+                return WORLD1_MINE
+            case WORLD1_SNOWPEAK:
+                return WORLD1_SNOWPEAK
+            case WORLD1_SEA:
+                return WORLD1_SEA
+            case WORLD1_ROCKET:
+                return WORLD1_ROCKET
+            case WORLD1_UFO:
+                return WORLD1_UFO
+            case WORLD1_SATTELITE:
+                return WORLD1_SATTELITE
+            case WORLD1_MOON:
+                return WORLD1_MOON
+        }
+        throw new ArgumentError("no LocationType found with value = " + value);
+    }
 }
 }
