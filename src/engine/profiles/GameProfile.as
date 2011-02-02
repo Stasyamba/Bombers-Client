@@ -1,8 +1,8 @@
 package engine.profiles {
-import components.common.profiles.VkontakteProfile;
 import components.common.bombers.BomberType;
 import components.common.items.ItemProfileObject;
 import components.common.items.ItemType;
+import components.common.profiles.VkontakteProfile;
 import components.common.resources.ResourcePrice;
 import components.common.worlds.WorldsType;
 import components.common.worlds.locations.LocationType;
@@ -16,7 +16,7 @@ public class GameProfile implements IGameProfile {
 
     private var _name:String = "";
     public var expirance:int;
-
+	public var energy: int = 5;
     public var id:String = "";
 	public var photoURL: String = "";
 	

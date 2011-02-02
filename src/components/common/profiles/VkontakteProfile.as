@@ -1,6 +1,7 @@
-package components.common {
+package components.common.profiles {
 [Bindable]
-public class VkontakteProfile {
+public class VkontakteProfile 
+{
     public static const BOY:int = 2;
     public static const GIRL:int = 1;
     public static const SEX_UNDEFINDED:int = 0;
