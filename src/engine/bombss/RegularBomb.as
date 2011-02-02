@@ -21,7 +21,7 @@ public class RegularBomb extends BombBase implements IBomb {
     public function RegularBomb(mapManager:IMapManager, explosionsBuilder:ExplosionsBuilder, block:IMapBlock, player:IBomber) {
         super(mapManager, explosionsBuilder, block, player);
 
-        _power = player.gameSkills.bombPower;
+        _power = player.bombPower;
         _explodeTime = EXPLODE_TIME;
     }
 
@@ -29,7 +29,7 @@ public class RegularBomb extends BombBase implements IBomb {
     public function explode():IExplosion {
         var expl:IExplosion = _explosionsBuilder.make(ExplosionType.REGULAR, block.x, block.y, power)
         expl.perform();
-        _owner.gameSkills.bombCount += 1;
+        _owner.returnBomb();
         return expl;
     }
 
@@ -46,7 +46,7 @@ public class RegularBomb extends BombBase implements IBomb {
     }
 
     public function onSet():void {
-        owner.gameSkills.bombCount -= 1;
+        owner.takeBomb();
     }
 }
 }

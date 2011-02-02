@@ -12,89 +12,83 @@
 
     <fx:Script>
 		<![CDATA[
-        import appmodel.ApplicationModel
+        import com.smartfoxserver.v2.entities.User
 
-        import components.common.VkontakteProfile
         import components.common.game.multygameresult.GameResults
         import components.common.game.multygameresult.Result
 
         import engine.profiles.GameProfile
 
-        import mx.core.IVisualElement
-
         private var players:Array = new Array();
 
-        private function deletePlayer(id:String):void {
-            var el:* = null;
-            for (var i:int = 0; i <= playersGroup.numChildren - 1; i++) {
-                el = playersGroup.getChildAt(i);
-                if (el is Player) {
-                    if ((el as Player).profile.id == id) {
-                        playersGroup.removeElement(el as IVisualElement);
-                        break;
-                    }
-                }
-            }
+        private function deletePlayer(playerId:int):void {
+            var el:PlayerSlot;
+            el = playersGroup.getChildAt(playerId - 1) as PlayerSlot;
+            el.removePlayer();
         }
 
-        private function addPlayer(newProfile:GameProfile):void {
-            var el:* = null;
-            var profileFinded:Boolean = false;
-            var profileAdded:Boolean = false;
+        private function addPlayer(newProfile:GameProfile, playerId:int):void {
+            if (newProfile == null)
+                return;
 
-            for (var i:int = 0; i <= playersGroup.numChildren - 1; i++) {
-                el = playersGroup.getChildAt(i);
-                if (el is Player) {
-                    if ((el as Player).profile != null) {
-                        if ((el as Player).profile.id == newProfile.id) {
-                            profileFinded = true;
-                            break;
-                        }
-                    }
-                }
-            }
-
-            if (!profileFinded) {
-                for (i = 0; i <= playersGroup.numChildren - 1; i++) {
-                    el = playersGroup.getChildAt(i);
-                    if (el is Player) {
-                        if ((el as Player).profile == null) {
-                            profileAdded = true;
-                            (el as Player).profile = newProfile;
-                            break;
-                        }
-                    }
-                }
-            }
+            var el:PlayerSlot;
+            el = playersGroup.getChildAt(playerId - 1) as PlayerSlot;
+            el.setPlayer(newProfile);
         }
 
 
-        private function setReady(isReady:Boolean, id:String):void {
-            var el:* = null;
-            for (var i:int = 0; i <= playersGroup.numChildren - 1; i++) {
-                el = playersGroup.getChildAt(i);
-                if (el is Player) {
-                    if ((el as Player).profile != null) {
-                        if ((el as Player).profile.id == id) {
-                            (el as Player).isReady = isReady;
-                            break;
-                        }
-                    }
-                }
-            }
+        private function setReady(isReady:Boolean, playerId:int):void {
+            var el:PlayerSlot;
+            el = playersGroup.getChildAt(playerId - 1) as PlayerSlot;
+            el.isReady = isReady;
         }
 
 
         private function init():void {
             // immitation
-            addPlayer(Context.Model.currentSettings.ownGameProfile);
-            var gp:GameProfile = new GameProfile();
-            gp.id = "1";
-            gp.vkProfile = new VkontakteProfile("1");
-            gp.vkProfile.photoSrc = "http://cs10562.vkontakte.ru/u120102480/a_a87bc1bd.jpg";
-            addPlayer(gp);
+//            addPlayer(Context.Model.currentSettings.ownGameProfile, 1);
+//            var gp:GameProfile = new GameProfile();
+//            gp.id = "1";
+//            gp.vkProfile = new VkontakteProfile("1");
+//            gp.vkProfile.photoSrc = "http://cs10562.vkontakte.ru/u120102480/a_a87bc1bd.jpg";
+//            addPlayer(gp, 2);
+
+            Context.gameModel.connectedToGame.add(onConnectedToGame)
+            Context.gameServer.someoneJoinedToGame.add(onSomeoneJoinedToGame)
+            Context.gameServer.someoneLeftGame.add(onSomeoneLeftGame)
+            Context.gameModel.playerReadyChanged.add(onReadyChanged)
+
+            Context.gameServer.leftGame.add(onLeftGame)
         }
 
+        private function onLeftGame():void {
+            for (var j:int = 1; j < 5; j++) {
+                deletePlayer(j)
+            }
+        }
+
+        private function onConnectedToGame():void {
+            //todo: replace this shit with unified interface for single and multiplayer. no SFS objects here!!!
+            for each (var user:User in Context.gameServer.gameRoom.playerList) {
+                addPlayer(Context.gameModel.getUserProfile(user), user.playerId)
+            }
+        }
+
+        private function onSomeoneLeftGame(user:User):void {
+            deletePlayer(user.playerId)  //todo: check if playerId is still correct
+        }
+
+        private function onSomeoneJoinedToGame(user:User):void {
+            addPlayer(Context.gameModel.getUserProfile(user), user.playerId);
+        }
+
+        private function onReadyChanged(user:User):void {
+            var data:Array = Context.gameModel.getUsersReadyState()
+            for (var i:int = 1; i < 5; i++) {
+                if (data[i] != null)
+                    setReady(data[i].ready, i);
+            }
+        }
 
         // imitation
 
@@ -126,19 +120,19 @@
               id="playersGroup"
             >
 
-        <leftpanel:Player id="player1"/>
-        <leftpanel:Player id="player2"/>
-        <leftpanel:Player id="player3"/>
-        <leftpanel:Player id="player4"/>
+        <leftpanel:PlayerSlot id="player1"/>
+        <leftpanel:PlayerSlot id="player2"/>
+        <leftpanel:PlayerSlot id="player3"/>
+        <leftpanel:PlayerSlot id="player4"/>
 
     </s:VGroup>
 
     <s:VGroup x="200" y="200">
-        <s:Button label="Ready" click="setReady(true,ApplicationModel.APPLICATION_AUTHOR_ID);"/>
-        <s:Button label="NOT Ready" click="setReady(false,ApplicationModel.APPLICATION_AUTHOR_ID);"/>
-
-        <s:Button label="Ready1" click="setReady(true,'1');"/>
-        <s:Button label="NOT Ready1" click="setReady(false,'1');"/>
+        <s:Button label="Ready"
+                  click="setReady(true,Context.game.playerManager.myId); Context.gameModel.setMeReady(true);"/>
+        <s:Button label="NOT Ready"
+                  click="setReady(false,Context.game.playerManager.myId); Context.gameModel.setMeReady(false)"/>
+        <!--Imitation =)-->
         <s:Button label="Game created"
                   click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);}"/>
         <s:Button label="GetResults" click="showResults()"/>

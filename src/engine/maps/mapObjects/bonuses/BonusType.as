@@ -13,8 +13,8 @@ public class BonusType implements IMapObjectType {
     public static const ADD_SPEED:BonusType = new BonusType(3, "ADD_SPEED");
     public static const HEAL:BonusType = new BonusType(4, "HEAL");
 
-    public static const EXPERIENCE:BonusType = new BonusType(11, "EXPERIENCE")
-    public static const RESOURCE:BonusType = new BonusType(12, "RESOURCE")
+    public static const EXPERIENCE:BonusType = new BonusType(5, "EXPERIENCE")
+    public static const RESOURCE:BonusType = new BonusType(6, "RESOURCE")
 
 
     private var _value:int;

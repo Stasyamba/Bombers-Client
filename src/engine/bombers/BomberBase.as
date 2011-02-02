@@ -5,7 +5,6 @@
 
 package engine.bombers {
 import engine.bombers.interfaces.IBomber
-import engine.bombers.interfaces.IGameSkills
 import engine.bombers.interfaces.IGameSkin
 import engine.bombers.interfaces.IMapCoords
 import engine.bombers.mapInfo.MapCoords
@@ -30,40 +29,48 @@ import org.osflash.signals.Signal
 public class BomberBase implements IBomber {
 
     protected var game:IGame;
-    protected var _playerId:int;
-    protected var _bombBuilder:BombsBuilder;
-
     protected var _map:IMap;
-    protected var _skills:IGameSkills;
+    protected var _bombBuilder:BombsBuilder;
 
     protected var _coords:IMapCoords;
     protected var _gameSkin:IGameSkin;
     protected var _color:PlayerColor;
+
+    protected var _playerId:int;
+    protected var _userName:String;
+
     protected var _life:int;
+    protected var _speed:Number;
+    protected var _bombCount:Number;
+    protected var _bombPower:Number;
+    protected var _bombTaken:int
+
     protected var _weapon:IWeapon;
+//    protected var _weaponSet:WeaponSet;
+//    protected var _auraSet:AuraSet;
 
     private var _isImmortal:Boolean;
-
-    private var _becameUntouchable:Signal = new Signal();
+    private var _becameImmortal:Signal = new Signal();
     private var _lostUntouchable:Signal = new Signal();
 
     private var _stateAdded:StateAddedSignal = new StateAddedSignal();
     private var _stateRemoved:StateRemovedSignal = new StateRemovedSignal();
 
-    public function BomberBase(game:IGame, playerId:int, userName:String, color:PlayerColor, skills:IGameSkills, weapon:IWeapon, skin:BomberSkin, bombBuilder:BombsBuilder) {
+
+    public function BomberBase(game:IGame, playerId:int, userName:String, color:PlayerColor, weapon:IWeapon, skin:BomberSkin, bombBuilder:BombsBuilder) {
         this.game = game;
         _playerId = playerId;
         _bombBuilder = bombBuilder;
-        _skills = skills;
         _gameSkin = new GameSkin(skin, color);
         _color = color;
         _weapon = weapon;
         _userName = userName;
 
-        _life = skills.startLife;
+        _life = 3;
+        _speed = 100;
+        _bombPower = 2;
+        _bombCount = 2;
     }
-
-    protected var _userName:String;
 
     public function makeImmortalFor(secs:Number, blink:Boolean = true):void {
         if (isDead || isImmortal)
@@ -77,7 +84,7 @@ public class BomberBase implements IBomber {
             if (blink)
                 stateRemoved.dispatch(ViewState.BLINKING);
         })
-        becameUntouchable.dispatch();
+        becameImmortal.dispatch();
     }
 
     public function putOnMap(map:IMap, x:int, y:int):void {
@@ -93,11 +100,7 @@ public class BomberBase implements IBomber {
         return _playerId;
     }
 
-    public function get gameSkills():IGameSkills {
-        return _skills;
-    }
-
-    public function get weapon():IWeapon {
+    public function get currentWeapon():IWeapon {
         return _weapon;
     }
 
@@ -117,11 +120,11 @@ public class BomberBase implements IBomber {
         return _isImmortal;
     }
 
-    public function get becameUntouchable():Signal {
-        return _becameUntouchable;
+    public function get becameImmortal():Signal {
+        return _becameImmortal;
     }
 
-    public function get lostUntouchable():Signal {
+    public function get lostImmortal():Signal {
         return _lostUntouchable;
     }
 
@@ -146,15 +149,75 @@ public class BomberBase implements IBomber {
     }
 
     public function activateWeapon():void {
-        if (weapon is IActivatableWeapon) {
-            IActivatableWeapon(weapon).activate(_coords.elemX, coords.elemY, this);
+        if (currentWeapon is IActivatableWeapon) {
+            IActivatableWeapon(currentWeapon).activate(_coords.elemX, coords.elemY, this);
         }
     }
 
     public function deactivateWeapon():void {
-        if (weapon is IDeactivatableWeapon) {
-            IDeactivatableWeapon(weapon).deactivate(_coords.elemX, coords.elemY, this);
+        if (currentWeapon is IDeactivatableWeapon) {
+            IDeactivatableWeapon(currentWeapon).deactivate(_coords.elemX, coords.elemY, this);
         }
+    }
+
+    public function get speed():Number {
+        return _speed + getAurasSpeedBonus()
+    }
+
+    private function getAurasSpeedBonus():Number {
+        return 0;
+    }
+
+    public function get baseSpeed():Number {
+        return _speed
+    }
+
+    public function get bombCount():int {
+        return _bombCount + getAurasBombCountBonus() - _bombTaken;
+    }
+
+    private function getAurasBombCountBonus():int {
+        return 0;
+    }
+
+    public function get baseBombCount():int {
+        return _bombCount
+    }
+
+    public function get bombPower():int {
+        return _bombPower + getAurasBombPowerBonus()
+    }
+
+    private function getAurasBombPowerBonus():int {
+        return 0;
+    }
+
+    public function get baseBombPower():int {
+        return _bombPower
+    }
+
+    public function incSpeed():void {
+        _speed*=1.1;
+    }
+
+    public function incBombCount():void {
+        _bombCount++
+    }
+
+    public function incBombPower():void {
+        _bombPower++
+    }
+
+    public function takeBomb():void {
+        _bombTaken++;
+    }
+
+    public function returnBomb():void {
+        _bombTaken--;
+    }
+
+    public function get immortalTime():Number {
+        return 3.0
     }
 
     public function move(elapsedSeconds:Number):void {
@@ -168,5 +231,7 @@ public class BomberBase implements IBomber {
     public function kill():void {
         throw new Error("method BomberBase.kill can't be called")
     }
+
+
 }
 }

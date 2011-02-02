@@ -21,7 +21,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     protected var _direction:Direction = Direction.NONE;
 
     public function EnemyBomber(game:IGame, playerId:int, userName:String, bombBuilder:BombsBuilder, skills:IGameSkills, weapon:IWeapon, skin:BomberSkin, color:PlayerColor) {
-        super(game, playerId, userName, color, skills, weapon, skin, bombBuilder);
+        super(game, playerId, userName, color, weapon, skin, bombBuilder);
 
         EngineContext.enemyInputDirectionChanged.add(directionChanged);
         EngineContext.enemyDamaged.add(onDamaged);
@@ -36,7 +36,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     protected function onDamaged(id:int, health_left:int):void {
         if (playerId == id) {
             _life = health_left;
-            makeImmortalFor(_skills.immortalTime);
+            makeImmortalFor(immortalTime);
         }
     }
 
@@ -75,7 +75,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     }
 
     public override function move(elapsedTime:Number):void {
-        performSmoothMotion(elapsedTime * _skills.speed);
+        performSmoothMotion(elapsedTime * speed);
     }
 
     public override function kill():void {

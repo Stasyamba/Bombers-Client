@@ -4,6 +4,7 @@
  */
 
 package engine.games {
+import engine.bombss.BombsBuilder
 import engine.model.managers.interfaces.IBombsManager
 import engine.model.managers.interfaces.IEnemiesManager
 import engine.model.managers.interfaces.IExplosionsManager
@@ -25,6 +26,5 @@ public interface IGame {
     function get explosionsManager():IExplosionsManager;
 
     function get bombsManager():IBombsManager;
-
 }
 }

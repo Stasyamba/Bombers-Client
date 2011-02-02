@@ -13,7 +13,7 @@ import engine.model.managers.interfaces.IPlayerManager
 
 import mx.collections.ArrayList
 
-public class ObjectManager implements IObjectManager {
+public class MapObjectManager implements IObjectManager {
 
     protected var playerManager:IPlayerManager;
 
@@ -21,7 +21,7 @@ public class ObjectManager implements IObjectManager {
 
     protected var _objects:ArrayList = new ArrayList();
 
-    public function ObjectManager(playerManager:IPlayerManager, mapManager:IMapManager) {
+    public function MapObjectManager(playerManager:IPlayerManager, mapManager:IMapManager) {
         this.playerManager = playerManager;
         this.mapManager = mapManager;
     }

@@ -49,7 +49,7 @@ public class MineView extends DestroyableSprite implements IStatedView {
         stateManager.deleteAllStates();
 
         var tween:TweenMax = BasicDestroyExplosion.getTween();
-        var child:Sprite = BasicDestroyExplosion.getChild(BasicDestroyExplosion.WIDTH / 2, BasicDestroyExplosion.HEIGHT / 2);
+        var child:Sprite = BasicDestroyExplosion.getChild(this.width/2 - BasicDestroyExplosion.WIDTH / 2, this.height/2 - BasicDestroyExplosion.HEIGHT / 2);
         var childTween:TweenMax = BasicDestroyExplosion.getChildTween(child);
 
         addState(new ViewState(ViewState.DYING_EXPLOSION, {alpha:1}, tween, child, childTween))
@@ -65,7 +65,7 @@ public class MineView extends DestroyableSprite implements IStatedView {
 
     private function addState(state:ViewState):void {
         stateManager.addState(state);
-        draw();
+        //draw();
     }
 
     private function removeState(name:String):void {
@@ -78,8 +78,8 @@ public class MineView extends DestroyableSprite implements IStatedView {
 
     public function getDefaultProperty(prop:String):* {
         switch (prop) {
-            case "x": return block.x * Consts.BLOCK_SIZE;
-            case "y": return block.y * Consts.BLOCK_SIZE;
+            case "x": return 0;
+            case "y": return 0;
             case "alpha": return _defaultAlpha;
             case "blendMode":return BlendMode.NORMAL;
             case "scaleX": return 1.0;

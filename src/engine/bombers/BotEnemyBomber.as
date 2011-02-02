@@ -27,7 +27,7 @@ public class BotEnemyBomber extends EnemyBomber implements IEnemyBomber {
     }
 
     public override function move(elapsedTime:Number):void {
-        var willCover:Number = elapsedTime * _skills.speed;
+        var willCover:Number = elapsedTime * speed;
         if (willGetToBlockCenter(willCover)) {
             var d:Direction = walkingStrategy.getDirection(_direction, _coords);
             if (d != _direction)

@@ -20,15 +20,11 @@ public interface IBomber {
 
     function get userName():String;
 
-    function get life():int;
-
     function putOnMap(map:IMap, x:int, y:int):void;
 
     function get coords():IMapCoords;
 
     function move(elapsedSeconds:Number):void;
-
-    function get gameSkills():IGameSkills;
 
     /**
      *
@@ -37,15 +33,13 @@ public interface IBomber {
      */
     function explode(expl:IExplosion):void;
 
-    function get becameUntouchable():Signal;
+    function get becameImmortal():Signal;
 
-    function get lostUntouchable():Signal;
+    function get lostImmortal():Signal;
 
     function get isImmortal():Boolean;
 
     function get color():PlayerColor;
-
-    function set life(life:int):void;
 
     function get isDead():Boolean;
 
@@ -59,6 +53,40 @@ public interface IBomber {
 
     function deactivateWeapon():void
 
-    function get weapon():IWeapon;
+    function get currentWeapon():IWeapon;
+
+//    function get weaponSet():WeaponSet;
+//
+//    function get auraSet():AuraSet;
+
+    //skills
+
+    function get life():int;
+
+    function set life(life:int):void;
+
+    function get speed():Number
+
+    function get baseSpeed():Number
+
+    function get bombCount():int
+
+    function get baseBombCount():int
+
+    function get bombPower():int
+
+    function get baseBombPower():int
+
+    function get immortalTime():Number
+
+    function incSpeed():void
+
+    function incBombCount():void
+
+    function incBombPower():void
+
+    function takeBomb():void;
+
+    function returnBomb():void;
 }
 }

@@ -3,7 +3,8 @@
  * Pavkin Vladimir
  */
 
-package engine.weapons.interfaces {
+package engine.weapons {
+import engine.weapons.interfaces.*;
 import engine.EngineContext
 import engine.bombers.interfaces.IBomber
 import engine.bombss.BombType
@@ -17,7 +18,7 @@ public class BoxBombWeapon implements IActivatableWeapon {
     private var mapManager:IMapManager;
     private var bombsBuilder:BombsBuilder;
 
-    public function BoxBombWeapon(charges:int, mapManager:IMapManager, bombsBuilder:BombsBuilder) {
+    public function BoxBombWeapon( mapManager:IMapManager, bombsBuilder:BombsBuilder, charges:int) {
         _charges = charges
         this.mapManager = mapManager
         this.bombsBuilder = bombsBuilder
@@ -40,7 +41,7 @@ public class BoxBombWeapon implements IActivatableWeapon {
     }
 
     public function get type():WeaponType {
-        return WeaponType.BOX_BOMB;
+        return WeaponType.BOX_BOMB_WEAPON;
     }
 }
 }

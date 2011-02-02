@@ -80,7 +80,7 @@ public class GameProfile implements IGameProfile {
         gotItems.push(new ItemProfileObject(ItemType.AURA_FIRE, -1));
         gotItems.push(new ItemProfileObject(ItemType.X_RAY_BOMB, 10));
         gotItems.push(new ItemProfileObject(ItemType.MINA_BOMB, 5));
-        gotItems.push(new ItemProfileObject(ItemType.HAMELION_POISON, 0));
+        gotItems.push(new ItemProfileObject(ItemType.HAMELEON_POISON, 0));
 
         for each(var ipo:ItemProfileObject in gotItems) {
             packItems.push(ipo);

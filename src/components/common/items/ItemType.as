@@ -7,7 +7,7 @@ public class ItemType {
 
     public static const BASE_BOMB:ItemType = new ItemType(4, "BASE_BOMB");
 
-    public static const HAMELION_POISON:ItemType = new ItemType(5, "HAMELION_POISEN");
+    public static const HAMELEON_POISON:ItemType = new ItemType(5, "HAMELEON_POISON");
     public static const X_RAY_BOMB:ItemType = new ItemType(6, "X_RAY_BOMB");
     public static const MINA_BOMB:ItemType = new ItemType(7, "MINA_BOMB");
 

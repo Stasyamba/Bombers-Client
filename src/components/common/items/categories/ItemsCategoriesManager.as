@@ -34,7 +34,7 @@ public class ItemsCategoriesManager {
             case ItemType.NUCLEAR_BOMB:
             case ItemType.X_RAY_BOMB:
             case ItemType.MINA_BOMB:
-            case ItemType.HAMELION_POISON:
+            case ItemType.HAMELEON_POISON:
                 res = ItemCategory.WEAPON;
                 break;
         }
@@ -54,7 +54,7 @@ public class ItemsCategoriesManager {
 
             case ItemType.NUCLEAR_BOMB:
             case ItemType.X_RAY_BOMB:
-            case ItemType.HAMELION_POISON:
+            case ItemType.HAMELEON_POISON:
             case ItemType.MINA_BOMB:
                 res = MarketCategory.BOMBS_AND_POISONS;
                 break;

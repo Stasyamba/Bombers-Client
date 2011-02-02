@@ -74,6 +74,10 @@
                 }
             }
         }
+
+        public function get text():String{
+            return textField.text;
+        }
         ]]>
 	</fx:Script>
 

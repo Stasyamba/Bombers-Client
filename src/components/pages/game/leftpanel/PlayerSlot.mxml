@@ -96,6 +96,12 @@
         [Bindable]
         private var startYPostion:Number = -10;
 
+        public function hasAnyPlayer():Boolean {
+            return !isProfileNull;
+        }
+        public function hasPlayer(id:String):Boolean {
+            return !isProfileNull && (_profile.id == id);
+        }
         public function set isReady(value:Boolean):void {
             _isReady = value;
 
@@ -114,23 +120,26 @@
             return _profile;
         }
 
-        public function set profile(value:GameProfile):void {
+        public function setPlayer(value:GameProfile):void {
+            if (value == null)
+                removePlayer();
             _profile = value;
-            isProfileNull = (value == null ? true : false);
+            isProfileNull = false;
 
-            if (value != null) {
-                levelStringView = Context.Model.expiranceManager.getLevel(value.expirance).toString();
-                userImage.source = _profile.vkProfile.photoSrc;
-                bgRect.alpha = 1;
-            } else {
-                userImage.source = "";
-                levelStringView = "";
-                bgRect.alpha = 0.3;
-            }
+            levelStringView = Context.Model.expiranceManager.getLevel(value.expirance).toString();
+            userImage.source = _profile.vkProfile.photoSrc;
+            bgRect.alpha = 1;
+        }
+
+        public function removePlayer():void {
+            isProfileNull = true;
+            userImage.source = "";
+            levelStringView = "";
+            bgRect.alpha = 0.3;
         }
 
         private function init():void {
-            profile = null;
+            _profile = null;
             readyGroupHeight = readyGroup.height;
             differenceYPosition = -10 + readyGroupHeight - readyGroupHeight * scaleAnimationSize;
 

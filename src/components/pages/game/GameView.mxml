@@ -42,33 +42,21 @@
         }
 
         private function initMultiPlayer():void {
-//            PopUpManager.addPopUp(preGameView, this);
-//            preGameView.updateReadyLabels();
-//
-//            Context.gameServer.leftGame.addOnce(function ():void {
-//                PopUpManager.removePopUp(preGameView);
-//            });
-//
-//            Context.gameModel.gameReady.add(function ():void {
-//                PopUpManager.removePopUp(preGameView);
-//                gameView = new GameFieldView(Context.game);
-//                addElement(gameView);
-//                PopUpManager.addPopUp(threeSecsToStart, gameView);
-//
-//                subscribeEnterFrameEvent();
-//            });
-//
-//            Context.gameModel.gameEnded.add(function ():void {
-//
-//                endGame();
-//                Context.gameModel.readyToPlayAgain.addOnce(function ():void {
-//                    PopUpManager.removePopUp(gameResultsView);
-//                    PopUpManager.addPopUp(preGameView, group);
-//                    preGameView.updateReadyLabels();
-//                })
-//            });
-//
-//            initChat();
+
+            Context.gameModel.gameReady.add(function ():void {
+                gameView = new GameFieldView(Context.game);
+                addElement(gameView);
+                PopUpManager.addPopUp(threeSecsToStart, gameView);
+            });
+
+            Context.gameModel.gameEnded.add(function ():void {
+
+                endGame();
+                Context.gameModel.readyToPlayAgain.addOnce(function ():void {
+                    PopUpManager.removePopUp(gameResultsView);
+                })
+            });
+            //initChat();
         }
 
         // comment
@@ -93,7 +81,7 @@
 
         private function endGame():void {
 
-            PopUpManager.addPopUp(gameResultsView, gameView);
+            PopUpManager.addPopUp(gameResultsView, group);
 
             gameView.destroy();
             removeElement(gameView)

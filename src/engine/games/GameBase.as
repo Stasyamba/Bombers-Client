@@ -24,6 +24,8 @@ import engine.model.managers.interfaces.IObjectManager
 import engine.model.managers.interfaces.IPlayerManager
 import engine.model.managers.regular.MapManager
 
+import engine.weapons.WeaponBuilder
+
 import mx.collections.ArrayList
 
 public class GameBase {
@@ -46,6 +48,9 @@ public class GameBase {
     public var mapObjectBuilder:MapObjectBuilder;
     public var mapBlockStateBuilder:MapBlockStateBuilder;
     public var playersBuilder:PlayersBuilder;
+    public var weaponBuilder : WeaponBuilder;
+
+    protected var _ready:Boolean = false;
 
     public function get mapManager():IMapManager {
         return _mapManager;
@@ -102,11 +107,10 @@ public class GameBase {
         explosionsManager.addExplosions(expls);
     }
 
-    protected var _ready:Boolean = false;
+
     public function get ready():Boolean {
         return _ready;
     }
-
 
 }
 }

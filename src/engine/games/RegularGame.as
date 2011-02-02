@@ -27,18 +27,20 @@ import engine.model.managers.regular.BombsManager
 import engine.model.managers.regular.EnemiesManager
 import engine.model.managers.regular.ExplosionsManager
 import engine.model.managers.regular.MapManager
-import engine.model.managers.regular.ObjectManager
+import engine.model.managers.regular.MapObjectManager
 import engine.model.managers.regular.PlayerManager
 import engine.playerColors.PlayerColor
 import engine.profiles.GameProfile
 import engine.profiles.interfaces.IGameProfile
 import engine.utils.Direction
 import engine.weapons.AtomBombWeapon
+import engine.weapons.WeaponBuilder
+import engine.weapons.WeaponType
 
 public class RegularGame extends GameBase implements IMultiPlayerGame {
 
 
-    public function RegularGame() {
+   public function RegularGame() {
 
         mapBlockStateBuilder = new MapBlockStateBuilder();
         mapObjectBuilder = new MapObjectBuilder();
@@ -55,8 +57,8 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
         _bombsManager = new BombsManager(mapManager);
         _explosionsManager = new ExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
-        _objectManager = new ObjectManager(playerManager, mapManager)
-
+        _objectManager = new MapObjectManager(playerManager, mapManager)
+         weaponBuilder = new WeaponBuilder(bombsBuilder,_mapManager,mapObjectBuilder,objectManager)
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
 
@@ -96,11 +98,11 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         if (user.isItMe) {
 
             //todo:make a weaponBuilder
-            var player:IPlayerBomber = playersBuilder.makePlayer(this, user.playerId, user.name, color, gameSkills, new AtomBombWeapon(mapManager, bombsBuilder), gameSkin);
+            var player:IPlayerBomber = playersBuilder.makePlayer(this, user.playerId, user.name, color, gameSkills, weaponBuilder.makeSpecialBomb(3,WeaponType.ATOM_BOMB_WEAPON), gameSkin);
             playerManager.setPlayer(player);
         } else {
             //todo: here get profile from user variables and use it to make enemy
-            var enemy:IEnemyBomber = playersBuilder.makeEnemy(this, user.playerId, user.name, color, gameSkills, new AtomBombWeapon(mapManager, bombsBuilder), gameSkin);
+            var enemy:IEnemyBomber = playersBuilder.makeEnemy(this, user.playerId, user.name, color, gameSkills, weaponBuilder.makeSpecialBomb(3,WeaponType.ATOM_BOMB_WEAPON), gameSkin);
             enemiesManager.addEnemy(enemy);
         }
     }

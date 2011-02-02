@@ -14,6 +14,7 @@ import engine.model.signals.GameEndedSignal
 import engine.model.signals.GameReadySignal
 import engine.model.signals.MapLoadedSignal
 import engine.model.signals.ReadyToPlayAgainSignal
+import engine.model.signals.manage.GameAddedSignal
 import engine.model.signals.manage.GameProfileLoadedSignal
 import engine.model.signals.manage.GameStartedSignal
 import engine.model.signals.manage.PlayerReadyChangedSignal
@@ -166,8 +167,6 @@ public class GameModel {
         //todo:room variables must have vars describing gameType and map.
         _gameType = GameType.REGULAR;
 
-        connectedToGame.dispatch();
-
         TweenMax.delayedCall(5.0, startPing)
 
         threeSecondsToStart.addOnce(onThreeSecondsToStart);
@@ -209,7 +208,10 @@ public class GameModel {
         }
         return result;
     }
-
+    public function getUserProfile(user:User):GameProfile {
+        //todo: replace with real implementation
+        return new GameProfile();
+    }
     // getters & setters
     public function get gameType():GameType {
         return _gameType;
@@ -219,5 +221,7 @@ public class GameModel {
     public function set gameType(gameType:GameType):void {
         _gameType = gameType;
     }
+
+
 }
 }

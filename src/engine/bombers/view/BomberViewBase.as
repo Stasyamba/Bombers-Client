@@ -84,7 +84,8 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
 
     private function drawHealthBar():void {
         healthBar.graphics.clear();
-        healthBar.graphics.beginBitmapFill(Context.imageService.getHealthBar(_bomber.life / _bomber.gameSkills.startLife));
+		//todo:replace 3 with profile property startLife
+        healthBar.graphics.beginBitmapFill(Context.imageService.getHealthBar(_bomber.life / 3));
         healthBar.graphics.drawRect(0, 0, Consts.HEALTH_BAR_WIDTH, Consts.HEALTH_BAR_HEIGHT)
         healthBar.graphics.endFill();
     }

@@ -39,6 +39,7 @@ import engine.profiles.interfaces.IGameProfile
 import engine.utils.greensock.TweenMax
 import engine.weapons.AtomBombWeapon
 import engine.weapons.RegularMineWeapon
+import engine.weapons.WeaponBuilder
 import engine.weapons.WeaponType
 import engine.weapons.interfaces.IDeactivatableWeapon
 
@@ -70,7 +71,7 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
         _bombsManager = new SinglePlayerBombsManager(mapManager);
         _explosionsManager = new SinglePlayerExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
         _objectManager = new SinglePlayerObjectManager(playerManager, enemiesManager, mapManager);
-
+        weaponBuilder = new WeaponBuilder(bombsBuilder,_mapManager,mapObjectBuilder,objectManager)
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
             EngineContext.frameEntered.add(playerManager.movePlayer);
@@ -137,8 +138,8 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
     private function onWeaponUsed(playerId:int, x:int, y:int, type:WeaponType):void {
         var bomber:IBomber = getPlayer(playerId);
         bomber.activateWeapon();
-        if (bomber.weapon is IDeactivatableWeapon) {
-            var dw:IDeactivatableWeapon = IDeactivatableWeapon(bomber.weapon)
+        if (bomber.currentWeapon is IDeactivatableWeapon) {
+            var dw:IDeactivatableWeapon = IDeactivatableWeapon(bomber.currentWeapon)
             TweenMax.delayedCall(dw.duration, bomber.deactivateWeapon)
         }
 
@@ -153,11 +154,11 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
         var profile:IGameProfile = new GameProfile();
         var gameSkills:IGameSkills = profile.getGameSkills();
         var gameSkin:BomberSkin = profile.getSkin(1);
-        playerManager.setPlayer(playersBuilder.makePlayer(this, 1, profile.name, color, gameSkills, new RegularMineWeapon(20, mapManager, mapObjectBuilder, objectManager), gameSkin));
+        playerManager.setPlayer(playersBuilder.makePlayer(this, 1, profile.name, color, gameSkills, weaponBuilder.makeMine(20,WeaponType.REGULAR_MINE), gameSkin));
     }
 
     public function addBot(color:PlayerColor):void {
-        enemiesManager.addEnemy(playersBuilder.makeEnemyBot(this, enemiesManager.enemiesCount + 2, "bot" + enemiesManager.enemiesCount, color, new GameSkills(), new AtomBombWeapon(mapManager, bombsBuilder), new GameProfile().getSkin(enemiesManager.enemiesCount + 2), new AlongRightWallWalkingStrategy()))
+        enemiesManager.addEnemy(playersBuilder.makeEnemyBot(this, enemiesManager.enemiesCount + 2, "bot" + enemiesManager.enemiesCount, color, new GameSkills(), null, new GameProfile().getSkin(enemiesManager.enemiesCount + 2), new AlongRightWallWalkingStrategy()))
     }
 
 

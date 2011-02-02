@@ -27,7 +27,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
      * use BombersBuilder instead
      * */
     public function PlayerBomber(game:IGame, playerId:int, userName:String, color:PlayerColor, direction:InputDirection, skills:IGameSkills, weapon:IWeapon, skin:BomberSkin, bombBuilder:BombsBuilder) {
-        super(game, playerId, userName, color, skills, weapon, skin, bombBuilder);
+        super(game, playerId, userName, color, weapon, skin, bombBuilder);
 
         _direction = direction;
     }
@@ -128,11 +128,11 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     public override function move(elapsedTime:Number):void {
-        performMotion(elapsedTime * _skills.speed)
+        performMotion(elapsedTime * speed)
     }
 
     public function setBomb(bombType:BombType):void {
-        if (_map.getBlock(coords.elemX, coords.elemY).canSetBomb() && _skills.bombCount > 0 && !isDead) {
+        if (_map.getBlock(coords.elemX, coords.elemY).canSetBomb() && bombCount > 0 && !isDead) {
             EngineContext.triedToSetBomb.dispatch(coords.elemX, coords.elemY, bombType);
         }
     }
@@ -147,7 +147,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
             EngineContext.playerDied.dispatch();
             return;
         }
-        super.makeImmortalFor(_skills.immortalTime);
+        super.makeImmortalFor(immortalTime);
     }
 
     public override function kill():void {
@@ -158,9 +158,9 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
     public function tryUseWeapon():void {
         if (isDead) return;
-        if (weapon is IActivatableWeapon) {
-            if (IActivatableWeapon(weapon).canActivate(_coords.elemX, _coords.elemY, this))
-                EngineContext.triedToUseWeapon.dispatch(playerId, _coords.elemX, _coords.elemY, weapon.type);
+        if (currentWeapon is IActivatableWeapon) {
+            if (IActivatableWeapon(currentWeapon).canActivate(_coords.elemX, _coords.elemY, this))
+                EngineContext.triedToUseWeapon.dispatch(playerId, _coords.elemX, _coords.elemY, currentWeapon.type);
         }
 
     }

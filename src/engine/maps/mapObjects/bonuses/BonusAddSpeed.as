@@ -18,8 +18,8 @@ public class BonusAddSpeed extends BonusBase implements IBonus {
 
 
     public function activateOn(player:IBomber):void {
-        player.gameSkills.speed *= 1.1;
-        trace("player " + player.playerId + " collected bonus speed , speed = " + player.gameSkills.speed);
+        player.incSpeed();
+        trace("player " + player.playerId + " collected bonus speed , speed = " + player.speed);
     }
 
     public function get type():IMapObjectType {

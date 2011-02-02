@@ -18,8 +18,8 @@ public class BonusAddBombPower extends BonusBase implements IBonus {
 
 
     public function activateOn(player:IBomber):void {
-        player.gameSkills.bombPower += 1;
-        trace("player " + player.playerId + " collected bonus power , power = " + player.gameSkills.bombPower);
+        player.incBombPower();
+        trace("player " + player.playerId + " collected bonus power , power = " + player.bombPower);
     }
 
     public function get type():IMapObjectType {

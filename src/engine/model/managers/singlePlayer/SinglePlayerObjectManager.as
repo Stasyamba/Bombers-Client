@@ -10,9 +10,9 @@ import engine.maps.interfaces.IMapObject
 import engine.model.managers.interfaces.IEnemiesManager
 import engine.model.managers.interfaces.IMapManager
 import engine.model.managers.interfaces.IPlayerManager
-import engine.model.managers.regular.ObjectManager
+import engine.model.managers.regular.MapObjectManager
 
-public class SinglePlayerObjectManager extends ObjectManager {
+public class SinglePlayerObjectManager extends MapObjectManager {
 
     private var _enemiesManager:IEnemiesManager;
 

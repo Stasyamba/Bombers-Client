@@ -64,11 +64,11 @@ public class ItemsManager {
 
 
         items.push(new ItemObject(
-                ItemType.HAMELION_POISON,
+                ItemType.HAMELEON_POISON,
                 [new AccessLevelRule(1)],
 
                 new ItemViewObject(
-                        ItemType.HAMELION_POISON,
+                        ItemType.HAMELEON_POISON,
                         ImagesPrefixes.WEAPON_PREFIX + "hamelionPoison.png",
                         "Зелье хамелиона (увеличенное)",
                         "На 30 секунд ваш бомбастер сольется с картой и станет практически незаметным для ваших врагов!"

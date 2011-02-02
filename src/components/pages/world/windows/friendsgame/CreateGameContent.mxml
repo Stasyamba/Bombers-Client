@@ -15,6 +15,12 @@
 
     <fx:Script>
 		<![CDATA[
+        import components.ApplicationView
+
+        import engine.utils.Utils
+
+        import mx.controls.Alert
+
         private function generatingGameName(visible:Boolean):void {
             gameNameTextInput.isWarning = visible;
         }
@@ -23,13 +29,21 @@
         }
 
         private function tryToCreateGame():void {
+            if (Utils.isCorrectGameName(gameNameTextInput.text)) {
+                Context.gameModel.tryCreateRegularGame(gameNameTextInput.text, gamePassTextInput.text)
+                Context.gameModel.connectedToGame.addOnce(function ():void {
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+                })
+            }
+            else
+                Alert.show("Неправильное название игры");
+//            Context.Model.dispatchCustomEvent(
+//                    ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
+//            {
+//                text: "Игра с таким названием уже существует, все что вы можете сделать это расплакаться как девчoнка или создать новую игру =)",
+//                type: TypeGameToggle.TOGGLE_STATE_CREATE
+//            });
 
-            Context.Model.dispatchCustomEvent(
-                    ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
-            {
-                text: "Игра с таким названием уже существует, все что вы можете сделать это расплакаться как девчoнка или создать новую игру =)",
-                type: TypeGameToggle.TOGGLE_STATE_CREATE
-            });
         }
         ]]>
 	</fx:Script>
@@ -110,7 +124,8 @@
                              color="0xffffff"
                             />
 
-                    <s:TextInput borderVisible="true" fontSize="24" fontFamily="mpr"
+                    <s:TextInput id="gamePassTextInput"
+                                 borderVisible="true" fontSize="24" fontFamily="mpr"
                                  height="32"
                                  width="191" borderColor="0xe1e3de"
                                  focusSkin="skins.common.NoFocusS"/>

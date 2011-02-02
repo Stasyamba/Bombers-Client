@@ -7,9 +7,9 @@ package engine.bombss {
 public class BombType {
 
     public static const NULL:BombType = new BombType(-1, "NULL", false);
-    public static const REGULAR:BombType = new BombType(0, "REGULAR", true);
-    public static const ATOM:BombType = new BombType(1, "ATOM", false);
-    public static const BOX:BombType = new BombType(2, "BOX", false);
+    public static const REGULAR:BombType = new BombType(1, "REGULAR", true);
+    public static const ATOM:BombType = new BombType(2, "ATOM", false);
+    public static const BOX:BombType = new BombType(3, "BOX", false);
 
     private var _value:int;
     private var _key:String;
