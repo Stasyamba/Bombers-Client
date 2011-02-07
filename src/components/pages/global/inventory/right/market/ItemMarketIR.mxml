@@ -75,7 +75,7 @@
                     slotGroup.removeAllElements();
                     slotGroup.addElement(slot);
                 } else {
-                    Alert.show("Не могу создать представление для данного типа предмета ищи в ItemMarketIR.mxml");
+                    Alert.show("Не могу создать представление для данного типа предмета ищи в ItemMarketIR.mxml " + (data as ItemType).name);
                 }
             } else {
                 // show error

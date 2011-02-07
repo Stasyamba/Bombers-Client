@@ -140,7 +140,9 @@
                             "У вас в рюкзаке уже есть такой предмет. Вы не моежете купить его больше чем 1 штуку."
                             );
                 } else {
-                    Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
+                    //Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
+                    Context.gameServer.buyItemRequest(itemType)
+
                 }
 
             }

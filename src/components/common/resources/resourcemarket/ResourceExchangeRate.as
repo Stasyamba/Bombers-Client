@@ -3,7 +3,9 @@
  * Pavkin Vladimir
  */
 
-package engine.resources {
+package components.common.resources.resourcemarket {
+import components.common.resources.ResourceType
+
 public class ResourceExchangeRate {
     private var _sell:ResourceType;
     private var _buy:ResourceType;

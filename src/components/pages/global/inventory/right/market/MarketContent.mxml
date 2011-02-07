@@ -12,9 +12,11 @@
     <fx:Script>
 		<![CDATA[
         import components.common.items.ItemObject
+        import components.common.items.ItemType
         import components.common.items.categories.MarketCategory
 
         import mx.collections.ArrayCollection
+        import mx.controls.Alert
 
         import spark.events.IndexChangeEvent
 
@@ -33,6 +35,7 @@
         public static const ITEMS_PER_PAGE:int = 2;
 
         public function initContent(marketCategory:MarketCategory):void {
+
             var allItems:Array = Context.Model.itemsManager.getItems();
             categoryItems = new Array();
 

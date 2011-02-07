@@ -75,15 +75,24 @@
 
         private function panelCreationComplete():void {
             apearingAnimation.play();
+
+            Context.Model.addCustomListener(ContextEvent.RS_BUY_SUCCESS,function(e:ContextEvent){
+                buyProgressVisible(false);
+                close()
+                Alert.show("buy success")
+            })
+
+            Context.Model.addCustomListener(ContextEvent.RS_BUY_FAILED,function(e:ContextEvent){
+                buyProgressVisible(false);
+                Alert.show("buy failed")
+            })
         }
 
         private function resourceValueChanged(e:ContextEvent):void {
             rp.setResourceValue(e.data.resourceType, e.data.value);
 
-            //price = Market.getPrice(rp) = immitation now:
-            var price:int = rp.gold.value + rp.adamant.value + rp.crystals.value + rp.antimatter.value;
+            var price:int = Context.resourceMarket.getVoicePrice(rp);
             costText = ResourcePriceToolTip.getToolTipCost(price);
-
 
             var describeCostTextNew:String = ResourcePriceToolTip.getToolTipDescibe(price);
             if (describeCostTextNew != describeCostText) {
@@ -99,8 +108,9 @@
         }
 
         public function test():void {
-            Alert.show(rp.toString());
+            //Alert.show(rp.toString());
             buyProgressVisible(true);
+            Context.gameServer.buyResourcesRequest(rp);
         }
         ]]>
 	</fx:Script>

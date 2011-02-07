@@ -13,7 +13,6 @@ import engine.model.signals.GameEndedSignal
 import engine.model.signals.GameReadySignal
 import engine.model.signals.MapLoadedSignal
 import engine.model.signals.ReadyToPlayAgainSignal
-import engine.model.signals.manage.GameProfileLoadedSignal
 import engine.model.signals.manage.GameStartedSignal
 import engine.model.signals.manage.PlayerReadyChangedSignal
 import engine.model.signals.manage.ReadyToCreateGameSignal
@@ -32,8 +31,6 @@ public class GameModel {
     private var gameBuilder:GameBuilder = new GameBuilder();
 
     //---signals
-    public var profileLoaded:GameProfileLoadedSignal = new GameProfileLoadedSignal();
-
     public var connectedToGame:ReadyToCreateGameSignal = new ReadyToCreateGameSignal();
 
     public var playerReadyChanged:PlayerReadyChangedSignal = new PlayerReadyChangedSignal();
@@ -53,25 +50,16 @@ public class GameModel {
 
 
     function GameModel() {
-
-        init();
-
-        profileLoaded.add(onProfileLoaded);
-
-        //todo:remove this code when profile loading will be available
-        var profile:GameProfile = new GameProfile();
-        profile.name = "id" + int(1000000 * Math.random());
-        profileLoaded.dispatch(profile);
     }
 
 
     //----------init-------------
 
     public function init():void {
-
         Context.gameServer.connected.add(onGameServerConnected);
         Context.gameServer.loggedIn.add(onLoggedIn);
         Context.gameServer.connectDefault();
+		Context.gameServer.profileLoaded.add(onProfileLoaded);
     }
 
     private function onGameServerConnected():void {
@@ -141,7 +129,13 @@ public class GameModel {
     }
 
     private function onProfileLoaded(profile:GameProfile):void {
-
+        Context.Model.currentSettings.gameProfile = profile
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED)
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED)
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED)
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED)
     }
 
 

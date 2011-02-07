@@ -164,7 +164,7 @@ public class GameProfile {
     }
 
 
-    public function setAura(itemType:ItemType, newItemType:ItemType):void {
+    public function setAura(itemType:ItemType, newItemType:ItemType, dispatchEvents:Boolean = true):void {
 
         for (var i:int = 0; i <= _aursTurnedOn.length - 1; i++) {
             if (_aursTurnedOn[i] == itemType) {
@@ -199,9 +199,10 @@ public class GameProfile {
         if (newItemType == null) {
             packItems.push(new ItemProfileObject(itemType, -1));
         }
-
-        Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED);
-        Context.Model.dispatchCustomEvent(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED);
+        if (dispatchEvents) {
+            Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED);
+            Context.Model.dispatchCustomEvent(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED);
+        }
     }
 
     public function getSkin(playerId:int):BomberSkin {
@@ -215,6 +216,10 @@ public class GameProfile {
         res.id = obj.getInt("Id");
         res.name = obj.getUtfString("Nick");
         res.expirance = obj.getInt("Experience")
+        res.energy = obj.getInt("Energy")
+        res.currentBomberType = BomberType.byValue(obj.getInt("CurrentBomber"))
+        res.selectedWeaponRightHand = new ItemProfileObject(res.currentBomberType.baseBomb, -1);
+
         var items:ISFSArray = obj.getSFSArray("WeaponsOpen");
         for (var i:int = 0; i < items.size(); i++) {
             var objItem:ISFSObject = items.getSFSObject(i);
@@ -226,13 +231,13 @@ public class GameProfile {
         }
         var a:int = obj.getInt("AuraOne");
         if (a != 0)
-            res.setAura(null, ItemType.byValue(a))
+            res.setAura(null, ItemType.byValue(a),false)
         a = obj.getInt("AuraTwo");
         if (a != 0)
-            res.setAura(null, ItemType.byValue(a))
+            res.setAura(null, ItemType.byValue(a),false)
         a = obj.getInt("AuraThree");
         if (a != 0)
-            res.setAura(null, ItemType.byValue(a))
+            res.setAura(null, ItemType.byValue(a),false)
 
         res.resources = new ResourcePrice(obj.getInt("Gold"), obj.getInt("Crystal"), obj.getInt("Adamantium"), obj.getInt("Antimatter"))
 
@@ -243,9 +248,27 @@ public class GameProfile {
 
         items = obj.getSFSArray("BombersOpen");
         for (i = 0; i < items.size(); i++) {
-            res.openedLocations.push(BomberType.byValue(items.getInt(i)))
+            res.bombersOpened.push(BomberType.byValue(items.getInt(i)))
         }
         return res;
+    }
+
+    public function addItem(iType:ItemType, count:int):void {
+        if(selectedWeaponRightHand.itemType == iType){
+            selectedWeaponRightHand.itemCount += count
+            return
+        }else{
+            for (var i:int = 0; i < gotItems.length; i++) {
+                var io:ItemProfileObject = gotItems[i];
+                if(io.itemType == iType) {
+                    io.itemCount += count
+                    return
+                }
+            }
+        }
+        io = new ItemProfileObject(iType,count)
+        gotItems.push(io)
+        packItems.push(io)
     }
 }
 }

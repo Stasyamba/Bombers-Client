@@ -87,6 +87,16 @@ public class ContextEvent extends Event {
     public static const GPAGE_NEED_TO_SHOW_RESULTS_WINDOW:String = "GPAGENeedToShowResultsWindow";
     // pass: GameResults
 
+    /***** buy events: resources(RS), energy(EN), items(IT) *****/
+    public static const RS_BUY_FAILED:String = "RSBuyFailed"
+    public static const RS_BUY_SUCCESS:String = "RSBuySuccess"
+    //pass ResourcePrice - how much bought each resource
+    //EN_BUY_FAILED == RS_BUY_FAILED
+    public static const EN_BUY_SUCCESS:String = "ENBuySuccess"
+    //pass int - how much bought each resource
+    public static const IT_BUY_FAILED:String = "ITBuyFailed"
+    public static const IT_BUY_SUCCESS:String = "ITBuySuccess"
+    //pass {it:ItemType,count:int // how much bought weapon}
 
     /***** common events *****/
     public static const BOMBER_CHANGED:String = "BomberChanged";
@@ -94,6 +104,8 @@ public class ContextEvent extends Event {
 
 
     public var data:*;
+
+
 
     public function ContextEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, data:* = null) {
         super(type, bubbles, cancelable);

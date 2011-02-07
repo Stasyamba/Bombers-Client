@@ -28,6 +28,7 @@ public class ItemsCategoriesManager {
 
             case ItemType.QUEST_ITEM_CANARY:
             case ItemType.QUEST_ITEM_SNOWBOOTS:
+            case ItemType.BASE_BOMB:
                 res = ItemCategory.QUEST_ITEM;
                 break;
 

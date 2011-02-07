@@ -25,6 +25,9 @@ import com.smartfoxserver.v2.requests.game.CreateSFSGameRequest
 import com.smartfoxserver.v2.requests.game.QuickJoinGameRequest
 import com.smartfoxserver.v2.requests.game.SFSGameSettings
 
+import components.common.items.ItemType
+import components.common.resources.ResourcePrice
+
 import engine.EngineContext
 import engine.bombss.BombType
 import engine.games.GameType
@@ -43,6 +46,8 @@ import engine.model.signals.manage.SomeoneJoinedToGameSignal
 import engine.model.signals.manage.SomeoneLeftGameSignal
 import engine.profiles.GameProfile
 import engine.utils.Direction
+
+import engine.utils.greensock.loading.display.ContentDisplay
 
 import flash.events.Event
 import flash.events.TimerEvent
@@ -73,7 +78,13 @@ public class GameServer extends SmartFox {
     private static const ACTIVATE_DYNAMIC_OBJECT:String = "activate_dynamic_object";
     private static const BONUS_TAKEN:String = "bonus_taken";
     private static const PING:String = "ping";
+
+    //interface
     private static const GAME_PROFILE_LOADED:String = "interface.gameProfileLoaded";
+    private static const BUY_RESOURCES:String = "interface.buyResources"
+    private static const BUY_RESOURCES_RESULT:String = "interface.buyResources.result"
+    private static const BUY_ITEM:String = "interface.buyItem";
+    private static const BUY_ITEM_RESULT:String = "interface.buyItem.result";
 
     public var ip:String;
     public var port:int;
@@ -244,6 +255,24 @@ public class GameServer extends SmartFox {
         params.putInt("y", object.y);
 
         send(new ExtensionRequest(ACTIVATE_DYNAMIC_OBJECT, params, gameRoom));
+    }
+
+    public function buyResourcesRequest(rp:ResourcePrice):void {
+        var params:ISFSObject = new SFSObject();
+        params.putInt("interface.buyResources.fields.resourceType0", rp.gold.value)
+        params.putInt("interface.buyResources.fields.resourceType1", rp.crystals.value)
+        params.putInt("interface.buyResources.fields.resourceType2", rp.adamant.value)
+        params.putInt("interface.buyResources.fields.resourceType3", rp.antimatter.value)
+        params.putInt("interface.buyResources.fields.resourceType4", 0)
+
+        send(new ExtensionRequest(BUY_RESOURCES, params, null))
+    }
+
+    public function buyItemRequest(it:ItemType):void {
+        var params:ISFSObject = new SFSObject();
+        params.putInt("interface.buyItem.fields.itemId", it.value)
+
+        send(new ExtensionRequest(BUY_ITEM, params, null))
     }
 
     public function ping():void {
@@ -427,6 +456,50 @@ public class GameServer extends SmartFox {
                 trace("profile recieved !!!!!!!!!!!!!!!!!!!!");
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
                 profileLoaded.dispatch(gp);
+                break;
+            case BUY_RESOURCES_RESULT:
+                trace("resources bought");
+                var status:Boolean = responseParams.getBool("interface.buyResources.result.fields.status")
+                if (!status) {
+                    Context.Model.dispatchCustomEvent(ContextEvent.RS_BUY_FAILED)
+                    return
+                } else {
+                    var en:int = responseParams.getInt("interface.buyResources.result.fields.resourceType4")
+                    if (en == 0) {
+                        var rp:ResourcePrice = new ResourcePrice(responseParams.getInt("interface.buyResources.result.fields.resourceType0"),
+                                responseParams.getInt("interface.buyResources.result.fields.resourceType1"),
+                                responseParams.getInt("interface.buyResources.result.fields.resourceType2"),
+                                responseParams.getInt("interface.buyResources.result.fields.resourceType3"))
+                        Context.Model.currentSettings.gameProfile.resources.add(rp);
+                        Context.Model.dispatchCustomEvent(ContextEvent.RS_BUY_SUCCESS, rp)
+                        Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED)
+                    } else {
+                        Context.Model.currentSettings.gameProfile.energy += en;
+                        Context.Model.dispatchCustomEvent(ContextEvent.EN_BUY_SUCCESS, en)
+                        Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED)
+                    }
+                }
+                break;
+            case BUY_ITEM_RESULT:
+                trace("resources bought");
+                status = responseParams.getBool("interface.buyItem.result.fields.status")
+                if (!status) {
+                    Context.Model.dispatchCustomEvent(ContextEvent.IT_BUY_FAILED)
+                    return
+                }
+                var iType:ItemType = ItemType.byValue(responseParams.getInt("interface.buyItem.result.fields.itemId"))
+                var count:int = responseParams.getInt("interface.buyItem.result.fields.count")
+                rp = new ResourcePrice(responseParams.getInt("interface.buyItem.result.fields.itemCostResourceType0"),
+                                responseParams.getInt("interface.buyItem.result.fields.itemCostResourceType1"),
+                                responseParams.getInt("interface.buyItem.result.fields.itemCostResourceType2"),
+                                responseParams.getInt("interface.buyItem.result.fields.itemCostResourceType3"))
+                Context.Model.currentSettings.gameProfile.addItem(iType,count);
+                Context.Model.currentSettings.gameProfile.resources.subscract(rp);
+                Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED)
+                Context.Model.dispatchCustomEvent(ContextEvent.IT_BUY_SUCCESS, {it:iType,count:count})
+                Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
+                Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
+                break;
         }
 
 
