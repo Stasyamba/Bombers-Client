@@ -28,7 +28,7 @@ public class BombersManager {
                         BomberType.R2D3,
                         "Робот R2D3",
                         "",
-                        ""
+						ImagesPrefixes.BOMBERS_PREFIX + "r2d3/r2d3BigImage.png"
                         )
                 ));
 
