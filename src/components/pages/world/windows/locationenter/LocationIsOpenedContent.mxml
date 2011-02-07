@@ -8,60 +8,57 @@
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
 
-	    <fx:Script>
+    <fx:Script>
 			<![CDATA[
-				import components.ApplicationView;
-				import components.common.utils.adjustcolor.ColorMatrixObject;
-				import components.common.worlds.locations.LocationType;
-				
-				import engine.games.GameType;
-				
-				import mx.core.BitmapAsset;
-				
-				import spark.primitives.BitmapImage;
-	
-			[Embed(source="assets/pageworld/worlds/locationenter/energyLightings.png")]
-			public var lightingsImage:Class;
-				
-	        private var locationType:LocationType;
-			private var enegryRequired: int;
-				
-	        public function initContent(locationType:LocationType, cmg:ColorMatrixObject, csg:ColorMatrixObject):void {
-	            this.locationType = locationType;
-	
-	            multyGameButton.colorMatrixObject = cmg;
-	            singleGameButton.colorMatrixObject = csg;
-				
-				enegryRequired = Context.Model.locationManager.getLocation(locationType).energyCost;
-				
-				for(var i: int = 0; i<= enegryRequired - 1; i++)
-				{
-					var lightImage: BitmapImage = new BitmapImage();
-					lightImage.source = new lightingsImage() as BitmapAsset;
-					
-					energyLightingsGroup.addElement(lightImage);
-				}
-	        }
-	
-	        private function init():void 
-			{
-				
-	        }
-	
-	        private function singleGameButton_clickHandler(event:MouseEvent):void {
-	            
-	            if (locationType == LocationType.WORLD1_GRASSFIELDS) 
-				{
-	                Context.gameModel.gameType = GameType.SINGLE;
-	                Context.Model.windowsManager.closeAll(true);
-					
-	                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
-	                
-					Context.gameModel.readyToCreateGame.addOnce(function ():void {
-	                    Context.gameModel.createSinglePlayerGame("test");
-	                })
-	            }
-	        }
+        import components.ApplicationView
+        import components.common.utils.adjustcolor.ColorMatrixObject
+        import components.common.worlds.locations.LocationType
+
+        import engine.games.GameType
+
+        import mx.core.BitmapAsset
+
+        import spark.primitives.BitmapImage
+
+        [Embed(source="assets/pageworld/worlds/locationenter/energyLightings.png")]
+        public var lightingsImage:Class;
+
+        private var locationType:LocationType;
+        private var enegryRequired:int;
+
+        public function initContent(locationType:LocationType, cmg:ColorMatrixObject, csg:ColorMatrixObject):void {
+            this.locationType = locationType;
+
+            multyGameButton.colorMatrixObject = cmg;
+            singleGameButton.colorMatrixObject = csg;
+
+            enegryRequired = Context.Model.locationManager.getLocation(locationType).energyCost;
+
+            for (var i:int = 0; i <= enegryRequired - 1; i++) {
+                var lightImage:BitmapImage = new BitmapImage();
+                lightImage.source = new lightingsImage() as BitmapAsset;
+
+                energyLightingsGroup.addElement(lightImage);
+            }
+        }
+
+        private function init():void {
+
+        }
+
+        private function singleGameButton_clickHandler(event:MouseEvent):void {
+
+            if (locationType == LocationType.WORLD1_GRASSFIELDS) {
+                Context.gameModel.gameType = GameType.SINGLE;
+                Context.Model.windowsManager.closeAll(true);
+
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+
+                Context.gameModel.readyToCreateGame.addOnce(function ():void {
+                    Context.gameModel.createSinglePlayerGame("test");
+                })
+            }
+        }
         ]]>
 	</fx:Script>
     <s:VGroup horizontalAlign="center">
@@ -77,11 +74,11 @@
                                       skinClass="skins.buttons.Pattern3ButtonS"
                                       click="singleGameButton_clickHandler(event)"
                 />
-        
-		<s:VGroup width="100%" horizontalAlign="center">
-			<s:Label text="Сложность задания:" fontFamily="mpbc" fontSize="24" color="0xfddc28" />
-			<s:HGroup id="energyLightingsGroup" />
-		</s:VGroup>
+
+        <s:VGroup width="100%" horizontalAlign="center">
+            <s:Label text="Сложность задания:" fontFamily="mpbc" fontSize="24" color="0xfddc28"/>
+            <s:HGroup id="energyLightingsGroup"/>
+        </s:VGroup>
     </s:VGroup>
 
 </s:Group>

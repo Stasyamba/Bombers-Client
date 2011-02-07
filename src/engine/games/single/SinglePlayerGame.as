@@ -11,8 +11,6 @@ import engine.bombers.PlayersBuilder
 import engine.bombers.bots.AlongRightWallWalkingStrategy
 import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IEnemyBomber
-import engine.bombers.interfaces.IGameSkills
-import engine.bombers.mapInfo.GameSkills
 import engine.bombers.skin.BomberSkin
 import engine.bombss.BombType
 import engine.bombss.BombsBuilder
@@ -149,13 +147,12 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
     public function addPlayer(mySelf:User, color:PlayerColor):void {
         //todo:here player's profile will be taken as user variable
         var profile:GameProfile = new GameProfile();
-        var gameSkills:IGameSkills = profile.getGameSkills();
         var gameSkin:BomberSkin = profile.getSkin(1);
-        playerManager.setPlayer(playersBuilder.makePlayer(this, 1, profile.name, color, gameSkills, weaponBuilder.makeSpecialBomb(20, WeaponType.DYNAMITE_WEAPON), gameSkin));
+        playerManager.setPlayer(playersBuilder.makePlayer(this, 1, profile.name, color, weaponBuilder.makeSpecialBomb(20, WeaponType.DYNAMITE_WEAPON), gameSkin));
     }
 
     public function addBot(color:PlayerColor):void {
-        enemiesManager.addEnemy(playersBuilder.makeEnemyBot(this, enemiesManager.enemiesCount + 2, "bot" + enemiesManager.enemiesCount, color, new GameSkills(), null, new GameProfile().getSkin(enemiesManager.enemiesCount + 2), new AlongRightWallWalkingStrategy()))
+        enemiesManager.addEnemy(playersBuilder.makeEnemyBot(this, enemiesManager.enemiesCount + 2, "bot" + enemiesManager.enemiesCount, color, null, new GameProfile().getSkin(enemiesManager.enemiesCount + 2), new AlongRightWallWalkingStrategy()))
     }
 
 

@@ -75,7 +75,7 @@
             }
         }
 
-        public function get text():String{
+        public function get text():String {
             return textField.text;
         }
         ]]>

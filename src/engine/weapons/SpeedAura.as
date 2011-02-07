@@ -9,7 +9,7 @@ import engine.weapons.interfaces.IAuraWeapon
 
 public class SpeedAura implements IAuraWeapon {
 
-    private var _bonusValue : int;
+    private var _bonusValue:int;
 
     public function SpeedAura(bonusValue:int) {
         _bonusValue = bonusValue

@@ -31,6 +31,7 @@ import engine.games.GameType
 import engine.maps.interfaces.IMapObject
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.model.signals.InGameMessageReceivedSignal
+import engine.model.signals.ProfileLoadedSignal
 import engine.model.signals.manage.GameAddedSignal
 import engine.model.signals.manage.GameServerConnectedSignal
 import engine.model.signals.manage.JoinedToGameSignal
@@ -82,6 +83,9 @@ public class GameServer extends SmartFox {
 
     public var connected:GameServerConnectedSignal = new GameServerConnectedSignal();
     public var loggedIn:LoggedInSignal = new LoggedInSignal();
+
+    public var profileLoaded:ProfileLoadedSignal = new ProfileLoadedSignal();
+
     public var joinedToRoom:JoinedToRoomSignal = new JoinedToRoomSignal();
     public var roomAdded:RoomAddedSignal = new RoomAddedSignal();
     public var gameAdded:GameAddedSignal = new GameAddedSignal();
@@ -138,7 +142,7 @@ public class GameServer extends SmartFox {
         connect(ip, port);
     }
 
-    public function login(withName:String,pass:String):void {
+    public function login(withName:String, pass:String):void {
         send(new LoginRequest(withName, pass, zone));
     }
 
@@ -420,10 +424,11 @@ public class GameServer extends SmartFox {
                 timer.start();
                 break;
             case GAME_PROFILE_LOADED:
-                    trace("profile recieved !!!!!!!!!!!!!!!!!!!!");
-                var gp : GameProfile = GameProfile.fromISFSObject(responseParams);
-                //profileLoaded.dispatch(gp);
+                trace("profile recieved !!!!!!!!!!!!!!!!!!!!");
+                var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
+                profileLoaded.dispatch(gp);
         }
+
 
     }
 

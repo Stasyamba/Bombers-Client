@@ -5,7 +5,6 @@
 
 package engine.bombers {
 import engine.EngineContext
-import engine.bombers.interfaces.IGameSkills
 import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
 import engine.bombers.skin.BomberSkin
@@ -26,7 +25,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     /*
      * use BombersBuilder instead
      * */
-    public function PlayerBomber(game:IGame, playerId:int, userName:String, color:PlayerColor, direction:InputDirection, skills:IGameSkills, weapon:IWeapon, skin:BomberSkin, bombBuilder:BombsBuilder) {
+    public function PlayerBomber(game:IGame, playerId:int, userName:String, color:PlayerColor, direction:InputDirection, weapon:IWeapon, skin:BomberSkin, bombBuilder:BombsBuilder) {
         super(game, playerId, userName, color, weapon, skin, bombBuilder);
 
         _direction = direction;

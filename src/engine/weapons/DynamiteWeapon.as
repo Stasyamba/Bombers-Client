@@ -16,7 +16,7 @@ public class DynamiteWeapon implements IActivatableWeapon {
     private var _charges:int;
     private var mapManager:IMapManager;
 
-    public function DynamiteWeapon(mapManager:IMapManager, bombsBuilder:BombsBuilder,charges:int) {
+    public function DynamiteWeapon(mapManager:IMapManager, bombsBuilder:BombsBuilder, charges:int) {
         _charges = charges
         this.mapManager = mapManager
         this.bombsBuilder = bombsBuilder

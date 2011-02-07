@@ -6,7 +6,6 @@
 package engine.bombers {
 import engine.EngineContext
 import engine.bombers.interfaces.IEnemyBomber
-import engine.bombers.interfaces.IGameSkills
 import engine.bombers.skin.BomberSkin
 import engine.bombss.BombsBuilder
 import engine.data.Consts
@@ -20,7 +19,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
 
     protected var _direction:Direction = Direction.NONE;
 
-    public function EnemyBomber(game:IGame, playerId:int, userName:String, bombBuilder:BombsBuilder, skills:IGameSkills, weapon:IWeapon, skin:BomberSkin, color:PlayerColor) {
+    public function EnemyBomber(game:IGame, playerId:int, userName:String, bombBuilder:BombsBuilder, weapon:IWeapon, skin:BomberSkin, color:PlayerColor) {
         super(game, playerId, userName, color, weapon, skin, bombBuilder);
 
         EngineContext.enemyInputDirectionChanged.add(directionChanged);

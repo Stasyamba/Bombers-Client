@@ -22,7 +22,7 @@ public class BomberType {
     }
 
     public static function byValue(value:int):BomberType {
-        switch(value){
+        switch (value) {
             case FURY_JOE.value:
                 return FURY_JOE
             case R2D3.value:

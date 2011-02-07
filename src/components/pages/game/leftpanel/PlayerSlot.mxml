@@ -99,9 +99,11 @@
         public function hasAnyPlayer():Boolean {
             return !isProfileNull;
         }
+
         public function hasPlayer(id:int):Boolean {
             return !isProfileNull && (_profile.id == id);
         }
+
         public function set isReady(value:Boolean):void {
             _isReady = value;
 
@@ -121,12 +123,11 @@
         }
 
         public function setPlayer(value:GameProfile):void {
-            if (value == null)
-			{
+            if (value == null) {
                 removePlayer();
-			}
-			
-			_profile = value;
+            }
+
+            _profile = value;
             isProfileNull = false;
 
             levelStringView = Context.Model.expiranceManager.getLevel(value.expirance).toString();

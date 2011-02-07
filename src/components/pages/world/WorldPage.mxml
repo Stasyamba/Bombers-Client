@@ -16,6 +16,7 @@
     <fx:Script>
 		<![CDATA[
         import components.ApplicationView
+        import components.common.worlds.WorldsType
 
         private function init():void {
 
@@ -31,7 +32,7 @@
 
 
             // do once in loading time
-            worlds.loadWorld(Context.Model.currentSettings.gameProfile.currentWorld, true);
+            worlds.loadWorld(WorldsType.WORLD1, true);
         }
         ]]>
 	</fx:Script>

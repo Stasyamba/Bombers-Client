@@ -1,6 +1,5 @@
 package {
 import api.vkontakte.business.*
-import api.vkontakte.util.MD5
 
 import appmodel.ApplicationModel
 
