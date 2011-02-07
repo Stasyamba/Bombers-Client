@@ -33,24 +33,24 @@ public class LocationType {
     }
 
     public static function byValue(value:int):LocationType {
-        switch(value){
-            case WORLD1_GRASSFIELDS:
+        switch (value) {
+            case WORLD1_GRASSFIELDS.value:
                 return WORLD1_GRASSFIELDS
-            case WORLD1_CASTLE:
+            case WORLD1_CASTLE.value:
                 return WORLD1_CASTLE
-            case WORLD1_MINE:
+            case WORLD1_MINE.value:
                 return WORLD1_MINE
-            case WORLD1_SNOWPEAK:
+            case WORLD1_SNOWPEAK.value:
                 return WORLD1_SNOWPEAK
-            case WORLD1_SEA:
+            case WORLD1_SEA.value:
                 return WORLD1_SEA
-            case WORLD1_ROCKET:
+            case WORLD1_ROCKET.value:
                 return WORLD1_ROCKET
-            case WORLD1_UFO:
+            case WORLD1_UFO.value:
                 return WORLD1_UFO
-            case WORLD1_SATTELITE:
+            case WORLD1_SATTELITE.value:
                 return WORLD1_SATTELITE
-            case WORLD1_MOON:
+            case WORLD1_MOON.value:
                 return WORLD1_MOON
         }
         throw new ArgumentError("no LocationType found with value = " + value);

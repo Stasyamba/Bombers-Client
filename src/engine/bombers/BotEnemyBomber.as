@@ -7,7 +7,6 @@ package engine.bombers {
 import engine.EngineContext
 import engine.bombers.bots.IWalkingStrategy
 import engine.bombers.interfaces.IEnemyBomber
-import engine.bombers.interfaces.IGameSkills
 import engine.bombers.skin.BomberSkin
 import engine.bombss.BombsBuilder
 import engine.explosionss.interfaces.IExplosion
@@ -20,8 +19,8 @@ public class BotEnemyBomber extends EnemyBomber implements IEnemyBomber {
 
     private var walkingStrategy:IWalkingStrategy;
 
-    public function BotEnemyBomber(game:IGame, playerId:int, userName:String, bombBuilder:BombsBuilder, skills:IGameSkills, weapon:IWeapon, skin:BomberSkin, color:PlayerColor, walkingStrategy:IWalkingStrategy) {
-        super(game, playerId, userName, bombBuilder, skills, weapon, skin, color)
+    public function BotEnemyBomber(game:IGame, playerId:int, userName:String, bombBuilder:BombsBuilder, weapon:IWeapon, skin:BomberSkin, color:PlayerColor, walkingStrategy:IWalkingStrategy) {
+        super(game, playerId, userName, bombBuilder, weapon, skin, color)
 
         this.walkingStrategy = walkingStrategy;
     }

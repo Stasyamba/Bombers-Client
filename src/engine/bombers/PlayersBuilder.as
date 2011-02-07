@@ -6,7 +6,6 @@
 package engine.bombers {
 import engine.bombers.bots.IWalkingStrategy
 import engine.bombers.interfaces.IEnemyBomber
-import engine.bombers.interfaces.IGameSkills
 import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
 import engine.bombers.skin.BomberSkin
@@ -20,18 +19,18 @@ public class PlayersBuilder {
     private var bombsBuilder:BombsBuilder;
 
 
-    public function makePlayer(game:IGame, playerId:int, name:String, color:PlayerColor, skills:IGameSkills, weapon:IWeapon, skin:BomberSkin):IPlayerBomber {
+    public function makePlayer(game:IGame, playerId:int, name:String, color:PlayerColor, weapon:IWeapon, skin:BomberSkin):IPlayerBomber {
         var inputDirection:InputDirection = new InputDirection();
 
-        return new PlayerBomber(game, playerId, name, color, inputDirection, skills, weapon, skin, bombsBuilder)
+        return new PlayerBomber(game, playerId, name, color, inputDirection, weapon, skin, bombsBuilder)
     }
 
-    public function makeEnemy(game:IGame, playerId:int, name:String, color:PlayerColor, skills:IGameSkills, weapon:IWeapon, skin:BomberSkin):IEnemyBomber {
-        return new EnemyBomber(game, playerId, name, bombsBuilder, skills, weapon, skin, color);
+    public function makeEnemy(game:IGame, playerId:int, name:String, color:PlayerColor, weapon:IWeapon, skin:BomberSkin):IEnemyBomber {
+        return new EnemyBomber(game, playerId, name, bombsBuilder, weapon, skin, color);
     }
 
-    public function makeEnemyBot(game:IGame, playerId:int, name:String, color:PlayerColor, skills:IGameSkills, weapon:IWeapon, skin:BomberSkin, walkingStrategy:IWalkingStrategy):IEnemyBomber {
-        return new BotEnemyBomber(game, playerId, name, bombsBuilder, skills, weapon, skin, color, walkingStrategy);
+    public function makeEnemyBot(game:IGame, playerId:int, name:String, color:PlayerColor, weapon:IWeapon, skin:BomberSkin, walkingStrategy:IWalkingStrategy):IEnemyBomber {
+        return new BotEnemyBomber(game, playerId, name, bombsBuilder, weapon, skin, color, walkingStrategy);
     }
 
 

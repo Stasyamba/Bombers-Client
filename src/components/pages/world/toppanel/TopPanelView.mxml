@@ -5,14 +5,12 @@
          width="808" height="41"
          xmlns:toppanel="toppanel.*"
          xmlns:resources="components.pages.world.toppanel.resources.*"
-         xmlns:expirance="components.pages.world.toppanel.expirance.*" xmlns:energy="components.pages.world.toppanel.energy.*"
+         xmlns:expirance="components.pages.world.toppanel.expirance.*"
+         xmlns:energy="components.pages.world.toppanel.energy.*"
         >
-	<fx:Script>
+    <fx:Script>
 		<![CDATA[
-			import skins.buttons.EnergyTopPanelButtonS;
-			
-		
-		]]>
+        ]]>
 	</fx:Script>
 
     <fx:Declarations>
@@ -38,7 +36,7 @@
               verticalAlign="middle" horizontalAlign="right">
 
         <expirance:Expirance/>
-		<energy:EnergyView />
+        <energy:EnergyView/>
         <resources:ResourcesView paddingRight="20"/>
 
     </s:HGroup>

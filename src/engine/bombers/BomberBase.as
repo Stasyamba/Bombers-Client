@@ -197,7 +197,7 @@ public class BomberBase implements IBomber {
     }
 
     public function incSpeed():void {
-        _speed*=1.1;
+        _speed *= 1.1;
     }
 
     public function incBombCount():void {

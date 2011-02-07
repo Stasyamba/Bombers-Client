@@ -32,8 +32,8 @@ public class ItemType {
         return "value: " + _value.toString() + " name: " + _name.toString();
     }
 
-    public static function byValue(value:int) : ItemType{
-        switch (value){
+    public static function byValue(value:int):ItemType {
+        switch (value) {
             case QUEST_ITEM_CANARY.value:
                 return QUEST_ITEM_CANARY
             case QUEST_ITEM_SNOWBOOTS.value:

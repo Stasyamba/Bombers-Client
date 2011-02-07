@@ -1,9 +1,9 @@
 package components.common.worlds.locations {
-import components.common.base.access.rules.betarule.AccessBetaRule;
-import components.common.base.access.rules.itemrule.AccessItemRule;
-import components.common.base.access.rules.levelrule.AccessLevelRule;
-import components.common.base.access.rules.locationrule.AccessOpenedLocationsRule;
-import components.common.items.ItemType;
+import components.common.base.access.rules.betarule.AccessBetaRule
+import components.common.base.access.rules.itemrule.AccessItemRule
+import components.common.base.access.rules.levelrule.AccessLevelRule
+import components.common.base.access.rules.locationrule.AccessOpenedLocationsRule
+import components.common.items.ItemType
 
 public class LocationManager {
     private var locations:Array = new Array();
@@ -69,20 +69,17 @@ public class LocationManager {
     public function getLocations():Array {
         return locations;
     }
-	
-	public function getLocation(locationType: LocationType):LocationObject
-	{
-		var res: LocationObject = null;
-		
-		for each(var loc:LocationObject in locations)
-		{
-			if(loc.type == locationType)
-			{
-				res = loc;
-			}
-		}
-		
-		return res;
-	}
+
+    public function getLocation(locationType:LocationType):LocationObject {
+        var res:LocationObject = null;
+
+        for each(var loc:LocationObject in locations) {
+            if (loc.type == locationType) {
+                res = loc;
+            }
+        }
+
+        return res;
+    }
 }
 }

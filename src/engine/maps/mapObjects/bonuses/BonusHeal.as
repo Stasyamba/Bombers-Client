@@ -16,7 +16,7 @@ public class BonusHeal extends BonusBase implements IBonus {
     }
 
     public function activateOn(player:IBomber):void {
-		//todo:replace 3 with profile property startLife
+        //todo:replace 3 with profile property startLife
         if (player.life < 3)
             player.life += 1;
     }

@@ -1,6 +1,6 @@
 package components.common.worlds {
 public class WorldsType {
-    public static const WORLD1:WorldsType = new WorldsType(0, "WROLD1");
+    public static const WORLD1:WorldsType = new WorldsType(0, "WORLD1");
 
 
     private var _value:int;

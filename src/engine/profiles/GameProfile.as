@@ -1,5 +1,4 @@
 package engine.profiles {
-
 import com.smartfoxserver.v2.entities.data.ISFSArray
 import com.smartfoxserver.v2.entities.data.ISFSObject
 
@@ -10,20 +9,18 @@ import components.common.resources.ResourcePrice
 import components.common.worlds.WorldsType
 import components.common.worlds.locations.LocationType
 
-import engine.bombers.interfaces.IGameSkills
-import engine.bombers.mapInfo.GameSkills
 import engine.bombers.skin.BomberSkin
 
 public class GameProfile {
 
-    private var _name:String="";
+    private var _name:String;
     public var expirance:int;
-    public var energy:int = 5;
-    public var id:int = 1;
+    public var energy:int;
+    public var id:int;
     public var photoURL:String;
 
     public var currentLocation:LocationType;
-    public var currentWorld:WorldsType = WorldsType.WORLD1;
+    public var currentWorld:WorldsType;
 
 
     private var _selectedWeaponLeftHand:ItemProfileObject;
@@ -33,7 +30,7 @@ public class GameProfile {
      * BomberType
      */
     public var currentBomberType:BomberType;
-    public var resources:ResourcePrice = new ResourcePrice(20,20,20,20);
+    public var resources:ResourcePrice;
 
     /**
      * content = [LocationType, ...]
@@ -50,12 +47,12 @@ public class GameProfile {
     /**
      * content = [ItemProfileObject, ...]
      */
-    private var _aursTurnedOn:Array = new Array();
+    private var _aursTurnedOn:Array = [null,null,null];
 
     /*
-    * content = [BomberType,...]
-    * */
-    public var bombersOpened = new Array();
+     * content = [BomberType,...]
+     * */
+    public var bombersOpened = [BomberType.FURY_JOE,BomberType.R2D3];
     //public var vkProfile:VkontakteProfile;
 
 
@@ -77,6 +74,7 @@ public class GameProfile {
         return _aursTurnedOn;
     }
 
+    //imitation
     public function initGameProfile():void {
         packItems = new Array();
         gotItems.push(new ItemProfileObject(ItemType.QUEST_ITEM_CANARY, -1));
@@ -206,11 +204,6 @@ public class GameProfile {
         Context.Model.dispatchCustomEvent(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED);
     }
 
-
-    public function getGameSkills():IGameSkills {
-        return new GameSkills();
-    }
-
     public function getSkin(playerId:int):BomberSkin {
         if (playerId % 2 != 0)
             return Context.imageService.getBomberSkin("fury")
@@ -232,25 +225,25 @@ public class GameProfile {
             res.gotItems.push(modelItem);
         }
         var a:int = obj.getInt("AuraOne");
-        if(a != 0)
+        if (a != 0)
             res.setAura(null, ItemType.byValue(a))
         a = obj.getInt("AuraTwo");
-        if(a != 0)
+        if (a != 0)
             res.setAura(null, ItemType.byValue(a))
         a = obj.getInt("AuraThree");
-        if(a != 0)
+        if (a != 0)
             res.setAura(null, ItemType.byValue(a))
 
         res.resources = new ResourcePrice(obj.getInt("Gold"), obj.getInt("Crystal"), obj.getInt("Adamantium"), obj.getInt("Antimatter"))
 
         items = obj.getSFSArray("LocationsOpen");
         for (i = 0; i < items.size(); i++) {
-           res.openedLocations.push(LocationType.byValue(items.getInt(i)))
+            res.openedLocations.push(LocationType.byValue(items.getInt(i)))
         }
 
         items = obj.getSFSArray("BombersOpen");
         for (i = 0; i < items.size(); i++) {
-           res.openedLocations.push(BomberType.byValue(items.getInt(i)))
+            res.openedLocations.push(BomberType.byValue(items.getInt(i)))
         }
         return res;
     }

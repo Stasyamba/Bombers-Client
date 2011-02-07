@@ -4,13 +4,12 @@
  */
 
 package engine.weapons {
-import engine.weapons.interfaces.*;
 import engine.EngineContext
 import engine.bombers.interfaces.IBomber
 import engine.bombss.BombType
 import engine.bombss.BombsBuilder
 import engine.model.managers.interfaces.IMapManager
-import engine.weapons.WeaponType
+import engine.weapons.interfaces.*
 
 public class BoxBombWeapon implements IActivatableWeapon {
 
@@ -18,7 +17,7 @@ public class BoxBombWeapon implements IActivatableWeapon {
     private var mapManager:IMapManager;
     private var bombsBuilder:BombsBuilder;
 
-    public function BoxBombWeapon( mapManager:IMapManager, bombsBuilder:BombsBuilder, charges:int) {
+    public function BoxBombWeapon(mapManager:IMapManager, bombsBuilder:BombsBuilder, charges:int) {
         _charges = charges
         this.mapManager = mapManager
         this.bombsBuilder = bombsBuilder

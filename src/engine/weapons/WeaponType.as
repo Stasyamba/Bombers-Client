@@ -15,7 +15,7 @@ public class WeaponType {
 
     private var _value:int;
     private var _key:String;
-    public static const DYNAMITE_WEAPON:WeaponType = new WeaponType(03,"DYNAMITE_WEAPON");
+    public static const DYNAMITE_WEAPON:WeaponType = new WeaponType(03, "DYNAMITE_WEAPON");
 
     public function WeaponType(value:int, key:String) {
         _value = value;

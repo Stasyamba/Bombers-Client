@@ -9,12 +9,10 @@ import com.smartfoxserver.v2.entities.User
 import engine.EngineContext
 import engine.games.GameBuilder
 import engine.games.GameType
-import engine.model.managers.ProfileManager
 import engine.model.signals.GameEndedSignal
 import engine.model.signals.GameReadySignal
 import engine.model.signals.MapLoadedSignal
 import engine.model.signals.ReadyToPlayAgainSignal
-import engine.model.signals.manage.GameAddedSignal
 import engine.model.signals.manage.GameProfileLoadedSignal
 import engine.model.signals.manage.GameStartedSignal
 import engine.model.signals.manage.PlayerReadyChangedSignal
@@ -30,8 +28,6 @@ import mx.controls.Alert
 
 public class GameModel {
 
-    //managers
-    public var profileManager:ProfileManager;
 
     private var gameBuilder:GameBuilder = new GameBuilder();
 
@@ -80,7 +76,7 @@ public class GameModel {
 
     private function onGameServerConnected():void {
         //todo: here should be special login process
-        Context.gameServer.login(Context.Model.currentSettings.socialProfile.vkProfile.id,Context.Model.currentSettings.socialProfile.vkProfile.id)
+        Context.gameServer.login(Context.Model.currentSettings.socialProfile.vkProfile.id, Context.Model.currentSettings.socialProfile.vkProfile.id)
     }
 
 
@@ -145,7 +141,7 @@ public class GameModel {
     }
 
     private function onProfileLoaded(profile:GameProfile):void {
-        profileManager = new ProfileManager(profile);
+
     }
 
 
@@ -208,10 +204,12 @@ public class GameModel {
         }
         return result;
     }
+
     public function getUserProfile(user:User):GameProfile {
         //todo: replace with real implementation
         return new GameProfile();
     }
+
     // getters & setters
     public function get gameType():GameType {
         return _gameType;

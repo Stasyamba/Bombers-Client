@@ -12,7 +12,7 @@ public class AccessManager {
      * return Array of AccessRuleObject
      * @param location
      * @return
-            *
+     *
      */
     public static function checkAccessLocation(location:LocationType):Array {
         var res:Array = new Array();
@@ -32,7 +32,7 @@ public class AccessManager {
      * return Array of AccessRuleObject
      * @param item
      * @return
-            *
+     *
      */
     public static function checkAccessItem(item:ItemType):Array {
         var res:Array = new Array();

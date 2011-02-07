@@ -19,16 +19,16 @@
 
     <fx:Script>
 		<![CDATA[
-			import api.vkontakte.VkontakteGlobals;
+        import api.vkontakte.VkontakteGlobals
 
-            import components.common.profiles.VkontakteProfile
-            import components.common.resources.ResourcePrice;
-			import components.pages.global.inventory.InventoryW;
-			import components.pages.global.resourcemarket.ResourceMarketW;
-			import components.pages.global.tutorial.TutorialPreviewW;
-			
-			import mx.controls.Alert;
-			import mx.managers.PopUpManager;
+        import components.common.profiles.VkontakteProfile
+        import components.common.resources.ResourcePrice
+        import components.pages.global.inventory.InventoryW
+        import components.pages.global.resourcemarket.ResourceMarketW
+        import components.pages.global.tutorial.TutorialPreviewW
+
+        import mx.controls.Alert
+        import mx.managers.PopUpManager
 
         public static const TAB_NAME_WORLD:String = "WorldPage";
         public static const TAB_NAME_GAME:String = "GamePage";
@@ -128,8 +128,8 @@
 
             /// immitation
 
-            Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED);
-            Context.Model.currentSettings.gameProfile.initGameProfile();
+            //Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED);
+            //Context.Model.currentSettings.gameProfile.initGameProfile();
             //openTutorialPreview();
         }
 
@@ -168,15 +168,13 @@
             //PopUpManager.addPopUp(errorW, this, true);
             //PopUpManager.centerPopUp(errorW);
         }
-			
-		// immitation
-		private function setId(id: int):void	
-		{
-			Context.Model.currentSettings.socialProfile.vkProfile = new VkontakteProfile(id.toString());
-			idGroup.visible = false;
+
+        // immitation
+        private function setId(id:int):void {
+            Context.Model.currentSettings.socialProfile.vkProfile = new VkontakteProfile(id.toString());
+            idGroup.visible = false;
             Context.gameModel.init();
-		}
-			
+        }
         ]]>
 	</fx:Script>
 
@@ -202,9 +200,9 @@
 
 
     </mx:ViewStack>
-	<s:HGroup id="idGroup">
-		<s:Button label="ID1" click="setId(1);" />
-		<s:Button label="ID2" click="setId(2);" />
-		<s:Button label="ID3" click="setId(3);" />
-	</s:HGroup>
+    <s:HGroup id="idGroup">
+        <s:Button label="ID1" click="setId(1);"/>
+        <s:Button label="ID2" click="setId(2);"/>
+        <s:Button label="ID3" click="setId(3);"/>
+    </s:HGroup>
 </s:Group>
