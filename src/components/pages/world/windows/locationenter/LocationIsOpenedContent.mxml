@@ -3,7 +3,12 @@
          xmlns:s="library://ns.adobe.com/flex/spark"
          xmlns:mx="library://ns.adobe.com/flex/mx"
          xmlns:flexcomponents="components.common.flexcomponents.*"
+         width="100%" height="100%"
         >
+    <fx:Script>
+		<![CDATA[
+        ]]>
+	</fx:Script>
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
@@ -19,6 +24,9 @@
         import mx.core.BitmapAsset
 
         import spark.primitives.BitmapImage
+
+        [Bindable]
+        private var warningGroupVisible:Boolean = false;
 
         [Embed(source="assets/pageworld/worlds/locationenter/energyLightings.png")]
         public var lightingsImage:Class;
@@ -47,38 +55,88 @@
         }
 
         private function singleGameButton_clickHandler(event:MouseEvent):void {
+            if (Context.Model.currentSettings.gameProfile.energy > enegryRequired) {
+                if (locationType == LocationType.WORLD1_GRASSFIELDS) {
+                    Context.gameModel.gameType = GameType.SINGLE;
+                    Context.Model.windowsManager.closeAll(false);
 
-            if (locationType == LocationType.WORLD1_GRASSFIELDS) {
-                Context.gameModel.gameType = GameType.SINGLE;
-                Context.Model.windowsManager.closeAll(true);
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
 
-                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
-
-                Context.gameModel.readyToCreateGame.addOnce(function ():void {
-                    Context.gameModel.createSinglePlayerGame("test");
-                })
+                    Context.gameModel.readyToCreateGame.addOnce(function ():void {
+                        Context.gameModel.createSinglePlayerGame("test");
+                    })
+                }
+            } else {
+                setWarningGroupVisible(true);
             }
+        }
+
+        private function setWarningGroupVisible(visible:Boolean):void {
+            warningGroupVisible = visible;
         }
         ]]>
 	</fx:Script>
-    <s:VGroup horizontalAlign="center">
-        <flexcomponents:PatternButton id="multyGameButton"
-                                      customLabel="В бой"
-                                      skinClass="skins.buttons.Pattern3ButtonS"
-                                      fontSize="24"
-                                      fontSizeOver="24"
-                />
+    <s:VGroup horizontalAlign="center" verticalAlign="middle"
+              gap="10"
+              width="100%" height="100%"
+            >
+        <s:VGroup horizontalAlign="center">
+            <flexcomponents:PatternButton id="multyGameButton"
+                                          customLabel="В бой"
+                                          skinClass="skins.buttons.Pattern3ButtonS"
+                                          fontSize="24"
+                                          fontSizeOver="24"
+                    />
 
-        <flexcomponents:PatternButton id="singleGameButton"
-                                      customLabel="Взять задание"
-                                      skinClass="skins.buttons.Pattern3ButtonS"
-                                      click="singleGameButton_clickHandler(event)"
-                />
+            <flexcomponents:PatternButton id="singleGameButton"
+                                          customLabel="Взять задание"
+                                          skinClass="skins.buttons.Pattern3ButtonS"
+                                          click="singleGameButton_clickHandler(event)"
+                    />
+        </s:VGroup>
+
 
         <s:VGroup width="100%" horizontalAlign="center">
             <s:Label text="Сложность задания:" fontFamily="mpbc" fontSize="24" color="0xfddc28"/>
             <s:HGroup id="energyLightingsGroup"/>
         </s:VGroup>
+
     </s:VGroup>
+
+    <s:Group width="100%" height="100%"
+             y="2"
+             id="warningGroup"
+             visible="{warningGroupVisible}"
+            >
+        <s:Rect width="100%" height="100%">
+            <s:fill>
+                <s:SolidColor color="0x000000" alpha="0.9"/>
+            </s:fill>
+        </s:Rect>
+
+        <s:VGroup width="100%" height="100%"
+                  horizontalAlign="center" verticalAlign="middle"
+                  gap="20"
+                >
+            <s:Label
+                    text="Вы слишком устали чтобы выполнять какие-то задания, вам не хватает энергии. Подождите до завтра, или съешьте волшебный банан!"
+                    maxWidth="400"
+                    textAlign="center"
+                    fontFamily="mpbc" fontSize="24" color="0xffe61c"
+                    />
+            <s:HGroup>
+                <flexcomponents:PatternButton skinClass="skins.buttons.Pattern2ButtonS"
+                                              customLabel="Да.. я устал"
+                                              fontSize="24" fontSizeOver="24"
+                                              click="setWarningGroupVisible(false);"
+                        />
+                <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+                                              customLabel="Хочу банан!"
+                                              fontSize="24" fontSizeOver="24"
+                        />
+            </s:HGroup>
+
+        </s:VGroup>
+    </s:Group>
 
 </s:Group>
