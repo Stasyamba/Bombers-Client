@@ -35,7 +35,7 @@ public class GameProfile {
     /**
      * content = [LocationType, ...]
      */
-    public var openedLocations:Array = [LocationType.WORLD1_GRASSFIELDS,LocationType.WORLD1_CASTLE];
+    public var openedLocations:Array = [LocationType.WORLD1_GRASSFIELDS];
     /**
      * content = [ItemProfileObject, ...]
      */

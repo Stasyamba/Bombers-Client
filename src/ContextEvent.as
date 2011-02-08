@@ -22,6 +22,8 @@ public class ContextEvent extends Event {
 
     /***** friends creating game popUp *****/
     public static const NEED_TO_SHOW_WARNING_FRIENDS_GAMEW:String = "NeedToShowWarningFriendsGame";
+    public static const NEED_TO_SHOW_ERROR_FRIENDS_GAMEW:String = "NeedToShowErrorFriendsGame"
+
 
 
     /***** world page - bottom panel events *****/

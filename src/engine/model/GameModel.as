@@ -44,7 +44,7 @@ public class GameModel {
     public var readyToPlayAgain:ReadyToPlayAgainSignal = new ReadyToPlayAgainSignal();
 
 
-    private var oneSecondTimer:Timer = new Timer(1000);
+    private var tenSecondsTimer:Timer = new Timer(10000);
 
     private var _gameType:GameType;
 
@@ -91,42 +91,34 @@ public class GameModel {
 
     //----------multiplayer-----------
 
-    public function tryCreateRegularGame(name:String, pass:String):void {
-        Context.gameServer.createGameRoom(name, pass, GameType.REGULAR);
-        Context.gameServer.joinedToGame.addOnce(onJoinedToGame);
-        Context.gameServer.joinedToGame.addOnce(onGameCreated);
-        Context.gameServer.roomCreationError.addOnce(onRoomCreationError);
+    public function tryCreateRegularGame(name:String, pass:String,locationId:int):void {
+        Context.gameServer.createNewGameRequest(name,pass,locationId)
+        Context.gameServer.joinedToGame.addOnce(onJoinedToGame)
     }
 
     public function leaveCurrentGame():void {
         Context.gameServer.leaveCurrentGame();
     }
 
-    public function quickJoin():void {
-        Context.gameServer.quickJoinGame();
+    public function fastJoin(locationId:int = -1):void {
+        Context.gameServer.fastJoinRequest(locationId);
         Context.gameServer.joinedToGame.addOnce(onJoinedToGame)
     }
 
+    public function joinConcreteGame(name:String, pass:String):void {
+        Context.gameServer.concreteJoinRequest(name,pass);
+        Context.gameServer.joinedToGame.addOnce(onJoinedToGame)
+    }
     public function setMeReady(ready:Boolean):void {
         Context.gameServer.notifyPlayerReadyChanged(ready);
     }
 
     private function startPing():void {
-        oneSecondTimer.addEventListener(TimerEvent.TIMER, onPing)
-        oneSecondTimer.start()
+        tenSecondsTimer.addEventListener(TimerEvent.TIMER, onPing)
+        tenSecondsTimer.start()
     }
 
     //--------------------------------HANDLERS--------------------------------
-
-    //todo: set vars when creating via settings.variables
-    private function onGameCreated():void {
-        Context.gameServer.setRoomVars(GameType.REGULAR)
-    }
-
-    private function onRoomCreationError(message:String):void {
-        Context.gameServer.joinedToGame.removeAll();
-        Alert.show(message);
-    }
 
     private function onProfileLoaded(profile:GameProfile):void {
         Context.Model.currentSettings.gameProfile = profile
@@ -140,9 +132,8 @@ public class GameModel {
 
 
     private function onLoggedIn(name:String):void {
-        //todo: gameServer.setProfileVariable(profile);
-        Context.gameServer.notifyPlayerReadyChanged(false);
         Context.gameServer.joinDefaultRoom();
+        startPing()
     }
 
 
@@ -152,12 +143,9 @@ public class GameModel {
 
     private function onJoinedToGame():void {
         connectedToGame.dispatch();
-        Context.gameServer.roomCreationError.removeAll();
 
         //todo:room variables must have vars describing gameType and map.
         _gameType = GameType.REGULAR;
-
-        TweenMax.delayedCall(5.0, startPing)
 
         threeSecondsToStart.addOnce(onThreeSecondsToStart);
     }

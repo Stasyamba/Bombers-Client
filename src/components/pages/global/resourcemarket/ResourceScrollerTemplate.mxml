@@ -76,6 +76,7 @@
                      borderColor="0x7b5a33" contentBackgroundColor="0xd2a17d" focusSkin="skins.common.NoFocusS"
                      width="59" fontSize="18" fontFamily="mpr" color="0x41220a"
                      textAlign="right"
+                     editable="false"
                 />
 
         <s:Label text="ед." color="0x9c7959" fontFamily="mpr" fontSize="18"/>

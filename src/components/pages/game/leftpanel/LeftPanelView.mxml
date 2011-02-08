@@ -45,14 +45,6 @@
 
 
         private function init():void {
-            // immitation
-//            addPlayer(Context.Model.currentSettings.ownGameProfile, 1);
-//            var gp:GameProfile = new GameProfile();
-//            gp.id = "1";
-//            gp.vkProfile = new VkontakteProfile("1");
-//            gp.vkProfile.photoSrc = "http://cs10562.vkontakte.ru/u120102480/a_a87bc1bd.jpg";
-//            addPlayer(gp, 2);
-
             Context.gameModel.connectedToGame.add(onConnectedToGame)
             Context.gameServer.someoneJoinedToGame.add(onSomeoneJoinedToGame)
             Context.gameServer.someoneLeftGame.add(onSomeoneLeftGame)

@@ -10,17 +10,33 @@
 
     <fx:Script>
 		<![CDATA[
+        import components.ApplicationView
+
+        import engine.utils.Utils
+
         public function setStartFocus():void {
             gameNameTextInput.setFocus();
         }
 
         private function tryToEnjoyGame():void {
-            Context.Model.dispatchCustomEvent(
-                    ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
-            {
-                text: "Игры с таким названием вообще нету! Не выдумывайте =)",
-                type: TypeGameToggle.TOGGLE_STATE_ENJOY
-            });
+            if (Utils.isCorrectGameName(gameNameTextInput.text)) {
+                Context.gameModel.joinConcreteGame(gameNameTextInput.text, gamePassTextInput.text)
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
+                {
+                    text: "Подключаюсь (ну я стараюсь, подожди, блеать!!!)",
+                    type: TypeGameToggle.TOGGLE_STATE_ENJOY
+                });
+                Context.gameModel.connectedToGame.addOnce(function():void {
+                    Context.Model.windowsManager.closeAll(true);
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+                })
+            } else {
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
+                {
+                    text: "Неправильное название игры, читай правила, БЛЕАТЬ!",
+                    type: TypeGameToggle.TOGGLE_STATE_ENJOY
+                });
+            }
         }
         ]]>
 	</fx:Script>
@@ -68,7 +84,7 @@
                              fontSize="24" fontFamily="mpbc"
                              color="0xffffff"
                             />
-                    <s:TextInput borderVisible="true" fontSize="24" fontFamily="mpr"
+                    <s:TextInput id="gamePassTextInput" borderVisible="true" fontSize="24" fontFamily="mpr"
                                  width="191" borderColor="0xe1e3de"
                                  focusSkin="skins.common.NoFocusS"/>
                 </s:HGroup>
