@@ -140,5 +140,20 @@ public class ResourcePrice {
 
         return res;
     }
+
+    //adds rp to this
+    public function add(rp:ResourcePrice):void {
+        gold.value += rp.gold.value
+        crystals.value += rp.crystals.value
+        adamant.value += rp.adamant.value
+        antimatter.value += rp.antimatter.value
+    }
+
+    public function subscract(rp:ResourcePrice):void {
+        gold.value -= rp.gold.value
+        crystals.value -= rp.crystals.value
+        adamant.value -= rp.adamant.value
+        antimatter.value -= rp.antimatter.value
+    }
 }
 }

@@ -7,6 +7,7 @@ import engine.games.IGame
 import engine.imagesService.ImageService
 import engine.model.GameModel
 import engine.model.gameServer.GameServer
+import components.common.resources.resourcemarket.ResourceMarket
 
 public final class Context extends VyanaContext {
 
@@ -17,6 +18,8 @@ public final class Context extends VyanaContext {
     private var _gameModel:GameModel;
     private var _imageService:ImageService;
     private var _gameServer:GameServer;
+    private var _resourceMarket:ResourceMarket
+
     public var game:IGame;
 
     public static function wrongJSONToArray(source:String):Array {
@@ -116,9 +119,12 @@ public final class Context extends VyanaContext {
         Context.getInstance().game = value;
     }
 
-
-    public static function addEventListener(type:String, listener:Function, weak:Boolean = true):void {
-        (Context.getInstance() as Context).addEventListener(type, listener, false, 0, weak);
+    public static function get resourceMarket():ResourceMarket {
+        if (!Context.getInstance()._resourceMarket) {
+            Context.getInstance()._resourceMarket = new ResourceMarket()
+        }
+        return Context.getInstance()._resourceMarket;
     }
+
 }
 }

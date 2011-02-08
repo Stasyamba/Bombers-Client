@@ -115,6 +115,16 @@
                 }
             });
 
+            Context.Model.addCustomListener(ContextEvent.IT_BUY_FAILED, function (e:ContextEvent):void {
+                Alert.show("item buy failed")
+            })
+
+            Context.Model.addCustomListener(ContextEvent.IT_BUY_SUCCESS, function (e:ContextEvent):void {
+                var it:ItemType = e.data.it as ItemType
+                var count:int = int(e.data.count)
+                Alert.show("item buy success: " + it.name + ", " + count)
+            })
+
 
             Context.Model.addCustomListener(ContextEvent.IM_REMOVE_RIGHT_CONTENT_SUB_MENU, function (e:ContextEvent):void {
                 subMenuContentGroup.removeAllElements();
