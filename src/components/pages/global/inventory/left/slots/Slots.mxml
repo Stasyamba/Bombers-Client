@@ -10,13 +10,18 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.items.ItemProfileObject
+		import components.common.items.ItemProfileObject;
+		import components.common.items.categories.ItemCategory;
+		
+		import mx.collections.ArrayCollection;
 
-        import mx.collections.ArrayCollection
-
+		public static const	QUEST_ITEMS_STATE: int = 0;
+		public static const OTHER_ITEMS_STATE: int = 1;
+			
         [Bindable]
         private var itemsCollection:ArrayCollection = new ArrayCollection();
-
+		private var currentSlotsState: int = OTHER_ITEMS_STATE;
+			
         private function init():void {
             initContent();
 
@@ -27,15 +32,52 @@
 
         private function initContent():void {
             itemsCollection = new ArrayCollection();
-
-            for each(var io:ItemProfileObject in Context.Model.currentSettings.gameProfile.packItems) {
-                itemsCollection.addItem(io);
+			var allowedItemCategories: Array = [ItemCategory.AURA, ItemCategory.METAMORPH, ItemCategory.WEAPON];
+			
+			switch(currentSlotsState)
+			{
+				case QUEST_ITEMS_STATE:
+					allowedItemCategories = [ItemCategory.QUEST_ITEM];
+					break;
+				case OTHER_ITEMS_STATE:
+					allowedItemCategories = [ItemCategory.AURA, ItemCategory.METAMORPH, ItemCategory.WEAPON];
+					break;
+			}
+			
+            for each(var io:ItemProfileObject in Context.Model.currentSettings.gameProfile.packItems) 
+			{
+				var currentItemCategory: ItemCategory = Context.Model.itemsCategoryManager.getItemCategory(io.itemType);
+				
+				var itemIsAllow:Boolean = false;
+				for each(var ic: ItemCategory in allowedItemCategories)
+				{
+					if(ic == currentItemCategory)
+					{
+						itemIsAllow = true;
+						break;
+					}
+				}
+				
+				if(itemIsAllow)
+				{
+                	itemsCollection.addItem(io);
+				}
             }
 
             itemsCollection.refresh();
 
             //mx.controls.Alert.show(itemsCollection.length.toString());
         }
+			
+		private function switchSlotState(state: int): void
+		{
+			if(state != currentSlotsState)
+			{
+				currentSlotsState = state;
+				initContent();
+			}
+		}
+			
         ]]>
 	</fx:Script>
 
@@ -62,8 +104,8 @@
 
             <s:HGroup id="bottomPanel" height="100%"
                       horizontalAlign="center">
-                <!--<s:Button label="left" />
-                    <s:Button label="right" />-->
+                	<s:Button label="Квесты" click="switchSlotState(QUEST_ITEMS_STATE);" />
+                    <s:Button label="Оружие" click="switchSlotState(OTHER_ITEMS_STATE);" />
             </s:HGroup>
         </s:VGroup>
     </s:Group>
