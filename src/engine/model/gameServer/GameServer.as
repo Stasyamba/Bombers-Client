@@ -53,6 +53,8 @@ import flash.events.Event
 import flash.events.TimerEvent
 import flash.utils.Timer
 
+import mx.controls.Alert
+
 import org.osflash.signals.Signal
 
 public class GameServer extends SmartFox {
@@ -80,11 +82,18 @@ public class GameServer extends SmartFox {
     private static const PING:String = "ping";
 
     //interface
-    private static const GAME_PROFILE_LOADED:String = "interface.gameProfileLoaded";
-    private static const BUY_RESOURCES:String = "interface.buyResources"
-    private static const BUY_RESOURCES_RESULT:String = "interface.buyResources.result"
-    private static const BUY_ITEM:String = "interface.buyItem";
-    private static const BUY_ITEM_RESULT:String = "interface.buyItem.result";
+    private static const INT_GAME_PROFILE_LOADED:String = "interface.gameProfileLoaded";
+    private static const INT_BUY_RESOURCES:String = "interface.buyResources"
+    private static const INT_BUY_RESOURCES_RESULT:String = "interface.buyResources.result"
+    private static const INT_BUY_ITEM:String = "interface.buyItem";
+    private static const INT_BUY_ITEM_RESULT:String = "interface.buyItem.result";
+    private static const INT_GAME_NAME_RESULT:String = "interface.gameManager.findGameName.result"
+    private static const INT_GAME_NAME:String = "interface.gameManager.findGameName"
+    private static const INT_FAST_JOIN:String = "interface.gameManager.fastJoin"
+    private static const INT_FAST_JOIN_RESULT:String = "interface.gameManager.fastJoin.result"
+    private static const INT_CREATE_GAME:String = "interface.gameManager.createGame"
+    private static const INT_CREATE_GAME_RESULT:String = "interface.gameManager.createGame.result"
+
 
     public var ip:String;
     public var port:int;
@@ -97,16 +106,17 @@ public class GameServer extends SmartFox {
 
     public var profileLoaded:ProfileLoadedSignal = new ProfileLoadedSignal();
 
+    public var fastJoinFailed:Signal = new Signal();
+
     public var joinedToRoom:JoinedToRoomSignal = new JoinedToRoomSignal();
-    public var roomAdded:RoomAddedSignal = new RoomAddedSignal();
-    public var gameAdded:GameAddedSignal = new GameAddedSignal();
     public var joinedToGame:JoinedToGameSignal = new JoinedToGameSignal();
     public var someoneJoinedToGame:SomeoneJoinedToGameSignal = new SomeoneJoinedToGameSignal();
     public var someoneLeftGame:SomeoneLeftGameSignal = new SomeoneLeftGameSignal();
     public var leftGame:LeftGameSignal = new LeftGameSignal();
 
-    public var roomCreationError:Signal = new Signal(String);
     public var inGameMessageReceived:InGameMessageReceivedSignal = new InGameMessageReceivedSignal();
+    public var newGameNameObtained:Signal = new Signal(String)
+
 
 
     public function GameServer() {
@@ -121,9 +131,6 @@ public class GameServer extends SmartFox {
 
         addEventListener(SFSEvent.USER_ENTER_ROOM, onUserEnteredRoom);
         addEventListener(SFSEvent.USER_EXIT_ROOM, onUserExitedRoom);
-
-        addEventListener(SFSEvent.ROOM_ADD, onRoomAdded);
-        addEventListener(SFSEvent.ROOM_CREATION_ERROR, onRoomCreationError);
 
         addEventListener(SFSEvent.USER_VARIABLES_UPDATE, onUserVariablesUpdated);
         addEventListener(SFSEvent.EXTENSION_RESPONSE, onExtensionResponse);
@@ -161,41 +168,37 @@ public class GameServer extends SmartFox {
         send(new JoinRoomRequest(defaultRoom));
     }
 
-    public function createGameRoom(name:String, pass:String, gameType:GameType):void {
-        var settings:SFSGameSettings = new SFSGameSettings(name);
-        settings.groupId = "games";
-        settings.password = pass;
-        settings.maxUsers = gameType.maxPlayers;
-        settings.minPlayersToStartGame = gameType.minPlayers;
-        settings.isPublic = true;
-        settings.leaveLastJoinedRoom = false;
-        settings.extension = new RoomExtension(gameType.extensionId, gameType.extensionClassName);
-
-        send(new CreateSFSGameRequest(settings));
-    }
-
     public function leaveCurrentGame():void {
-        send(new LeaveRoomRequest());
+        send(new LeaveRoomRequest(gameRoom));
+        gameRoom = null;
         leftGame.dispatch();
     }
 
-    public function quickJoinGame():void {
-        send(new QuickJoinGameRequest(null, ["games"]));
+    public function fastJoinRequest(locationId : int = -1):void {
+        var params:ISFSObject = new SFSObject();
+        if(locationId != -1)
+            params.putInt("interface.gameManager.fastJoin.fields.locationId",locationId);
+        send(new ExtensionRequest(INT_FAST_JOIN, params, null));
     }
 
-    public function setProfileVariable(profile:GameProfile):void {
-        var vars:Array = [];
-        vars.push(new SFSUserVariable("profile", SFSObject.newFromObject(profile), VariableType.OBJECT));
-        send(new SetUserVariablesRequest(vars));
-
+    public function newGameNameRequest():void {
+        send(new ExtensionRequest(INT_GAME_NAME, null, null))
     }
 
-    public function setRoomVars(gameType:GameType):void {
-        var vars:Array = [];
-        vars.push(new SFSRoomVariable("gameType", gameType.value, VariableType.STRING));
-        send(new SetRoomVariablesRequest(vars, gameRoom));
+    public function createNewGameRequest(name:String, pass:String,locationId:int):void {
+        var params:ISFSObject = new SFSObject();
+        params.putInt("interface.gameManager.createGame.fields.locationId",locationId);
+        params.putUtfString("interface.gameManager.createGame.fields.gameName",name);
+        params.putUtfString("interface.gameManager.createGame.fields.password",pass);
+        send(new ExtensionRequest(INT_CREATE_GAME, params, null))
     }
 
+    public function concreteJoinRequest(name:String, pass:String):void {
+        var params:ISFSObject = new SFSObject();
+        params.putUtfString("interface.gameManager.fastJoin.fields.gameName",name);
+        params.putUtfString("interface.gameManager.fastJoin.fields.password",pass);
+         send(new ExtensionRequest(INT_FAST_JOIN, params, null));
+    }
     public function sendInGameMessage(message:String):void {
         send(new PublicMessageRequest(message, null, gameRoom));
     }
@@ -265,19 +268,18 @@ public class GameServer extends SmartFox {
         params.putInt("interface.buyResources.fields.resourceType3", rp.antimatter.value)
         params.putInt("interface.buyResources.fields.resourceType4", 0)
 
-        send(new ExtensionRequest(BUY_RESOURCES, params, null))
+        send(new ExtensionRequest(INT_BUY_RESOURCES, params, null))
     }
 
     public function buyItemRequest(it:ItemType):void {
         var params:ISFSObject = new SFSObject();
         params.putInt("interface.buyItem.fields.itemId", it.value)
 
-        send(new ExtensionRequest(BUY_ITEM, params, null))
+        send(new ExtensionRequest(INT_BUY_ITEM, params, null))
     }
 
     public function ping():void {
-        var params:ISFSObject = new SFSObject();
-        send(new ExtensionRequest(PING, params, gameRoom));
+        send(new ExtensionRequest(PING, null, null));
     }
 
     //----------------------Handlers---------------------------
@@ -311,26 +313,6 @@ public class GameServer extends SmartFox {
     private function onLoginError(event:SFSEvent):void {
         trace("login failure: " + event.params.errorMessage)
     }
-
-    private function onRoomAdded(event:SFSEvent):void {
-        var room:Room = event.params.room;
-        if (room.isGame) {
-            trace("game added: " + room.name);
-            gameRoom = room;
-            gameAdded.dispatch();
-        } else {
-            trace("room added: " + room.name);
-            roomAdded.dispatch(room.id, room.name);
-        }
-    }
-
-
-    private function onRoomCreationError(event:SFSEvent):void {
-        trace("room creation error: " + event.params.errorMessage);
-
-        roomCreationError.dispatch(event.params.errorMessage);
-    }
-
 
     private function onUserVariablesUpdated(event:SFSEvent):void {
         var user:User = event.params.user;
@@ -452,12 +434,12 @@ public class GameServer extends SmartFox {
                 })
                 timer.start();
                 break;
-            case GAME_PROFILE_LOADED:
+            case INT_GAME_PROFILE_LOADED:
                 trace("profile recieved !!!!!!!!!!!!!!!!!!!!");
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
                 profileLoaded.dispatch(gp);
                 break;
-            case BUY_RESOURCES_RESULT:
+            case INT_BUY_RESOURCES_RESULT:
                 trace("resources bought");
                 var status:Boolean = responseParams.getBool("interface.buyResources.result.fields.status")
                 if (!status) {
@@ -480,7 +462,7 @@ public class GameServer extends SmartFox {
                     }
                 }
                 break;
-            case BUY_ITEM_RESULT:
+            case INT_BUY_ITEM_RESULT:
                 trace("resources bought");
                 status = responseParams.getBool("interface.buyItem.result.fields.status")
                 if (!status) {
@@ -500,15 +482,18 @@ public class GameServer extends SmartFox {
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
                 break;
+            case INT_GAME_NAME_RESULT:
+                newGameNameObtained.dispatch(responseParams.getUtfString("interface.gameManager.findGameName.result.fields.gameName"))
+                break;
+            case INT_FAST_JOIN_RESULT:
+                fastJoinFailed.dispatch()
+                break;
         }
-
-
     }
 
     public function get amIReady():Boolean {
         return mySelf.getVariable("ready").getBoolValue();
     }
-
 
 }
 }

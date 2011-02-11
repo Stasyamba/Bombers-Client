@@ -10,16 +10,20 @@
         >
     <fx:Script>
 		<![CDATA[
-			import components.ApplicationView;
-			import components.pages.world.windows.friendsgame.GameWithFriendsW;
-			import components.pages.world.windows.randomgame.CreatingRandomGameW;
-			
-			import mx.controls.Alert;
-			import mx.managers.PopUpManager;
+		import components.ApplicationView;
+		import components.pages.world.windows.friendsgame.GameWithFriendsW;
+		import components.pages.world.windows.randomgame.CreatingRandomGameW;
+		
+		import mx.controls.Alert;
+		import mx.managers.PopUpManager;
+
 
         public static const OPEN_MARKET_TYPE:int = 0;
         public static const OPEN_RANDOM_GAME_TYPE:int = 1;
         public static const OPEN_FRIENDS_GAME_TYPE:int = 2;
+
+        public var ww:CreatingRandomGameW
+        public var fw:GameWithFriendsW
 
         public function bottomMenuButtonClickHandler(type:int):void {
             switch (type) {
@@ -29,26 +33,36 @@
                     break;
 
                 case OPEN_RANDOM_GAME_TYPE:
-                    //showRandomGameCreating();
-                    //setButtonsEnabled(false);
-                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+                    Context.gameModel.fastJoin()
+                    showRandomGameCreating();
+                    Context.gameModel.connectedToGame.addOnce(function ():void {
+                        closeRandomGameCreating();
+                        Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+                    });
+                    Context.gameServer.fastJoinFailed.addOnce(function ():void {
+                        closeRandomGameCreating();
+                        Alert.show("FAST_JOIN_FAIL")
+                    })
                     break;
-
                 case OPEN_FRIENDS_GAME_TYPE:
                     showFriendsPopUp();
                     setButtonsEnabled(false);
                     break;
             }
-
-
         }
 
         public function showFriendsPopUp():void {
-            var fw:GameWithFriendsW = new GameWithFriendsW();
+            fw = new GameWithFriendsW();
             fw.x = 20;
             fw.y = 50;
 
             PopUpManager.addPopUp(fw, this, true);
+        }
+
+        private function closeFriendsPopUp():void {
+            if (fw) {
+                fw = null
+            }
         }
 
         private function showInventoryMarket():void {
@@ -64,7 +78,7 @@
         }
 
         public function showWarningWrapper(type:int, message:String, closeMessage:String):void {
-            var ww:CreatingRandomGameW = new CreatingRandomGameW();
+            ww = new CreatingRandomGameW();
             ww.x = 150;
             ww.y = 163;
 
@@ -81,6 +95,13 @@
             ww.closeText = closeMessage;
 
             PopUpManager.addPopUp(ww, this, true);
+        }
+
+        private function closeRandomGameCreating():void {
+            if (ww) {
+                ww.closeWrapper()
+                ww = null
+            }
         }
 
         private function init():void {

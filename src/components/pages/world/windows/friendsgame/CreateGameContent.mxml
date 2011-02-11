@@ -16,27 +16,52 @@
     <fx:Script>
 		<![CDATA[
         import components.ApplicationView
+        import components.common.worlds.locations.LocationType
 
         import engine.utils.Utils
 
         import mx.controls.Alert
 
+        private var passwordBases:Array = ["abra","fuuu","abcd","cadabra","sparta","bomber","sport","dance","pass","word"]
+
         private function generatingGameName(visible:Boolean):void {
             gameNameTextInput.isWarning = visible;
+            Context.gameServer.newGameNameRequest()
+            Context.gameServer.newGameNameObtained.addOnce(onNewGameNameObtained)
+        }
+
+        private function onNewGameNameObtained(name:String):void {
+            gameNameTextInput.isWarning = false;
+            gameNameTextInput.textField.text = name;
         }
 
         private function generatingGamePass(visible:Boolean):void {
+            var str:String = passwordBases[int(Math.random() * passwordBases.length)]
+            str = str + String(int(Math.random() * 100))
+            gamePassTextInput.text = str;
         }
 
         private function tryToCreateGame():void {
             if (Utils.isCorrectGameName(gameNameTextInput.text)) {
-                Context.gameModel.tryCreateRegularGame(gameNameTextInput.text, gamePassTextInput.text)
+                //todo: сделать механизм выбора локации (пока просто захардкодена трава)
+                Context.gameModel.tryCreateRegularGame(gameNameTextInput.text, gamePassTextInput.text, LocationType.WORLD1_GRASSFIELDS.value)
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
+                {
+                    text: "Создаю игру...",
+                    type: TypeGameToggle.TOGGLE_STATE_CREATE
+                });
                 Context.gameModel.connectedToGame.addOnce(function ():void {
+                    Context.Model.windowsManager.closeAll(true);
                     Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
                 })
             }
-            else
-                Alert.show("Неправильное название игры");
+            else {
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
+                {
+                    text: "Неправильное название игры, читай правила, БЛЕАТЬ!",
+                    type: TypeGameToggle.TOGGLE_STATE_CREATE
+                });
+            }
 //            Context.Model.dispatchCustomEvent(
 //                    ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
 //            {

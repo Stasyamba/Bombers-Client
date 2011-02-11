@@ -52,7 +52,6 @@
 
         private var warningColor:uint = 0x000000;
 
-
         public function close():void {
 
             Context.Model.dispatchCustomEvent(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY, true);
@@ -74,6 +73,10 @@
 
             Context.Model.addCustomListener(ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW, function(e:ContextEvent):void {
                 showWarning(e.data.text, e.data.type);
+                closeButton.enabled = false
+            });
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW, function(e:ContextEvent):void {
+                showError(e.data.text, e.data.type)
             });
         }
 
@@ -98,9 +101,20 @@
 
         private function hideWarning():void {
             warning.hide();
+            closeButton.enabled = true
         }
 
         private function showWarning(text:String, type:int):void {
+            getWarningColor(type)
+            warning.show(Warning.PRELOADER_TYPE, text, warningColor);
+        }
+
+        private function showError(text:String, type:int):void {
+            getWarningColor(type)
+            warning.show(Warning.WARNING_TYPE, text, warningColor);
+        }
+
+        private function getWarningColor(type:int):void {
             switch (type) {
                 case TypeGameToggle.TOGGLE_STATE_CREATE:
                     warningColor = 0x6ba220;
@@ -109,9 +123,6 @@
                     warningColor = 0xe2cf3e;
                     break;
             }
-
-
-            warning.show(Warning.PRELOADER_TYPE, "Пытаюсь создать подходящую игру", warningColor);
         }
         ]]>
 	</fx:Script>
@@ -122,6 +133,7 @@
     <s:BitmapImage source="@Embed(source='assets/windows/pageworld/playwithfriends/friendsGamePopUpBG.png')"/>
 
     <flexcomponents:CloseButton
+            id="closeButton"
             skinClass="skins.buttons.CloseButtonOriginS"
             x="590" y="20"
             scale="0.9"
