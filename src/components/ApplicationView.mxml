@@ -204,5 +204,7 @@
         <s:Button label="ID1" click="setId(1);"/>
         <s:Button label="ID2" click="setId(2);"/>
         <s:Button label="ID3" click="setId(3);"/>
+        <s:Button label="ID4" click="setId(4);"/>
+        <s:Button label="ID5" click="setId(5);"/>
     </s:HGroup>
 </s:Group>

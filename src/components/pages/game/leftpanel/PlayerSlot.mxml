@@ -75,8 +75,9 @@
         import components.common.utils.adjustcolor.ColorMatrixObject
 
         import engine.profiles.GameProfile
+        import engine.profiles.LobbyProfile
 
-        private var _profile:GameProfile;
+        private var _profile:LobbyProfile;
 
         [Bindable]
         private var _isReady:Boolean = false;
@@ -118,11 +119,11 @@
             }
         }
 
-        public function get profile():GameProfile {
+        public function get profile():LobbyProfile {
             return _profile;
         }
 
-        public function setPlayer(value:GameProfile):void {
+        public function setPlayer(value:LobbyProfile):void {
             if (value == null) {
                 removePlayer();
             }
@@ -130,7 +131,7 @@
             _profile = value;
             isProfileNull = false;
 
-            levelStringView = Context.Model.expiranceManager.getLevel(value.expirance).toString();
+            levelStringView = Context.Model.expiranceManager.getLevel(value.experience).toString();
             userImage.source = _profile.photoURL;
             bgRect.alpha = 1;
         }

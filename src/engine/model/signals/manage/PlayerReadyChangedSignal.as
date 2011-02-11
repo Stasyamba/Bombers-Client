@@ -10,7 +10,7 @@ import org.osflash.signals.Signal
 
 public class PlayerReadyChangedSignal extends Signal {
     public function PlayerReadyChangedSignal() {
-        super(User)
+        super()
     }
 }
 }

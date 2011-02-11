@@ -47,6 +47,7 @@ public class GameModel {
     private var tenSecondsTimer:Timer = new Timer(10000);
 
     private var _gameType:GameType;
+    public var lobbyProfiles:Array
 
 
     function GameModel() {
@@ -93,7 +94,7 @@ public class GameModel {
 
     public function tryCreateRegularGame(name:String, pass:String,locationId:int):void {
         Context.gameServer.createNewGameRequest(name,pass,locationId)
-        Context.gameServer.joinedToGame.addOnce(onJoinedToGame)
+        Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
     }
 
     public function leaveCurrentGame():void {
@@ -102,15 +103,22 @@ public class GameModel {
 
     public function fastJoin(locationId:int = -1):void {
         Context.gameServer.fastJoinRequest(locationId);
-        Context.gameServer.joinedToGame.addOnce(onJoinedToGame)
+        Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
+        Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
+    }
+
+    private function onFastJoinFailed():void {
+        Context.gameServer.someoneJoinedToGame.remove(onJoinedToGame)
+        connectedToGame.removeAll()
     }
 
     public function joinConcreteGame(name:String, pass:String):void {
         Context.gameServer.concreteJoinRequest(name,pass);
-        Context.gameServer.joinedToGame.addOnce(onJoinedToGame)
+        Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
+        Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
     }
     public function setMeReady(ready:Boolean):void {
-        Context.gameServer.notifyPlayerReadyChanged(ready);
+        Context.gameServer.setReadyRequest(ready);
     }
 
     private function startPing():void {
@@ -133,6 +141,7 @@ public class GameModel {
 
     private function onLoggedIn(name:String):void {
         Context.gameServer.joinDefaultRoom();
+        Context.gameServer.setReadyVariable(false);
         startPing()
     }
 
@@ -142,6 +151,7 @@ public class GameModel {
     }
 
     private function onJoinedToGame():void {
+        Context.gameServer.fastJoinFailed.removeAll()
         connectedToGame.dispatch();
 
         //todo:room variables must have vars describing gameType and map.
