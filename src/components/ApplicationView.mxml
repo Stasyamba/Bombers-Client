@@ -24,6 +24,7 @@
 			import components.common.game.requesttogame.RequestGameObject;
 			import components.common.profiles.VkontakteProfile;
 			import components.common.resources.ResourcePrice;
+			import components.pages.global.energymarket.EnergyMarketW;
 			import components.pages.global.gamerequest.ConnectToGameW;
 			import components.pages.global.inventory.InventoryW;
 			import components.pages.global.resourcemarket.ResourceMarketW;
@@ -148,10 +149,25 @@
 				}
 			});
 			
+			Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_ENERGY_MARKET, function (e:ContextEvent):void {
+				openEnergyMarket();
+			});
+			
             /// immitation
 			
         }
 
+		private function openEnergyMarket(): void
+		{
+			var emw: EnergyMarketW = new EnergyMarketW();
+			
+			
+			PopUpManager.addPopUp(emw, this, true);
+			PopUpManager.centerPopUp(emw);
+			
+			emw.y -= 92;
+		}
+			
 		private function openRequestGameW(): void
 		{
 			var cgw:ConnectToGameW = new ConnectToGameW();

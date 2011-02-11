@@ -103,9 +103,8 @@
 					}
 				});
 				
-				// call once
-				
-				switchState(ACTIVE_STATE);
+				// call once immitation
+				//switchState(ACTIVE_STATE);
 			}
 			
 			
