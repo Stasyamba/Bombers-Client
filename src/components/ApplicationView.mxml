@@ -19,23 +19,22 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals
-
-        import components.common.profiles.VkontakteProfile
-        import components.common.resources.ResourcePrice
-        import components.pages.global.inventory.InventoryW
-        import components.pages.global.resourcemarket.ResourceMarketW
-        import components.pages.global.tutorial.TutorialPreviewW
-
-        import mx.controls.Alert
-        import mx.managers.PopUpManager
+			import api.vkontakte.VkontakteGlobals;
+			
+			import components.common.game.requesttogame.RequestGameObject;
+			import components.common.profiles.VkontakteProfile;
+			import components.common.resources.ResourcePrice;
+			import components.pages.global.gamerequest.ConnectToGameW;
+			import components.pages.global.inventory.InventoryW;
+			import components.pages.global.resourcemarket.ResourceMarketW;
+			import components.pages.global.tutorial.TutorialPreviewW;
+			
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
 
         public static const TAB_NAME_WORLD:String = "WorldPage";
         public static const TAB_NAME_GAME:String = "GamePage";
         public static const TAB_NAME_INVENORY:String = "InventoryPage"
-
-        //public static const
-
 
         public static function getTabIndexByName(name:String):int {
             var res:int = 0;
@@ -126,13 +125,44 @@
                 }
             }
 
+			/* requests */
+			
+			Context.Model.addCustomListener(ContextEvent.OE_REQUEST_COLLECTION_IS_CHANGED, function (e:ContextEvent):void {
+				if(Context.Model.currentSettings.requestToGames.length == 0)	
+				{
+					Context.Model.windowsManager.closeAll(true);
+					Context.Model.dispatchCustomEvent(ContextEvent.OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY, false);
+				}
+			});
+			
+			Context.Model.addCustomListener(ContextEvent.OE_SHOW_REQUEST_TO_GAME_WINDOW, function (e:ContextEvent):void {
+				// check is user not in the game right now
+				openRequestGameW();		
+			});
+			
+			Context.Model.addCustomListener(ContextEvent.OE_NEW_REQUEST_TO_GAME, function (e:ContextEvent):void {
+				if(e.data is RequestGameObject)
+				{
+					Context.Model.currentSettings.addRequest(e.data as RequestGameObject);	
+					Context.Model.dispatchCustomEvent(ContextEvent.OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY, true);
+				}
+			});
+			
             /// immitation
-
-            //Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED);
-            //Context.Model.currentSettings.gameProfile.initGameProfile();
-            //openTutorialPreview();
+			
         }
 
+		private function openRequestGameW(): void
+		{
+			var cgw:ConnectToGameW = new ConnectToGameW();
+			
+			
+			PopUpManager.addPopUp(cgw, this, true);
+			PopUpManager.centerPopUp(cgw);
+			
+			cgw.y -= 122;
+		}
+			
         private function openTutorialPreview():void {
             var tw:TutorialPreviewW = new TutorialPreviewW();
 

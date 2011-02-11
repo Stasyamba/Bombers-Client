@@ -1,5 +1,5 @@
 package {
-import flash.events.Event
+import flash.events.Event;
 
 public class ContextEvent extends Event {
     public static const USERS_PROFILES_LOADED:String = "UsersProfileLoaded";
@@ -92,14 +92,27 @@ public class ContextEvent extends Event {
     /***** buy events: resources(RS), energy(EN), items(IT) *****/
     public static const RS_BUY_FAILED:String = "RSBuyFailed"
     public static const RS_BUY_SUCCESS:String = "RSBuySuccess"
-    //pass ResourcePrice - how much bought each resource
+    //pass: ResourcePrice -> how much bought each resource
     //EN_BUY_FAILED == RS_BUY_FAILED
+		
     public static const EN_BUY_SUCCESS:String = "ENBuySuccess"
-    //pass int - how much bought each resource
+    //pass: int -> how much bought energy
+		
     public static const IT_BUY_FAILED:String = "ITBuyFailed"
     public static const IT_BUY_SUCCESS:String = "ITBuySuccess"
-    //pass {it:ItemType,count:int // how much bought weapon}
+    //pass: {it:ItemType, count:int} -> how much bought weapon
 
+		
+	/***** other events *****/	
+	public static const OE_SHOW_REQUEST_TO_GAME_WINDOW: String = "OENeedToOpenRequestToGameWindow";
+	public static const OE_REQUEST_COLLECTION_IS_CHANGED: String = "OERequestCollectionIsChanged";
+	// pass: {isActionDelete: Boolean, index: int} -> index element that was deleted
+	public static const OE_NEW_REQUEST_TO_GAME: String = "OENewRequestToGame";
+	// pass: RequestGameObject
+	public static const OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY: String = "QEChangeRequestToGameButtonActivity";
+	// pass: Boolean	
+	
+	
     /***** common events *****/
     public static const BOMBER_CHANGED:String = "BomberChanged";
     public static const GAME_PROFILE_LOADED:String = "GameProfileLoaded";

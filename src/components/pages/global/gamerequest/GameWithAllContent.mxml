@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%" height="100%"
+		 horizontalAlign="center" verticalAlign="middle"
+		 implements="components.common.game.requesttogame.IRequestContent" 
+		 xmlns:flexcomponents="components.common.flexcomponents.*" 
+		 xmlns:preloaders="components.common.utils.preloaders.*"
+		 >
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.game.requesttogame.IRequestContent;
+			import components.common.game.requesttogame.RequestGameObject;
+			
+			import engine.games.GameType;
+			
+			import mx.controls.Alert;
+			
+			private var requestGameObject: RequestGameObject;
+			
+			[Bindable]
+			private var warningVisible: Boolean = false;
+			[Bindable]
+			private var connectionVisible: Boolean =  false;
+			
+			
+			public function initContent(rgo: RequestGameObject): void
+			{
+				requestGameObject = rgo;
+				userImage.source = rgo.senderUserProfile.photoURL;
+			}
+			
+			public function getGameType(): GameType
+			{
+				return GameType.REGULAR;
+			}
+			
+			private function connectToGame(): void
+			{
+				warningVisible = false;
+				connectionVisible =  true;
+			}
+			
+			private function deleteRequest():void
+			{
+				var index:int = Context.Model.currentSettings.deleteRequest(requestGameObject);
+				
+				if(index != -1)
+				{
+					Context.Model.dispatchCustomEvent(ContextEvent.OE_REQUEST_COLLECTION_IS_CHANGED, {isActionDelete: true, index: index});
+				}else
+				{
+					mx.controls.Alert.show("Не могу найти что удалять ищи в GameWithAllContent.mxml");
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%">
+		<s:HGroup height="78" width="100%" horizontalAlign="center">
+			<s:Group id="userImageGroup" height="78"
+					 >
+				<s:HGroup width="61" height="80"
+						  paddingTop="1" paddingLeft="1"
+						  horizontalAlign="center" verticalAlign="top"
+						  >
+					<mx:Image id="userImage" maxWidth="61" mask="{userImageMask}"
+							  smoothBitmapContent="true" trustContent="{Context.Model.trustContent}"
+							  />
+				</s:HGroup>
+				
+				<s:BorderContainer id="userImageMask"
+								   width="60" height="79"
+								   x="1" y="1"
+								   contentBackgroundColor="0x000000"/>
+				
+				<!--	<s:Group id="levelGroup"
+				y="45" x="5"
+				>
+				<s:BitmapImage id="bgLevelImage" source="@Embed(source='assets/pagegame/leftpanel/levelBg.png')"/>
+				
+				<s:HGroup width="{bgLevelImage.width}" height="{bgLevelImage.height}"
+				horizontalAlign="center" verticalAlign="middle"
+				>
+				<s:Label text="5 ур." fontSize="14" fontFamily="mpbc" color="0xffffff"/>
+				</s:HGroup>
+				</s:Group>-->
+			</s:Group>
+			
+			<s:Label text="Вас приглашают в игру прямо сейчас!" fontFamily="mpbc" fontSize="24" color="0xffffff"
+					 textAlign="left"
+					 maxWidth="276"
+					 />
+		</s:HGroup>
+		
+		<!-- !(!a || !b) ~ (a && b) -->
+		
+		<s:Group height="60">
+			<s:HGroup width="363" x="8"
+					  horizontalAlign="center" verticalAlign="middle"
+					  visible="{!(!!warningVisible || !!connectionVisible)}">
+				
+				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern2ButtonS"
+											  customLabel="Не хочу"
+											  fontSize="25"
+											  fontSizeOver="25"
+											  click="deleteRequest();"
+											  scale="0.9"
+											  />
+				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+											  customLabel="Поехали"
+											  fontSize="25"
+											  fontSizeOver="25"
+											  click="connectToGame();"
+											  scale="0.9"
+											  />		
+			</s:HGroup>
+			
+			<s:HGroup visible="{!(!warningVisible || !!connectionVisible)}"
+					  width="363" horizontalAlign="center"
+					  x="8">
+				<s:Label text="А игра то уже закончилась или в ней уже нету места " 
+						 fontFamily="mpr" fontSize="14" color="0xffffff"
+						 textAlign="right"
+						 maxWidth="211"
+						 />
+				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+											  customLabel="Ух жаль"
+											  fontSize="25"
+											  fontSizeOver="25"
+											  click="connectToGame();"
+											  scale="0.9"
+											  />		
+			</s:HGroup>
+			
+			
+			
+			<s:HGroup verticalAlign="middle" horizontalAlign="center"
+					  width="379"
+					  x="8"
+					  visible="{!(!!warningVisible || !connectionVisible)}"
+					  >
+				<preloaders:Spinner tickColor="0xffffff" tickWidth="5" size="30" />
+				<s:Label text="Соединяемся с игрой" 
+						 fontFamily="mpbc" fontSize="22" color="0xffffff"
+						 textAlign="center"
+						 maxWidth="296"
+						 />
+			</s:HGroup>
+			
+		</s:Group>
+	</s:VGroup>
+	
+	
+</s:VGroup>

@@ -42,8 +42,12 @@
             itemsCollection = new ArrayCollection();
 
             for each(var it:ItemObject in allItems) {
-                if (Context.Model.itemsCategoryManager.getItemMarketCategory(it.type) == marketCategory) {
-                    categoryItems.push(it.type);
+                if (Context.Model.itemsCategoryManager.getItemMarketCategory(it.type) == marketCategory) 
+				{
+					if(!Context.Model.itemsCategoryManager.isBombBase(it.type))
+					{
+                    	categoryItems.push(it.type);
+					}
                 }
             }
 
