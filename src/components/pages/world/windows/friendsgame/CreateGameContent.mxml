@@ -20,8 +20,6 @@
 
         import engine.utils.Utils
 
-        import mx.controls.Alert
-
         private var passwordBases:Array = ["abra","fuuu","abcd","cadabra","sparta","bomber","sport","dance","pass","word"]
 
         private function generatingGameName(visible:Boolean):void {
@@ -50,6 +48,13 @@
                     text: "Создаю игру...",
                     type: TypeGameToggle.TOGGLE_STATE_CREATE
                 });
+                Context.gameServer.fastJoinFailed.addOnce(function():void {
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
+                    {
+                        text: "Не удалось создать игру, блеать!",
+                        type: TypeGameToggle.TOGGLE_STATE_CREATE
+                    });
+                })
                 Context.gameModel.connectedToGame.addOnce(function ():void {
                     Context.Model.windowsManager.closeAll(true);
                     Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
@@ -62,13 +67,6 @@
                     type: TypeGameToggle.TOGGLE_STATE_CREATE
                 });
             }
-//            Context.Model.dispatchCustomEvent(
-//                    ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
-//            {
-//                text: "Игра с таким названием уже существует, все что вы можете сделать это расплакаться как девчoнка или создать новую игру =)",
-//                type: TypeGameToggle.TOGGLE_STATE_CREATE
-//            });
-
         }
         ]]>
 	</fx:Script>

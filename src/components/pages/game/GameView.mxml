@@ -22,7 +22,6 @@
 
         //temporary ui elements
         private var threeSecsToStart:ThreeSecondsToStart = new ThreeSecondsToStart();
-        private var preGameView:PreGameView = new PreGameView();
         private var gameResultsView:GameResultsView = new GameResultsView();
 
         function init():void {

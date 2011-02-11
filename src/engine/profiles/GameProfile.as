@@ -17,7 +17,7 @@ public class GameProfile {
     public var expirance:int;
     public var energy:int;
     public var id:int;
-    public var photoURL:String;
+    public var photoURL:String = "http://moikompas.ru/img/compas/2008-01-04/gennifer_lopes/31534971.jpg";
 
     public var currentLocation:LocationType;
     public var currentWorld:WorldsType;

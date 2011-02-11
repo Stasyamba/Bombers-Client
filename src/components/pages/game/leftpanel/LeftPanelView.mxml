@@ -18,6 +18,7 @@
         import components.common.game.multygameresult.Result
 
         import engine.profiles.GameProfile
+        import engine.profiles.LobbyProfile
 
         private var players:Array = new Array();
 
@@ -27,7 +28,7 @@
             el.removePlayer();
         }
 
-        private function addPlayer(newProfile:GameProfile, playerId:int):void {
+        private function addPlayer(newProfile:LobbyProfile, playerId:int):void {
             if (newProfile == null)
                 return;
 
@@ -51,6 +52,8 @@
             Context.gameModel.playerReadyChanged.add(onReadyChanged)
 
             Context.gameServer.leftGame.add(onLeftGame)
+
+            onConnectedToGame()
         }
 
         private function onLeftGame():void {
@@ -60,21 +63,24 @@
         }
 
         private function onConnectedToGame():void {
-            //todo: replace this shit with unified interface for single and multiplayer. no SFS objects here!!!
-            for each (var user:User in Context.gameServer.gameRoom.playerList) {
-                addPlayer(Context.gameModel.getUserProfile(user), user.playerId)
-            }
+            onSomeoneJoinedToGame()
         }
 
         private function onSomeoneLeftGame(user:User):void {
             deletePlayer(user.playerId)  //todo: check if playerId is still correct
         }
 
-        private function onSomeoneJoinedToGame(user:User):void {
-            addPlayer(Context.gameModel.getUserProfile(user), user.playerId);
+        private function onSomeoneJoinedToGame():void {
+            for (var j:int = 1; j < 5; j++) {
+                deletePlayer(j)
+            }
+            for each (var prof:LobbyProfile in Context.gameModel.lobbyProfiles) {
+                addPlayer(prof, prof.playerId)
+            }
+            onReadyChanged()
         }
 
-        private function onReadyChanged(user:User):void {
+        private function onReadyChanged():void {
             var data:Array = Context.gameModel.getUsersReadyState()
             for (var i:int = 1; i < 5; i++) {
                 if (data[i] != null)
@@ -121,9 +127,9 @@
 
     <s:VGroup x="200" y="200">
         <s:Button label="Ready"
-                  click="setReady(true,Context.game.playerManager.myId); Context.gameModel.setMeReady(true);"/>
+                  click="setReady(true,Context.gameServer.myPlayerId); Context.gameModel.setMeReady(true);"/>
         <s:Button label="NOT Ready"
-                  click="setReady(false,Context.game.playerManager.myId); Context.gameModel.setMeReady(false)"/>
+                  click="setReady(false,Context.gameServer.myPlayerId); Context.gameModel.setMeReady(false)"/>
         <!--Imitation =)-->
         <s:Button label="Game created"
                   click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);}"/>
