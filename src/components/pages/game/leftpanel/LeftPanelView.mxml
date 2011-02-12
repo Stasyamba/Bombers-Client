@@ -97,6 +97,7 @@
             var r:GameResults = new GameResults(res, []);
             Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, r);
         }
+			
         ]]>
 	</fx:Script>
 
@@ -134,6 +135,7 @@
         <s:Button label="Game created"
                   click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);}"/>
         <s:Button label="GetResults" click="showResults()"/>
+		<s:Button label="ReadyWindow" click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW);}"/>
 
     </s:VGroup>
 

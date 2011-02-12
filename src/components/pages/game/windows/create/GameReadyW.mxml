@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:mx1="library://ns.adobe.com/flex/halo"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 creationComplete="panelCreationComplete();"
+		 borderVisible="false"
+		 dropShadowVisible="false"
+		 skinClass="skins.common.EmptyPopUpS"
+		 xmlns:flexcomponents="components.common.flexcomponents.*"
+		 xmlns:create="components.pages.game.windows.create.*"
+		 >
+	<fx:Script>
+		<![CDATA[
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+		<s:Animate id="disapearingAnimation" target="{this}" duration="300"
+				   effectEnd="{close();}">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="1"
+								valueTo="0"
+								/>
+		</s:Animate>
+		
+		<s:Animate id="apearingAnimation" target="{this}" duration="1200">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="0" valueTo="1"
+								/>
+		</s:Animate>
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.utils.adjustcolor.ColorMatrix
+			import components.common.utils.adjustcolor.ColorMatrixObject
+			
+			import mx.managers.PopUpManager
+			
+			
+			public function close():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function closeWrapper():void {
+				disapearingAnimation.play();
+			}
+			
+			private function panelCreationComplete():void {
+				apearingAnimation.play();
+				
+				bomberImage.source = Context.Model.bomberManager.getBomber(Context.Model.currentSettings.gameProfile.currentBomberType).viewObject.bigImageURL;
+				
+				var cm:ColorMatrix = new ColorMatrix();
+				var cmo:ColorMatrixObject = new ColorMatrixObject(80);
+				cm.applyColorMatrixObject(cmo);
+				
+				readyButton.filters = [cm.filter];
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	<s:VGroup width="465" horizontalAlign="center"
+			  gap="0">
+		<s:BitmapImage source="@Embed(source='assets/pagegame/windows/lineBg.jpg')"/>
+		
+		<s:Group width="100%" height="358">
+			<s:Rect width="100%" height="100%" alpha="0.8">
+				<s:fill>
+					<s:SolidColor color="0x000000"/>
+				</s:fill>
+			</s:Rect>
+			
+			<s:VGroup width="100%" height="358"
+					  horizontalAlign="center" verticalAlign="top"
+					  gap="20"
+					  >
+				
+				<s:HGroup verticalAlign="middle"
+						  width="100%"
+						  horizontalAlign="center"
+						  gap="0"
+						  paddingTop="25"
+						  >
+					<s:Label text="Вы присоединились к игре, жмите на кнопку как будете готовы."
+							 fontSize="14" fontFamily="mpr"
+							 color="0xffffff"
+							 maxWidth="417"
+							 />
+				</s:HGroup>
+				
+				<s:HGroup width="100%" horizontalAlign="center">
+					<s:VGroup width="100%"
+							  horizontalAlign="center" verticalAlign="middle"
+							  gap="0"
+							  >
+						<s:Label text="Ваш бомбастер:" fontSize="24" fontFamily="mpbc" color="0xffffff"/>
+						<mx:Image id="bomberImage"/>
+					</s:VGroup>
+				</s:HGroup>
+				
+				<s:HGroup>
+					<flexcomponents:PatternButton id="readyButton"
+												  skinClass="skins.buttons.Pattern2ButtonS"
+												  customLabel="Готов"
+												  fontFamily="mpbc"
+												  fontSize="30"
+												  fontSizeOver="30"
+												  />
+				</s:HGroup>
+				
+			</s:VGroup>
+			
+		</s:Group>
+		
+		<s:BitmapImage source="@Embed(source='assets/pagegame/windows/lineBg.jpg')"/>
+	</s:VGroup>
+	
+	
+	<s:controlBarContent/>
+</s:Panel>

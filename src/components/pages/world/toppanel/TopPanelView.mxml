@@ -10,6 +10,12 @@
         >
     <fx:Script>
 		<![CDATA[
+			
+			private function openEnegryMarket(): void
+			{
+				Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_ENERGY_MARKET);
+			}
+			
         ]]>
 	</fx:Script>
 
@@ -36,7 +42,7 @@
               verticalAlign="middle" horizontalAlign="right">
 
         <expirance:Expirance/>
-        <energy:EnergyView/>
+        <energy:EnergyView click="openEnegryMarket();"/>
         <resources:ResourcesView paddingRight="20"/>
 
     </s:HGroup>
