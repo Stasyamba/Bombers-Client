@@ -4,7 +4,7 @@
  */
 
 package engine.games {
-import com.smartfoxserver.v2.entities.User
+import components.common.bombers.BomberType
 
 import engine.EngineContext
 import engine.bombers.PlayersBuilder
@@ -29,7 +29,7 @@ import engine.model.managers.regular.MapManager
 import engine.model.managers.regular.MapObjectManager
 import engine.model.managers.regular.PlayerManager
 import engine.playerColors.PlayerColor
-import engine.profiles.GameProfile
+import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
 import engine.weapons.WeaponBuilder
 import engine.weapons.WeaponType
@@ -47,7 +47,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
         explosionsBuilder = new ExplosionsBuilder(mapManager);
         bombsBuilder = new BombsBuilder(_mapManager, explosionsBuilder);
-        playersBuilder = new PlayersBuilder(bombsBuilder);
+
 
         _playerManager = new PlayerManager();
         _enemiesManager = new EnemiesManager();
@@ -56,6 +56,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         _explosionsManager = new ExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
         _objectManager = new MapObjectManager(playerManager, mapManager)
         weaponBuilder = new WeaponBuilder(bombsBuilder, _mapManager, mapObjectBuilder, objectManager)
+        playersBuilder = new PlayersBuilder(bombsBuilder,weaponBuilder);
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
 
@@ -87,18 +88,12 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
     }
 
-    public function addPlayer(user:User, color:PlayerColor):void {
-        //todo:here player's profile will be taken as user variable
-        var profile:GameProfile = new GameProfile();
-        var gameSkin:BomberSkin = profile.getSkin(user.playerId);
-        if (user.isItMe) {
-
-            //todo:make a weaponBuilder
-            var player:IPlayerBomber = playersBuilder.makePlayer(this, user.playerId, user.name, color, weaponBuilder.makeSpecialBomb(3, WeaponType.ATOM_BOMB_WEAPON), gameSkin);
+    public function addPlayer(profile:PlayerGameProfile, color:PlayerColor):void {
+        if (profile.playerId == Context.gameServer.myPlayerId) {
+            var player:IPlayerBomber = playersBuilder.makePlayer(this,Context.Model.currentSettings.gameProfile,profile,color);
             playerManager.setPlayer(player);
         } else {
-            //todo: here get profile from user variables and use it to make enemy
-            var enemy:IEnemyBomber = playersBuilder.makeEnemy(this, user.playerId, user.name, color, weaponBuilder.makeSpecialBomb(3, WeaponType.ATOM_BOMB_WEAPON), gameSkin);
+            var enemy:IEnemyBomber = playersBuilder.makeEnemy(this, Context.gameModel.lobbyProfiles[profile.playerId], profile, color);
             enemiesManager.addEnemy(enemy);
         }
     }
@@ -108,26 +103,26 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         return playerManager.myId == playerId || enemiesManager.hasEnemy(playerId);
     }
 
-    public function applyMap(mapId:String, spawnData:Array):void {
+    public function applyMap(mapId:String, playerProfiles:Array):void {
         var xml:XML = Maps.getXmlById(mapId);
         if (xml == null) {
             Context.gameModel.mapLoaded.addOnce(function (lXml:XML):void {
-                onMapLoaded(lXml, spawnData);
+                onMapLoaded(lXml, playerProfiles);
             })
         } else {
-            onMapLoaded(xml, spawnData)
+            onMapLoaded(xml, playerProfiles)
         }
     }
 
-    private function onMapLoaded(xml:XML, spawnData:Array):void {
+    private function onMapLoaded(xml:XML, playerProfiles:Array):void {
         mapManager.make(xml);
-        spawnData.forEach(
-                         function setCoords(item:*, index:int, array:Array):void {
+        playerProfiles.forEach(
+                function setCoords(item:PlayerGameProfile, index:int, array:Array):void {
 
-                             var bomber:IBomber = getPlayer(item.id);
-                             if (bomber != null)
-                                 bomber.putOnMap(mapManager.map, item.x, item.y);
-                         })
+                    var bomber:IBomber = getPlayer(item.playerId);
+                    if (bomber != null)
+                        bomber.putOnMap(mapManager.map, item.x, item.y);
+                })
         _ready = true;
     }
 

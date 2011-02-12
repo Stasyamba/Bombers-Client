@@ -75,7 +75,7 @@
             var place:int = 1;
             for each(var r:Result in gameResults.getResults()) {
                 var l:Label = new Label();
-                l.text = place.toString() + ". " + r.gameProfile.name;
+                l.text = place.toString() + ". " + r.gameProfile.nick;
                 l.minWidth = 180;
                 l.setStyle("fontFamily", "mpbc");
 

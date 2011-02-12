@@ -20,8 +20,6 @@ import engine.model.signals.StateRemovedSignal
 import engine.playerColors.PlayerColor
 import engine.utils.ViewState
 import engine.utils.greensock.TweenMax
-import engine.weapons.interfaces.IActivatableWeapon
-import engine.weapons.interfaces.IDeactivatableWeapon
 import engine.weapons.interfaces.IWeapon
 
 import org.osflash.signals.Signal
@@ -45,9 +43,6 @@ public class BomberBase implements IBomber {
     protected var _bombPower:Number;
     protected var _bombTaken:int
 
-    protected var _weapon:IWeapon;
-//    protected var _weaponSet:WeaponSet;
-//    protected var _auraSet:AuraSet;
 
     private var _isImmortal:Boolean;
     private var _becameImmortal:Signal = new Signal();
@@ -57,13 +52,12 @@ public class BomberBase implements IBomber {
     private var _stateRemoved:StateRemovedSignal = new StateRemovedSignal();
 
 
-    public function BomberBase(game:IGame, playerId:int, userName:String, color:PlayerColor, weapon:IWeapon, skin:BomberSkin, bombBuilder:BombsBuilder) {
+    public function BomberBase(game:IGame, playerId:int, userName:String, color:PlayerColor, skin:BomberSkin, bombBuilder:BombsBuilder) {
         this.game = game;
         _playerId = playerId;
         _bombBuilder = bombBuilder;
         _gameSkin = new GameSkin(skin, color);
         _color = color;
-        _weapon = weapon;
         _userName = userName;
 
         _life = 3;
@@ -98,10 +92,6 @@ public class BomberBase implements IBomber {
 
     public function get playerId():int {
         return _playerId;
-    }
-
-    public function get currentWeapon():IWeapon {
-        return _weapon;
     }
 
     public function get life():int {
@@ -146,18 +136,6 @@ public class BomberBase implements IBomber {
 
     public function get stateRemoved():StateRemovedSignal {
         return _stateRemoved;
-    }
-
-    public function activateWeapon():void {
-        if (currentWeapon is IActivatableWeapon) {
-            IActivatableWeapon(currentWeapon).activate(_coords.elemX, coords.elemY, this);
-        }
-    }
-
-    public function deactivateWeapon():void {
-        if (currentWeapon is IDeactivatableWeapon) {
-            IDeactivatableWeapon(currentWeapon).deactivate(_coords.elemX, coords.elemY, this);
-        }
     }
 
     public function get speed():Number {
@@ -231,7 +209,6 @@ public class BomberBase implements IBomber {
     public function kill():void {
         throw new Error("method BomberBase.kill can't be called")
     }
-
 
 }
 }

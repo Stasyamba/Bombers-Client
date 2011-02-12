@@ -6,11 +6,15 @@
 package engine.games.single {
 import com.smartfoxserver.v2.entities.User
 
+import components.common.bombers.BomberType
+
 import engine.EngineContext
+import engine.bombers.PlayerBomber
 import engine.bombers.PlayersBuilder
 import engine.bombers.bots.AlongRightWallWalkingStrategy
 import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IEnemyBomber
+import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.skin.BomberSkin
 import engine.bombss.BombType
 import engine.bombss.BombsBuilder
@@ -33,6 +37,8 @@ import engine.model.managers.singlePlayer.SinglePlayerExplosionsManager
 import engine.model.managers.singlePlayer.SinglePlayerObjectManager
 import engine.playerColors.PlayerColor
 import engine.profiles.GameProfile
+import engine.profiles.GameProfile
+import engine.profiles.PlayerGameProfile
 import engine.utils.greensock.TweenMax
 import engine.weapons.WeaponBuilder
 import engine.weapons.WeaponType
@@ -58,7 +64,7 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
 
         explosionsBuilder = new ExplosionsBuilder(mapManager);
         bombsBuilder = new BombsBuilder(_mapManager, explosionsBuilder);
-        playersBuilder = new PlayersBuilder(bombsBuilder);
+
 
         _playerManager = new PlayerManager();
         _enemiesManager = new SinglePlayerEnemiesManager();
@@ -67,6 +73,7 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
         _explosionsManager = new SinglePlayerExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
         _objectManager = new SinglePlayerObjectManager(playerManager, enemiesManager, mapManager);
         weaponBuilder = new WeaponBuilder(bombsBuilder, _mapManager, mapObjectBuilder, objectManager)
+        playersBuilder = new PlayersBuilder(bombsBuilder,weaponBuilder)
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
             EngineContext.frameEntered.add(playerManager.movePlayer);
@@ -131,7 +138,9 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
 
 
     private function onWeaponUsed(playerId:int, x:int, y:int, type:WeaponType):void {
-        var bomber:IBomber = getPlayer(playerId);
+        var b:IBomber = getPlayer(playerId);
+        //todo: govnocode!!!
+        var bomber:IPlayerBomber = b as IPlayerBomber
         bomber.activateWeapon();
         if (bomber.currentWeapon is IDeactivatableWeapon) {
             var dw:IDeactivatableWeapon = IDeactivatableWeapon(bomber.currentWeapon)
@@ -145,14 +154,12 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
     }
 
     public function addPlayer(mySelf:User, color:PlayerColor):void {
-        //todo:here player's profile will be taken as user variable
-        var profile:GameProfile = new GameProfile();
-        var gameSkin:BomberSkin = profile.getSkin(1);
-        playerManager.setPlayer(playersBuilder.makePlayer(this, 1, profile.name, color, weaponBuilder.makeSpecialBomb(20, WeaponType.DYNAMITE_WEAPON), gameSkin));
+        var gp : GameProfile = Context.Model.currentSettings.gameProfile
+        playerManager.setPlayer(playersBuilder.makePlayer(this, gp,new PlayerGameProfile(1,gp.currentBomberType,0,0,gp.aursTurnedOn), color));
     }
 
     public function addBot(color:PlayerColor):void {
-        enemiesManager.addEnemy(playersBuilder.makeEnemyBot(this, enemiesManager.enemiesCount + 2, "bot" + enemiesManager.enemiesCount, color, null, new GameProfile().getSkin(enemiesManager.enemiesCount + 2), new AlongRightWallWalkingStrategy()))
+        enemiesManager.addEnemy(playersBuilder.makeEnemyBot(this, new PlayerGameProfile(enemiesManager.enemiesCount + 2,BomberType.R2D3, 0,0,new Array()), "bot" + enemiesManager.enemiesCount, color,new AlongRightWallWalkingStrategy()))
     }
 
 

@@ -12,6 +12,7 @@ import engine.bombss.BombsBuilder
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
 import engine.playerColors.PlayerColor
+import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
 import engine.weapons.interfaces.IWeapon
 
@@ -19,8 +20,8 @@ public class BotEnemyBomber extends EnemyBomber implements IEnemyBomber {
 
     private var walkingStrategy:IWalkingStrategy;
 
-    public function BotEnemyBomber(game:IGame, playerId:int, userName:String, bombBuilder:BombsBuilder, weapon:IWeapon, skin:BomberSkin, color:PlayerColor, walkingStrategy:IWalkingStrategy) {
-        super(game, playerId, userName, bombBuilder, weapon, skin, color)
+    public function BotEnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, bombBuilder:BombsBuilder, color:PlayerColor, walkingStrategy:IWalkingStrategy) {
+        super(game, playerProfile, userName, bombBuilder, color)
 
         this.walkingStrategy = walkingStrategy;
     }

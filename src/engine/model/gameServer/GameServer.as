@@ -11,15 +11,13 @@ import com.smartfoxserver.v2.entities.User
 import com.smartfoxserver.v2.entities.data.ISFSArray
 import com.smartfoxserver.v2.entities.data.ISFSObject
 import com.smartfoxserver.v2.entities.data.SFSObject
-import com.smartfoxserver.v2.entities.variables.SFSUserVariable
-import com.smartfoxserver.v2.entities.variables.VariableType
 import com.smartfoxserver.v2.requests.ExtensionRequest
 import com.smartfoxserver.v2.requests.JoinRoomRequest
 import com.smartfoxserver.v2.requests.LeaveRoomRequest
 import com.smartfoxserver.v2.requests.LoginRequest
 import com.smartfoxserver.v2.requests.PublicMessageRequest
-import com.smartfoxserver.v2.requests.SetUserVariablesRequest
 
+import components.common.bombers.BomberType
 import components.common.items.ItemType
 import components.common.resources.ResourcePrice
 
@@ -38,11 +36,15 @@ import engine.model.signals.manage.SomeoneJoinedToGameSignal
 import engine.model.signals.manage.SomeoneLeftGameSignal
 import engine.profiles.GameProfile
 import engine.profiles.LobbyProfile
+import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
+import engine.weapons.WeaponType
 
 import flash.events.Event
 import flash.events.TimerEvent
 import flash.utils.Timer
+
+import mx.controls.Alert
 
 import org.osflash.signals.Signal
 
@@ -52,8 +54,8 @@ public class GameServer extends SmartFox {
     private static const VIEW_DIRECTION_CHANGED:String = "view_direction_changed";
     private static const TRY_SET_BOMB:String = 'try_set_bomb';
     //input
-    private static const GAME_STARTED:String = "game_started";
-    private static const THREE_SECONDS_TO_START:String = "3_seconds_to_start";
+    private static const GAME_STARTED:String = "game.lobby.gameStarted";
+    private static const THREE_SECONDS_TO_START:String = "game.lobby.3SecondsToStart";
     private static const BOMB_SET:String = 'set_bomb';
     private static const BOMB_EXPLODED:String = "bomb_exploded";
     private static const BONUS_APPEARED:String = "bonus_appeared";
@@ -83,6 +85,7 @@ public class GameServer extends SmartFox {
     private static const INT_CREATE_GAME:String = "interface.gameManager.createGame"
     private static const INT_CREATE_GAME_RESULT:String = "interface.gameManager.createGame.result"
     private static const LOBBY_PROFILES:String = "game.lobby.playersProfiles"
+    private static const LOBBY_READY:String = "game.lobby.readyChanged"
 
 
     public var ip:String;
@@ -121,7 +124,7 @@ public class GameServer extends SmartFox {
         //addEventListener(SFSEvent.USER_ENTER_ROOM, onUserEnteredRoom);
         addEventListener(SFSEvent.USER_EXIT_ROOM, onUserExitedRoom);
 
-        addEventListener(SFSEvent.USER_VARIABLES_UPDATE, onUserVariablesUpdated);
+        //addEventListener(SFSEvent.USER_VARIABLES_UPDATE, onUserVariablesUpdated);
         addEventListener(SFSEvent.EXTENSION_RESPONSE, onExtensionResponse);
 
         addEventListener(SFSEvent.PUBLIC_MESSAGE, onPublicMessageRecieved);
@@ -195,17 +198,10 @@ public class GameServer extends SmartFox {
         send(new PublicMessageRequest(message, null, gameRoom));
     }
 
-    public function setReadyVariable(value:Boolean):void {
-         var vars:Array = [];
-        vars.push(new SFSUserVariable("ready", value, VariableType.BOOL));
-        send(new SetUserVariablesRequest(vars));
-    }
     public function setReadyRequest(value:Boolean):void {
-        setReadyVariable(value)
-
         var params:ISFSObject = new SFSObject();
-        params.putBool("is_ready", value);
-        send(new ExtensionRequest("ready_changed", params, gameRoom));
+        params.putBool("game.lobby.userReady.fields.isReady", value);
+        send(new ExtensionRequest("game.lobby.userReady", params, gameRoom));
     }
 
     public function notifyPlayerDirectionChanged(x:Number, y:Number, dir:Direction, viewDirectionChanged:Boolean):void {
@@ -309,14 +305,6 @@ public class GameServer extends SmartFox {
         trace("login failure: " + event.params.errorMessage)
     }
 
-    private function onUserVariablesUpdated(event:SFSEvent):void {
-        var user:User = event.params.user;
-
-        var changedVars:Array = event.params.changedVars as Array;
-        if (changedVars.indexOf("ready") != -1 && isUserInCurrentGame(user))
-            Context.gameModel.playerReadyChanged.dispatch();
-    }
-
     private function onUserExitedRoom(event:SFSEvent):void {
         var room:Room = event.params.room;
         trace(event.params.user.name + " left room " + room.name);
@@ -345,23 +333,34 @@ public class GameServer extends SmartFox {
                         Direction.byValue(responseParams.getInt("dir")));
                 break;
             case THREE_SECONDS_TO_START:
+                Alert.show("3 secs")
                 //move this shit to model
-                var data:Array = new Array();
-                var i:int = 1;
-                while (true) {
-                    var uId:int = responseParams.getInt("user" + i.toString());
-                    if (uId <= 0)
-                        break;
-                    user = userManager.getUserById(uId);
-                    data.push({id:user.playerId,
-                        x:responseParams.getInt("start_x" + i),
-                        y:responseParams.getInt("start_y" + i)})
-                    i++;
+                var playerGameData:Array = new Array();
+                var sfsArr:ISFSArray = responseParams.getSFSArray("game.lobby.3SecondsToStart.fields.PlayerGameProfiles")
+                for (var i:int = 0; i < sfsArr.size(); i++) {
+                    var obj:ISFSObject = sfsArr.getSFSObject(i)
+                    var x:int = obj.getInt("StartX")
+                    var y:int = obj.getInt("StartY")
+                    var name:String = obj.getUtfString("UserId")
+                    var user:User = userManager.getUserByName(name)
+                    var auras:Array = new Array()
+                    var mapId:int = responseParams.getInt("game.lobby.3SecondsToStart.fields.MapId");
+                    var bType:BomberType = BomberType.byValue(responseParams.getInt("game.lobby.3SecondsToStart.fields.BomberId"))
+                    var a1:WeaponType = WeaponType.byValue(responseParams.getInt("game.lobby.3SecondsToStart.fields.AuraOne"))
+                    var a2:WeaponType = WeaponType.byValue(responseParams.getInt("game.lobby.3SecondsToStart.fields.AuraTwo"))
+                    var a3:WeaponType = WeaponType.byValue(responseParams.getInt("game.lobby.3SecondsToStart.fields.AuraThree"))
+                    if (a1 != WeaponType.NULL)
+                        auras.push(a1)
+                    if (a2 != WeaponType.NULL)
+                        auras.push(a2)
+                    if (a3 != WeaponType.NULL)
+                        auras.push(a3)
+                    playerGameData.push(new PlayerGameProfile(user.playerId,bType,x, y,auras))
                 }
-                var mapId:int = responseParams.getInt("map_id");
-                Context.gameModel.threeSecondsToStart.dispatch(data, mapId);
+                Context.gameModel.threeSecondsToStart.dispatch(playerGameData, mapId);
                 break;
             case GAME_STARTED:
+                Alert.show("started")
                 Context.gameModel.gameStarted.dispatch();
                 break;
             case BOMB_SET:
@@ -485,10 +484,20 @@ public class GameServer extends SmartFox {
                     var exp:int = item.getInt("Experience");
                     var nick:String = item.getUtfString("Nick");
                     var photo:String = item.getUtfString("Photo");
-                    resultArray.push(new LobbyProfile(id,nick,photo,exp,user.playerId))
+                    var ready:Boolean = item.getBool("IsReady");
+                    resultArray[user.playerId] = new LobbyProfile(id, nick, photo, exp, user.playerId, ready)
                 }
                 Context.gameModel.lobbyProfiles = resultArray;
                 someoneJoinedToGame.dispatch();
+                break;
+            case LOBBY_READY:
+                var ready:Boolean = responseParams.getBool("IsReady")
+                var name:String = responseParams.getUtfString("Id");
+                var user:User = userManager.getUserByName(name)
+                var lp:LobbyProfile = Context.gameModel.lobbyProfiles[user.playerId]
+                if (lp != null)
+                    lp.isReady = ready;
+                Context.gameModel.playerReadyChanged.dispatch();
         }
     }
 

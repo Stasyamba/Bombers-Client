@@ -21,6 +21,8 @@
         import components.common.utils.adjustcolor.ColorMatrix
         import components.common.utils.adjustcolor.ColorMatrixObject
 
+        import engine.EngineContext
+
         import mx.collections.ArrayCollection
 
         import spark.events.IndexChangeEvent
@@ -65,7 +67,7 @@
         }
 
         private function showPopUp():void {
-            if (!Context.Model.itemsCategoryManager.isBombBase(_itemProfileObject != null?_itemProfileObject.itemType:ItemType.HAMELEON_POISON)) {
+            if (!Context.Model.itemsCategoryManager.isBombBase(_itemProfileObject != null ? _itemProfileObject.itemType : ItemType.HAMELEON_POISON)) {
                 setBorderSelection(true);
                 submenuPopUp.displayPopUp = true;
             }
@@ -77,7 +79,7 @@
         }
 
         private function setBorderSelectionWrapper(selection:Boolean):void {
-            if (!Context.Model.itemsCategoryManager.isBombBase(_itemProfileObject != null?_itemProfileObject.itemType:ItemType.HAMELEON_POISON)) {
+            if (!Context.Model.itemsCategoryManager.isBombBase(_itemProfileObject != null ? _itemProfileObject.itemType : ItemType.HAMELEON_POISON)) {
                 if (selection) {
                     setBorderSelection(selection);
                 } else {
@@ -101,7 +103,7 @@
         private function setPage(page:int):void {
             var tmp:Array = new Array();
             var pagesCount:int = Math.floor(allItemsWeapon.length / ITEMS_PER_PAGE);
-            pagesCount += allItemsWeapon.length % ITEMS_PER_PAGE;
+            pagesCount += allItemsWeapon.length % ITEMS_PER_PAGE > 0 ? 1 : 0;
 
             if (page >= 0 && page <= pagesCount) {
                 for (var i:int = page * ITEMS_PER_PAGE; i <= (page + 1) * ITEMS_PER_PAGE - 1; i++) {
@@ -180,8 +182,9 @@
         private function changeWeapon(e:IndexChangeEvent):void {
             //weaponsList.selectedItem
             if (currentItemsCollection.getItemAt(e.newIndex) is ItemProfileObject) {
-                if ((currentItemsCollection.getItemAt(e.newIndex) as ItemProfileObject).itemType != Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand.itemType) {
+                if (Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand == null || ((currentItemsCollection.getItemAt(e.newIndex) as ItemProfileObject).itemType != Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand.itemType)) {
                     Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand = (currentItemsCollection.getItemAt(e.newIndex) as ItemProfileObject);
+                    EngineContext.currentWeaponChanged.dispatch()
                 }
 
                 hidePopUp();

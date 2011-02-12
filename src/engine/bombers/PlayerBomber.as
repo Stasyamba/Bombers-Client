@@ -4,6 +4,8 @@
  */
 
 package engine.bombers {
+import components.common.items.ItemType
+
 import engine.EngineContext
 import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
@@ -13,8 +15,12 @@ import engine.bombss.BombsBuilder
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
 import engine.playerColors.PlayerColor
+import engine.profiles.GameProfile
 import engine.utils.Direction
+import engine.weapons.NullWeapon
+import engine.weapons.WeaponBuilder
 import engine.weapons.interfaces.IActivatableWeapon
+import engine.weapons.interfaces.IDeactivatableWeapon
 import engine.weapons.interfaces.IWeapon
 
 public class PlayerBomber extends BomberBase implements IPlayerBomber {
@@ -22,13 +28,30 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     private var _direction:InputDirection;
 
     private var lastViewDir:Direction = Direction.NONE;
+
+    private var _gameProfile:GameProfile
     /*
      * use BombersBuilder instead
      * */
-    public function PlayerBomber(game:IGame, playerId:int, userName:String, color:PlayerColor, direction:InputDirection, weapon:IWeapon, skin:BomberSkin, bombBuilder:BombsBuilder) {
-        super(game, playerId, userName, color, weapon, skin, bombBuilder);
+    protected var _weaponBuilder:WeaponBuilder;
+    protected var _currentWeapon:IWeapon
 
+    public function PlayerBomber(game:IGame, playerId:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder, bombBuilder:BombsBuilder) {
+        super(game, playerId, gameProfile.nick, color, BomberSkin.fromBomberType(gameProfile.currentBomberType), bombBuilder);
+        _weaponBuilder = weaponBuilder
+        this._gameProfile = gameProfile
+        if(gameProfile.selectedWeaponLeftHand != null)
+            _currentWeapon = weaponBuilder.fromItemType(gameProfile.selectedWeaponLeftHand.itemType,gameProfile.selectedWeaponLeftHand.itemCount)
         _direction = direction;
+
+        EngineContext.currentWeaponChanged.add(onCurrentWeaponChanged)
+    }
+
+    private function onCurrentWeaponChanged():void {
+        if(_gameProfile.selectedWeaponLeftHand != null)
+            _currentWeapon = _weaponBuilder.fromItemType(_gameProfile.selectedWeaponLeftHand.itemType,_gameProfile.selectedWeaponLeftHand.itemCount)
+        else
+            _currentWeapon = NullWeapon.instance
     }
 
     public function performMotion(moveAmount:Number):void {
@@ -164,5 +187,20 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
     }
 
+    public function get currentWeapon():IWeapon {
+        return _currentWeapon;
+    }
+
+    public function activateWeapon():void {
+        if (currentWeapon is IActivatableWeapon) {
+            IActivatableWeapon(currentWeapon).activate(_coords.elemX, coords.elemY, this);
+        }
+    }
+
+    public function deactivateWeapon():void {
+        if (currentWeapon is IDeactivatableWeapon) {
+            IDeactivatableWeapon(currentWeapon).deactivate(_coords.elemX, coords.elemY, this);
+        }
+    }
 }
 }

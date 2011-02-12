@@ -4,6 +4,7 @@
  */
 
 package engine.bombers.interfaces {
+
 public interface IEnemyBomber extends IBomber {
 
 }

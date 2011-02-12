@@ -12,68 +12,68 @@ import flash.utils.ByteArray
 
 public class BomberSkins {
 
-    //---fury
-    [Embed(source="../images/skins/fury_left.png")]
-    public static const fury_left:Class;
-    [Embed(source="../images/skins/fury_right.png")]
-    public static const fury_right:Class;
-    [Embed(source="../images/skins/fury_up.png")]
-    public static const fury_up:Class;
-    [Embed(source="../images/skins/fury_down.png")]
-    public static const fury_down:Class;
-    [Embed(source="../images/skins/fury_down.png")]
-    public static const fury_none:Class;
+    //---FURY_JOE
+    [Embed(source="../images/skins/FURY_JOE_left.png")]
+    public static const FURY_JOE_left:Class;
+    [Embed(source="../images/skins/FURY_JOE_right.png")]
+    public static const FURY_JOE_right:Class;
+    [Embed(source="../images/skins/FURY_JOE_up.png")]
+    public static const FURY_JOE_up:Class;
+    [Embed(source="../images/skins/FURY_JOE_down.png")]
+    public static const FURY_JOE_down:Class;
+    [Embed(source="../images/skins/FURY_JOE_down.png")]
+    public static const FURY_JOE_none:Class;
 
-    [Embed(source="../images/skins/fury_left_mask.png")]
-    public static const fury_left_mask:Class;
-    [Embed(source="../images/skins/fury_right_mask.png")]
-    public static const fury_right_mask:Class;
-    [Embed(source="../images/skins/fury_up_mask.png")]
-    public static const fury_up_mask:Class;
-    [Embed(source="../images/skins/fury_down_mask.png")]
-    public static const fury_down_mask:Class;
-    [Embed(source="../images/skins/fury_down_mask.png")]
-    public static const fury_none_mask:Class;
+    [Embed(source="../images/skins/FURY_JOE_left_mask.png")]
+    public static const FURY_JOE_left_mask:Class;
+    [Embed(source="../images/skins/FURY_JOE_right_mask.png")]
+    public static const FURY_JOE_right_mask:Class;
+    [Embed(source="../images/skins/FURY_JOE_up_mask.png")]
+    public static const FURY_JOE_up_mask:Class;
+    [Embed(source="../images/skins/FURY_JOE_down_mask.png")]
+    public static const FURY_JOE_down_mask:Class;
+    [Embed(source="../images/skins/FURY_JOE_down_mask.png")]
+    public static const FURY_JOE_none_mask:Class;
 
-    private static var fury_skin:BomberSkin;
+    private static var FURY_JOE_skin:BomberSkin;
 
-    public static function get fury():BomberSkin {
-        if (fury_skin == null) {
-            fury_skin = makeSkin("fury");
+    public static function get FURY_JOE():BomberSkin {
+        if (FURY_JOE_skin == null) {
+            FURY_JOE_skin = makeSkin("FURY_JOE");
         }
-        return fury_skin;
+        return FURY_JOE_skin;
     }
 
-    //---robot
-    [Embed(source="../images/skins/robot_left.png")]
-    public static const robot_left:Class;
-    [Embed(source="../images/skins/robot_right.png")]
-    public static const robot_right:Class;
-    [Embed(source="../images/skins/robot_up.png")]
-    public static const robot_up:Class;
-    [Embed(source="../images/skins/robot_down.png")]
-    public static const robot_down:Class;
-    [Embed(source="../images/skins/robot_down.png")]
-    public static const robot_none:Class;
+    //---R2D3
+    [Embed(source="../images/skins/R2D3_left.png")]
+    public static const R2D3_left:Class;
+    [Embed(source="../images/skins/R2D3_right.png")]
+    public static const R2D3_right:Class;
+    [Embed(source="../images/skins/R2D3_up.png")]
+    public static const R2D3_up:Class;
+    [Embed(source="../images/skins/R2D3_down.png")]
+    public static const R2D3_down:Class;
+    [Embed(source="../images/skins/R2D3_down.png")]
+    public static const R2D3_none:Class;
 
-    [Embed(source="../images/skins/robot_left_mask.png")]
-    public static const robot_left_mask:Class;
-    [Embed(source="../images/skins/robot_right_mask.png")]
-    public static const robot_right_mask:Class;
-    [Embed(source="../images/skins/robot_up_mask.png")]
-    public static const robot_up_mask:Class;
-    [Embed(source="../images/skins/robot_down_mask.png")]
-    public static const robot_down_mask:Class;
-    [Embed(source="../images/skins/robot_down_mask.png")]
-    public static const robot_none_mask:Class;
+    [Embed(source="../images/skins/R2D3_left_mask.png")]
+    public static const R2D3_left_mask:Class;
+    [Embed(source="../images/skins/R2D3_right_mask.png")]
+    public static const R2D3_right_mask:Class;
+    [Embed(source="../images/skins/R2D3_up_mask.png")]
+    public static const R2D3_up_mask:Class;
+    [Embed(source="../images/skins/R2D3_down_mask.png")]
+    public static const R2D3_down_mask:Class;
+    [Embed(source="../images/skins/R2D3_down_mask.png")]
+    public static const R2D3_none_mask:Class;
 
-    private static var robot_skin:BomberSkin;
+    private static var R2D3_skin:BomberSkin;
 
-    public static function get robot():BomberSkin {
-        if (robot_skin == null) {
-            robot_skin = makeSkin("robot");
+    public static function get R2D3():BomberSkin {
+        if (R2D3_skin == null) {
+            R2D3_skin = makeSkin("R2D3");
         }
-        return robot_skin;
+        return R2D3_skin;
     }
 
     // ---  utils

@@ -18,6 +18,7 @@ import engine.model.signals.manage.PlayerReadyChangedSignal
 import engine.model.signals.manage.ReadyToCreateGameSignal
 import engine.model.signals.manage.ThreeSecondsToStartSignal
 import engine.profiles.GameProfile
+import engine.profiles.PlayerGameProfile
 import engine.utils.greensock.TweenMax
 
 import flash.events.TimerEvent
@@ -48,6 +49,7 @@ public class GameModel {
 
     private var _gameType:GameType;
     public var lobbyProfiles:Array
+    public var playerGameProfiles:Array
 
 
     function GameModel() {
@@ -107,16 +109,12 @@ public class GameModel {
         Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
     }
 
-    private function onFastJoinFailed():void {
-        Context.gameServer.someoneJoinedToGame.remove(onJoinedToGame)
-        connectedToGame.removeAll()
-    }
-
     public function joinConcreteGame(name:String, pass:String):void {
         Context.gameServer.concreteJoinRequest(name,pass);
         Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
         Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
     }
+
     public function setMeReady(ready:Boolean):void {
         Context.gameServer.setReadyRequest(ready);
     }
@@ -141,7 +139,6 @@ public class GameModel {
 
     private function onLoggedIn(name:String):void {
         Context.gameServer.joinDefaultRoom();
-        Context.gameServer.setReadyVariable(false);
         startPing()
     }
 
@@ -160,9 +157,20 @@ public class GameModel {
         threeSecondsToStart.addOnce(onThreeSecondsToStart);
     }
 
+    private function onFastJoinFailed():void {
+        Context.gameServer.someoneJoinedToGame.remove(onJoinedToGame)
+        connectedToGame.removeAll()
+    }
+
     private function onThreeSecondsToStart(data:Array, mapId:int):void {
         gameStarted.addOnce(onGameStarted)
-        Context.game = gameBuilder.makeFromRoom(Context.gameServer.gameRoom, mapId, data);
+
+        this.playerGameProfiles = new Array()
+        for (var i:int = 0; i < data.length; i++) {
+            var playerGP:PlayerGameProfile = data[i];
+            this.playerGameProfiles[playerGP.playerId] = playerGP
+        }
+        Context.game = gameBuilder.makeRegular(mapId, playerGameProfiles);
         if (Context.game.ready) {
             gameReady.dispatch();
         } else {
@@ -186,20 +194,6 @@ public class GameModel {
         EngineContext.clear();
         Context.game = null;
         threeSecondsToStart.addOnce(onThreeSecondsToStart);
-    }
-
-    public function getUsersReadyState():Array {
-        var result:Array = [];
-        for each (var user:User in Context.gameServer.gameRoom.playerList) {
-            var ready:Boolean = user.getVariable("ready").getBoolValue();
-            result[user.playerId] = {userName:user.name,ready:ready};
-        }
-        return result;
-    }
-
-    public function getUserProfile(user:User):GameProfile {
-        //todo: replace with real implementation
-        return new GameProfile();
     }
 
     // getters & setters

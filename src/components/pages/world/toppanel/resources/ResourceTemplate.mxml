@@ -131,7 +131,7 @@
         private var isOpeningProccess:Boolean = false;
         private var isClosingProccess:Boolean = false;
 
-        private var closeTimer:Timer = new Timer(300, 2);
+        private var closeTimer:Timer = new Timer(300, 1);
 
         /* initilize resource */
 
@@ -331,7 +331,7 @@
                            smooth="true"
                     />
             <mx:Spacer width="100%"/>
-            <s:Label id="resourceAmount" fontFamily="mpbc" text="23" fontSize="16" color="0xffffff"/>
+            <s:Label id="resourceAmount" fontFamily="mpbc" text="" fontSize="16" color="0xffffff"/>
         </s:HGroup>
 
     </s:Group>

@@ -8,14 +8,16 @@ import engine.bombers.interfaces.IBomber
 import engine.weapons.interfaces.IWeapon
 
 public class NullWeapon implements IWeapon {
-    public function NullWeapon() {
+
+    private static var _instance:NullWeapon
+
+    public static function get instance():NullWeapon{
+        if (_instance == null)
+            _instance = new NullWeapon()
+        return _instance
     }
 
-    public function activateAt(x:uint, y:uint, by:IBomber):void {
-    }
-
-    public function canActivateAt(x:uint, y:uint):Boolean {
-        return false;
+    function NullWeapon() {
     }
 
     public function get type():WeaponType {

@@ -26,6 +26,12 @@
 
         function init():void {
 
+            Context.gameModel.gameReady.add(function ():void {
+                gameView = new GameFieldView(Context.game);
+                addElement(gameView);
+                PopUpManager.addPopUp(threeSecsToStart, gameView);
+            });
+
             if (Context.gameModel.gameType.isMultiplayer) {
                 initMultiPlayer();
             } else {
@@ -41,13 +47,6 @@
         }
 
         private function initMultiPlayer():void {
-
-            Context.gameModel.gameReady.add(function ():void {
-                gameView = new GameFieldView(Context.game);
-                addElement(gameView);
-                PopUpManager.addPopUp(threeSecsToStart, gameView);
-            });
-
             Context.gameModel.gameEnded.add(function ():void {
 
                 endGame();
@@ -58,15 +57,7 @@
             //initChat();
         }
 
-        // comment
         private function initSinglePlayer():void {
-            Context.gameModel.gameReady.add(function ():void {
-                PopUpManager.addPopUp(threeSecsToStart, group);
-
-                gameView = new GameFieldView(Context.game);
-                addElement(gameView);
-            });
-
             Context.gameModel.gameEnded.add(function ():void {
 
                 endGame();
@@ -137,16 +128,13 @@
         //change tab back
         private function changeTabBack():void {
             Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_WORLD);
-            gameView.destroy();
+            if (gameView != null) {
+                gameView.destroy();
+                removeElement(gameView)
+                gameView = null
+            }
             if (hasEventListener(Event.ENTER_FRAME))
                 unsubscribeEnterFrameEvent();
-        }
-
-        public function destroy():void {
-            Context.gameModel.gameStarted.removeAll();
-            Context.gameModel.gameEnded.removeAll();
-            Context.gameModel.gameReady.removeAll();
-            Context.gameServer.leftGame.removeAll();
         }
         ]]></fx:Script>
     <mx:Image source="http://www.vensella.ru/eg/testmap.jpg"/>

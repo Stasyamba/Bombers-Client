@@ -13,7 +13,7 @@ import engine.bombers.skin.BomberSkin
 
 public class GameProfile {
 
-    private var _name:String;
+    private var _nick:String;
     public var expirance:int;
     public var energy:int;
     public var id:int;
@@ -59,12 +59,12 @@ public class GameProfile {
     public function GameProfile() {
     }
 
-    public function get name():String {
-        return _name;
+    public function get nick():String {
+        return _nick;
     }
 
-    public function set name(value:String):void {
-        _name = value;
+    public function set nick(value:String):void {
+        _nick = value;
     }
 
     /**
@@ -72,31 +72,6 @@ public class GameProfile {
      */
     public function get aursTurnedOn():Array {
         return _aursTurnedOn;
-    }
-
-    //imitation
-    public function initGameProfile():void {
-        packItems = new Array();
-        gotItems.push(new ItemProfileObject(ItemType.QUEST_ITEM_CANARY, -1));
-        gotItems.push(new ItemProfileObject(ItemType.NUCLEAR_BOMB, 2));
-        gotItems.push(new ItemProfileObject(ItemType.QUEST_ITEM_SNOWBOOTS, -1));
-        gotItems.push(new ItemProfileObject(ItemType.AURA_FIRE, -1));
-        gotItems.push(new ItemProfileObject(ItemType.X_RAY_BOMB, 10));
-        gotItems.push(new ItemProfileObject(ItemType.MINA_BOMB, 5));
-        gotItems.push(new ItemProfileObject(ItemType.HAMELEON_POISON, 0));
-
-        for each(var ipo:ItemProfileObject in gotItems) {
-            packItems.push(ipo);
-        }
-
-        _aursTurnedOn = [null, null, null]
-        setAura(null, ItemType.AURA_FIRE);
-
-
-        selectedWeaponRightHand = new ItemProfileObject(ItemType.BASE_BOMB, -1);
-        selectedWeaponLeftHand = packItems[1];
-
-        currentBomberType = BomberType.FURY_JOE;
     }
 
     /* GET and SET */
@@ -214,7 +189,7 @@ public class GameProfile {
     public static function fromISFSObject(obj:ISFSObject):GameProfile {
         var res:GameProfile = new GameProfile();
         res.id = obj.getInt("Id");
-        res.name = obj.getUtfString("Nick");
+        res.nick = obj.getUtfString("Nick");
         res.expirance = obj.getInt("Experience")
         res.energy = obj.getInt("Energy")
         res.currentBomberType = BomberType.byValue(obj.getInt("CurrentBomber"))

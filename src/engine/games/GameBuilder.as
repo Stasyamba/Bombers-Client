@@ -11,6 +11,7 @@ import engine.data.location1.games.Games
 import engine.games.single.SinglePlayerGame
 import engine.games.single.goals.GoalsBuilder
 import engine.playerColors.PlayerColor
+import engine.profiles.PlayerGameProfile
 
 public class GameBuilder {
     public function GameBuilder() {
@@ -31,20 +32,13 @@ public class GameBuilder {
         throw new Error("No more colors")
     }
 
-    public function makeFromRoom(room:Room, mapId:int, spawnData:Array):IGame {
-        var gameType:GameType = GameType.fromValue(room.getVariable('gameType').getStringValue());
-        switch (gameType) {
-            case GameType.REGULAR:
-                var game:RegularGame = new RegularGame();
-                for each (var user:User in room.userList) {
-                    if (!user.isPlayer)
-                        continue;
-                    game.addPlayer(user, getColor(user.playerId))
-                }
-                game.applyMap("map" + mapId, spawnData)
-                return game;
+    public function makeRegular(mapId:int, playerProfiles:Array):IGame {
+        var game:RegularGame = new RegularGame();
+        for each (var prof:PlayerGameProfile in playerProfiles) {
+            game.addPlayer(prof, getColor(prof.playerId))
         }
-        throw new ArgumentError("invalid gameType");
+        game.applyMap("map" + mapId, playerProfiles)
+        return game;
     }
 
 

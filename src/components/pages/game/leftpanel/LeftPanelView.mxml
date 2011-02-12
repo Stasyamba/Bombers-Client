@@ -17,7 +17,6 @@
         import components.common.game.multygameresult.GameResults
         import components.common.game.multygameresult.Result
 
-        import engine.profiles.GameProfile
         import engine.profiles.LobbyProfile
 
         private var players:Array = new Array();
@@ -36,7 +35,6 @@
             el = playersGroup.getChildAt(playerId - 1) as PlayerSlot;
             el.setPlayer(newProfile);
         }
-
 
         private function setReady(isReady:Boolean, playerId:int):void {
             var el:PlayerSlot;
@@ -67,6 +65,7 @@
         }
 
         private function onSomeoneLeftGame(user:User):void {
+            setReady(false,user.playerId)
             deletePlayer(user.playerId)  //todo: check if playerId is still correct
         }
 
@@ -81,10 +80,11 @@
         }
 
         private function onReadyChanged():void {
-            var data:Array = Context.gameModel.getUsersReadyState()
             for (var i:int = 1; i < 5; i++) {
-                if (data[i] != null)
-                    setReady(data[i].ready, i);
+                var lp:LobbyProfile = Context.gameModel.lobbyProfiles[i] as LobbyProfile
+                if (lp != null) {
+                    setReady(lp.isReady, i);
+                }
             }
         }
 

@@ -12,15 +12,16 @@ import engine.data.Consts
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
 import engine.playerColors.PlayerColor
+import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
-import engine.weapons.interfaces.IWeapon
 
 public class EnemyBomber extends BomberBase implements IEnemyBomber {
 
     protected var _direction:Direction = Direction.NONE;
 
-    public function EnemyBomber(game:IGame, playerId:int, userName:String, bombBuilder:BombsBuilder, weapon:IWeapon, skin:BomberSkin, color:PlayerColor) {
-        super(game, playerId, userName, color, weapon, skin, bombBuilder);
+
+    public function EnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, bombBuilder:BombsBuilder, color:PlayerColor) {
+        super(game, playerId, userName, color, BomberSkin.fromBomberType(playerProfile.bomberType), bombBuilder);
 
         EngineContext.enemyInputDirectionChanged.add(directionChanged);
         EngineContext.enemyDamaged.add(onDamaged);
@@ -83,6 +84,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
 
     public override function explode(expl:IExplosion):void {
     }
+
 
 }
 }

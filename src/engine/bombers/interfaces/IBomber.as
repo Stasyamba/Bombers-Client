@@ -49,15 +49,9 @@ public interface IBomber {
 
     function get stateRemoved():StateRemovedSignal;
 
-    function activateWeapon():void;
-
-    function deactivateWeapon():void
-
-    function get currentWeapon():IWeapon;
-
-//    function get weaponSet():WeaponSet;
-//
-//    function get auraSet():AuraSet;
+    //    function get weaponSet():WeaponSet;
+    //
+    //    function get auraSet():AuraSet;
 
     //skills
 

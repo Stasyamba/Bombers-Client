@@ -4,6 +4,8 @@
  */
 
 package engine {
+import components.common.items.ItemProfileObject
+
 import engine.model.signals.DieWallAppearedSignal
 import engine.model.signals.FrameEnteredSignal
 import engine.model.signals.MissionAccomplishedSignal
@@ -30,6 +32,8 @@ import engine.model.signals.movement.PlayerInputDirectionChangedSignal
 import engine.model.signals.movement.PlayerViewDirectionChangedSignal
 import engine.model.signals.weapons.TriedToUseWeaponSignal
 
+import org.osflash.signals.Signal
+
 public class EngineContext {
 
     private static var _instance:EngineContext;
@@ -46,6 +50,7 @@ public class EngineContext {
     private var _bombExploded:BombsExplodedSignal = new BombsExplodedSignal();
     private var _triedToSetBomb:TriedToSetBombSignal = new TriedToSetBombSignal();
     //---weapons
+    private var _currentWeaponChanged:Signal = new Signal();
     private var _triedToUseWeapon:TriedToUseWeaponSignal = new TriedToUseWeaponSignal();
     private var _weaponUsed:WeaponUsedSignal = new WeaponUsedSignal();
     //---explosions
@@ -110,6 +115,10 @@ public class EngineContext {
 
     public static function get triedToSetBomb():TriedToSetBombSignal {
         return instance._triedToSetBomb;
+    }
+
+    public static function get currentWeaponChanged():Signal {
+        return instance._currentWeaponChanged
     }
 
     public static function get triedToUseWeapon():TriedToUseWeaponSignal {

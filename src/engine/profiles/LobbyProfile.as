@@ -10,13 +10,15 @@ public class LobbyProfile {
     public var photoURL:String
     public var experience:int
     public var playerId:int
+    public var isReady:Boolean
 
-    public function LobbyProfile(id:int, nick:String, photo:String, experience:int, playerId:int) {
+    public function LobbyProfile(id:int, nick:String, photo:String, experience:int, playerId:int,isReady:Boolean) {
         this.id = id
         this.nick = nick
         this.photoURL = photo
         this.experience = experience
         this.playerId = playerId
+        this.isReady = isReady
     }
 }
 }
