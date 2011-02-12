@@ -60,14 +60,15 @@ public class GameServer extends SmartFox {
     private static const BOMB_EXPLODED:String = "bomb_exploded";
     private static const BONUS_APPEARED:String = "bonus_appeared";
 
-    private static const DEATH_WALL_APPEARED:String = "death_wall_appeared";
+    private static const DEATH_WALL_APPEARED:String = "game.deathWallAppeared";
 
-    private static const PLAYER_DIED:String = "player_died";
-    private static const GAME_ENDED:String = "game_ended";
+    private static const PLAYER_DIED:String = "game.playerDied";
+    private static const GAME_ENDED:String = "game.gameEnded";
 
     //bidirectional
-    private static const INPUT_DIRECTION_CHANGED:String = "input_direction_changed";
-    private static const PLAYER_DAMAGED:String = "player_damaged";
+    private static const INPUT_DIRECTION_CHANGED:String = "game.IDC";
+    private static const PLAYER_DAMAGED:String = "game.playerDamaged";
+    private static const DAMAGE_PLAYER:String = "game.damagePlayer"
     private static const ACTIVATE_DYNAMIC_OBJECT:String = "activate_dynamic_object";
     private static const BONUS_TAKEN:String = "bonus_taken";
     private static const PING:String = "ping";
@@ -204,13 +205,13 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest("game.lobby.userReady", params, gameRoom));
     }
 
-    public function notifyPlayerDirectionChanged(x:Number, y:Number, dir:Direction, viewDirectionChanged:Boolean):void {
+    public function sendPlayerDirectionChanged(x:Number, y:Number, dir:Direction, viewDirectionChanged:Boolean):void {
 
         var params:ISFSObject = new SFSObject();
+        params.putInt("userId",mySelf.id)
         params.putDouble("x", x);
         params.putDouble("y", y);
         params.putInt("dir", dir.value);
-        params.putBool("view_direction_changed", viewDirectionChanged);
 
         send(new ExtensionRequest(INPUT_DIRECTION_CHANGED, params, gameRoom));
     }
@@ -235,12 +236,12 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(TRY_SET_BOMB, params, gameRoom));
     }
 
-    public function notifyPlayerDamaged(damage:int, isDead:Boolean):void {
+    public function sendPlayerDamaged(damage:int, isDead:Boolean):void {
         var params:ISFSObject = new SFSObject();
-        params.putInt("damage", damage);
-        params.putBool("is_dead", isDead);
+        params.putInt("game.damagePlayer.fields.damage", damage);
+        params.putBool("game.damagePlayer.fields.isDead", isDead);
 
-        send(new ExtensionRequest(PLAYER_DAMAGED, params, gameRoom));
+        send(new ExtensionRequest(DAMAGE_PLAYER, params, gameRoom));
     }
 
     public function notifyActivateObject(object:IMapObject):void {
@@ -323,7 +324,7 @@ public class GameServer extends SmartFox {
         var responseParams:ISFSObject = event.params.params as SFSObject;
         switch (event.params.cmd) {
             case INPUT_DIRECTION_CHANGED:
-                var user:User = userManager.getUserById(responseParams.getInt("user_id"));
+                var user:User = userManager.getUserById(responseParams.getInt("userId"));
                 if (user.isItMe)
                     return;
                 EngineContext.enemyInputDirectionChanged.dispatch(
@@ -333,7 +334,6 @@ public class GameServer extends SmartFox {
                         Direction.byValue(responseParams.getInt("dir")));
                 break;
             case THREE_SECONDS_TO_START:
-                Alert.show("3 secs")
                 //move this shit to model
                 var playerGameData:Array = new Array();
                 var sfsArr:ISFSArray = responseParams.getSFSArray("game.lobby.3SecondsToStart.fields.PlayerGameProfiles")
@@ -360,7 +360,6 @@ public class GameServer extends SmartFox {
                 Context.gameModel.threeSecondsToStart.dispatch(playerGameData, mapId);
                 break;
             case GAME_STARTED:
-                Alert.show("started")
                 Context.gameModel.gameStarted.dispatch();
                 break;
             case BOMB_SET:
@@ -380,13 +379,15 @@ public class GameServer extends SmartFox {
                         )
                 break;
             case PLAYER_DAMAGED:
-                user = userManager.getUserById(responseParams.getInt("user_id"));
+                user = userManager.getUserByName(responseParams.getUtfString("UserId"));
                 if (user.isItMe)
                     return;
-                EngineContext.enemyDamaged.dispatch(user.playerId, responseParams.getInt("health_left"));
+                EngineContext.enemyDamaged.dispatch(user.playerId, responseParams.getInt("HealthLeft"));
                 break;
             case PLAYER_DIED:
-                user = userManager.getUserById(responseParams.getInt("user_id"));
+                user = userManager.getUserByName(responseParams.getUtfString("UserId"));
+                if(user == null)
+                    return
                 if (user.isItMe)
                     return;
                 EngineContext.enemyDied.dispatch(user.playerId);
@@ -406,7 +407,6 @@ public class GameServer extends SmartFox {
                         BonusType.byValue(responseParams.getInt("bonus_type")))
                 break;
             case DEATH_WALL_APPEARED:
-                trace("death wall " + responseParams.getInt("x") + "," + responseParams.getInt("y"))
                 EngineContext.deathWallAppeared.dispatch(
                         responseParams.getInt("x"),
                         responseParams.getInt("y"))
@@ -420,7 +420,6 @@ public class GameServer extends SmartFox {
                 timer.start();
                 break;
             case INT_GAME_PROFILE_LOADED:
-                trace("profile recieved !!!!!!!!!!!!!!!!!!!!");
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
                 profileLoaded.dispatch(gp);
                 break;
@@ -494,15 +493,13 @@ public class GameServer extends SmartFox {
                 var ready:Boolean = responseParams.getBool("IsReady")
                 var name:String = responseParams.getUtfString("Id");
                 var user:User = userManager.getUserByName(name)
+                if (user == null || user.playerId <= 0)
+                    return
                 var lp:LobbyProfile = Context.gameModel.lobbyProfiles[user.playerId]
                 if (lp != null)
                     lp.isReady = ready;
                 Context.gameModel.playerReadyChanged.dispatch();
         }
-    }
-
-    public function get amIReady():Boolean {
-        return mySelf.getVariable("ready").getBoolValue();
     }
 
     public function get myPlayerId():int {

@@ -50,6 +50,7 @@ public class GameModel {
     private var _gameType:GameType;
     public var lobbyProfiles:Array
     public var playerGameProfiles:Array
+    public var createdByMe:Boolean
 
 
     function GameModel() {
@@ -97,6 +98,7 @@ public class GameModel {
     public function tryCreateRegularGame(name:String, pass:String,locationId:int):void {
         Context.gameServer.createNewGameRequest(name,pass,locationId)
         Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
+        createdByMe = true;
     }
 
     public function leaveCurrentGame():void {
@@ -107,12 +109,14 @@ public class GameModel {
         Context.gameServer.fastJoinRequest(locationId);
         Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
         Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
+        createdByMe = false;
     }
 
     public function joinConcreteGame(name:String, pass:String):void {
         Context.gameServer.concreteJoinRequest(name,pass);
         Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
         Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
+        createdByMe = false;
     }
 
     public function setMeReady(ready:Boolean):void {

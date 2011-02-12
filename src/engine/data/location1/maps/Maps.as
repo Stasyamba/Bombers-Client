@@ -47,7 +47,7 @@ public class Maps {
         if (Maps[mapId] != null) {
             return Maps[mapId];
         }
-        uLoader.load(new URLRequest("www.vensella.ru/bombers/maps/map" + mapId + ".xml?" + String(1 + Math.random() * 100000)))
+        uLoader.load(new URLRequest("http://www.vensella.ru/bombers/maps/map" + mapId + ".xml?" + String(int(1 + Math.random() * 100000))))
         if (!uLoader.hasEventListener(Event.COMPLETE))
             uLoader.addEventListener(Event.COMPLETE, u_completeHandler);
         return null;

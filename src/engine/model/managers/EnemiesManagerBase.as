@@ -16,7 +16,7 @@ public class EnemiesManagerBase {
     private var _enemiesCount:int = 0;
 
     public function addEnemy(enemy:IEnemyBomber):void {
-        enemies[enemy.playerId] = enemy;// playersBuilder.makeEnemy(playerId, profile.name, mapCoords, makeSkills(profile), new GameSkin(makeSkin(profile)));
+        enemies[enemy.playerId] = enemy;
         _enemiesCount++;
     }
 

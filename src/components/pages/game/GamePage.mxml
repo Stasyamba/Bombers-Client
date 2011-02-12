@@ -17,39 +17,35 @@
 
     <fx:Script>
 		<![CDATA[
-			import components.ApplicationView;
-			import components.common.game.multygameresult.GameResults;
-			import components.pages.game.windows.common.PackIsPlayingW;
-			import components.pages.game.windows.common.QuitTheGameW;
-			import components.pages.game.windows.create.GameGreatedW;
-			import components.pages.game.windows.create.GameReadyW;
-			import components.pages.game.windows.results.ResultsW;
-			
-			import engine.model.signals.GameReadySignal;
-			
-			import mx.managers.PopUpManager;
+        import components.ApplicationView
+        import components.common.game.multygameresult.GameResults
+        import components.pages.game.windows.common.PackIsPlayingW
+        import components.pages.game.windows.common.QuitTheGameW
+        import components.pages.game.windows.create.GameCreatedW
+        import components.pages.game.windows.create.GameReadyW
+        import components.pages.game.windows.results.ResultsW
+
+        import mx.managers.PopUpManager
 
         private var now:int,then:int;
 
-        //temporary ui elements
-        //        private var threeSecsToStart:ThreeSecondsToStart = new ThreeSecondsToStart();
-        //        private var preGameView:GameView = new GameView();
-        //        private var gameResultsView:GameResultsView = new GameResultsView();
-        //
+        var rw:GameReadyW
+        var cgw:GameCreatedW
         // init function
         private function init():void {
 
             Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function (e:ContextEvent):void {
                 if (e.data == ApplicationView.TAB_NAME_GAME) {
-                    // this tab
-                    // read game context
-                    // create game
                     gameView.init();
                 }
             });
 
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW, function (e:ContextEvent):void {
                 showCreatedGameWindow();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW, function (e:ContextEvent):void {
+                showReadyWindow();
             });
 
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_QUIT_THE_GAME_WINDOW, function (e:ContextEvent):void {
@@ -67,30 +63,33 @@
                     }
                 }
             });
-			
-			Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW, function (e:ContextEvent):void 
-			{	
-				showReadyWindow();
-			});
+
+            Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
         }
 
-		private function showReadyWindow():void	
-		{
-			var rw:GameReadyW = new GameReadyW();
-			rw.x = 215;
-			rw.y = 66;
-			
-			PopUpManager.addPopUp(rw, this, false);
-		}
-			
+
+        private function onThreeSecondsToStart(data:Array, mapId:int):void {
+            showThreeSecondsToStartWindow()
+        }
+
+        private function showThreeSecondsToStartWindow():void {
+            //EGOR
+        }
+
+        private function showReadyWindow():void {
+            rw = new GameReadyW();
+            rw.x = 215;
+            rw.y = 66;
+
+            PopUpManager.addPopUp(rw, this, false);
+        }
         private function showCreatedGameWindow():void {
-            var cgw:GameGreatedW = new GameGreatedW();
+            cgw = new GameCreatedW();
             cgw.x = 215;
             cgw.y = 66;
 
             PopUpManager.addPopUp(cgw, this, false);
         }
-
         private function showResultsWindow(gr:GameResults):void {
             var rw:ResultsW = new ResultsW();
             rw.gameResults = gr;
@@ -118,20 +117,9 @@
         }
 
         private function showConnectToGameW():void {
-
         }
         ]]>
     </fx:Script>
-
-
-    <!--  
-     <s:VGroup id="group">
-         <s:BitmapImage id="background"
-                        source="{MapBlocks.MAP_GRASS()}"
-                        width="680" height="440"/>
-         <ui:ChatControl left="10" id="chat" messageSent="onSend(event)"/>
-     </s:VGroup>
-     -->
 
     <s:Rect width="100%" height="100%">
         <s:fill>

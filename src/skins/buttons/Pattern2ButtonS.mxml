@@ -5,6 +5,7 @@
              xmlns:mx="library://ns.adobe.com/flex/mx"
              minWidth="21" minHeight="21"
              creationComplete="init();"
+             updateComplete="init();"
              alpha.disabled="0.5"
         >
 
@@ -52,7 +53,6 @@
 
         [Bindable]
         private var scale:Number;
-
 
         private function init():void {
 

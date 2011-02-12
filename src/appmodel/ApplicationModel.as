@@ -111,7 +111,7 @@ public class ApplicationModel extends VkontakteApplicationModel {
     public var currentSettings:Settings = new Settings();
 
     [Bindable]
-    public var trustContent:Boolean = false;
+    public var trustContent:Boolean = true;
 
 
     public var resourceViewManager:ResourceViewManager = new ResourceViewManager();

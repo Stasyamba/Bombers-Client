@@ -92,6 +92,8 @@ public class ContextEvent extends Event {
     public static const GPAGE_NEED_TO_SHOW_QUIT_THE_GAME_WINDOW:String = "GPAGENeedToShowQuitTheGameWindow";
     public static const GPAGE_NEED_TO_SHOW_RESULTS_WINDOW:String = "GPAGENeedToShowResultsWindow";
     // pass: GameResults
+    public static const GPAGE_NEED_TO_CLOSE_GAME_IS_CREATED_WINDOW:String = "GPAGENeedToCloseGameIsCreatedWindow"
+    public static const GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW:String = "GPAGENeedToCloseGameReadyWindow"
 
     /***** buy events: resources(RS), energy(EN), items(IT) *****/
     public static const RS_BUY_FAILED:String = "RSBuyFailed"
