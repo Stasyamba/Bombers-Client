@@ -87,6 +87,7 @@ public class ContextEvent extends Event {
 
     /***** game page event *****/
     public static const GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW:String = "GPAGENeedToShowGameIsCreatedWindow";
+	public static const GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW:String = "GPAGENeedToShowGameReadyWindow";
     public static const GPAGE_NEED_TO_SHOW_IS_PLAYING_PACK_WINDOW:String = "GPAGENeedToShowIsPlayingPackWindow";
     public static const GPAGE_NEED_TO_SHOW_QUIT_THE_GAME_WINDOW:String = "GPAGENeedToShowQuitTheGameWindow";
     public static const GPAGE_NEED_TO_SHOW_RESULTS_WINDOW:String = "GPAGENeedToShowResultsWindow";

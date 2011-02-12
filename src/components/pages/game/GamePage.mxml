@@ -17,14 +17,17 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.ApplicationView
-        import components.common.game.multygameresult.GameResults
-        import components.pages.game.windows.common.PackIsPlayingW
-        import components.pages.game.windows.common.QuitTheGameW
-        import components.pages.game.windows.create.GameGreatedW
-        import components.pages.game.windows.results.ResultsW
-
-        import mx.managers.PopUpManager
+			import components.ApplicationView;
+			import components.common.game.multygameresult.GameResults;
+			import components.pages.game.windows.common.PackIsPlayingW;
+			import components.pages.game.windows.common.QuitTheGameW;
+			import components.pages.game.windows.create.GameGreatedW;
+			import components.pages.game.windows.create.GameReadyW;
+			import components.pages.game.windows.results.ResultsW;
+			
+			import engine.model.signals.GameReadySignal;
+			
+			import mx.managers.PopUpManager;
 
         private var now:int,then:int;
 
@@ -64,8 +67,22 @@
                     }
                 }
             });
+			
+			Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW, function (e:ContextEvent):void 
+			{	
+				showReadyWindow();
+			});
         }
 
+		private function showReadyWindow():void	
+		{
+			var rw:GameReadyW = new GameReadyW();
+			rw.x = 215;
+			rw.y = 66;
+			
+			PopUpManager.addPopUp(rw, this, false);
+		}
+			
         private function showCreatedGameWindow():void {
             var cgw:GameGreatedW = new GameGreatedW();
             cgw.x = 215;
