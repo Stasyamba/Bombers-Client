@@ -6,8 +6,10 @@
                     xmlns:world="components.pages.world.*"
                     xmlns:toppanel="components.pages.world.toppanel.*"
                     xmlns:bottompanel="components.pages.world.bottompanel.*"
+					xmlns:subbottompanel="components.pages.world.subbottompanel.*"
                     width="100%" height="100%"
-                    contentCreationComplete="init();" xmlns:subbottompanel="components.pages.world.subbottompanel.*"
+                    contentCreationComplete="init();" 
+					
         >
 
     <fx:Declarations>
@@ -41,6 +43,7 @@
     <worlds:WorldsView id="worlds" y="40"/>
     <toppanel:TopPanelView id="topPanel" y="0"/>
     <bottompanel:BottomPanelView id="bottomPanel" y="485"/>
+	<!--<s:BitmapImage source="@Embed(source='assets/pageworld/subbottompanel/bg.jpg')" y="526"/>-->
     <subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>
 
 

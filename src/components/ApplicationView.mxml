@@ -24,6 +24,7 @@
 			import components.common.game.requesttogame.RequestGameObject;
 			import components.common.profiles.VkontakteProfile;
 			import components.common.resources.ResourcePrice;
+			import components.pages.game.windows.create.PreStartW;
 			import components.pages.global.energymarket.EnergyMarketW;
 			import components.pages.global.gamerequest.ConnectToGameW;
 			import components.pages.global.inventory.InventoryW;
@@ -153,10 +154,14 @@
 				openEnergyMarket();
 			});
 			
+			
+			
             /// immitation
+		
 			
         }
-
+				
+			
 		private function openEnergyMarket(): void
 		{
 			var emw: EnergyMarketW = new EnergyMarketW();

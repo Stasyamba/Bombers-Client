@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://blog.flexexamples.com/2009/07/28/displaying-icons-in-a-spark-buttonbar-control-in-flex-4/ -->
+<s:SparkSkin name="MoreUserButtonSkin"
+			 xmlns:fx="http://ns.adobe.com/mxml/2009"
+			 xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:mx="library://ns.adobe.com/flex/mx"
+			 minWidth="21" minHeight="21"
+			 creationComplete="init();"
+			 >
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="up" enterState="setUp();" />
+		<s:State name="over" enterState="setOver();" />
+		<s:State name="down" />
+		<s:State name="disabled"/>
+	</s:states>
+	
+	<!-- host component -->
+	<fx:Metadata>
+		<![CDATA[
+		[HostComponent("spark.components.Button")]
+		]]>
+	</fx:Metadata>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.flexcomponents.CloseButton;
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+				
+				/* Define the skin elements that should not be colorized.
+				For toggle button, the graphics are colorized but the label is not. */
+			static private const exclusions:Array = [];
+			
+			public var cm:ColorMatrix;
+			public var cmo:ColorMatrixObject;
+			
+			override public function get colorizeExclusions():Array {
+				return exclusions;
+			}
+		
+			// may be need color matrix filter
+			
+			private function init():void {
+				
+				setUp();
+				
+			}
+			
+			
+			private function setUp(): void
+			{
+				cm = new ColorMatrix();
+				cmo = new ColorMatrixObject(0,0);
+				cm.applyColorMatrixObject(cmo);
+				
+				imagesGroup.filters = [cm.filter];
+				
+			}
+			
+			private function setOver(): void
+			{
+				cm = new ColorMatrix();
+				cmo = new ColorMatrixObject(0,1);
+				cm.applyColorMatrixObject(cmo);
+				
+				imagesGroup.filters = [cm.filter];
+				
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<s:Group id="imagesGroup" 
+			 x.up="0" y.up="0"
+			 x.over="0" y.over="0"
+			 x.down="3" y.down="3"
+			 >
+		<s:BitmapImage id="closeImage"
+					   source="@Embed(source='assets/pagegame/subbottompanel/arrow.png')"
+					   smooth="true"
+					   />
+		
+	</s:Group>
+	
+	<s:Label id="labelDisplay"
+			 visible="false"
+			 />
+	
+	
+</s:SparkSkin>

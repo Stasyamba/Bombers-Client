@@ -4,16 +4,16 @@
  */
 
 package engine.weapons {
-import components.common.items.ItemType
+import components.common.items.ItemType;
 
-import engine.bombss.BombsBuilder
-import engine.maps.builders.MapObjectBuilder
-import engine.model.managers.interfaces.IObjectManager
-import engine.model.managers.regular.MapManager
-import engine.weapons.interfaces.IActivatableWeapon
-import engine.weapons.interfaces.IDeactivatableWeapon
-import engine.weapons.interfaces.IMineWeapon
-import engine.weapons.interfaces.IWeapon
+import engine.bombss.BombsBuilder;
+import engine.maps.builders.MapObjectBuilder;
+import engine.model.managers.interfaces.IObjectManager;
+import engine.model.managers.regular.MapManager;
+import engine.weapons.interfaces.IActivatableWeapon;
+import engine.weapons.interfaces.IDeactivatableWeapon;
+import engine.weapons.interfaces.IMineWeapon;
+import engine.weapons.interfaces.IWeapon;
 
 public class WeaponBuilder {
     private var _bombsBuilder:BombsBuilder
