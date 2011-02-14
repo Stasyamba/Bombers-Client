@@ -37,7 +37,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     protected var _currentWeapon:IWeapon
 
     public function PlayerBomber(game:IGame, playerId:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder, bombBuilder:BombsBuilder) {
-        super(game, playerId, gameProfile.nick, color, BomberSkin.fromBomberType(gameProfile.currentBomberType), bombBuilder);
+        super(game, playerId, gameProfile.currentBomberType, gameProfile.nick, color, BomberSkin.fromBomberType(gameProfile.currentBomberType), bombBuilder);
         _weaponBuilder = weaponBuilder
         this._gameProfile = gameProfile
         if(gameProfile.selectedWeaponLeftHand != null)

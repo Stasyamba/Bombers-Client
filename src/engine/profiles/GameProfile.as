@@ -194,7 +194,7 @@ public class GameProfile {
         res.nick = obj.getUtfString("Nick");
         res.expirance = obj.getInt("Experience")
         res.energy = obj.getInt("Energy")
-        res.currentBomberType = BomberType.byValue(obj.getInt("CurrentBomber"))
+        res.currentBomberType = BomberType.byValue(obj.getInt("BomberId"))
         res.selectedWeaponRightHand = new ItemProfileObject(res.currentBomberType.baseBomb, -1);
 
         var items:ISFSArray = obj.getSFSArray("WeaponsOpen");

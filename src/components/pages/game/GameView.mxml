@@ -137,7 +137,8 @@
                 unsubscribeEnterFrameEvent();
         }
         ]]></fx:Script>
-    <mx:Image source="http://www.vensella.ru/eg/testmap.jpg"/>
+    <s:BorderContainer width="100%" height="100%" backgroundImage="@Embed(source='/assets/pagegame/backgroundPattern.png')" backgroundImageFillMode="repeat"/>
+    <mx:Image id="backgroundImage" source="http://www.vensella.ru/eg/testmap.jpg" visible="false" complete="backgroundImage.visible = true;"/>
     <s:Group id="group"/>
 
 </s:Group>

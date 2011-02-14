@@ -344,11 +344,10 @@ public class GameServer extends SmartFox {
                     var name:String = obj.getUtfString("UserId")
                     var user:User = userManager.getUserByName(name)
                     var auras:Array = new Array()
-                    var mapId:int = responseParams.getInt("game.lobby.3SecondsToStart.fields.MapId");
-                    var bType:BomberType = BomberType.byValue(responseParams.getInt("game.lobby.3SecondsToStart.fields.BomberId"))
-                    var a1:WeaponType = WeaponType.byValue(responseParams.getInt("game.lobby.3SecondsToStart.fields.AuraOne"))
-                    var a2:WeaponType = WeaponType.byValue(responseParams.getInt("game.lobby.3SecondsToStart.fields.AuraTwo"))
-                    var a3:WeaponType = WeaponType.byValue(responseParams.getInt("game.lobby.3SecondsToStart.fields.AuraThree"))
+                    var bType:BomberType = BomberType.byValue(obj.getInt("BomberId"))
+                    var a1:WeaponType = WeaponType.byValue(obj.getInt("AuraOne"))
+                    var a2:WeaponType = WeaponType.byValue(obj.getInt("AuraTwo"))
+                    var a3:WeaponType = WeaponType.byValue(obj.getInt("AuraThree"))
                     if (a1 != WeaponType.NULL)
                         auras.push(a1)
                     if (a2 != WeaponType.NULL)
@@ -357,6 +356,7 @@ public class GameServer extends SmartFox {
                         auras.push(a3)
                     playerGameData.push(new PlayerGameProfile(user.playerId,bType,x, y,auras))
                 }
+                var mapId:int = responseParams.getInt("game.lobby.3SecondsToStart.fields.MapId");
                 Context.gameModel.threeSecondsToStart.dispatch(playerGameData, mapId);
                 break;
             case GAME_STARTED:

@@ -48,10 +48,17 @@
             Context.gameServer.someoneJoinedToGame.add(onSomeoneJoinedToGame)
             Context.gameServer.someoneLeftGame.add(onSomeoneLeftGame)
             Context.gameModel.playerReadyChanged.add(onReadyChanged)
+            Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
 
             Context.gameServer.leftGame.add(onLeftGame)
 
             onConnectedToGame()
+        }
+
+        private function onThreeSecondsToStart(p1:*,p2:*):void {
+            for(var j:int = 1; j < 5; j++) {
+                setReady(false,j)
+            }
         }
 
         private function onLeftGame():void {

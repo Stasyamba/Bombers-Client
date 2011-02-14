@@ -4,6 +4,8 @@
  */
 
 package engine.bombers {
+import components.common.bombers.BomberType
+
 import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IGameSkin
 import engine.bombers.interfaces.IMapCoords
@@ -37,6 +39,8 @@ public class BomberBase implements IBomber {
     protected var _playerId:int;
     protected var _userName:String;
 
+    protected var _bomberType:BomberType;
+
     protected var _life:int;
     protected var _speed:Number;
     protected var _bombCount:Number;
@@ -52,7 +56,7 @@ public class BomberBase implements IBomber {
     private var _stateRemoved:StateRemovedSignal = new StateRemovedSignal();
 
 
-    public function BomberBase(game:IGame, playerId:int, userName:String, color:PlayerColor, skin:BomberSkin, bombBuilder:BombsBuilder) {
+    public function BomberBase(game:IGame, playerId:int,bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin, bombBuilder:BombsBuilder) {
         this.game = game;
         _playerId = playerId;
         _bombBuilder = bombBuilder;
@@ -60,10 +64,11 @@ public class BomberBase implements IBomber {
         _color = color;
         _userName = userName;
 
-        _life = 3;
-        _speed = 100;
-        _bombPower = 2;
-        _bombCount = 2;
+        _bomberType = bomberType
+        _life = bomberType.startLife;
+        _speed = bomberType.speed;
+        _bombPower = bomberType.bombPower;
+        _bombCount = bomberType.bombCount;
     }
 
     public function makeImmortalFor(secs:Number, blink:Boolean = true):void {
