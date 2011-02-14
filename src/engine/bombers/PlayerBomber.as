@@ -161,7 +161,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
     public override function explode(expl:IExplosion):void {
 
-        _life -= expl.damage;
+        life -= expl.damage;
         if (life < 0) life = 0;
 
         EngineContext.playerDamaged.dispatch(expl.damage, isDead)
@@ -175,7 +175,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     public override function kill():void {
         EngineContext.playerDied.dispatch();
         EngineContext.playerDamaged.dispatch(_life, true);
-        _life = 0;
+        life = 0;
     }
 
     public function tryUseWeapon():void {
@@ -201,6 +201,30 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         if (currentWeapon is IDeactivatableWeapon) {
             IDeactivatableWeapon(currentWeapon).deactivate(_coords.elemX, coords.elemY, this);
         }
+    }
+
+    override public function set life(life:int):void {
+        super.life = life
+        Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED)
+
+    }
+
+    override public function incSpeed():void {
+        super.incSpeed()
+        Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED)
+
+    }
+
+    override public function incBombCount():void {
+        super.incBombCount()
+        Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED)
+
+    }
+
+    override public function incBombPower():void {
+        super.incBombPower()
+        Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED)
+
     }
 }
 }

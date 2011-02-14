@@ -4,13 +4,15 @@
  */
 
 package engine.bombss {
-public class BombType {
+import engine.maps.interfaces.IMapObjectType
+
+public class BombType implements IMapObjectType{
 
     public static const NULL:BombType = new BombType(-1, "NULL", false);
-    public static const REGULAR:BombType = new BombType(1, "REGULAR", true);
-    public static const ATOM:BombType = new BombType(2, "ATOM", false);
-    public static const BOX:BombType = new BombType(3, "BOX", false);
-    public static const DYNAMITE:BombType = new BombType(4, "DYNAMITE", false);
+    public static const REGULAR:BombType = new BombType(00, "REGULAR", true);
+    public static const ATOM:BombType = new BombType(01, "ATOM", false);
+    public static const BOX:BombType = new BombType(02, "BOX", false);
+    public static const DYNAMITE:BombType = new BombType(03, "DYNAMITE", false);
 
     private var _value:int;
     private var _key:String;

@@ -64,5 +64,9 @@ public class BomberType {
     public function get startLife():int {
         return _startLife
     }
+
+    public static function getViewSpeed(type:BomberType,speed:Number):int {
+       return int(Math.round((Math.log(speed) - Math.log(type.speed))/Math.log(1.1))) + 1
+    }
 }
 }

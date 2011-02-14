@@ -41,7 +41,6 @@ public class GameBuilder {
         return game;
     }
 
-
     public function makeSinglePlayer(gameType:GameType, gameId:String):IGame {
         var xml:XML = Games[gameId];
         switch (gameType) {

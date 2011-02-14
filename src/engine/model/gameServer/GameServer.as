@@ -24,6 +24,8 @@ import components.common.resources.ResourcePrice
 import engine.EngineContext
 import engine.bombss.BombType
 import engine.maps.interfaces.IMapObject
+import engine.maps.interfaces.IMapObjectType
+import engine.maps.mapObjects.MapObjectType
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.model.signals.InGameMessageReceivedSignal
 import engine.model.signals.ProfileLoadedSignal
@@ -44,21 +46,18 @@ import flash.events.Event
 import flash.events.TimerEvent
 import flash.utils.Timer
 
-import mx.controls.Alert
-
 import org.osflash.signals.Signal
 
 public class GameServer extends SmartFox {
 
     //output
     private static const VIEW_DIRECTION_CHANGED:String = "view_direction_changed";
-    private static const TRY_SET_BOMB:String = 'try_set_bomb';
     //input
     private static const GAME_STARTED:String = "game.lobby.gameStarted";
     private static const THREE_SECONDS_TO_START:String = "game.lobby.3SecondsToStart";
-    private static const BOMB_SET:String = 'set_bomb';
-    private static const BOMB_EXPLODED:String = "bomb_exploded";
-    private static const BONUS_APPEARED:String = "bonus_appeared";
+    private static const DYNAMIC_OBJECT_ADDED:String = 'game.DOAdd';
+    private static const ACTIVATE_DYNAMIC_OBJECT:String = "game.actDO"
+    private static const DYNAMIC_OBJECT_ACTIVATED:String = "game.DOAct";
 
     private static const DEATH_WALL_APPEARED:String = "game.deathWallAppeared";
 
@@ -69,8 +68,7 @@ public class GameServer extends SmartFox {
     private static const INPUT_DIRECTION_CHANGED:String = "game.IDC";
     private static const PLAYER_DAMAGED:String = "game.playerDamaged";
     private static const DAMAGE_PLAYER:String = "game.damagePlayer"
-    private static const ACTIVATE_DYNAMIC_OBJECT:String = "activate_dynamic_object";
-    private static const BONUS_TAKEN:String = "bonus_taken";
+    private static const ACTIVATE_WEAPON:String = "game.AW";
     private static const PING:String = "ping";
 
     //interface
@@ -208,7 +206,7 @@ public class GameServer extends SmartFox {
     public function sendPlayerDirectionChanged(x:Number, y:Number, dir:Direction, viewDirectionChanged:Boolean):void {
 
         var params:ISFSObject = new SFSObject();
-        params.putInt("userId",mySelf.id)
+        params.putInt("userId", mySelf.id)
         params.putDouble("x", x);
         params.putDouble("y", y);
         params.putInt("dir", dir.value);
@@ -227,13 +225,13 @@ public class GameServer extends SmartFox {
     }
 
 
-    public function notifyTryingToSetBomb(bombX:int, bombY:int, type:BombType):void {
+    public function sendSetBomb(bombX:int, bombY:int, type:BombType):void {
         var params:ISFSObject = new SFSObject();
-        params.putInt("bomb_x", bombX);
-        params.putInt("bomb_y", bombY);
-        params.putInt("bomb_type", type.value);
+        params.putInt("game.AW.f.x", bombX);
+        params.putInt("game.AW.f.y", bombY);
+        params.putInt("game.AW.f.t", type.value);
 
-        send(new ExtensionRequest(TRY_SET_BOMB, params, gameRoom));
+        send(new ExtensionRequest(ACTIVATE_WEAPON, params, gameRoom));
     }
 
     public function sendPlayerDamaged(damage:int, isDead:Boolean):void {
@@ -244,12 +242,21 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(DAMAGE_PLAYER, params, gameRoom));
     }
 
-    public function notifyActivateObject(object:IMapObject):void {
+    public function sendActivateDynamicObject(object:IMapObject):void {
         var params:ISFSObject = new SFSObject();
-        params.putInt("x", object.x);
-        params.putInt("y", object.y);
+        params.putInt("game.actDO.f.x", object.x);
+        params.putInt("game.actDO.f.y", object.y);
 
         send(new ExtensionRequest(ACTIVATE_DYNAMIC_OBJECT, params, gameRoom));
+    }
+
+    public function sendActivateWeapon(object:IMapObject):void {
+        var params:ISFSObject = new SFSObject();
+        params.putInt("game.AW.f.x", object.x);
+        params.putInt("game.AW.f.y", object.y);
+        params.putInt("game.AW.f.t", object.type.value);
+
+        send(new ExtensionRequest(ACTIVATE_WEAPON, params, gameRoom));
     }
 
     public function buyResourcesRequest(rp:ResourcePrice):void {
@@ -354,7 +361,7 @@ public class GameServer extends SmartFox {
                         auras.push(a2)
                     if (a3 != WeaponType.NULL)
                         auras.push(a3)
-                    playerGameData.push(new PlayerGameProfile(user.playerId,bType,x, y,auras))
+                    playerGameData.push(new PlayerGameProfile(user.playerId, bType, x, y, auras))
                 }
                 var mapId:int = responseParams.getInt("game.lobby.3SecondsToStart.fields.MapId");
                 Context.gameModel.threeSecondsToStart.dispatch(playerGameData, mapId);
@@ -362,49 +369,52 @@ public class GameServer extends SmartFox {
             case GAME_STARTED:
                 Context.gameModel.gameStarted.dispatch();
                 break;
-            case BOMB_SET:
-                //userId
-                user = userManager.getUserById(responseParams.getInt("bomb_owner"));
-                EngineContext.bombSet.dispatch(
-                        user.playerId,
-                        responseParams.getInt("bomb_x"),
-                        responseParams.getInt("bomb_y"),
-                        BombType.byValue(responseParams.getInt("bomb_type"))
-                        );
+            case DYNAMIC_OBJECT_ADDED:
+                var ot:IMapObjectType = MapObjectType.byValue(responseParams.getInt("game.DOAdd.f.type"))
+                if (ot is BombType) {
+                    user = userManager.getUserByName(responseParams.getUtfString("game.DOAdd.f.userId"));
+                    EngineContext.bombSet.dispatch(
+                            user.playerId,
+                            responseParams.getInt("game.DOAdd.f.x"),
+                            responseParams.getInt("game.DOAdd.f.y"),
+                            ot as BombType)
+                } else if (ot is BonusType) {
+                    EngineContext.objectAppeared.dispatch(
+                            responseParams.getInt("game.DOAdd.f.x"),
+                            responseParams.getInt("game.DOAdd.f.y"),
+                            ot as BonusType)
+                }
                 break;
-            case BOMB_EXPLODED:
-                EngineContext.bombExploded.dispatch(responseParams.getInt("bomb_x"),
-                        responseParams.getInt("bomb_y"),
-                        responseParams.getInt("bomb_power_bonus")
-                        )
+            case DYNAMIC_OBJECT_ACTIVATED:
+                user = userManager.getUserByName(responseParams.getUtfString("game.DOAct.f.userId"));
+                var ot:IMapObjectType = MapObjectType.byValue(responseParams.getInt("game.DOAct.f.type"))
+                if (ot is BombType) {
+                    EngineContext.bombExploded.dispatch(responseParams.getInt("game.DOAct.f.x"),
+                            responseParams.getInt("game.DOAct.f.y"),
+                            responseParams.getInt("game.DOAct.f.s.power")
+                            )
+                } else if (ot is BonusType) {
+                    EngineContext.objectTaken.dispatch(
+                            user.playerId,
+                            responseParams.getInt("game.DOAct.f.x"),
+                            responseParams.getInt("game.DOAct.f.y"),
+                            ot as BonusType)
+                }
                 break;
             case PLAYER_DAMAGED:
                 user = userManager.getUserByName(responseParams.getUtfString("UserId"));
                 if (user.isItMe)
                     return;
                 EngineContext.enemyDamaged.dispatch(user.playerId, responseParams.getInt("HealthLeft"));
+                trace("damaged enemy " + responseParams.getInt("HealthLeft"))
                 break;
             case PLAYER_DIED:
                 user = userManager.getUserByName(responseParams.getUtfString("UserId"));
-                if(user == null)
+                if (user == null)
                     return
                 if (user.isItMe)
                     return;
                 EngineContext.enemyDied.dispatch(user.playerId);
-                break;
-            case BONUS_APPEARED:
-                EngineContext.objectAppeared.dispatch(
-                        responseParams.getInt("bonus_x"),
-                        responseParams.getInt("bonus_y"),
-                        BonusType.byValue(responseParams.getInt("bonus_type")))
-                break;
-            case BONUS_TAKEN:
-                user = userManager.getUserById(responseParams.getInt("user_id"));
-                EngineContext.objectTaken.dispatch(
-                        user.playerId,
-                        responseParams.getInt("bonus_x"),
-                        responseParams.getInt("bonus_y"),
-                        BonusType.byValue(responseParams.getInt("bonus_type")))
                 break;
             case DEATH_WALL_APPEARED:
                 EngineContext.deathWallAppeared.dispatch(
@@ -505,6 +515,7 @@ public class GameServer extends SmartFox {
     public function get myPlayerId():int {
         return mySelf.playerId;
     }
+
 
 }
 }

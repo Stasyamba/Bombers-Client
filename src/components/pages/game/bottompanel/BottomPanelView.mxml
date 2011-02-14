@@ -11,6 +11,8 @@
         >
     <fx:Script>
 		<![CDATA[
+        import components.common.bombers.BomberType
+
         private function init():void {
             Context.Model.addCustomListener(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED, function(e:ContextEvent):void {
                 leftHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand);
@@ -21,13 +23,16 @@
 			
 			Context.Model.addCustomListener(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED, function (e: ContextEvent):void
 			{
-				mySpeed.count = Context.game.playerManager.me.speed;
+				mySpeed.count = BomberType.getViewSpeed(Context.Model.currentSettings.gameProfile.currentBomberType,Context.game.playerManager.me.speed);
 				myBombsCount.count = Context.game.playerManager.me.bombCount;
 				myWavePower.count = Context.game.playerManager.me.bombPower;
 				myHealth.count = Context.game.playerManager.me.life;
 			});
 			
-			Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED);
+			mySpeed.count = BomberType.getViewSpeed(Context.Model.currentSettings.gameProfile.currentBomberType,Context.Model.currentSettings.gameProfile.currentBomberType.speed);
+		    myBombsCount.count = Context.Model.currentSettings.gameProfile.currentBomberType.bombCount;
+			myWavePower.count = Context.Model.currentSettings.gameProfile.currentBomberType.bombPower;
+			myHealth.count = Context.Model.currentSettings.gameProfile.currentBomberType.startLife;
         }
 
         private function openInventoryW():void {

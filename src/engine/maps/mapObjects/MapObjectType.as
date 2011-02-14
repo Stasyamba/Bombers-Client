@@ -4,13 +4,13 @@
  */
 
 package engine.maps.mapObjects {
+import engine.bombss.BombType
 import engine.maps.interfaces.IMapObjectType
 import engine.maps.mapObjects.bonuses.BonusType
 
 public class MapObjectType implements IMapObjectType {
 
-
-    public static const NULL:MapObjectType = new MapObjectType(0, "NULL");
+    public static const NULL:MapObjectType = new MapObjectType(-1, "NULL");
 
     private var _value:int;
     private var _key:String;
@@ -28,22 +28,39 @@ public class MapObjectType implements IMapObjectType {
         _key = key;
     }
 
-    public static function byValue(value:int):MapObjectType {
+    public static function byValue(value:int):IMapObjectType {
         switch (value) {
-            case 0: return NULL;
+            case NULL.value:return NULL;
+            case BonusType.ADD_BOMB.value:return BonusType.ADD_BOMB;
+            case BonusType.ADD_BOMB_POWER.value:return BonusType.ADD_BOMB_POWER;
+            case BonusType.ADD_SPEED.value:return BonusType.ADD_SPEED;
+            case BonusType.HEAL.value:return BonusType.HEAL;
+            case BonusType.EXPERIENCE.value:return BonusType.EXPERIENCE;
+            case BonusType.RESOURCE.value:return BonusType.RESOURCE;
+
+            case BombType.REGULAR.value:return BombType.REGULAR
+            case BombType.BOX.value:return BombType.BOX
+            case BombType.ATOM.value:return BombType.ATOM
+            case BombType.DYNAMITE.value:return BombType.DYNAMITE
+
         }
         throw new ArgumentError("bad value")
     }
 
     public static function byKey(key:String):IMapObjectType {
         switch (key) {
-            case "NULL": return NULL;
+            case NULL.key:return NULL;
             case BonusType.ADD_BOMB.key:return BonusType.ADD_BOMB;
             case BonusType.ADD_BOMB_POWER.key:return BonusType.ADD_BOMB_POWER;
             case BonusType.ADD_SPEED.key:return BonusType.ADD_SPEED;
             case BonusType.HEAL.key:return BonusType.HEAL;
             case BonusType.EXPERIENCE.key:return BonusType.EXPERIENCE;
             case BonusType.RESOURCE.key:return BonusType.RESOURCE;
+
+            case BombType.REGULAR.key:return BombType.REGULAR
+            case BombType.BOX.key:return BombType.BOX
+            case BombType.ATOM.key:return BombType.ATOM
+            case BombType.DYNAMITE.key:return BombType.DYNAMITE
         }
         throw new ArgumentError("bad value")
     }

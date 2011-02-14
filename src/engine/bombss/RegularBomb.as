@@ -14,7 +14,7 @@ import engine.model.managers.interfaces.IMapManager
 
 public class RegularBomb extends BombBase implements IBomb {
 
-    private static const EXPLODE_TIME:Number = 2;
+    private static const EXPLODE_TIME:Number = 3;
 
     protected var _power:int;
 

@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark"
-         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ui="engine.ui.*">
+         xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ui="engine.ui.*"
+        creationComplete="init()">
 
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
     <fx:Script><![CDATA[
         import components.ApplicationView
+
+        import components.common.utils.adjustcolor.ColorMatrix
+
+        import components.common.utils.adjustcolor.ColorMatrixObject
 
         import engine.EngineContext
         import engine.ui.GameFieldView
@@ -24,7 +29,15 @@
         private var threeSecsToStart:ThreeSecondsToStart = new ThreeSecondsToStart();
         private var gameResultsView:GameResultsView = new GameResultsView();
 
-        function init():void {
+        public function init() : void{
+                                   var cm1:ColorMatrix = new ColorMatrix();
+				var cmo1:ColorMatrixObject = new ColorMatrixObject(0, 0);
+				cm1.applyColorMatrixObject(cmo1);
+
+				patternBorderContainer.filters = [cm1.filter];
+        }
+
+        public function everyGameInit():void {
 
             Context.gameModel.gameReady.add(function ():void {
                 gameView = new GameFieldView(Context.game);
@@ -72,10 +85,11 @@
         private function endGame():void {
 
             PopUpManager.addPopUp(gameResultsView, group);
-
-            gameView.destroy();
-            removeElement(gameView)
-            gameView = null;
+            if (gameView != null) {
+                gameView.destroy();
+                removeElement(gameView)
+                gameView = null
+            }
         }
 
         //        private function onSend(event:ContextEvent):void {
@@ -137,8 +151,8 @@
                 unsubscribeEnterFrameEvent();
         }
         ]]></fx:Script>
-    <s:BorderContainer width="100%" height="100%" backgroundImage="@Embed(source='/assets/pagegame/backgroundPattern.png')" backgroundImageFillMode="repeat"/>
-    <mx:Image id="backgroundImage" source="http://www.vensella.ru/eg/testmap.jpg" visible="false" complete="backgroundImage.visible = true;"/>
+    <s:BorderContainer id="patternBorderContainer" width="100%" height="100%" backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')" backgroundImageFillMode="repeat"/>
+    <mx:Image id="backgroundImage" source="http://www.vensella.ru/eg/testmap.jpg" visible="false" complete="backgroundImage.visible = false;"/>
     <s:Group id="group"/>
 
 </s:Group>

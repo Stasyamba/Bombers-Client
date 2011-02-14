@@ -10,13 +10,14 @@
         >
     <fx:Script>
 		<![CDATA[
-		import components.ApplicationView;
-		import components.pages.world.windows.friendsgame.GameWithFriendsW;
-		import components.pages.world.windows.randomgame.CreatingRandomGameW;
-		
-		import mx.controls.Alert;
-		import mx.managers.PopUpManager;
+        import components.ApplicationView
+        import components.pages.world.windows.friendsgame.GameWithFriendsW
+        import components.pages.world.windows.randomgame.CreatingRandomGameW
 
+        import engine.games.GameType
+
+        import mx.controls.Alert
+        import mx.managers.PopUpManager
 
         public static const OPEN_MARKET_TYPE:int = 0;
         public static const OPEN_RANDOM_GAME_TYPE:int = 1;
@@ -117,18 +118,14 @@
             killFriendsButton.setEnabled(enabled);
             randomGameButton.setEnabled(enabled);
         }
-			
-		private function openRequests(): void	
-		{
-			if(requestButton.currentButtonState == RequestGameButton.ACTIVE_STATE)
-			{
-				Context.Model.dispatchCustomEvent(ContextEvent.OE_SHOW_REQUEST_TO_GAME_WINDOW);
-			}else
-			{
-				
-			}
-		}
-			
+
+        private function openRequests():void {
+            if (requestButton.currentButtonState == RequestGameButton.ACTIVE_STATE) {
+                Context.Model.dispatchCustomEvent(ContextEvent.OE_SHOW_REQUEST_TO_GAME_WINDOW);
+            } else {
+
+            }
+        }
         ]]>
 	</fx:Script>
 
@@ -153,10 +150,10 @@
     <s:HGroup width="100%" height="100%"
               verticalAlign="middle" horizontalAlign="right"
               paddingRight="20">
-		<s:HGroup width="100%" paddingLeft="20" paddingTop="-4"
-				  >
-			<bottompanel:RequestGameButton id="requestButton" click="openRequests();" />
-		</s:HGroup>
+        <s:HGroup width="100%" paddingLeft="20" paddingTop="-4"
+                >
+            <bottompanel:RequestGameButton id="requestButton" click="openRequests();"/>
+        </s:HGroup>
         <bottompanel:MarketButton id="inventoryMarketButton" click="bottomMenuButtonClickHandler(OPEN_MARKET_TYPE);"/>
         <bottompanel:KillFriendsButton id="killFriendsButton"
                                        click="bottomMenuButtonClickHandler(OPEN_FRIENDS_GAME_TYPE);"/>

@@ -57,11 +57,9 @@
         private function singleGameButton_clickHandler(event:MouseEvent):void {
             if (Context.Model.currentSettings.gameProfile.energy > enegryRequired) {
                 if (locationType == LocationType.WORLD1_GRASSFIELDS) {
-                    Context.gameModel.gameType = GameType.SINGLE;
+                    Context.gameModel.gameType = GameType.SINGLE
                     Context.Model.windowsManager.closeAll(false);
-
                     Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
-
                     Context.gameModel.readyToCreateGame.addOnce(function ():void {
                         Context.gameModel.createSinglePlayerGame("test");
                     })

@@ -45,10 +45,11 @@ public class BombsManager implements IBombsManager {
         checkBuffer(elapsedSecs);
     }
 
-    public function explodeBombAt(x:int, y:int, power_bonus:int = 0):void {
+    public function explodeBombAt(x:int, y:int, power:int = -1):void {
         trace("bomb exploded at " + x + "," + y);
         var b:IBomb = getBombAt(x, y);
-        b.power += power_bonus;
+        if (power >= 0)
+            b.power = power;
         _bombs.removeItem(b);
         readyToExplode.addItem(b);
     }

@@ -35,7 +35,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
 
     protected function onDamaged(id:int, health_left:int):void {
         if (playerId == id) {
-            _life = health_left;
+            life = health_left;
             makeImmortalFor(immortalTime);
         }
     }
@@ -79,7 +79,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     }
 
     public override function kill():void {
-        _life = 0;
+        life = 0;
     }
 
     public override function explode(expl:IExplosion):void {
