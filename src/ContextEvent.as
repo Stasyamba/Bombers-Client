@@ -95,7 +95,8 @@ public class ContextEvent extends Event {
 	public static const GPAGE_NEED_TO_SHOW_THREESEC_WINDOW:String = "GPAGENeedToShowThreeSecWindow";
     public static const GPAGE_NEED_TO_CLOSE_GAME_IS_CREATED_WINDOW:String = "GPAGENeedToCloseGameIsCreatedWindow"
     public static const GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW:String = "GPAGENeedToCloseGameReadyWindow"
-
+	public static const GPAGE_MY_PARAMETERS_IS_CHANGED: String ="GPAGEMyParametersIsChanged";
+	
 		
     /***** buy events: resources(RS), energy(EN), items(IT) *****/
     public static const RS_BUY_FAILED:String = "RSBuyFailed"

@@ -18,6 +18,16 @@
 
             rightHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponRightHand);
             leftHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand);
+			
+			Context.Model.addCustomListener(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED, function (e: ContextEvent):void
+			{
+				mySpeed.count = Context.game.playerManager.me.speed;
+				myBombsCount.count = Context.game.playerManager.me.bombCount;
+				myWavePower.count = Context.game.playerManager.me.bombPower;
+				myHealth.count = Context.game.playerManager.me.life;
+			});
+			
+			Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED);
         }
 
         private function openInventoryW():void {
@@ -34,6 +44,9 @@
         private function quitTheGame():void {
             Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_QUIT_THE_GAME_WINDOW);
         }
+			
+		
+			
         ]]>
 	</fx:Script>
 
@@ -61,12 +74,10 @@
               gap="43">
 
         <s:HGroup>
-            <bottompanel:BomberBasePropertyTemplate propertyType="{BomberBasePropertyTemplate.TYPE_SPEED}" count="10"/>
-            <bottompanel:BomberBasePropertyTemplate propertyType="{BomberBasePropertyTemplate.TYPE_WAVE_POWER}"
-                                                    count="2"/>
-            <bottompanel:BomberBasePropertyTemplate propertyType="{BomberBasePropertyTemplate.TYPE_BOBMS_COUNT}"
-                                                    count="4"/>
-            <bottompanel:BomberBasePropertyTemplate propertyType="{BomberBasePropertyTemplate.TYPE_HEALTH}" count="15"/>
+            <bottompanel:BomberBasePropertyTemplate id="mySpeed" propertyType="{BomberBasePropertyTemplate.TYPE_SPEED}" count="0"/>
+            <bottompanel:BomberBasePropertyTemplate id="myWavePower" propertyType="{BomberBasePropertyTemplate.TYPE_WAVE_POWER}" count="0"/>
+            <bottompanel:BomberBasePropertyTemplate id="myBombsCount" propertyType="{BomberBasePropertyTemplate.TYPE_BOBMS_COUNT}" count="0"/>
+            <bottompanel:BomberBasePropertyTemplate id="myHealth" propertyType="{BomberBasePropertyTemplate.TYPE_HEALTH}" count="0"/>
         </s:HGroup>
 
         <s:HGroup verticalAlign="middle">
