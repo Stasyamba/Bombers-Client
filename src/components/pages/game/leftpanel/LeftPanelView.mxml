@@ -62,10 +62,15 @@
 
         private function onConnectedToGame():void {
             onSomeoneJoinedToGame()
+            if (Context.gameModel.createdByMe) {
+                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);
+            } else {
+                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW);
+            }
         }
 
         private function onSomeoneLeftGame(user:User):void {
-            setReady(false,user.playerId)
+            setReady(false, user.playerId)
             deletePlayer(user.playerId)  //todo: check if playerId is still correct
         }
 
@@ -97,7 +102,6 @@
             var r:GameResults = new GameResults(res, []);
             Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, r);
         }
-			
         ]]>
 	</fx:Script>
 
@@ -126,7 +130,7 @@
 
     </s:VGroup>
 
-    <s:VGroup x="200" y="200">
+    <s:VGroup x="200" y="200" visible="false">
         <s:Button label="Ready"
                   click="setReady(true,Context.gameServer.myPlayerId); Context.gameModel.setMeReady(true);"/>
         <s:Button label="NOT Ready"
@@ -135,7 +139,8 @@
         <s:Button label="Game created"
                   click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);}"/>
         <s:Button label="GetResults" click="showResults()"/>
-		<s:Button label="ReadyWindow" click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW);}"/>
+        <s:Button label="ReadyWindow"
+                  click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW);}"/>
 
     </s:VGroup>
 

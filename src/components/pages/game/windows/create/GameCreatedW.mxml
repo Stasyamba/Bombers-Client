@@ -38,6 +38,8 @@
         import components.common.utils.adjustcolor.ColorMatrix
         import components.common.utils.adjustcolor.ColorMatrixObject
 
+        import engine.profiles.LobbyProfile
+
         import mx.managers.PopUpManager
 
         [Bindable]
@@ -64,7 +66,30 @@
             cm.applyColorMatrixObject(cmo);
 
             readyButton.filters = [cm.filter];
+
+            //closing
+            Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
+            Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_CLOSE_GAME_IS_CREATED_WINDOW, function (e:ContextEvent):void {
+                closeWrapper()
+            });
         }
+
+        private function onThreeSecondsToStart(data:Array, mapId:int):void {
+            closeWrapper()
+        }
+
+        private function onReadyButtonClick():void {
+                var amIReady:Boolean = (Context.gameModel.lobbyProfiles[Context.gameServer.myPlayerId] as LobbyProfile).isReady
+                if(amIReady){
+                    readyButton.fontSize = readyButton.fontSizeOver = 25
+                    readyButton.customLabel = "Не готов"
+                }else{
+                    readyButton.fontSize = readyButton.fontSizeOver  = 30
+                    readyButton.customLabel = "Готов"
+                }
+
+                Context.gameModel.setMeReady(!amIReady)
+            }
         ]]>
 	</fx:Script>
     <s:layout>
@@ -131,6 +156,7 @@
                                                   fontFamily="mpbc"
                                                   fontSize="30"
                                                   fontSizeOver="30"
+                                                  click="onReadyButtonClick()"
                             />
                 </s:HGroup>
 

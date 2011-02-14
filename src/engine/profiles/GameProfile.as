@@ -11,6 +11,8 @@ import components.common.worlds.locations.LocationType
 
 import engine.bombers.skin.BomberSkin
 
+import mx.controls.Alert
+
 public class GameProfile {
 
     private var _nick:String;

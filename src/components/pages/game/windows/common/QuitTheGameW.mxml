@@ -12,6 +12,15 @@
         >
     <fx:Script>
 		<![CDATA[
+        import components.ApplicationView
+
+        private function leaveCurrentGame():void {
+            Context.gameModel.leaveCurrentGame()
+            Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_CLOSE_GAME_IS_CREATED_WINDOW)
+            Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW)
+            closeWrapper()
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB,ApplicationView.TAB_NAME_WORLD)
+        }
         ]]>
 	</fx:Script>
 
@@ -99,7 +108,7 @@
                                       customLabel="Покинуть"
                                       fontSize="30"
                                       fontSizeOver="30"
-                                      click="closeWrapper();"
+                                      click="leaveCurrentGame()"
                 />
     </s:VGroup>
 

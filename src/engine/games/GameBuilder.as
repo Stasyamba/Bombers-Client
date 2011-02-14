@@ -37,7 +37,7 @@ public class GameBuilder {
         for each (var prof:PlayerGameProfile in playerProfiles) {
             game.addPlayer(prof, getColor(prof.playerId))
         }
-        game.applyMap("map" + mapId, playerProfiles)
+        game.applyMap(String(mapId), playerProfiles)
         return game;
     }
 

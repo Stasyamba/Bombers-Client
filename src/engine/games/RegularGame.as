@@ -116,13 +116,11 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
     private function onMapLoaded(xml:XML, playerProfiles:Array):void {
         mapManager.make(xml);
-        playerProfiles.forEach(
-                function setCoords(item:PlayerGameProfile, index:int, array:Array):void {
-
-                    var bomber:IBomber = getPlayer(item.playerId);
+        for each (var item:PlayerGameProfile in playerProfiles) {
+            var bomber:IBomber = getPlayer(item.playerId);
                     if (bomber != null)
                         bomber.putOnMap(mapManager.map, item.x, item.y);
-                })
+        }
         _ready = true;
     }
 
@@ -139,11 +137,11 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
 
     private function onPlayerInputDirectionChanged(x:Number, y:Number, dir:Direction, viewDirChanged:Boolean):void {
-        Context.gameServer.notifyPlayerDirectionChanged(x, y, dir, viewDirChanged)
+        Context.gameServer.sendPlayerDirectionChanged(x, y, dir, viewDirChanged)
     }
 
     private function onPlayerViewDirectionChanged(x:Number, y:Number, dir:Direction):void {
-        Context.gameServer.notifyPlayerViewDirectionChanged(x, y, dir)
+        //Context.gameServer.notifyPlayerViewDirectionChanged(x, y, dir)
     }
 
     public function onTriedToSetBomb(bombX:int, bombY:int, type:BombType):void {
@@ -168,7 +166,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
     }
 
     private function onPlayerDamaged(damage:int, isDead:Boolean):void {
-        Context.gameServer.notifyPlayerDamaged(damage, isDead);
+        Context.gameServer.sendPlayerDamaged(damage, isDead);
     }
 
     //--------------getters and setters-----------------------
