@@ -4,12 +4,12 @@
                     xmlns:mx="library://ns.adobe.com/flex/mx"
                     contentCreationComplete="init();"
                     xmlns:toppanel="components.pages.world.toppanel.*"
-                    xmlns:subbottompanel="components.pages.world.subbottompanel.*"
                     xmlns:leftpanel="components.pages.game.leftpanel.*"
                     xmlns:bottompanel="components.pages.game.bottompanel.*"
                     xmlns:rightpanel="components.pages.game.rightpanel.*"
                     xmlns:game="components.pages.game.*"
-                    width="100%" height="100%"
+					xmlns:subbottompanel="components.pages.game.subbottompanel.*"
+                    width="100%" height="100%" 
         >
 
     <fx:Declarations>
@@ -17,15 +17,16 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.ApplicationView
-        import components.common.game.multygameresult.GameResults
-        import components.pages.game.windows.common.PackIsPlayingW
-        import components.pages.game.windows.common.QuitTheGameW
-        import components.pages.game.windows.create.GameCreatedW
-        import components.pages.game.windows.create.GameReadyW
-        import components.pages.game.windows.results.ResultsW
-
-        import mx.managers.PopUpManager
+			import components.ApplicationView;
+			import components.common.game.multygameresult.GameResults;
+			import components.pages.game.windows.common.PackIsPlayingW;
+			import components.pages.game.windows.common.QuitTheGameW;
+			import components.pages.game.windows.create.GameCreatedW;
+			import components.pages.game.windows.create.GameReadyW;
+			import components.pages.game.windows.create.PreStartW;
+			import components.pages.game.windows.results.ResultsW;
+			
+			import mx.managers.PopUpManager;
 
         private var now:int,then:int;
 
@@ -63,26 +64,33 @@
                     }
                 }
             });
+			
+			Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW, function (e:ContextEvent):void {
+				openThreeSecondsToStart();
+			});
 
-            Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
         }
 
-
-        private function onThreeSecondsToStart(data:Array, mapId:int):void {
-            showThreeSecondsToStartWindow()
-        }
-
-        private function showThreeSecondsToStartWindow():void {
-            //EGOR
-        }
-
-        private function showReadyWindow():void {
+		private function openThreeSecondsToStart(): void
+		{
+			var pw: PreStartW = new PreStartW();
+			
+			
+			PopUpManager.addPopUp(pw, this, true);
+			PopUpManager.centerPopUp(pw);
+			
+			pw.x += 100;
+			pw.y -= 92;
+		}	
+	
+		private function showReadyWindow():void {
             rw = new GameReadyW();
             rw.x = 215;
             rw.y = 66;
 
             PopUpManager.addPopUp(rw, this, false);
         }
+
         private function showCreatedGameWindow():void {
             cgw = new GameCreatedW();
             cgw.x = 215;
@@ -121,6 +129,14 @@
         ]]>
     </fx:Script>
 
+      
+    <!-- <s:VGroup id="group">
+         <s:BitmapImage id="background"
+                        source="{MapBlocks.MAP_GRASS()}"
+                        width="680" height="440"/>
+         <ui:ChatControl left="10" id="chat" messageSent="onSend(event)"/>
+     </s:VGroup>-->
+     
     <s:Rect width="100%" height="100%">
         <s:fill>
             <s:SolidColor color="0x000000"/>
@@ -130,8 +146,9 @@
     <game:GameView id="gameView" y="{topPanel.height + 2}" x="{leftPanel.width}"/>
 
     <toppanel:TopPanelView id="topPanel" y="0"/>
-    <subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>
-
+    <!--<subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>
+-->
+	<subbottompanel:SubBottomPanelView y="526" />
 
     <bottompanel:BottomPanelView y="485"/>
     <leftpanel:LeftPanelView id="leftPanel" y="41"/>
