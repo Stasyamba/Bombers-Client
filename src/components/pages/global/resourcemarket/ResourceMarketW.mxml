@@ -66,6 +66,9 @@
 
 
         private function close():void {
+			Context.Model.removeCustomEventListener(ContextEvent.RS_BUY_SUCCESS, buySuccess);
+			Context.Model.removeCustomEventListener(ContextEvent.RS_BUY_FAILED, buyFail);
+			
             PopUpManager.removePopUp(this);
         }
 
@@ -76,17 +79,22 @@
         private function panelCreationComplete():void {
             apearingAnimation.play();
 
-            Context.Model.addCustomListener(ContextEvent.RS_BUY_SUCCESS,function(e:ContextEvent){
-                buyProgressVisible(false);
-                close()
-                Alert.show("buy success")
-            })
-
-            Context.Model.addCustomListener(ContextEvent.RS_BUY_FAILED,function(e:ContextEvent){
-                buyProgressVisible(false);
-                Alert.show("buy failed")
-            })
+			Context.Model.addCustomListener(ContextEvent.RS_BUY_SUCCESS, buySuccess);
+			Context.Model.addCustomListener(ContextEvent.RS_BUY_FAILED,buyFail);
         }
+			
+		private function buySuccess(e: ContextEvent):void
+		{
+			buyProgressVisible(false);
+			close();
+			Alert.show("buy success");
+		}
+			
+		private function buyFail(e: ContextEvent):void
+		{
+			buyProgressVisible(false);
+			Alert.show("buy failed");
+		}
 
         private function resourceValueChanged(e:ContextEvent):void {
             rp.setResourceValue(e.data.resourceType, e.data.value);
