@@ -77,7 +77,7 @@ public class ItemsManager {
 
         items.push(new ItemObject(
                 ItemType.NUCLEAR_BOMB,
-                [new AccessLevelRule(10)],
+                [new AccessLevelRule(1)],
 
                 new ItemViewObject(
                         ItemType.NUCLEAR_BOMB,
@@ -110,6 +110,31 @@ public class ItemsManager {
                         "Вызрывается только после касания! Почувствуй себя стратегом, ставь ловушки, блокируй ходы соперников!"
                         )
                 ));
+		
+		items.push(new ItemObject(
+			ItemType.BOX_BOMB,
+			[new AccessLevelRule(1)],
+			
+			new ItemViewObject(
+				ItemType.BOX_BOMB,
+				ImagesPrefixes.WEAPON_PREFIX + "boxBomb.png",
+				"Разбрасыватель",
+				"Когда вы спасаетесь от врагов, нет ничего лучше чем заградить им стенами! Почувствуй себя архитектором карты, мечи коробки!"
+			)
+		));
+		
+		
+		items.push(new ItemObject(
+			ItemType.DINAMIT_BOMB,
+			[new AccessLevelRule(1)],
+			
+			new ItemViewObject(
+				ItemType.DINAMIT_BOMB,
+				ImagesPrefixes.WEAPON_PREFIX + "dinamitBomb.png",
+				"Динамит",
+				"Мощная бомба которая снимает сразу 2 жизни. Подорви салаг."
+			)
+		));
 
 
     }
