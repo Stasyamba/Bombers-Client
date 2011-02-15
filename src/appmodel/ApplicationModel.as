@@ -37,7 +37,7 @@ public class ApplicationModel extends VkontakteApplicationModel {
         }).dispatch(
                    function (result:*):void {
 
-                       var returningData:Array = new Array();
+                      /* var returningData:Array = new Array();
 
                        for each (var o:* in result.response) {
 
@@ -60,7 +60,7 @@ public class ApplicationModel extends VkontakteApplicationModel {
                            dispatchCustomEvent(ContextEvent.USERS_PROFILES_LOADED, returningData);
                        } else {
                            dispatchCustomEvent(afterEvent, returningData);
-                       }
+                       }*/
                    });
     }
 
@@ -111,7 +111,7 @@ public class ApplicationModel extends VkontakteApplicationModel {
     public var currentSettings:Settings = new Settings();
 
     [Bindable]
-    public var trustContent:Boolean = true;
+    public var trustContent:Boolean = false;
 
 
     public var resourceViewManager:ResourceViewManager = new ResourceViewManager();

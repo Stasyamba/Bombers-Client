@@ -1,4 +1,4 @@
-package components.common.utils.enviroment {
+package components.common.utils.enviroment.vkontakte {
 import api.vkontakte.util.json.JSON
 
 import components.common.profiles.VkontakteProfile
@@ -10,11 +10,11 @@ public class ApiResult {
 
     public var randomFriend:VkontakteProfile;
 
-    public function ApiResult(apiResult:String, immitation:Boolean = false) {
+    /*public function ApiResult(apiResult:String, immitation:Boolean = false) {
         encode(apiResult, immitation);
-    }
+    }*/
 
-    public function encode(apiResult:String, immitation:Boolean = false):void {
+    /*public function encode(apiResult:String, immitation:Boolean = false):void {
         var obj:Object;
         loadedUsers = new Array();
 
@@ -77,6 +77,6 @@ public class ApiResult {
 
         randomFriend = new VkontakteProfile(res.id);
         randomFriend.clone(res);
-    }
+    }*/
 }
 }

@@ -1,4 +1,4 @@
-package components.common.utils.enviroment {
+package components.common.utils.enviroment.vkontakte {
 public class FlashVars {
 
     public var auth_key:String;

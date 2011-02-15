@@ -1,89 +1,86 @@
 package components.common.profiles {
-[Bindable]
-public class VkontakteProfile {
+
+public class VkontakteProfile implements ISocialProfile
+{
     public static const BOY:int = 2;
     public static const GIRL:int = 1;
     public static const SEX_UNDEFINDED:int = 0;
 
     public static const VKONTAKTE_USERPROFILE_PREFIX:String = "http://vkontakte.ru/id";
 
-    public var id:String = "";
+    private var _id:String = "";
 
-    public var photoSrc:String = "http://cs4476.vkontakte.ru/u72969483/a_8037612a.jpg";
-    public var photoMediumSrc:String = "";
+    private var _photoURL:String = "http://cs4476.vkontakte.ru/u72969483/a_8037612a.jpg";
+	public var photoMediumSrc:String = "";
     public var photoBigSrc:String = "";
 
-    public var firstName:String = "";
-    public var lastName:String = "";
+    private var _name:String = "";
+    private var _surname:String = "";
     public var fullName:String = "";
 
     public var sex:int = BOY;
     public var age:int = 18;
     public var cityId:int = -1;
 
-    public var profileLink:String = "";
+    private var _profileLink:String = "";
 
     public var isFriend:Boolean = false;
 
-    public function VkontakteProfile(idP:String) {
-        id = idP;
-        profileLink = VKONTAKTE_USERPROFILE_PREFIX + id;
+    public function VkontakteProfile(id: String) {
+        this._id = id;
     }
 
+	/* GET and SET */
 
-    public function clone(up:VkontakteProfile, cloneOnlyEmptyFields:Boolean = false):void {
-        if (!cloneOnlyEmptyFields) {
-            id = up.id;
-            photoSrc = up.photoSrc;
-            photoMediumSrc = up.photoMediumSrc;
-            photoBigSrc = up.photoBigSrc;
-            firstName = up.firstName;
-            lastName = up.lastName;
-            fullName = up.fullName;
+	public function get profileLink():String
+	{
+		return _profileLink;
+	}
 
-            sex = up.sex;
-            age = up.age;
-            cityId = up.cityId;
+	public function set profileLink(value:String):void
+	{
+		_profileLink = value;
+	}
 
-            isFriend = up.isFriend;
-            profileLink = up.profileLink;
-        } else {
-            if (id == "") {
-                id = up.id;
-                profileLink = up.profileLink;
-            }
+	public function get surname():String
+	{
+		return _surname;
+	}
 
-            if (photoSrc == "") {
-                photoSrc = up.photoSrc;
-            }
+	public function set surname(value:String):void
+	{
+		_surname = value;
+	}
 
-            if (photoMediumSrc == "") {
-                photoMediumSrc = up.photoMediumSrc;
-            }
+	public function get name():String
+	{
+		return _name;
+	}
 
-            if (photoBigSrc == "") {
-                photoBigSrc = up.photoBigSrc;
-            }
+	public function set name(value:String):void
+	{
+		_name = value;
+	}
 
-            if (firstName == "") {
-                firstName = up.firstName;
-            }
+	public function get photoURL():String
+	{
+		return _photoURL;
+	}
 
-            if (lastName == "") {
-                lastName = up.lastName;
-            }
+	public function set photoURL(value:String):void
+	{
+		_photoURL = value;
+	}
 
-            if (fullName == "") {
-                fullName = up.fullName;
-            }
+	public function get id():String
+	{
+		return _id;
+	}
 
-            sex = up.sex;
-            age = up.age;
-            cityId = up.cityId;
-
-            isFriend = up.isFriend;
-        }
-    }
+	public function set id(value:String):void
+	{
+		_id = value;
+	}
 
 }
 }

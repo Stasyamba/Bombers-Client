@@ -1,8 +1,9 @@
 package {
 import components.common.game.requesttogame.RequestGameObject;
+import components.common.profiles.ISocialProfile;
 import components.common.profiles.SocialProfile;
-import components.common.utils.enviroment.ApiResult;
-import components.common.utils.enviroment.FlashVars;
+import components.common.utils.enviroment.vkontakte.ApiResult;
+import components.common.utils.enviroment.vkontakte.FlashVars;
 
 import engine.games.GameType;
 import engine.profiles.GameProfile;
@@ -20,8 +21,9 @@ public class Settings {
     public var authKey:String = "";
 
     public var gameProfile:GameProfile = new GameProfile();
-    public var socialProfile:SocialProfile = new SocialProfile();
-
+    public var socialProfile: ISocialProfile;
+	public var currentSocialWeb: int = SocialProfile.VKONTAKTE;
+	
 	private var _requestToGames: Array = new Array(); // type = [RequestGameObject, ...]
 
 
