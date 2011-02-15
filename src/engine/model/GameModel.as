@@ -198,7 +198,6 @@ public class GameModel {
 
     private function onGameEnded(/*parameters later*/):void {
         EngineContext.clear();
-        setMeReady(false);
         readyToPlayAgain.addOnce(onReadyToPlayAgain)
     }
 

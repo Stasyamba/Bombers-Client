@@ -10,11 +10,6 @@
          xmlns:flexcomponents="components.common.flexcomponents.*"
          xmlns:create="components.pages.game.windows.create.*"
         >
-    <fx:Script>
-		<![CDATA[
-        ]]>
-	</fx:Script>
-
     <fx:Declarations>
 
         <s:Animate id="disapearingAnimation" target="{this}" duration="300"
@@ -99,6 +94,11 @@
             }
 
         }
+
+        private function onClose():void {
+            closeWrapper()
+            Context.gameModel.readyToPlayAgain.dispatch()
+        }
         ]]>
 	</fx:Script>
     <s:layout>
@@ -133,7 +133,7 @@
 
     <flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS"
                                 x="290" y="10"
-                                click="closeWrapper();"
+                                click="onClose()"
             />
 
     <s:controlBarContent/>

@@ -69,17 +69,23 @@
                 openThreeSecondsToStart();
             });
 
+            Context.gameModel.threeSecondsToStart.add(function(t1:*,t2:*):void{
+                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW)
+            })
         }
 
         private function openThreeSecondsToStart():void {
             var pw:PreStartW = new PreStartW();
 
-
             PopUpManager.addPopUp(pw, this, true);
             PopUpManager.centerPopUp(pw);
 
-            pw.x += 100;
-            pw.y -= 92;
+            pw.x += 58;
+            pw.y -= 105;
+
+            Context.gameModel.gameStarted.addOnce( function ():void{
+                pw.closeWrapper()
+            })
         }
 
         private function showReadyWindow():void {

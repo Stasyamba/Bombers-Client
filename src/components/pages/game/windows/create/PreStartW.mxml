@@ -88,8 +88,9 @@
 			private var startYPostion:Number = -33;
 			
 			
-			private var closeTimer:Timer = new Timer(1000,4);
+			private var closeTimer:Timer = new Timer(1000,3);
 			private var time: int = 3;
+            private var isClosing:Boolean = false
 			
 			
 			
@@ -98,6 +99,10 @@
 			}
 			
 			public function closeWrapper():void {
+                if(isClosing)
+                    return
+                isClosing = true
+                closeTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerComplete)
 				disapearingAnimation.play();
 			}
 			
@@ -124,7 +129,7 @@
 			
 			private function timerComplete(e: TimerEvent): void
 			{
-				closeWrapper();
+				//closeWrapper();
 			}
 		]]>
 	</fx:Script>

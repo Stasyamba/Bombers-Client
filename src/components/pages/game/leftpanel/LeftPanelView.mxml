@@ -18,6 +18,7 @@
         import components.common.game.multygameresult.Result
 
         import engine.games.GameType
+        import engine.model.signals.manage.GameAddedSignal
         import engine.profiles.LobbyProfile
 
         private var players:Array = new Array();
@@ -52,8 +53,14 @@
             Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
 
             Context.gameServer.leftGame.add(onLeftGame)
-
+            Context.gameModel.readyToPlayAgain.add(onReadyToPlayAgain)
             onConnectedToGame()
+        }
+
+        private function onReadyToPlayAgain():void {
+            if(Context.gameModel.gameType == GameType.REGULAR){
+                  onConnectedToGame()
+            }
         }
 
         private function onThreeSecondsToStart(p1:*, p2:*):void {

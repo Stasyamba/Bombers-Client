@@ -44,10 +44,13 @@ public class MapObjectManager implements IObjectManager {
 
     public function takeObject(x:int, y:int, player:IBomber):void {
         var object:IMapObject = getObjectAt(x, y);
+        if (object == null){
+            trace("OH MY GOD!!! NO OBJECT AT " + x + "," + y)
+        }
         object.activateOn(player)
         object.block.collectObject(playerManager.myId == player.playerId);
         _objects.removeItem(object);
-        trace("removed");
+        trace("removed at " + x + "," + y);
     }
 
     private function getObjectAt(x:int, y:int):IMapObject {

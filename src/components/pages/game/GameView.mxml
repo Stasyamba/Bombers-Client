@@ -2,16 +2,15 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark"
          xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ui="engine.ui.*"
-        creationComplete="init()">
+         creationComplete="init()">
 
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
     <fx:Script><![CDATA[
         import components.ApplicationView
-
+        import components.common.game.multygameresult.GameResults
         import components.common.utils.adjustcolor.ColorMatrix
-
         import components.common.utils.adjustcolor.ColorMatrixObject
 
         import engine.EngineContext
@@ -29,12 +28,12 @@
         private var threeSecsToStart:ThreeSecondsToStart = new ThreeSecondsToStart();
         private var gameResultsView:GameResultsView = new GameResultsView();
 
-        public function init() : void{
-                                   var cm1:ColorMatrix = new ColorMatrix();
-				var cmo1:ColorMatrixObject = new ColorMatrixObject(0, 0);
-				cm1.applyColorMatrixObject(cmo1);
+        public function init():void {
+            var cm1:ColorMatrix = new ColorMatrix();
+            var cmo1:ColorMatrixObject = new ColorMatrixObject(0, 0);
+            cm1.applyColorMatrixObject(cmo1);
 
-				patternBorderContainer.filters = [cm1.filter];
+            patternBorderContainer.filters = [cm1.filter];
         }
 
         public function everyGameInit():void {
@@ -42,7 +41,6 @@
             Context.gameModel.gameReady.add(function ():void {
                 gameView = new GameFieldView(Context.game);
                 addElement(gameView);
-                PopUpManager.addPopUp(threeSecsToStart, gameView);
             });
 
             if (Context.gameModel.gameType.isMultiplayer) {
@@ -52,10 +50,6 @@
             }
 
             subscribeEnterFrameEvent();
-
-            Context.gameModel.gameStarted.add(function ():void {
-                PopUpManager.removePopUp(threeSecsToStart);
-            });
             Context.gameModel.readyToCreateGame.dispatch();
         }
 
@@ -63,9 +57,8 @@
             Context.gameModel.gameEnded.add(function ():void {
 
                 endGame();
-                Context.gameModel.readyToPlayAgain.addOnce(function ():void {
-                    PopUpManager.removePopUp(gameResultsView);
-                })
+                //todo:get real results
+                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW,new GameResults([],[]))
             });
             //initChat();
         }
@@ -74,7 +67,7 @@
             Context.gameModel.gameEnded.add(function ():void {
 
                 endGame();
-
+                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW,new GameResults([],[]))
                 Context.gameModel.readyToPlayAgain.addOnce(function ():void {
                     changeTabBack();
                 })
@@ -83,44 +76,12 @@
 
 
         private function endGame():void {
-
-            PopUpManager.addPopUp(gameResultsView, group);
             if (gameView != null) {
                 gameView.destroy();
                 removeElement(gameView)
                 gameView = null
             }
         }
-
-        //        private function onSend(event:ContextEvent):void {
-        //            Context.gameServer.sendInGameMessage(event.data.message);
-        //        }
-
-        //        private function initChat():void {
-        //            for each (var user:User in Context.gameServer.gameRoom.userList) {
-        //                if (user.isItMe) continue;
-        //                chat.printSomeoneCame(user.name)
-        //            }
-        //            chat.printICame()
-        //            Context.gameServer.someoneJoinedToGame.add(onSomeoneJoinedGame)
-        //            Context.gameServer.someoneLeftGame.add(function(user:User):void {
-        //                chat.printSomeoneLeft(user.name)
-        //            })
-        //            Context.gameServer.inGameMessageReceived.add(function(user:User, message:String):void {
-        //                chat.printMessage(user.name, message);
-        //            })
-        //            Context.gameModel.gameStarted.add(function():void {
-        //                chat.printGameStarted();
-        //            })
-        //            Context.gameModel.gameEnded.add(function():void {
-        //                chat.printGameEnded();
-        //            })
-        //        }
-        //
-        //        private function onSomeoneJoinedGame(user:User):void {
-        //            chat.printSomeoneCame(user.name)
-        //        }
-
 
         private function subscribeEnterFrameEvent():void {
 
@@ -142,17 +103,15 @@
         //change tab back
         private function changeTabBack():void {
             Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_WORLD);
-            if (gameView != null) {
-                gameView.destroy();
-                removeElement(gameView)
-                gameView = null
-            }
             if (hasEventListener(Event.ENTER_FRAME))
                 unsubscribeEnterFrameEvent();
         }
         ]]></fx:Script>
-    <s:BorderContainer id="patternBorderContainer" width="100%" height="100%" backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')" backgroundImageFillMode="repeat"/>
-    <mx:Image id="backgroundImage" source="http://www.vensella.ru/eg/testmap.jpg" visible="false" complete="backgroundImage.visible = false;"/>
+    <s:BorderContainer id="patternBorderContainer" width="100%" height="100%"
+                       backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+                       backgroundImageFillMode="repeat"/>
+    <mx:Image id="backgroundImage" source="http://www.vensella.ru/eg/testmap.jpg" visible="false"
+              complete="backgroundImage.visible = true;"/>
     <s:Group id="group"/>
 
 </s:Group>

@@ -49,15 +49,13 @@ public interface IBomber {
 
     function get stateRemoved():StateRemovedSignal;
 
-    //    function get weaponSet():WeaponSet;
-    //
-    //    function get auraSet():AuraSet;
-
     //skills
 
     function get life():int;
 
     function set life(life:int):void;
+
+    function get startLife():int
 
     function get speed():Number
 

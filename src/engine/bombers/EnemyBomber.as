@@ -55,6 +55,8 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     }
 
     public function performSmoothMotion(moveAmount:Number):void {
+        if(_coords == null)
+            return
         switch (_direction) {
             case Direction.NONE:
                 return;

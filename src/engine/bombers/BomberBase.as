@@ -42,6 +42,7 @@ public class BomberBase implements IBomber {
     protected var _bomberType:BomberType;
 
     protected var _life:int;
+    protected var _startLife:int
     protected var _speed:Number;
     protected var _bombCount:Number;
     protected var _bombPower:Number;
@@ -57,6 +58,7 @@ public class BomberBase implements IBomber {
 
 
     public function BomberBase(game:IGame, playerId:int,bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin, bombBuilder:BombsBuilder) {
+        //todo:auras!!!
         this.game = game;
         _playerId = playerId;
         _bombBuilder = bombBuilder;
@@ -66,6 +68,7 @@ public class BomberBase implements IBomber {
 
         _bomberType = bomberType
         _life = bomberType.startLife;
+        _startLife = _life
         _speed = bomberType.speed;
         _bombPower = bomberType.bombPower;
         _bombCount = bomberType.bombCount;
@@ -215,5 +218,8 @@ public class BomberBase implements IBomber {
         throw new Error("method BomberBase.kill can't be called")
     }
 
+    public function get startLife():int {
+        return _startLife
+    }
 }
 }

@@ -40,6 +40,7 @@ import engine.profiles.GameProfile
 import engine.profiles.LobbyProfile
 import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
+import engine.utils.greensock.TweenMax
 import engine.weapons.WeaponType
 
 import flash.events.Event
@@ -423,11 +424,9 @@ public class GameServer extends SmartFox {
                 break;
             case GAME_ENDED:
                 //get statistics here
-                var timer:Timer = new Timer(3000, 1);
-                timer.addEventListener(TimerEvent.TIMER_COMPLETE, function (e:Event):void {
-                    Context.gameModel.gameEnded.dispatch();
-                })
-                timer.start();
+                    TweenMax.delayedCall(3.0,function ():void{
+                        Context.gameModel.gameEnded.dispatch()
+                    })
                 break;
             case INT_GAME_PROFILE_LOADED:
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
