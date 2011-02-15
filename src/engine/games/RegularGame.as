@@ -145,7 +145,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
     }
 
     public function onTriedToSetBomb(bombX:int, bombY:int, type:BombType):void {
-        Context.gameServer.notifyTryingToSetBomb(bombX, bombY, type)
+        Context.gameServer.sendSetBomb(bombX, bombY, type)
     }
 
 
@@ -155,7 +155,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
     }
 
     private function tryToTakeBonus(object:IMapObject):void {
-        Context.gameServer.notifyActivateObject(object);
+        Context.gameServer.sendActivateDynamicObject(object);
     }
 
     private function onObjectAppeared(x:int, y:int, objType:IMapObjectType):void {

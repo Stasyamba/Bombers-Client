@@ -21,7 +21,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
 
 
     public function EnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, bombBuilder:BombsBuilder, color:PlayerColor) {
-        super(game, playerProfile.playerId, userName, color, BomberSkin.fromBomberType(playerProfile.bomberType), bombBuilder);
+        super(game, playerProfile.playerId,playerProfile.bomberType, userName, color, BomberSkin.fromBomberType(playerProfile.bomberType), bombBuilder);
 
         EngineContext.enemyInputDirectionChanged.add(directionChanged);
         EngineContext.enemyDamaged.add(onDamaged);
@@ -35,7 +35,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
 
     protected function onDamaged(id:int, health_left:int):void {
         if (playerId == id) {
-            _life = health_left;
+            life = health_left;
             makeImmortalFor(immortalTime);
         }
     }
@@ -79,7 +79,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     }
 
     public override function kill():void {
-        _life = 0;
+        life = 0;
     }
 
     public override function explode(expl:IExplosion):void {

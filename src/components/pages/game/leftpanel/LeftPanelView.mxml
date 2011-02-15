@@ -17,6 +17,7 @@
         import components.common.game.multygameresult.GameResults
         import components.common.game.multygameresult.Result
 
+        import engine.games.GameType
         import engine.profiles.LobbyProfile
 
         private var players:Array = new Array();
@@ -48,10 +49,17 @@
             Context.gameServer.someoneJoinedToGame.add(onSomeoneJoinedToGame)
             Context.gameServer.someoneLeftGame.add(onSomeoneLeftGame)
             Context.gameModel.playerReadyChanged.add(onReadyChanged)
+            Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
 
             Context.gameServer.leftGame.add(onLeftGame)
 
             onConnectedToGame()
+        }
+
+        private function onThreeSecondsToStart(p1:*, p2:*):void {
+            for (var j:int = 1; j < 5; j++) {
+                setReady(false, j)
+            }
         }
 
         private function onLeftGame():void {
@@ -61,11 +69,13 @@
         }
 
         private function onConnectedToGame():void {
-            onSomeoneJoinedToGame()
-            if (Context.gameModel.createdByMe) {
-                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);
-            } else {
-                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW);
+            if (Context.gameModel.gameType == GameType.REGULAR) {
+                onSomeoneJoinedToGame()
+                if (Context.gameModel.createdByMe) {
+                    Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);
+                } else {
+                    Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW);
+                }
             }
         }
 

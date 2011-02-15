@@ -17,16 +17,16 @@
 
     <fx:Script>
 		<![CDATA[
-			import components.ApplicationView;
-			import components.common.game.multygameresult.GameResults;
-			import components.pages.game.windows.common.PackIsPlayingW;
-			import components.pages.game.windows.common.QuitTheGameW;
-			import components.pages.game.windows.create.GameCreatedW;
-			import components.pages.game.windows.create.GameReadyW;
-			import components.pages.game.windows.create.PreStartW;
-			import components.pages.game.windows.results.ResultsW;
-			
-			import mx.managers.PopUpManager;
+        import components.ApplicationView;
+        import components.common.game.multygameresult.GameResults;
+        import components.pages.game.windows.common.PackIsPlayingW;
+        import components.pages.game.windows.common.QuitTheGameW;
+        import components.pages.game.windows.create.GameCreatedW;
+        import components.pages.game.windows.create.GameReadyW;
+        import components.pages.game.windows.create.PreStartW;
+        import components.pages.game.windows.results.ResultsW;
+
+        import mx.managers.PopUpManager;
 
         private var now:int,then:int;
 
@@ -37,7 +37,7 @@
 
             Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function (e:ContextEvent):void {
                 if (e.data == ApplicationView.TAB_NAME_GAME) {
-                    gameView.init();
+                    gameView.everyGameInit();
                 }
             });
 
@@ -64,26 +64,25 @@
                     }
                 }
             });
-			
-			Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW, function (e:ContextEvent):void {
-				openThreeSecondsToStart();
-			});
+
+            Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW, function (e:ContextEvent):void {
+                openThreeSecondsToStart();
+            });
 
         }
 
-		private function openThreeSecondsToStart(): void
-		{
-			var pw: PreStartW = new PreStartW();
-			
-			
-			PopUpManager.addPopUp(pw, this, true);
-			PopUpManager.centerPopUp(pw);
-			
-			pw.x += 100;
-			pw.y -= 92;
-		}	
-	
-		private function showReadyWindow():void {
+        private function openThreeSecondsToStart():void {
+            var pw:PreStartW = new PreStartW();
+
+
+            PopUpManager.addPopUp(pw, this, true);
+            PopUpManager.centerPopUp(pw);
+
+            pw.x += 100;
+            pw.y -= 92;
+        }
+
+        private function showReadyWindow():void {
             rw = new GameReadyW();
             rw.x = 215;
             rw.y = 66;
@@ -98,6 +97,7 @@
 
             PopUpManager.addPopUp(cgw, this, false);
         }
+
         private function showResultsWindow(gr:GameResults):void {
             var rw:ResultsW = new ResultsW();
             rw.gameResults = gr;

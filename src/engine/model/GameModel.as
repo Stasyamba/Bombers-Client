@@ -81,6 +81,8 @@ public class GameModel {
                 gameStarted.dispatch();
             })
         })
+        Context.gameModel.gameType = GameType.SINGLE
+        createdByMe = true
 
         Context.game = gameBuilder.makeSinglePlayer(GameType.SINGLE, gameId);
         if (Context.game.ready) {
@@ -99,6 +101,7 @@ public class GameModel {
         Context.gameServer.createNewGameRequest(name,pass,locationId)
         Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
         createdByMe = true;
+        Context.gameModel.gameType = GameType.REGULAR
     }
 
     public function leaveCurrentGame():void {
@@ -106,10 +109,13 @@ public class GameModel {
     }
 
     public function fastJoin(locationId:int = -1):void {
+
         Context.gameServer.fastJoinRequest(locationId);
         Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
         Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
         createdByMe = false;
+        Context.gameModel.gameType = GameType.REGULAR
+
     }
 
     public function joinConcreteGame(name:String, pass:String):void {
@@ -117,6 +123,8 @@ public class GameModel {
         Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
         Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
         createdByMe = false;
+        Context.gameModel.gameType = GameType.REGULAR
+
     }
 
     public function setMeReady(ready:Boolean):void {

@@ -23,7 +23,7 @@
                      canSetBomb="false"
                      canExplosionGoThrough="false"
                      explodesAndStopsExplosion="false"
-                     typeAfterObjectDestroyed="BOX"
+                     typeAfterObjectDestroyed="FREE"
                      objectAfterObjectDestroyed="ADD_BOMB"
                      explodes="true"/>
         <ObjectBlock x="1" y="0"
@@ -31,8 +31,8 @@
                      canSetBomb="true"
                      canExplosionGoThrough="true"
                      explodesAndStopsExplosion="false"
-                     typeAfterObjectDestroyed="WALL"
-                     objectAfterObjectDestroyed="NULL"
+                     typeAfterObjectDestroyed="FREE"
+                     objectAfterObjectDestroyed="ADD_BOMB_POWER"
                      explodes="true"/>
         <ObjectBlock x="1" y="1"
                      canGoThrough="true"
@@ -40,7 +40,7 @@
                      canExplosionGoThrough="true"
                      explodesAndStopsExplosion="false"
                      typeAfterObjectDestroyed="FREE"
-                     objectAfterObjectDestroyed="NULL"
+                     objectAfterObjectDestroyed="ADD_SPEED"
                      explodes="true"/>
     </blocks>
 </MapObject>
