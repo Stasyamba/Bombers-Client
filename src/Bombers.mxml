@@ -83,7 +83,7 @@
 
         import components.ApplicationView
         import components.WallView
-        import components.common.utils.enviroment.FlashVars
+        import components.common.utils.enviroment.vkontakte.FlashVars
 
         import mx.core.IVisualElement
         import mx.rpc.events.FaultEvent

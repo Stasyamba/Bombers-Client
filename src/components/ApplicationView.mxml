@@ -222,7 +222,7 @@
 
         // immitation
         private function setId(id:int):void {
-            Context.Model.currentSettings.socialProfile.vkProfile = new VkontakteProfile(id.toString());
+            Context.Model.currentSettings.socialProfile = new VkontakteProfile(id.toString());
             idGroup.visible = false;
             Context.gameModel.init();
         }
