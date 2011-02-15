@@ -10,7 +10,8 @@ import org.osflash.signals.Signal
 
 public class ObjectAppearedSignal extends Signal {
     public function ObjectAppearedSignal() {
-        super(int, int, IMapObjectType)
+        //playerId,x,y,objType
+        super(int,int, int, IMapObjectType)
     }
 }
 }

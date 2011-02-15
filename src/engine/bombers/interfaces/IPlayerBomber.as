@@ -6,6 +6,7 @@
 package engine.bombers.interfaces {
 import engine.bombss.BombType
 import engine.utils.Direction
+import engine.weapons.WeaponType
 import engine.weapons.interfaces.IWeapon
 
 public interface IPlayerBomber extends IBomber {
@@ -15,11 +16,11 @@ public interface IPlayerBomber extends IBomber {
 
     function setBomb(bombType:BombType):void;
 
-    function tryUseWeapon():void;
+    function tryActivateWeapon():void;
 
-    function activateWeapon():void;
+    function activateWeapon(x:int,y:int,type:WeaponType):void;
 
-    function deactivateWeapon():void
+    function deactivateWeapon(type:WeaponType):void
 
     function get currentWeapon():IWeapon;
 }

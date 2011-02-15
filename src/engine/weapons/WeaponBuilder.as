@@ -4,16 +4,16 @@
  */
 
 package engine.weapons {
-import components.common.items.ItemType;
+import components.common.items.ItemType
 
-import engine.bombss.BombsBuilder;
-import engine.maps.builders.MapObjectBuilder;
-import engine.model.managers.interfaces.IObjectManager;
-import engine.model.managers.regular.MapManager;
-import engine.weapons.interfaces.IActivatableWeapon;
-import engine.weapons.interfaces.IDeactivatableWeapon;
-import engine.weapons.interfaces.IMineWeapon;
-import engine.weapons.interfaces.IWeapon;
+import engine.bombss.BombsBuilder
+import engine.maps.builders.MapObjectBuilder
+import engine.model.managers.interfaces.IObjectManager
+import engine.model.managers.regular.MapManager
+import engine.weapons.interfaces.IActivatableWeapon
+import engine.weapons.interfaces.IDeactivatableWeapon
+import engine.weapons.interfaces.IMineWeapon
+import engine.weapons.interfaces.IWeapon
 
 public class WeaponBuilder {
     private var _bombsBuilder:BombsBuilder
@@ -58,20 +58,21 @@ public class WeaponBuilder {
 
     public function fromItemType(itemType:ItemType, itemCount:int):IWeapon {
         var weapType:WeaponType = WeaponType.byValue(itemType.value)
-        switch(weapType){
+        return fromWeaponType(weapType, itemCount)
+    }
+
+    public function fromWeaponType(weaponType:WeaponType, count:int):IWeapon {
+        switch (weaponType) {
             case WeaponType.ATOM_BOMB_WEAPON:
             case WeaponType.BOX_BOMB_WEAPON:
             case WeaponType.DYNAMITE_WEAPON:
-                return makeSpecialBomb(itemCount,weapType);
-                break;
+                return makeSpecialBomb(count, weaponType);
             case WeaponType.HAMELEON:
-                return makePotion(20,itemCount,weapType)
-                break
+                return makePotion(20, count, weaponType)
             case WeaponType.REGULAR_MINE:
-                makeMine(itemCount,weapType)
-
+                return makeMine(count, weaponType)
         }
-        throw new ArgumentError("unknown weapon type " + weapType.key)
+        throw new ArgumentError("unknown weapon type " + weaponType.key)
     }
 }
 }

@@ -31,8 +31,10 @@ public class MapObjectManager implements IObjectManager {
         for (var i:int = 0; i < l; i++) {
             var object:IMapObject = _objects.getItemAt(i) as IMapObject;
             if (playerManager.checkPlayerMetObject(object)) {
-                object.tryToTake();
-                EngineContext.triedToTakeObject.dispatch(object);
+                if (!object.wasTriedToBeTaken) {
+                    object.tryToTake();
+                    EngineContext.triedToTakeObject.dispatch(object);
+                }
             }
         }
     }
@@ -44,7 +46,7 @@ public class MapObjectManager implements IObjectManager {
 
     public function takeObject(x:int, y:int, player:IBomber):void {
         var object:IMapObject = getObjectAt(x, y);
-        if (object == null){
+        if (object == null) {
             trace("OH MY GOD!!! NO OBJECT AT " + x + "," + y)
         }
         object.activateOn(player)

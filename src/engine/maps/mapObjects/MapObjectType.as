@@ -7,6 +7,7 @@ package engine.maps.mapObjects {
 import engine.bombss.BombType
 import engine.maps.interfaces.IMapObjectType
 import engine.maps.mapObjects.bonuses.BonusType
+import engine.maps.mapObjects.mines.MineType
 
 public class MapObjectType implements IMapObjectType {
 
@@ -43,6 +44,7 @@ public class MapObjectType implements IMapObjectType {
             case BombType.ATOM.value:return BombType.ATOM
             case BombType.DYNAMITE.value:return BombType.DYNAMITE
 
+            case MineType.REGULAR.value: return MineType.REGULAR
         }
         throw new ArgumentError("bad value")
     }
@@ -63,6 +65,10 @@ public class MapObjectType implements IMapObjectType {
             case BombType.DYNAMITE.key:return BombType.DYNAMITE
         }
         throw new ArgumentError("bad value")
+    }
+
+    public function get waitToAdd():Number {
+        return 0
     }
 }
 }

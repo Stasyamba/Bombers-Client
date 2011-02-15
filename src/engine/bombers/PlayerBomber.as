@@ -4,7 +4,10 @@
  */
 
 package engine.bombers {
+import components.common.items.ItemProfileObject
 import components.common.items.ItemType
+
+import components.common.items.categories.ItemCategory
 
 import engine.EngineContext
 import engine.bombers.interfaces.IPlayerBomber
@@ -19,6 +22,7 @@ import engine.profiles.GameProfile
 import engine.utils.Direction
 import engine.weapons.NullWeapon
 import engine.weapons.WeaponBuilder
+import engine.weapons.WeaponType
 import engine.weapons.interfaces.IActivatableWeapon
 import engine.weapons.interfaces.IDeactivatableWeapon
 import engine.weapons.interfaces.IWeapon
@@ -35,13 +39,20 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
      * */
     protected var _weaponBuilder:WeaponBuilder;
     protected var _currentWeapon:IWeapon
+    protected var _weapons:Array = new Array()
 
     public function PlayerBomber(game:IGame, playerId:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder, bombBuilder:BombsBuilder) {
         super(game, playerId, gameProfile.currentBomberType, gameProfile.nick, color, BomberSkin.fromBomberType(gameProfile.currentBomberType), bombBuilder);
         _weaponBuilder = weaponBuilder
         this._gameProfile = gameProfile
+        for (var i:int = 0; i < _gameProfile.gotItems.length; i++) {
+            var ipo:ItemProfileObject = _gameProfile.gotItems[i];
+            if (Context.Model.itemsCategoryManager.getItemCategory(ipo.itemType) == ItemCategory.WEAPON){
+                _weapons[ipo.itemType.value] = weaponBuilder.fromItemType(ipo.itemType,ipo.itemCount)
+            }
+        }
         if(gameProfile.selectedWeaponLeftHand != null)
-            _currentWeapon = weaponBuilder.fromItemType(gameProfile.selectedWeaponLeftHand.itemType,gameProfile.selectedWeaponLeftHand.itemCount)
+            _currentWeapon = _weapons[gameProfile.selectedWeaponLeftHand.itemType.value]
         _direction = direction;
 
         EngineContext.currentWeaponChanged.add(onCurrentWeaponChanged)
@@ -49,7 +60,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
     private function onCurrentWeaponChanged():void {
         if(_gameProfile.selectedWeaponLeftHand != null)
-            _currentWeapon = _weaponBuilder.fromItemType(_gameProfile.selectedWeaponLeftHand.itemType,_gameProfile.selectedWeaponLeftHand.itemCount)
+            _currentWeapon = _weapons[_gameProfile.selectedWeaponLeftHand.itemType.value]
         else
             _currentWeapon = NullWeapon.instance
     }
@@ -178,11 +189,11 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         life = 0;
     }
 
-    public function tryUseWeapon():void {
+    public function tryActivateWeapon():void {
         if (isDead) return;
         if (currentWeapon is IActivatableWeapon) {
             if (IActivatableWeapon(currentWeapon).canActivate(_coords.elemX, _coords.elemY, this))
-                EngineContext.triedToUseWeapon.dispatch(playerId, _coords.elemX, _coords.elemY, currentWeapon.type);
+                EngineContext.triedToActivateWeapon.dispatch(playerId, _coords.elemX, _coords.elemY, currentWeapon.type);
         }
 
     }
@@ -191,15 +202,16 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         return _currentWeapon;
     }
 
-    public function activateWeapon():void {
-        if (currentWeapon is IActivatableWeapon) {
-            IActivatableWeapon(currentWeapon).activate(_coords.elemX, coords.elemY, this);
+    public function activateWeapon(x:int,y:int,type:WeaponType):void {
+        if (_weapons[type.value] is IActivatableWeapon) {
+            (_weapons[type.value] as IActivatableWeapon).activate(x,y,this);
         }
     }
 
-    public function deactivateWeapon():void {
-        if (currentWeapon is IDeactivatableWeapon) {
-            IDeactivatableWeapon(currentWeapon).deactivate(_coords.elemX, coords.elemY, this);
+    public function deactivateWeapon(type:WeaponType):void {
+        if (_weapons[type.value] is IDeactivatableWeapon) {
+           (_weapons[type.value] as IDeactivatableWeapon).deactivate(this);
+
         }
     }
 

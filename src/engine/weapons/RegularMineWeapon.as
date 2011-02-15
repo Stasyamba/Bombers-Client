@@ -25,6 +25,9 @@ public class RegularMineWeapon implements IMineWeapon {
 
     private static var INITIALIZE_TIME:Number = 2.0;
 
+    public function activateStatic(b:IBomber, x:int, y:int):void {
+    }
+
     public function RegularMineWeapon(charges:int, mapManager:IMapManager, objectBuilder:MapObjectBuilder, objectManager:IObjectManager) {
         _charges = charges
         _mapManager = mapManager

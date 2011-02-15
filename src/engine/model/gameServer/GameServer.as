@@ -27,6 +27,7 @@ import engine.maps.interfaces.IMapObject
 import engine.maps.interfaces.IMapObjectType
 import engine.maps.mapObjects.MapObjectType
 import engine.maps.mapObjects.bonuses.BonusType
+import engine.maps.mapObjects.mines.MineType
 import engine.model.signals.InGameMessageReceivedSignal
 import engine.model.signals.ProfileLoadedSignal
 import engine.model.signals.manage.GameServerConnectedSignal
@@ -42,10 +43,6 @@ import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
 import engine.utils.greensock.TweenMax
 import engine.weapons.WeaponType
-
-import flash.events.Event
-import flash.events.TimerEvent
-import flash.utils.Timer
 
 import org.osflash.signals.Signal
 
@@ -70,6 +67,8 @@ public class GameServer extends SmartFox {
     private static const PLAYER_DAMAGED:String = "game.playerDamaged";
     private static const DAMAGE_PLAYER:String = "game.damagePlayer"
     private static const ACTIVATE_WEAPON:String = "game.AW";
+    private static const WEAPON_ACTIVATED:String = "game.WA";
+    private static const WEAPON_DEACTIVATED:String = "game.WDA";
     private static const PING:String = "ping";
 
     //interface
@@ -251,14 +250,15 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(ACTIVATE_DYNAMIC_OBJECT, params, gameRoom));
     }
 
-    public function sendActivateWeapon(object:IMapObject):void {
+    public function sendActivateWeapon(x:int, y:int, weaponType:WeaponType):void {
         var params:ISFSObject = new SFSObject();
-        params.putInt("game.AW.f.x", object.x);
-        params.putInt("game.AW.f.y", object.y);
-        params.putInt("game.AW.f.t", object.type.value);
+        params.putInt("game.AW.f.x", x);
+        params.putInt("game.AW.f.y", y);
+        params.putInt("game.AW.f.t", weaponType.value);
 
         send(new ExtensionRequest(ACTIVATE_WEAPON, params, gameRoom));
     }
+
 
     public function buyResourcesRequest(rp:ResourcePrice):void {
         var params:ISFSObject = new SFSObject();
@@ -381,9 +381,17 @@ public class GameServer extends SmartFox {
                             ot as BombType)
                 } else if (ot is BonusType) {
                     EngineContext.objectAppeared.dispatch(
+                            -1,
                             responseParams.getInt("game.DOAdd.f.x"),
                             responseParams.getInt("game.DOAdd.f.y"),
                             ot as BonusType)
+                } else if (ot is MineType) {
+                    user = userManager.getUserByName(responseParams.getUtfString("game.DOAdd.f.userId"));
+                    EngineContext.objectAppeared.dispatch(
+                            user.playerId,
+                            responseParams.getInt("game.DOAdd.f.x"),
+                            responseParams.getInt("game.DOAdd.f.y"),
+                            ot as MineType)
                 }
                 break;
             case DYNAMIC_OBJECT_ACTIVATED:
@@ -400,7 +408,25 @@ public class GameServer extends SmartFox {
                             responseParams.getInt("game.DOAct.f.x"),
                             responseParams.getInt("game.DOAct.f.y"),
                             ot as BonusType)
+                }  else if (ot is MineType) {
+                    EngineContext.objectTaken.dispatch(
+                            user.playerId,
+                            responseParams.getInt("game.DOAct.f.x"),
+                            responseParams.getInt("game.DOAct.f.y"),
+                            ot as MineType)
                 }
+                break;
+            case WEAPON_ACTIVATED:
+                user = userManager.getUserByName(responseParams.getUtfString("game.WA.f.userId"));
+                var wt:WeaponType = WeaponType.byValue(responseParams.getInt("game.WA.f.type"))
+                var x:int = responseParams.getInt("game.WA.f.x")
+                var y:int = responseParams.getInt("game.WA.f.y")
+                EngineContext.weaponActivated.dispatch(user.playerId, x, y, wt)
+                break;
+            case WEAPON_DEACTIVATED:
+                user = userManager.getUserByName(responseParams.getUtfString("game.WDA.f.userId"));
+                var wt:WeaponType = WeaponType.byValue(responseParams.getInt("game.WDA.f.type"))
+                EngineContext.weaponDeactivated.dispatch(user.playerId, wt)
                 break;
             case PLAYER_DAMAGED:
                 user = userManager.getUserByName(responseParams.getUtfString("UserId"));
@@ -424,9 +450,9 @@ public class GameServer extends SmartFox {
                 break;
             case GAME_ENDED:
                 //get statistics here
-                    TweenMax.delayedCall(3.0,function ():void{
-                        Context.gameModel.gameEnded.dispatch()
-                    })
+                TweenMax.delayedCall(3.0, function ():void {
+                    Context.gameModel.gameEnded.dispatch()
+                })
                 break;
             case INT_GAME_PROFILE_LOADED:
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);

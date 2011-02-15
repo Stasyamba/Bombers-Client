@@ -10,7 +10,8 @@ import engine.model.signals.DieWallAppearedSignal
 import engine.model.signals.FrameEnteredSignal
 import engine.model.signals.MissionAccomplishedSignal
 import engine.model.signals.MissionFailedSignal
-import engine.model.signals.WeaponUsedSignal
+import engine.model.signals.WeaponActivatedSignal
+import engine.model.signals.WeaponDeactivatedSignal
 import engine.model.signals.bombs.BombSetSignal
 import engine.model.signals.bombs.BombsExplodedSignal
 import engine.model.signals.bombs.TriedToSetBombSignal
@@ -51,8 +52,9 @@ public class EngineContext {
     private var _triedToSetBomb:TriedToSetBombSignal = new TriedToSetBombSignal();
     //---weapons
     private var _currentWeaponChanged:Signal = new Signal();
-    private var _triedToUseWeapon:TriedToUseWeaponSignal = new TriedToUseWeaponSignal();
-    private var _weaponUsed:WeaponUsedSignal = new WeaponUsedSignal();
+    private var _triedToActivateWeapon:TriedToUseWeaponSignal = new TriedToUseWeaponSignal();
+    private var _weaponActivated:WeaponActivatedSignal = new WeaponActivatedSignal();
+    private var _weaponDeactivated:WeaponDeactivatedSignal = new WeaponDeactivatedSignal();
     //---explosions
     private var _explosionsChanged:ExplosionsChangedSignal = new ExplosionsChangedSignal();
     private var _explosionsAdded:ExplosionsAddedSignal = new ExplosionsAddedSignal();
@@ -121,12 +123,16 @@ public class EngineContext {
         return instance._currentWeaponChanged
     }
 
-    public static function get triedToUseWeapon():TriedToUseWeaponSignal {
-        return instance._triedToUseWeapon;
+    public static function get triedToActivateWeapon():TriedToUseWeaponSignal {
+        return instance._triedToActivateWeapon;
     }
 
-    public static function get weaponUsed():WeaponUsedSignal {
-        return instance._weaponUsed;
+    public static function get weaponActivated():WeaponActivatedSignal {
+        return instance._weaponActivated;
+    }
+
+    public static function get weaponDeactivated():WeaponDeactivatedSignal {
+        return instance._weaponDeactivated;
     }
 
     public static function get explosionsChanged():ExplosionsChangedSignal {
@@ -201,8 +207,8 @@ public class EngineContext {
         bombExploded.removeAll()
         triedToSetBomb.removeAll()
         //---weapons
-        triedToUseWeapon.removeAll()
-        weaponUsed.removeAll()
+        triedToActivateWeapon.removeAll()
+        weaponActivated.removeAll()
         //---explosions
         explosionsChanged.removeAll()
         explosionsAdded.removeAll()

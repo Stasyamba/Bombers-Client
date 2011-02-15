@@ -17,6 +17,9 @@ public class BoxBombWeapon implements IActivatableWeapon {
     private var mapManager:IMapManager;
     private var bombsBuilder:BombsBuilder;
 
+    public function activateStatic(b:IBomber, x:int, y:int):void {
+    }
+
     public function BoxBombWeapon(mapManager:IMapManager, bombsBuilder:BombsBuilder, charges:int) {
         _charges = charges
         this.mapManager = mapManager
@@ -30,7 +33,6 @@ public class BoxBombWeapon implements IActivatableWeapon {
     }
 
     public function activate(x:uint, y:uint, by:IBomber):void {
-        if (!canActivate(x, y, by)) return;
         _charges--;
         EngineContext.triedToSetBomb.dispatch(x, y, BombType.BOX)
     }

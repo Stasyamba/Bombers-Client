@@ -23,6 +23,11 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     public function EnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, bombBuilder:BombsBuilder, color:PlayerColor) {
         super(game, playerProfile.playerId,playerProfile.bomberType, userName, color, BomberSkin.fromBomberType(playerProfile.bomberType), bombBuilder);
 
+        for (var i:int = 0; i < playerProfile.auras.length; i++) {
+            var object:Object = playerProfile.auras[i];
+
+        }
+
         EngineContext.enemyInputDirectionChanged.add(directionChanged);
         EngineContext.enemyDamaged.add(onDamaged);
         EngineContext.enemyDied.add(onDied);

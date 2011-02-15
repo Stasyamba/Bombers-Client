@@ -8,5 +8,7 @@ public interface IMapObjectType {
     function get value():int;
 
     function get key():String;
+
+    function get waitToAdd():Number;
 }
 }
