@@ -58,7 +58,6 @@ public class BomberBase implements IBomber {
 
 
     public function BomberBase(game:IGame, playerId:int,bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin, bombBuilder:BombsBuilder) {
-        //todo:auras!!!
         this.game = game;
         _playerId = playerId;
         _bombBuilder = bombBuilder;

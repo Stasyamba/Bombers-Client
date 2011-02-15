@@ -7,7 +7,7 @@ package engine.maps.mapObjects.mines {
 import engine.maps.interfaces.IMapObjectType
 
 public class MineType implements IMapObjectType {
-    public static const REGULAR:MineType = new MineType(1, "REGULAR");
+    public static const REGULAR:MineType = new MineType(41, "REGULAR");
 
     private var _key:String;
     private var _value:int;
@@ -25,5 +25,8 @@ public class MineType implements IMapObjectType {
         return _key
     }
 
+    public function get waitToAdd():Number {
+        return 2
+    }
 }
 }

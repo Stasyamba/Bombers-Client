@@ -87,10 +87,10 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
             });
             EngineContext.bombSet.add(onBombSet);
 
-            EngineContext.triedToUseWeapon.add(function (playerId:int, x:int, y:int, type:WeaponType):void {
-                EngineContext.weaponUsed.dispatch(playerId, x, y, type);
+            EngineContext.triedToActivateWeapon.add(function (playerId:int, x:int, y:int, type:WeaponType):void {
+                EngineContext.weaponActivated.dispatch(playerId, x, y, type);
             });
-            EngineContext.weaponUsed.add(onWeaponUsed);
+            EngineContext.weaponActivated.add(onWeaponUsed);
 
 //            EngineContext.triedToTakeObject.add(function (object:IMapObject):void{
 //                if(!object.wasTriedToBeTaken)
@@ -141,7 +141,7 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
         var b:IBomber = getPlayer(playerId);
         //todo: govnocode!!!
         var bomber:IPlayerBomber = b as IPlayerBomber
-        bomber.activateWeapon();
+        bomber.activateWeapon(x,y,type);
         if (bomber.currentWeapon is IDeactivatableWeapon) {
             var dw:IDeactivatableWeapon = IDeactivatableWeapon(bomber.currentWeapon)
             TweenMax.delayedCall(dw.duration, bomber.deactivateWeapon)

@@ -6,17 +6,27 @@
 package engine.weapons {
 public class WeaponType {
 
-    public static const ATOM_BOMB_WEAPON:WeaponType = new WeaponType(01, "ATOM_BOMB_WEAPON");
     public static const NULL:WeaponType = new WeaponType(-1, "NULL");
-    public static const HAMELEON:WeaponType = new WeaponType(21, "HAMELEON_WEAPON");
+    //bombs
+    public static const ATOM_BOMB_WEAPON:WeaponType = new WeaponType(01, "ATOM_BOMB_WEAPON");
     public static const BOX_BOMB_WEAPON:WeaponType = new WeaponType(02, "BOX_BOMB_WEAPON")
+    public static const DYNAMITE_WEAPON:WeaponType = new WeaponType(03, "DYNAMITE_WEAPON");
+    //potions
+    public static const HAMELEON:WeaponType = new WeaponType(21, "HAMELEON_WEAPON");
+    //mines
     public static const REGULAR_MINE:WeaponType = new WeaponType(41, "REGULAR_MINE_WEAPON");
-    public static const SPEED_AURA:WeaponType = new WeaponType(71, "SPEED_AURA");
+    //auras
+    public static const ICE_AURA:WeaponType = new WeaponType(71, "ICE_AURA");
     public static const FIRE_AURA:WeaponType = new WeaponType(72, "FIRE_AURA");
+    public static const SPEED_AURA:WeaponType = new WeaponType(73, "SPEED_AURA");
+    public static const BOMB_COUNT_AURA:WeaponType = new WeaponType(74, "BOMB_COUNT_AURA");
+    public static const BOMB_POWER_AURA:WeaponType = new WeaponType(75, "BOMB_POWER_AURA");
+    public static const START_LIFE_AURA:WeaponType = new WeaponType(76, "START_LIFE_AURA");
+
 
     private var _value:int;
     private var _key:String;
-    public static const DYNAMITE_WEAPON:WeaponType = new WeaponType(03, "DYNAMITE_WEAPON");
+
 
     public function WeaponType(value:int, key:String) {
         _value = value;

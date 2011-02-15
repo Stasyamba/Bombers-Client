@@ -32,18 +32,24 @@ public class HameleonWeapon implements IDeactivatableWeapon {
     }
 
     public function activate(x:uint, y:uint, by:IBomber):void {
-        if (!canActivate(x, y, by))
-            return;
         _charges--;
         by.stateAdded.dispatch(new ViewState(ViewState.HAMELEON, {alpha:0.3,blendMode:BlendMode.MULTIPLY}))
         _activatedOn = by;
         _isActivated = true;
     }
 
-    public function deactivate(x:int, y:int, by:IBomber):void {
+    public function deactivate(by:IBomber):void {
         by.stateRemoved.dispatch(ViewState.HAMELEON)
         _activatedOn = null;
         _isActivated = false;
+    }
+
+    public function deactivateStatic(by:IBomber):void {
+        by.stateRemoved.dispatch(ViewState.HAMELEON)
+    }
+
+    public function activateStatic(by:IBomber, x:int, y:int):void {
+        by.stateAdded.dispatch(new ViewState(ViewState.HAMELEON, {alpha:0.3,blendMode:BlendMode.MULTIPLY}))
     }
 
     public function get type():WeaponType {

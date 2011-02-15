@@ -41,6 +41,9 @@ public class AtomBombWeapon implements IActivatableWeapon {
     }
 
 
+    public function activateStatic(b:IBomber, x:int, y:int):void {
+    }
+
     public function get charges():int {
         return _charges
     }

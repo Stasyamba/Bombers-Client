@@ -4,14 +4,11 @@
  */
 
 package engine.games {
-import components.common.bombers.BomberType
-
 import engine.EngineContext
 import engine.bombers.PlayersBuilder
 import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.interfaces.IPlayerBomber
-import engine.bombers.skin.BomberSkin
 import engine.bombss.BombType
 import engine.bombss.BombsBuilder
 import engine.data.location1.maps.Maps
@@ -31,13 +28,18 @@ import engine.model.managers.regular.PlayerManager
 import engine.playerColors.PlayerColor
 import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
+import engine.utils.greensock.TweenMax
 import engine.weapons.WeaponBuilder
 import engine.weapons.WeaponType
+import engine.weapons.interfaces.IActivatableWeapon
+import engine.weapons.interfaces.IDeactivatableWeapon
 
 public class RegularGame extends GameBase implements IMultiPlayerGame {
 
+    private var _weaponsUsed:Array = new Array()
 
     public function RegularGame() {
+
 
         mapBlockStateBuilder = new MapBlockStateBuilder();
         mapObjectBuilder = new MapObjectBuilder();
@@ -56,7 +58,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         _explosionsManager = new ExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
         _objectManager = new MapObjectManager(playerManager, mapManager)
         weaponBuilder = new WeaponBuilder(bombsBuilder, _mapManager, mapObjectBuilder, objectManager)
-        playersBuilder = new PlayersBuilder(bombsBuilder,weaponBuilder);
+        playersBuilder = new PlayersBuilder(bombsBuilder, weaponBuilder);
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
 
@@ -73,6 +75,10 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
             EngineContext.triedToSetBomb.add(onTriedToSetBomb);
             EngineContext.bombSet.add(onBombSet);
 
+            EngineContext.triedToActivateWeapon.add(onTryToActivateWeapon);
+            EngineContext.weaponActivated.add(onWeaponActivated);
+            EngineContext.weaponDeactivated.add(onWeaponDeactivated);
+
             EngineContext.bombExploded.add(onBombExploded);
             EngineContext.explosionsAdded.add(onExplosionsAdded)
             EngineContext.explosionsRemoved.add(onExplosionsRemoved)
@@ -88,9 +94,57 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
     }
 
+    private function onWeaponDeactivated(playerId:int, type:WeaponType):void {
+        var b:IBomber = getPlayer(playerId);
+        if (b is IPlayerBomber) {
+            (b as IPlayerBomber).deactivateWeapon(type);
+        } else {
+            deactivateWeapon(b, type)
+        }
+    }
+
+    private function deactivateWeapon(b:IBomber, type:WeaponType):void {
+        var w:IDeactivatableWeapon = _weaponsUsed[type.value]
+        if (w != null) {
+            w.deactivateStatic(b)
+            return
+        }
+        w = weaponBuilder.fromWeaponType(type, 0) as IDeactivatableWeapon
+        if (w == null)
+            throw new Error("wrong weapon type " + type.key + ". IDeactivatable weapon expected")
+        w.deactivateStatic(b)
+        _weaponsUsed[type.value] = w
+    }
+
+    private function onWeaponActivated(playerId:int, x:int, y:int, type:WeaponType):void {
+        var b:IBomber = getPlayer(playerId);
+        if (b is IPlayerBomber) {
+            (b as IPlayerBomber).activateWeapon(x, y, type);
+        } else {
+            activateWeapon(b, type, x, y)
+        }
+    }
+
+    private function activateWeapon(b:IBomber, type:WeaponType, x:int, y:int):void {
+        var w:IActivatableWeapon = _weaponsUsed[type.value]
+        if (w != null) {
+            w.activateStatic(b, x, y)
+            return
+        }
+        w = weaponBuilder.fromWeaponType(type, 0) as IActivatableWeapon
+        if (w == null)
+            throw new Error("wrong weapon type " + type.key + ". IDeactivatable weapon expected")
+        w.activateStatic(b, x, y)
+        _weaponsUsed[type.value] = w
+    }
+
+    private function onTryToActivateWeapon(playerId:int, x:int, y:int, type:WeaponType):void {
+        Context.gameServer.sendActivateWeapon(x, y, type)
+    }
+
     public function addPlayer(profile:PlayerGameProfile, color:PlayerColor):void {
         if (profile.playerId == Context.gameServer.myPlayerId) {
-            var player:IPlayerBomber = playersBuilder.makePlayer(this,Context.Model.currentSettings.gameProfile,profile,color);
+            var player:IPlayerBomber = playersBuilder.makePlayer(this, Context.Model.currentSettings.gameProfile, profile, color);
             playerManager.setPlayer(player);
         } else {
             var enemy:IEnemyBomber = playersBuilder.makeEnemy(this, Context.gameModel.lobbyProfiles[profile.playerId], profile, color);
@@ -118,8 +172,8 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         mapManager.make(xml);
         for each (var item:PlayerGameProfile in playerProfiles) {
             var bomber:IBomber = getPlayer(item.playerId);
-                    if (bomber != null)
-                        bomber.putOnMap(mapManager.map, item.x, item.y);
+            if (bomber != null)
+                bomber.putOnMap(mapManager.map, item.x, item.y);
         }
         _ready = true;
     }
@@ -158,11 +212,16 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         Context.gameServer.sendActivateDynamicObject(object);
     }
 
-    private function onObjectAppeared(x:int, y:int, objType:IMapObjectType):void {
+    private function onObjectAppeared(playerId:int, x:int, y:int, objType:IMapObjectType):void {
         var b:IMapBlock = mapManager.map.getBlock(x, y);
         var object:IMapObject = mapObjectBuilder.make(objType, b);
         b.setObject(object);
-        objectManager.addObject(object);
+        if (objType.waitToAdd > 0)
+            TweenMax.delayedCall(objType.waitToAdd, function():void {
+                objectManager.addObject(object);
+            })
+        else
+            objectManager.addObject(object);
     }
 
     private function onPlayerDamaged(damage:int, isDead:Boolean):void {

@@ -50,5 +50,9 @@ public class BonusType implements IMapObjectType {
     public function get key():String {
         return _key;
     }
+
+    public function get waitToAdd():Number {
+        return 0
+    }
 }
 }

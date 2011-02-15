@@ -8,8 +8,8 @@ import engine.weapons.WeaponType
 
 import org.osflash.signals.Signal
 
-public class WeaponUsedSignal extends Signal {
-    public function WeaponUsedSignal() {
+public class WeaponActivatedSignal extends Signal {
+    public function WeaponActivatedSignal() {
         super(int, int, int, WeaponType)
     }
 }

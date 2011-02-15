@@ -44,5 +44,8 @@ public class DynamiteWeapon implements IActivatableWeapon {
     public function get charges():int {
         return _charges
     }
+
+    public function activateStatic(b:IBomber, x:int, y:int):void {
+    }
 }
 }

@@ -36,6 +36,10 @@ public class BombType implements IMapObjectType{
         return _needGlow;
     }
 
+    public function get waitToAdd():Number {
+        return 0
+    }
+
     public static function byValue(value:int):BombType {
         switch (value) {
             case NULL.value:
