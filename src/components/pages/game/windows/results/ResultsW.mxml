@@ -68,31 +68,35 @@
             resultsVGroup.removeAllElements();
 
             var place:int = 1;
-            for each(var r:Result in gameResults.getResults()) {
-                var l:Label = new Label();
-                l.text = place.toString() + ". " + r.gameProfile.nick;
-                l.minWidth = 180;
-                l.setStyle("fontFamily", "mpbc");
+            while (true) {
+                for each(var r:Result in gameResults.getResults()) {
+                    if (r.place == place) {
+                        var l:Label = new Label();
+                        l.text = place.toString() + ". " + r.lobbyProfile.nick;
+                        l.minWidth = 180;
+                        l.setStyle("fontFamily", "mpbc");
 
 
-                if (Context.Model.currentSettings.gameProfile.id == r.gameProfile.id) {
-                    l.setStyle("fontSize", 18);
-                    l.setStyle("color", 0xfbb044);
-                } else {
-                    l.setStyle("fontSize", 14);
-                    l.setStyle("color", 0xffffff);
+                        if (Context.Model.currentSettings.gameProfile.id == r.lobbyProfile.id) {
+                            l.setStyle("fontSize", 18);
+                            l.setStyle("color", 0xfbb044);
+                        } else {
+                            l.setStyle("fontSize", 14);
+                            l.setStyle("color", 0xffffff);
 
+                        }
+
+                        resultsVGroup.addElement(l);
+
+                        place++;
+                        continue
+                    }
                 }
-
-                resultsVGroup.addElement(l);
-
-                place++;
+                break
             }
-
             for each(var i:ItemProfileObject in gameResults.getItems()) {
 
             }
-
         }
 
         private function onClose():void {

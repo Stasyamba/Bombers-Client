@@ -49,6 +49,7 @@ public class GameModel {
 
     private var _gameType:GameType;
     public var lobbyProfiles:Array
+    public var lastGameLobbyProfiles:Array
     public var playerGameProfiles:Array
     public var createdByMe:Boolean
 
@@ -193,10 +194,11 @@ public class GameModel {
     }
 
     private function onGameStarted():void {
+        lastGameLobbyProfiles = lobbyProfiles
         gameEnded.addOnce(onGameEnded);
     }
 
-    private function onGameEnded(/*parameters later*/):void {
+    private function onGameEnded(p1:*):void {
         EngineContext.clear();
         readyToPlayAgain.addOnce(onReadyToPlayAgain)
     }

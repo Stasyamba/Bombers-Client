@@ -110,15 +110,6 @@
             }
         }
 
-        // imitation
-
-        private function showResults():void {
-            var res:Array = new Array();
-            res.push(new Result(Context.Model.currentSettings.gameProfile, 10));
-
-            var r:GameResults = new GameResults(res, []);
-            Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, r);
-        }
         ]]>
 	</fx:Script>
 
@@ -146,20 +137,5 @@
         <leftpanel:PlayerSlot id="player4"/>
 
     </s:VGroup>
-
-    <s:VGroup x="200" y="200" visible="false">
-        <s:Button label="Ready"
-                  click="setReady(true,Context.gameServer.myPlayerId); Context.gameModel.setMeReady(true);"/>
-        <s:Button label="NOT Ready"
-                  click="setReady(false,Context.gameServer.myPlayerId); Context.gameModel.setMeReady(false)"/>
-        <!--Imitation =)-->
-        <s:Button label="Game created"
-                  click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);}"/>
-        <s:Button label="GetResults" click="showResults()"/>
-        <s:Button label="ReadyWindow"
-                  click="{Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW);}"/>
-
-    </s:VGroup>
-
 
 </s:Group>

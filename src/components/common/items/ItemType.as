@@ -52,6 +52,10 @@ public class ItemType {
                 return X_RAY_BOMB
             case MINA_BOMB.value:
                 return MINA_BOMB
+            case DINAMIT_BOMB.value:
+                return DINAMIT_BOMB
+            case BOX_BOMB.value:
+                return BOX_BOMB
         }
         throw new ArgumentError("no ItemType found with value = " + value);
     }

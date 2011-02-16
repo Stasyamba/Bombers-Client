@@ -408,7 +408,7 @@ public class GameServer extends SmartFox {
                             responseParams.getInt("game.DOAct.f.x"),
                             responseParams.getInt("game.DOAct.f.y"),
                             ot as BonusType)
-                }  else if (ot is MineType) {
+                } else if (ot is MineType) {
                     EngineContext.objectTaken.dispatch(
                             user.playerId,
                             responseParams.getInt("game.DOAct.f.x"),
@@ -449,9 +449,18 @@ public class GameServer extends SmartFox {
                         responseParams.getInt("y"))
                 break;
             case GAME_ENDED:
-                //get statistics here
+                var gameEndData:Array = new Array()
+                var sfsArr:ISFSArray = responseParams.getSFSArray("game.gameEnded.fields.Stats")
+                for (var i:int = 0; i < sfsArr.size(); i++) {
+                    var obj:ISFSObject = sfsArr.getSFSObject(i)
+                    var name:String = obj.getUtfString("UserId")
+                    var user:User = userManager.getUserByName(name)
+                    var place : int = obj.getInt("Place")
+                    var exp : int = obj.getInt("ExperienceEarned")
+                    gameEndData.push({playerId:user.playerId,place:place,exp:exp})
+                }
                 TweenMax.delayedCall(3.0, function ():void {
-                    Context.gameModel.gameEnded.dispatch()
+                    Context.gameModel.gameEnded.dispatch(gameEndData)
                 })
                 break;
             case INT_GAME_PROFILE_LOADED:

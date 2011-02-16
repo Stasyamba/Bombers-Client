@@ -4,7 +4,7 @@ import components.common.items.ItemType
 public class BomberType {
 
     public static const FURY_JOE:BomberType = new BomberType(0, "FURY_JOE", ItemType.BASE_BOMB,1,1,100,3);
-    public static const R2D3:BomberType = new BomberType(1, "R2D3", ItemType.BASE_BOMB,1,1,50,3);
+    public static const R2D3:BomberType = new BomberType(1, "R2D3", ItemType.BASE_BOMB,1,1,100,3);
 
     private var _value:int;
     private var _name:String;

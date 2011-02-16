@@ -55,7 +55,8 @@ public class WeaponType {
                 return SPEED_AURA
             case FIRE_AURA.value:
                 return FIRE_AURA
-
+            case DYNAMITE_WEAPON.value:
+                return DYNAMITE_WEAPON
         }
         return NULL
     }
