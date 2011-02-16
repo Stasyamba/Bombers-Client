@@ -17,10 +17,12 @@
             Context.Model.addCustomListener(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED, function(e:ContextEvent):void {
                 leftHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand);
             });
-
-            rightHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponRightHand);
-            leftHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand);
-
+			
+			Context.Model.addCustomListener(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS, function(e: ContextEvent): void
+			{
+				updateWeapons();
+			});
+            
             Context.Model.addCustomListener(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED, function (e:ContextEvent):void {
                 mySpeed.count = BomberType.getViewSpeed(Context.Model.currentSettings.gameProfile.currentBomberType, Context.game.playerManager.me.speed);
                 myBombsCount.count = Context.game.playerManager.me.bombCount;
@@ -28,10 +30,18 @@
                 myHealth.count = Context.game.playerManager.me.life;
             });
 
-            updateFromBomberType()
-            Context.gameModel.readyToPlayAgain.add(onReadyToPlayAgain)
+			
+			updateWeapons();
+            updateFromBomberType();
+            Context.gameModel.readyToPlayAgain.add(onReadyToPlayAgain);
         }
 
+		private function updateWeapons(): void
+		{
+			rightHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponRightHand);
+			leftHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand);
+		}
+		
         private function onReadyToPlayAgain():void {
             updateFromBomberType()
         }

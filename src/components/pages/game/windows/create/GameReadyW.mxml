@@ -36,12 +36,14 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.utils.adjustcolor.ColorMatrix
-        import components.common.utils.adjustcolor.ColorMatrixObject
-
-        import engine.profiles.LobbyProfile
-
-        import mx.managers.PopUpManager
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+			
+			import engine.profiles.LobbyProfile;
+			
+			import mx.managers.PopUpManager;
+			
+			import skins.buttons.CloseButtonBlackS;
 
         public function close():void {
             PopUpManager.removePopUp(this);
@@ -60,12 +62,12 @@
             var cmo:ColorMatrixObject = new ColorMatrixObject(80);
             cm.applyColorMatrixObject(cmo);
 
-            readyButton.filters = [cm.filter];
+            //readyButton.filters = [cm.filter];
 
             //closing
             Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW, function (e:ContextEvent):void {
-                closeWrapper()
+                closeWrapper();
             });
         }
 
@@ -114,25 +116,30 @@
                           paddingTop="25"
                         >
                     <s:Label text="Вы присоединились к игре, жмите на кнопку как будете готовы."
-                             fontSize="14" fontFamily="mpr"
-                             color="0xffffff"
+                             fontSize="16" fontFamily="mpbc"
+                             color="0xfcb29c"
                              maxWidth="417"
                             />
                 </s:HGroup>
 
                 <s:HGroup width="100%" horizontalAlign="center">
-                    <s:VGroup width="100%"
-                              horizontalAlign="center" verticalAlign="middle"
-                              gap="0"
-                            >
-                        <s:Label text="Ваш бомбастер:" fontSize="24" fontFamily="mpbc" color="0xffffff"/>
-                        <mx:Image id="bomberImage"/>
-                    </s:VGroup>
+						<s:HGroup width="100%" horizontalAlign="center"
+								  verticalAlign="middle">
+							<s:VGroup horizontalAlign="center" verticalAlign="middle"
+									  gap="0"
+									  >
+								<s:Label text="Ваш бомбастер:" fontSize="24" fontFamily="mpbc" color="0xfcb29c"/>
+								<mx:Image id="bomberImage"/>
+							</s:VGroup>
+							
+							<s:BitmapImage source="@Embed(source='assets/pagegame/windows/controls.png')" alpha="0.80" />
+						</s:HGroup>
+					
                 </s:HGroup>
 
                 <s:HGroup>
                     <flexcomponents:PatternButton id="readyButton"
-                                                  skinClass="skins.buttons.Pattern2ButtonS"
+                                                  skinClass="skins.buttons.Pattern3ButtonS"
                                                   customLabel="Готов"
                                                   fontFamily="mpbc"
                                                   fontSize="30"
@@ -148,6 +155,8 @@
         <s:BitmapImage source="@Embed(source='assets/pagegame/windows/lineBg.jpg')"/>
     </s:VGroup>
 
+	<!-- immitation -->
+	<!--<flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS" click="close();" />-->
 
     <s:controlBarContent/>
 </s:Panel>

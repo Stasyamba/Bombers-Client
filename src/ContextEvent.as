@@ -46,7 +46,6 @@ public class ContextEvent extends Event {
     public static const GP_AURS_TURNED_ON_IS_CHANGED:String = "GPAursTurnedOnIsChanged";
     public static const GP_ENERGY_IS_CHANGED:String = "GPEnegryIsChanged";
 
-
     /***** inventory market events *****/
 
     public static const NEED_TO_OPEN_INVENTORY_MARKET:String = "IMNeedToOpenInventoryMarket";
@@ -94,8 +93,9 @@ public class ContextEvent extends Event {
     public static const GPAGE_NEED_TO_SHOW_THREESEC_WINDOW:String = "GPAGENeedToShowThreeSecWindow";
     public static const GPAGE_NEED_TO_CLOSE_GAME_IS_CREATED_WINDOW:String = "GPAGENeedToCloseGameIsCreatedWindow"
     public static const GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW:String = "GPAGENeedToCloseGameReadyWindow"
-    public static const GPAGE_MY_PARAMETERS_IS_CHANGED:String = "GPAGEMyParametersIsChanged";
 
+	public static const GPAGE_MY_PARAMETERS_IS_CHANGED: String ="GPAGEMyParametersIsChanged";
+	public static const GPAGE_UPDATE_GAME_WEAPONS: String = "GPAGEUpdateGameWeapons";
 
     /***** buy events: resources(RS), energy(EN), items(IT) *****/
     public static const RS_BUY_FAILED:String = "RSBuyFailed"
