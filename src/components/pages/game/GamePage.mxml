@@ -17,22 +17,23 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.ApplicationView;
-        import components.common.game.multygameresult.GameResults;
-        import components.pages.game.windows.common.PackIsPlayingW;
-        import components.pages.game.windows.common.QuitTheGameW;
-        import components.pages.game.windows.create.GameCreatedW;
-        import components.pages.game.windows.create.GameReadyW;
-        import components.pages.game.windows.create.PreStartW;
-        import components.pages.game.windows.results.ResultsW;
-
-        import mx.managers.PopUpManager;
+			import components.ApplicationView;
+			import components.common.game.multygameresult.GameResults;
+			import components.pages.game.windows.common.PackIsPlayingW;
+			import components.pages.game.windows.common.QuitTheGameW;
+			import components.pages.game.windows.create.GameCreatedW;
+			import components.pages.game.windows.create.GameReadyW;
+			import components.pages.game.windows.create.PreStartW;
+			import components.pages.game.windows.results.ResultsW;
+			
+			import mx.controls.Alert;
+			import mx.core.IVisualElement;
+			import mx.managers.PopUpManager;
 
         private var now:int,then:int;
-
-        var rw:GameReadyW
-        var cgw:GameCreatedW
-        // init function
+		private var readyWindow: GameReadyW = null;
+			
+			
         private function init():void {
 
             Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function (e:ContextEvent):void {
@@ -72,6 +73,15 @@
             Context.gameModel.threeSecondsToStart.add(function(t1:*,t2:*):void{
                 Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW)
             })
+				
+				
+			/* Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function(e: ContextEvent):void
+			{
+				if(e.data == ApplicationView.TAB_NAME_GAME)
+				{
+					Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
+				}
+			}); */
         }
 
         private function openThreeSecondsToStart():void {
@@ -89,15 +99,18 @@
         }
 
         private function showReadyWindow():void {
-            rw = new GameReadyW();
-            rw.x = 215;
-            rw.y = 66;
+			//if(readyWindow == null)
+			//{
+				readyWindow = new GameReadyW();
+				readyWindow.x = 215;
+				readyWindow.y = 66;
 
-            PopUpManager.addPopUp(rw, this, false);
+            	PopUpManager.addPopUp(readyWindow, this, false);
+			//}
         }
 
         private function showCreatedGameWindow():void {
-            cgw = new GameCreatedW();
+            var cgw:GameCreatedW = new GameCreatedW();
             cgw.x = 215;
             cgw.y = 66;
 
@@ -152,8 +165,7 @@
     <game:GameView id="gameView" y="{topPanel.height + 2}" x="{leftPanel.width}"/>
 
     <toppanel:TopPanelView id="topPanel" y="0"/>
-    <!--<subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>
--->
+    <!--<subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>-->
 	<subbottompanel:SubBottomPanelView y="526" />
 
     <bottompanel:BottomPanelView y="485"/>

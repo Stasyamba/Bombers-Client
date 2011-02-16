@@ -36,12 +36,14 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.utils.adjustcolor.ColorMatrix
-        import components.common.utils.adjustcolor.ColorMatrixObject
-
-        import engine.profiles.LobbyProfile
-
-        import mx.managers.PopUpManager
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+			
+			import engine.profiles.LobbyProfile;
+			
+			import mx.managers.PopUpManager;
+			
+			import skins.buttons.CloseButtonBlackS;
 
         public function close():void {
             PopUpManager.removePopUp(this);
@@ -65,7 +67,7 @@
             //closing
             Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW, function (e:ContextEvent):void {
-                closeWrapper()
+                closeWrapper();
             });
         }
 
@@ -148,6 +150,8 @@
         <s:BitmapImage source="@Embed(source='assets/pagegame/windows/lineBg.jpg')"/>
     </s:VGroup>
 
+	<!-- immitation -->
+	<!--<flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS" click="close();" />-->
 
     <s:controlBarContent/>
 </s:Panel>
