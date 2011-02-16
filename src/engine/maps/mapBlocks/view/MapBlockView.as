@@ -5,12 +5,11 @@
 
 package engine.maps.mapBlocks.view {
 import engine.EngineContext
-import engine.bombss.view.BombView
 import engine.data.Consts
 import engine.interfaces.IDrawable
+import engine.maps.mapObjects.DynObjectType
+import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
-import engine.maps.interfaces.IMapObject
-import engine.maps.mapObjects.MapObjectType
 
 import flash.display.BitmapData
 import flash.display.Sprite
@@ -21,7 +20,6 @@ public class MapBlockView extends Sprite implements IDrawable {
     private var blinking:Boolean = false;
     private var blinkingTime:Number = Consts.BLINKING_TIME;
 
-    private var bombView:BombView;
     private var objectView:DestroyableSprite;
 
     public function MapBlockView(block:IMapBlock) {
@@ -41,21 +39,19 @@ public class MapBlockView extends Sprite implements IDrawable {
             EngineContext.frameEntered.remove(onBlink)
             blinking = false;
         })
-        bombView = new BombView(block);
 
         block.objectSet.add(onObjectSet);
         block.objectCollected.add(onObjectCollected);
 
-        addChild(bombView);
         draw();
     }
 
     private function onObjectCollected(byMe:Boolean):void {
-
+        //this.objectView = null
     }
 
-    private function onObjectSet(object:IMapObject):void {
-        if (objectView != null)
+    private function onObjectSet(object:IDynObject):void {
+        if (objectView != null && contains(objectView))
             objectView.destroy();
         objectView = ObjectViewFactory.make(object, this);
         addChild(objectView);
@@ -81,22 +77,17 @@ public class MapBlockView extends Sprite implements IDrawable {
 
         drawBlock();
 
-        drawBomb();
         drawObject();
         drawHiddenObject();
     }
 
     private function drawHiddenObject():void {
-        if (block.isExplodingNow && block.hiddenObject.type != MapObjectType.NULL) {
+        if (block.isExplodingNow && block.hiddenObject.type != DynObjectType.NULL) {
             trace("DRAWN HIDDEN")
             graphics.beginBitmapFill(Context.imageService.getObject(block.hiddenObject.type));
             graphics.drawRect(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE);
             graphics.endFill();
         }
-    }
-
-    private function drawBomb():void {
-        bombView.draw();
     }
 
     private function drawObject():void {

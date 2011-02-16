@@ -8,8 +8,8 @@ import engine.bombers.interfaces.IEnemyBomber
 import engine.data.Consts
 import engine.explosionss.ExplosionPoint
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
-import engine.maps.interfaces.IMapObject
 import engine.model.managers.EnemiesManagerBase
 import engine.model.managers.interfaces.IEnemiesManager
 
@@ -37,7 +37,7 @@ public class SinglePlayerEnemiesManager extends EnemiesManagerBase implements IE
 
     }
 
-    public function checkEnemyTakenObject(enemy:IEnemyBomber, object:IMapObject):Boolean {
+    public function checkEnemyTakenObject(enemy:IEnemyBomber, object:IDynObject):Boolean {
         var b:IMapBlock = enemy.coords.getPartBlock();
         return (enemy.coords.elemX == object.x && enemy.coords.elemY == object.y
                 || b.x == object.x && b.y == object.y)

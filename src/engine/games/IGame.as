@@ -4,7 +4,6 @@
  */
 
 package engine.games {
-import engine.model.managers.interfaces.IBombsManager
 import engine.model.managers.interfaces.IEnemiesManager
 import engine.model.managers.interfaces.IExplosionsManager
 import engine.model.managers.interfaces.IMapManager
@@ -24,6 +23,7 @@ public interface IGame {
 
     function get explosionsManager():IExplosionsManager;
 
-    function get bombsManager():IBombsManager;
+    //buffer is used to send explosions from syn objects to explosions manager, which operates with blocks of explosions
+    function get explosionExchangeBuffer():Array
 }
 }

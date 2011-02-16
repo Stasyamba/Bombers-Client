@@ -8,28 +8,25 @@ import engine.bombers.interfaces.IBomber
 import engine.bombss.interfaces.IBomb
 import engine.explosionss.ExplosionsBuilder
 import engine.maps.interfaces.IMapBlock
-import engine.model.managers.regular.MapManager
 
 public class BombsBuilder {
 
-    private var mapManager:MapManager;
     private var explosionsBuilder:ExplosionsBuilder;
 
-    public function BombsBuilder(mapManager:MapManager, explosionsBuilder:ExplosionsBuilder) {
-        this.mapManager = mapManager;
+    public function BombsBuilder(explosionsBuilder:ExplosionsBuilder) {
         this.explosionsBuilder = explosionsBuilder;
     }
 
     public function makeBomb(type:BombType, block:IMapBlock, player:IBomber):IBomb {
         switch (type) {
             case BombType.REGULAR:
-                return new RegularBomb(mapManager, explosionsBuilder, block, player);
+                return new RegularBomb(explosionsBuilder, block, player);
             case BombType.ATOM:
-                return new AtomBomb(mapManager, explosionsBuilder, block, player);
+                return new AtomBomb(explosionsBuilder, block, player);
             case BombType.BOX:
-                return new BoxBomb(mapManager, explosionsBuilder, block, player);
+                return new BoxBomb(explosionsBuilder, block, player);
             case BombType.DYNAMITE:
-                return new DynamiteBomb(mapManager, explosionsBuilder, block, player);
+                return new DynamiteBomb(explosionsBuilder, block, player);
         }
         throw new ArgumentError(" don't support this bomb type");
     }

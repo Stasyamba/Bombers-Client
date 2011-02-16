@@ -19,7 +19,7 @@
             Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_CLOSE_GAME_IS_CREATED_WINDOW)
             Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW)
             closeWrapper()
-            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB,ApplicationView.TAB_NAME_WORLD)
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_WORLD)
         }
         ]]>
 	</fx:Script>

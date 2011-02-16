@@ -10,12 +10,9 @@
         >
     <fx:Script>
 		<![CDATA[
-			
-			private function openEnegryMarket(): void
-			{
-				Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_ENERGY_MARKET);
-			}
-			
+        private function openEnegryMarket():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_ENERGY_MARKET);
+        }
         ]]>
 	</fx:Script>
 

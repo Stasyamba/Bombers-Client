@@ -1,293 +1,275 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:mx1="library://ns.adobe.com/flex/halo"
-		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:fx="http://ns.adobe.com/mxml/2009"
-		 creationComplete="panelCreationComplete();"
-		 borderVisible="false"
-		 dropShadowVisible="false"
-		 skinClass="skins.common.EmptyPopUpS"
-		 xmlns:flexcomponents="components.common.flexcomponents.*"
-		 xmlns:create="components.pages.game.windows.create.*" 
-		 xmlns:preloaders="components.common.utils.preloaders.*"
-		 implements="components.common.base.window.IWindow"
-		 >
-	<fx:Script>
+         xmlns:mx1="library://ns.adobe.com/flex/halo"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:fx="http://ns.adobe.com/mxml/2009"
+         creationComplete="panelCreationComplete();"
+         borderVisible="false"
+         dropShadowVisible="false"
+         skinClass="skins.common.EmptyPopUpS"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         xmlns:create="components.pages.game.windows.create.*"
+         xmlns:preloaders="components.common.utils.preloaders.*"
+         implements="components.common.base.window.IWindow"
+        >
+    <fx:Script>
 		<![CDATA[
-			import components.common.base.window.IWindow;
-			
-			import skins.buttons.Pattern2ButtonS;
-		]]>
+        ]]>
 	</fx:Script>
-	
-	<fx:Declarations>
-		
-		<s:Animate id="disapearingAnimation" target="{this}" duration="300"
-				   effectEnd="{close();}">
-			<s:SimpleMotionPath property="alpha"
-								valueFrom="1"
-								valueTo="0"
-								/>
-		</s:Animate>
-		
-		<s:Animate id="apearingAnimation" target="{this}" duration="1200">
-			<s:SimpleMotionPath property="alpha"
-								valueFrom="0" valueTo="1"
-								/>
-		</s:Animate>
-		
-		<s:Parallel id="pulseA" repeatCount="55200">
-			
-			<s:Parallel>
-				<s:Animate target="{energySignImageGlowFilter}" duration="600">
-					<s:SimpleMotionPath property="blurX" valueFrom="0" valueTo="15"/>
-				</s:Animate>
-				<s:Animate target="{energySignImageGlowFilter}" duration="600">
-					<s:SimpleMotionPath property="blurY" valueFrom="0" valueTo="15"/>
-				</s:Animate>
-			</s:Parallel>
-			
-			<s:Parallel>
-				<s:Animate target="{energySignImageGlowFilter}" duration="600">
-					<s:SimpleMotionPath property="blurX" valueFrom="15" valueTo="3"/>
-				</s:Animate>
-				<s:Animate target="{energySignImageGlowFilter}" duration="600">
-					<s:SimpleMotionPath property="blurY" valueFrom="15" valueTo="3"/>
-				</s:Animate>
-			</s:Parallel>
-			
-		</s:Parallel>
-		
-		
-		<s:Parallel id="showGlowA" target="{energySignImageGlowFilter}" duration="300"
-				   >
-			<s:Animate>
-				<s:SimpleMotionPath property="blurX"
-									valueFrom="0"
-									valueTo="25"
-									/>
-				<s:SimpleMotionPath property="blurY"
-									valueFrom="0"
-									valueTo="25"
-									/>
-			</s:Animate>
-		</s:Parallel>
-		
-		<s:Parallel id="hideGlowA" target="{energySignImageGlowFilter}" duration="300"
-					>
-			<s:Animate>
-				<s:SimpleMotionPath property="blurX"
-									valueFrom="25"
-									valueTo="0"
-									/>
-				<s:SimpleMotionPath property="blurY"
-									valueFrom="25"
-									valueTo="0"
-									/>
-			</s:Animate>
-		</s:Parallel>
-		
-	</fx:Declarations>
-	
-	<fx:Script>
-		<![CDATA[
-			import mx.controls.Alert;
-			import components.common.game.requesttogame.IRequestContent;
-			import components.common.game.requesttogame.RequestGameObject;
-			import components.common.utils.adjustcolor.Color;
-			import components.common.utils.adjustcolor.ColorMatrix;
-			import components.common.utils.adjustcolor.ColorMatrixObject;
-			
-			import engine.games.GameType;
-			
-			import mx.collections.ArrayCollection;
-			import mx.core.IVisualElement;
-			import mx.managers.PopUpManager;
-			
-			private var requestsAll: Array = new Array();
-			[Bindable]
-			private var currentPage: int = 0;
-			[Bindable]
-			private var pagesCount: int = 0;
-			
-			public function close():void {
-				Context.Model.windowsManager.deleteWindow(this);
-				PopUpManager.removePopUp(this);
-			}
-			
-			public function closeWrapper():void {
-				disapearingAnimation.play();
-			}
-			
-			private function loadRequestCollection():void
-			{
-				requestsAll = new Array();
-				
-				for each(var r:RequestGameObject in Context.Model.currentSettings.requestToGames)
-				{
-					requestsAll.push(r);
-				}
-				
-			}
-			
-			private function panelCreationComplete():void {
-				Context.Model.windowsManager.closeAll(true);
-				Context.Model.windowsManager.addWindow(this);
-				
-				apearingAnimation.play();
-				
-				var cm:ColorMatrix = new ColorMatrix();
-				var cmo:ColorMatrixObject = new ColorMatrixObject(0, 0, null, 0, new Color(-20, -20, -20));
-				cm.applyColorMatrixObject(cmo);
-				
-				var cm1:ColorMatrix = new ColorMatrix();
-				var cmo1:ColorMatrixObject = new ColorMatrixObject(0, 0);
-				cm1.applyColorMatrixObject(cmo1);
-				
-				lightBorderContainer.filters = [cm1.filter];
-				darkBorderContainer.filters = [cm.filter];
-				
-				
-			}
-			
-			private function changeGlowState(visible:Boolean): void
-			{
-				pulseA.stop();
-				
-				if(visible)
-				{
-					pulseA.play();
-				}else
-				{
-					energySignImageGlowFilter.blurX = 0;
-					energySignImageGlowFilter.blurY = 0;
-					
-					//hideGlowA.play();
-				}
-			}
-			
-			private function preloaderVisible(visible: Boolean):void
-			{
-				preloaderContainer.visible = visible;
-			}
-			
-			
-		]]>
-	</fx:Script>
-	<s:layout>
-		<s:BasicLayout/>
-	</s:layout>
-	
-	<s:BorderContainer id="lightBorderContainer"
-					   backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
-					   backgroundImageFillMode="repeat"
-					   width="711" height="363"
-					   borderVisible="false"
-					   />
-	
-	<s:BorderContainer id="darkBorderContainer"
-					   backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
-					   backgroundImageFillMode="repeat"
-					   borderVisible="false"
-					   width="673" height="325"
-					   x="19" y="19"
-					   />
-	
-	<s:VGroup  width="692" height="344"
-			   x="19" y="19" 
-			   verticalAlign="middle" horizontalAlign="center"
-			   gap="30"
-			   >
-		<s:VGroup horizontalAlign="center">
-			<s:Label text="Энергия нужна чтобы выполнять задания." color="0xe0cc21"
-					 fontFamily="mpbc" fontSize="18"
-					 />
-			<s:Label text="На каждой локации свои задания. В заданиях в качестве призов вы получаете ресурсы 
-					 и редкие оружия, которых нету в магазине." 
-					 color="0xe0cc21"
-					 fontFamily="mpbc" fontSize="18"
-					 maxWidth="579"
-					 textAlign="center"
-					 />
-		</s:VGroup>
-		<s:HGroup horizontalAlign="center" verticalAlign="middle">
-			<s:VGroup horizontalAlign="center" width="243" gap="30">
-				<s:VGroup horizontalAlign="center">
-					<s:Label text="3 энергии" color="0xfbc612" fontFamily="mpbc" fontSize="33" />
-					<s:Group>
-						<s:BitmapImage source="@Embed(source='assets/windows/global/energymarket/vkVotesBg.png')" />
-						<s:HGroup height="100%" verticalAlign="middle"
-								  paddingLeft="40"
-								  >
-							<s:Label text="2 голоса" color="0xffffff" fontFamily="mpbc" fontSize="24" />
-						</s:HGroup>
-					</s:Group>
-				</s:VGroup>
-				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
-											  fontSize="24" fontSizeOver="24"
-											  customLabel="Согласен!"
-											  scale="0.8"
-											  mouseOver="changeGlowState(true);" mouseOut="changeGlowState(false);"
-											  click="preloaderVisible(true);"
-											  />
-			</s:VGroup>
-			
-			<s:BitmapImage id="energySignImage" source="@Embed(source='assets/windows/global/energymarket/energySignBig.png')"
-						   scaleX="0.9" scaleY="0.9" smooth="true">
-				<s:filters>
-					<s:GlowFilter id="energySignImageGlowFilter" color="0xffee8a" />
-				</s:filters>
-			</s:BitmapImage>
 
-			<s:VGroup horizontalAlign="center" width="243" gap="30">
-				<s:VGroup horizontalAlign="center">
-					<s:Label text="8 энергии" color="0xfbc612" fontFamily="mpbc" fontSize="33" />
-					<s:Group>
-						<s:BitmapImage source="@Embed(source='assets/windows/global/energymarket/vkVotesBg.png')" />
-						<s:HGroup height="100%" verticalAlign="middle"
-								  paddingLeft="40"
-								  >
-							<s:Label text="4 голоса" color="0xffffff" fontFamily="mpbc" fontSize="24" />
-						</s:HGroup>
-					</s:Group>
-				</s:VGroup>
-				
-				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
-											  fontSize="24" fontSizeOver="24"
-											  customLabel="Рискнем"
-											  mouseOver="changeGlowState(true);" mouseOut="changeGlowState(false);"
-											  scale="0.8"
-											  click="preloaderVisible(true);"
-											  />
-			</s:VGroup>
-		</s:HGroup>
-		
-	</s:VGroup>
-	
-	
-	
-	
-	<s:BorderContainer id="preloaderContainer"
-					   backgroundColor="0x000000"
-					   alpha="0.8"
-					   borderVisible="false"
-					   width="673" height="325"
-					   x="19" y="19"
-					   visible="false"
-					   >
-		<s:HGroup width="100%" height="100%"
-				  horizontalAlign="center" verticalAlign="middle" gap="20">
-			<preloaders:Spinner tickColor="0xffffff" tickWidth="10" size="60" />
-			<s:Label text="Идет покупка" color="0xffffff" fontFamily="mpbc" fontSize="30" />
-		</s:HGroup>
-	</s:BorderContainer>
-	
-	<flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS"
-								x="649" y="25"
-								scale="1"
-								click="closeWrapper();"
-								/>
-	
-	
-	<s:controlBarContent/>
+    <fx:Declarations>
+
+        <s:Animate id="disapearingAnimation" target="{this}" duration="300"
+                   effectEnd="{close();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="1"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingAnimation" target="{this}" duration="1200">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+        <s:Parallel id="pulseA" repeatCount="55200">
+
+            <s:Parallel>
+                <s:Animate target="{energySignImageGlowFilter}" duration="600">
+                    <s:SimpleMotionPath property="blurX" valueFrom="0" valueTo="15"/>
+                </s:Animate>
+                <s:Animate target="{energySignImageGlowFilter}" duration="600">
+                    <s:SimpleMotionPath property="blurY" valueFrom="0" valueTo="15"/>
+                </s:Animate>
+            </s:Parallel>
+
+            <s:Parallel>
+                <s:Animate target="{energySignImageGlowFilter}" duration="600">
+                    <s:SimpleMotionPath property="blurX" valueFrom="15" valueTo="3"/>
+                </s:Animate>
+                <s:Animate target="{energySignImageGlowFilter}" duration="600">
+                    <s:SimpleMotionPath property="blurY" valueFrom="15" valueTo="3"/>
+                </s:Animate>
+            </s:Parallel>
+
+        </s:Parallel>
+
+
+        <s:Parallel id="showGlowA" target="{energySignImageGlowFilter}" duration="300"
+                >
+            <s:Animate>
+                <s:SimpleMotionPath property="blurX"
+                                    valueFrom="0"
+                                    valueTo="25"
+                        />
+                <s:SimpleMotionPath property="blurY"
+                                    valueFrom="0"
+                                    valueTo="25"
+                        />
+            </s:Animate>
+        </s:Parallel>
+
+        <s:Parallel id="hideGlowA" target="{energySignImageGlowFilter}" duration="300"
+                >
+            <s:Animate>
+                <s:SimpleMotionPath property="blurX"
+                                    valueFrom="25"
+                                    valueTo="0"
+                        />
+                <s:SimpleMotionPath property="blurY"
+                                    valueFrom="25"
+                                    valueTo="0"
+                        />
+            </s:Animate>
+        </s:Parallel>
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        import components.common.game.requesttogame.RequestGameObject
+        import components.common.utils.adjustcolor.Color
+        import components.common.utils.adjustcolor.ColorMatrix
+        import components.common.utils.adjustcolor.ColorMatrixObject
+
+        import mx.managers.PopUpManager
+
+        private var requestsAll:Array = new Array();
+        [Bindable]
+        private var currentPage:int = 0;
+        [Bindable]
+        private var pagesCount:int = 0;
+
+        public function close():void {
+            Context.Model.windowsManager.deleteWindow(this);
+            PopUpManager.removePopUp(this);
+        }
+
+        public function closeWrapper():void {
+            disapearingAnimation.play();
+        }
+
+        private function loadRequestCollection():void {
+            requestsAll = new Array();
+
+            for each(var r:RequestGameObject in Context.Model.currentSettings.requestToGames) {
+                requestsAll.push(r);
+            }
+
+        }
+
+        private function panelCreationComplete():void {
+            Context.Model.windowsManager.closeAll(true);
+            Context.Model.windowsManager.addWindow(this);
+
+            apearingAnimation.play();
+
+            var cm:ColorMatrix = new ColorMatrix();
+            var cmo:ColorMatrixObject = new ColorMatrixObject(0, 0, null, 0, new Color(-20, -20, -20));
+            cm.applyColorMatrixObject(cmo);
+
+            var cm1:ColorMatrix = new ColorMatrix();
+            var cmo1:ColorMatrixObject = new ColorMatrixObject(0, 0);
+            cm1.applyColorMatrixObject(cmo1);
+
+            lightBorderContainer.filters = [cm1.filter];
+            darkBorderContainer.filters = [cm.filter];
+
+
+        }
+
+        private function changeGlowState(visible:Boolean):void {
+            pulseA.stop();
+
+            if (visible) {
+                pulseA.play();
+            } else {
+                energySignImageGlowFilter.blurX = 0;
+                energySignImageGlowFilter.blurY = 0;
+
+                //hideGlowA.play();
+            }
+        }
+
+        private function preloaderVisible(visible:Boolean):void {
+            preloaderContainer.visible = visible;
+        }
+        ]]>
+	</fx:Script>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+    <s:BorderContainer id="lightBorderContainer"
+                       backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+                       backgroundImageFillMode="repeat"
+                       width="711" height="363"
+                       borderVisible="false"
+            />
+
+    <s:BorderContainer id="darkBorderContainer"
+                       backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+                       backgroundImageFillMode="repeat"
+                       borderVisible="false"
+                       width="673" height="325"
+                       x="19" y="19"
+            />
+
+    <s:VGroup width="692" height="344"
+              x="19" y="19"
+              verticalAlign="middle" horizontalAlign="center"
+              gap="30"
+            >
+        <s:VGroup horizontalAlign="center">
+            <s:Label text="Энергия нужна чтобы выполнять задания." color="0xe0cc21"
+                     fontFamily="mpbc" fontSize="18"
+                    />
+            <s:Label text="На каждой локации свои задания. В заданиях в качестве призов вы получаете ресурсы
+					 и редкие оружия, которых нету в магазине."
+                     color="0xe0cc21"
+                     fontFamily="mpbc" fontSize="18"
+                     maxWidth="579"
+                     textAlign="center"
+                    />
+        </s:VGroup>
+        <s:HGroup horizontalAlign="center" verticalAlign="middle">
+            <s:VGroup horizontalAlign="center" width="243" gap="30">
+                <s:VGroup horizontalAlign="center">
+                    <s:Label text="3 энергии" color="0xfbc612" fontFamily="mpbc" fontSize="33"/>
+                    <s:Group>
+                        <s:BitmapImage source="@Embed(source='assets/windows/global/energymarket/vkVotesBg.png')"/>
+                        <s:HGroup height="100%" verticalAlign="middle"
+                                  paddingLeft="40"
+                                >
+                            <s:Label text="2 голоса" color="0xffffff" fontFamily="mpbc" fontSize="24"/>
+                        </s:HGroup>
+                    </s:Group>
+                </s:VGroup>
+                <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+                                              fontSize="24" fontSizeOver="24"
+                                              customLabel="Согласен!"
+                                              scale="0.8"
+                                              mouseOver="changeGlowState(true);" mouseOut="changeGlowState(false);"
+                                              click="preloaderVisible(true);"
+                        />
+            </s:VGroup>
+
+            <s:BitmapImage id="energySignImage"
+                           source="@Embed(source='assets/windows/global/energymarket/energySignBig.png')"
+                           scaleX="0.9" scaleY="0.9" smooth="true">
+                <s:filters>
+                    <s:GlowFilter id="energySignImageGlowFilter" color="0xffee8a"/>
+                </s:filters>
+            </s:BitmapImage>
+
+            <s:VGroup horizontalAlign="center" width="243" gap="30">
+                <s:VGroup horizontalAlign="center">
+                    <s:Label text="8 энергии" color="0xfbc612" fontFamily="mpbc" fontSize="33"/>
+                    <s:Group>
+                        <s:BitmapImage source="@Embed(source='assets/windows/global/energymarket/vkVotesBg.png')"/>
+                        <s:HGroup height="100%" verticalAlign="middle"
+                                  paddingLeft="40"
+                                >
+                            <s:Label text="4 голоса" color="0xffffff" fontFamily="mpbc" fontSize="24"/>
+                        </s:HGroup>
+                    </s:Group>
+                </s:VGroup>
+
+                <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+                                              fontSize="24" fontSizeOver="24"
+                                              customLabel="Рискнем"
+                                              mouseOver="changeGlowState(true);" mouseOut="changeGlowState(false);"
+                                              scale="0.8"
+                                              click="preloaderVisible(true);"
+                        />
+            </s:VGroup>
+        </s:HGroup>
+
+    </s:VGroup>
+
+
+    <s:BorderContainer id="preloaderContainer"
+                       backgroundColor="0x000000"
+                       alpha="0.8"
+                       borderVisible="false"
+                       width="673" height="325"
+                       x="19" y="19"
+                       visible="false"
+            >
+        <s:HGroup width="100%" height="100%"
+                  horizontalAlign="center" verticalAlign="middle" gap="20">
+            <preloaders:Spinner tickColor="0xffffff" tickWidth="10" size="60"/>
+            <s:Label text="Идет покупка" color="0xffffff" fontFamily="mpbc" fontSize="30"/>
+        </s:HGroup>
+    </s:BorderContainer>
+
+    <flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS"
+                                x="649" y="25"
+                                scale="1"
+                                click="closeWrapper();"
+            />
+
+
+    <s:controlBarContent/>
 </s:Panel>

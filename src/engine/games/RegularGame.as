@@ -9,21 +9,18 @@ import engine.bombers.PlayersBuilder
 import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.interfaces.IPlayerBomber
-import engine.bombss.BombType
-import engine.bombss.BombsBuilder
 import engine.data.location1.maps.Maps
 import engine.explosionss.ExplosionsBuilder
+import engine.maps.builders.DynObjectBuilder
 import engine.maps.builders.MapBlockBuilder
 import engine.maps.builders.MapBlockStateBuilder
-import engine.maps.builders.MapObjectBuilder
+import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock
-import engine.maps.interfaces.IMapObject
-import engine.maps.interfaces.IMapObjectType
-import engine.model.managers.regular.BombsManager
+import engine.model.managers.regular.DynObjectManager
 import engine.model.managers.regular.EnemiesManager
 import engine.model.managers.regular.ExplosionsManager
 import engine.model.managers.regular.MapManager
-import engine.model.managers.regular.MapObjectManager
 import engine.model.managers.regular.PlayerManager
 import engine.playerColors.PlayerColor
 import engine.profiles.PlayerGameProfile
@@ -42,23 +39,21 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
 
         mapBlockStateBuilder = new MapBlockStateBuilder();
-        mapObjectBuilder = new MapObjectBuilder();
-        mapBlockBuilder = new MapBlockBuilder(mapBlockStateBuilder, mapObjectBuilder)
+        dynObjectBuilder = new DynObjectBuilder();
+        mapBlockBuilder = new MapBlockBuilder(mapBlockStateBuilder, dynObjectBuilder)
 
         _mapManager = new MapManager(mapBlockBuilder);
 
         explosionsBuilder = new ExplosionsBuilder(mapManager);
-        bombsBuilder = new BombsBuilder(_mapManager, explosionsBuilder);
-
+        dynObjectBuilder.setExplosionsBuilder(explosionsBuilder)
 
         _playerManager = new PlayerManager();
         _enemiesManager = new EnemiesManager();
 
-        _bombsManager = new BombsManager(mapManager);
         _explosionsManager = new ExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
-        _objectManager = new MapObjectManager(playerManager, mapManager)
-        weaponBuilder = new WeaponBuilder(bombsBuilder, _mapManager, mapObjectBuilder, objectManager)
-        playersBuilder = new PlayersBuilder(bombsBuilder, weaponBuilder);
+        _dynObjectManager = new DynObjectManager(playerManager, mapManager)
+        weaponBuilder = new WeaponBuilder(_mapManager)
+        playersBuilder = new PlayersBuilder(weaponBuilder);
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
 
@@ -67,27 +62,21 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
             EngineContext.frameEntered.add(playerManager.movePlayer);
             EngineContext.frameEntered.add(enemiesManager.moveEnemies);
-            EngineContext.frameEntered.add(bombsManager.checkBombs);
             EngineContext.frameEntered.add(explosionsManager.checkExplosions);
-            EngineContext.frameEntered.add(objectManager.checkObjectTaken);
-
-
-            EngineContext.triedToSetBomb.add(onTriedToSetBomb);
-            EngineContext.bombSet.add(onBombSet);
+            EngineContext.frameEntered.add(dynObjectManager.checkObjectsActivated);
 
             EngineContext.triedToActivateWeapon.add(onTryToActivateWeapon);
             EngineContext.weaponActivated.add(onWeaponActivated);
             EngineContext.weaponDeactivated.add(onWeaponDeactivated);
 
-            EngineContext.bombExploded.add(onBombExploded);
-            EngineContext.explosionsAdded.add(onExplosionsAdded)
+            EngineContext.explosionGroupAdded.add(onExplosionsAdded)
             EngineContext.explosionsRemoved.add(onExplosionsRemoved)
 
             EngineContext.playerDamaged.add(onPlayerDamaged)
 
-            EngineContext.objectAppeared.add(onObjectAppeared)
-            EngineContext.triedToTakeObject.add(tryToTakeBonus)
-            EngineContext.objectTaken.add(onObjectTaken);
+            EngineContext.objectAdded.add(onObjectAdded)
+            EngineContext.triedToActivateObject.add(tryToActivateObject)
+            EngineContext.objectActivated.add(onObjectActivated);
 
             EngineContext.deathWallAppeared.add(onDeathWallAppeared)
         })
@@ -96,8 +85,8 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
     private function onWeaponDeactivated(playerId:int, type:WeaponType):void {
         var b:IBomber = getPlayer(playerId);
-        if (b is IPlayerBomber) {
-            (b as IPlayerBomber).deactivateWeapon(type);
+        if (playerManager.isItMe(b)) {
+            playerManager.me.deactivateWeapon(type);
         } else {
             deactivateWeapon(b, type)
         }
@@ -118,8 +107,8 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
     private function onWeaponActivated(playerId:int, x:int, y:int, type:WeaponType):void {
         var b:IBomber = getPlayer(playerId);
-        if (b is IPlayerBomber) {
-            (b as IPlayerBomber).activateWeapon(x, y, type);
+        if (playerManager.isItMe(b)) {
+            playerManager.me.activateWeapon(x, y, type);
         } else {
             activateWeapon(b, type, x, y)
         }
@@ -198,30 +187,28 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         //Context.gameServer.notifyPlayerViewDirectionChanged(x, y, dir)
     }
 
-    public function onTriedToSetBomb(bombX:int, bombY:int, type:BombType):void {
-        Context.gameServer.sendSetBomb(bombX, bombY, type)
-    }
-
-
-    private function onObjectTaken(id:int, x:int, y:int, objType:IMapObjectType):void {
+    private function onObjectActivated(id:int, x:int, y:int, objType:IDynObjectType):void {
         var bomber:IBomber = getPlayer(id);
-        objectManager.takeObject(x, y, bomber);
+        dynObjectManager.activateObject(x, y, bomber);
     }
 
-    private function tryToTakeBonus(object:IMapObject):void {
+    private function tryToActivateObject(object:IDynObject):void {
         Context.gameServer.sendActivateDynamicObject(object);
     }
 
-    private function onObjectAppeared(playerId:int, x:int, y:int, objType:IMapObjectType):void {
+    private function onObjectAdded(playerId:int, x:int, y:int, objType:IDynObjectType):void {
         var b:IMapBlock = mapManager.map.getBlock(x, y);
-        var object:IMapObject = mapObjectBuilder.make(objType, b);
+        var player:IBomber = getPlayer(playerId)
+
+        var object:IDynObject = dynObjectBuilder.make(objType, b, player);
         b.setObject(object);
+        object.onAddedToMap()
         if (objType.waitToAdd > 0)
-            TweenMax.delayedCall(objType.waitToAdd, function():void {
-                objectManager.addObject(object);
+            TweenMax.delayedCall(objType.waitToAdd / 1000, function():void {
+                dynObjectManager.addObject(object);
             })
         else
-            objectManager.addObject(object);
+            dynObjectManager.addObject(object);
     }
 
     private function onPlayerDamaged(damage:int, isDead:Boolean):void {

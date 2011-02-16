@@ -5,8 +5,6 @@
 
 package engine.bombers {
 import components.common.items.ItemProfileObject
-import components.common.items.ItemType
-
 import components.common.items.categories.ItemCategory
 
 import engine.EngineContext
@@ -14,7 +12,6 @@ import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
 import engine.bombers.skin.BomberSkin
 import engine.bombss.BombType
-import engine.bombss.BombsBuilder
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
 import engine.playerColors.PlayerColor
@@ -41,17 +38,17 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     protected var _currentWeapon:IWeapon
     protected var _weapons:Array = new Array()
 
-    public function PlayerBomber(game:IGame, playerId:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder, bombBuilder:BombsBuilder) {
-        super(game, playerId, gameProfile.currentBomberType, gameProfile.nick, color, BomberSkin.fromBomberType(gameProfile.currentBomberType), bombBuilder);
+    public function PlayerBomber(game:IGame, playerId:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder) {
+        super(game, playerId, gameProfile.currentBomberType, gameProfile.nick, color, BomberSkin.fromBomberType(gameProfile.currentBomberType));
         _weaponBuilder = weaponBuilder
         this._gameProfile = gameProfile
         for (var i:int = 0; i < _gameProfile.gotItems.length; i++) {
             var ipo:ItemProfileObject = _gameProfile.gotItems[i];
-            if (Context.Model.itemsCategoryManager.getItemCategory(ipo.itemType) == ItemCategory.WEAPON){
-                _weapons[ipo.itemType.value] = weaponBuilder.fromItemType(ipo.itemType,ipo.itemCount)
+            if (Context.Model.itemsCategoryManager.getItemCategory(ipo.itemType) == ItemCategory.WEAPON) {
+                _weapons[ipo.itemType.value] = weaponBuilder.fromItemType(ipo.itemType, ipo.itemCount)
             }
         }
-        if(gameProfile.selectedWeaponLeftHand != null)
+        if (gameProfile.selectedWeaponLeftHand != null)
             _currentWeapon = _weapons[gameProfile.selectedWeaponLeftHand.itemType.value]
         _direction = direction;
 
@@ -59,7 +56,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     private function onCurrentWeaponChanged():void {
-        if(_gameProfile.selectedWeaponLeftHand != null)
+        if (_gameProfile.selectedWeaponLeftHand != null)
             _currentWeapon = _weapons[_gameProfile.selectedWeaponLeftHand.itemType.value]
         else
             _currentWeapon = NullWeapon.instance
@@ -160,13 +157,15 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         }
     }
 
-    public override function move(elapsedTime:Number):void {
-        performMotion(elapsedTime * speed)
+    public override function move(elapsedMilliSecs:int):void {
+        performMotion(elapsedMilliSecs * speed / 1000)
     }
 
     public function setBomb(bombType:BombType):void {
+        trace(">>> " + _map.getBlock(coords.elemX, coords.elemY).canSetBomb() + " " + bombCount)
         if (_map.getBlock(coords.elemX, coords.elemY).canSetBomb() && bombCount > 0 && !isDead) {
-            EngineContext.triedToSetBomb.dispatch(coords.elemX, coords.elemY, bombType);
+            trace("tried to set when left " + bombCount)
+            EngineContext.triedToActivateWeapon.dispatch(playerId, coords.elemX, coords.elemY, WeaponType.byValue(bombType.value));
         }
     }
 
@@ -202,16 +201,15 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         return _currentWeapon;
     }
 
-    public function activateWeapon(x:int,y:int,type:WeaponType):void {
+    public function activateWeapon(x:int, y:int, type:WeaponType):void {
         if (_weapons[type.value] is IActivatableWeapon) {
-            (_weapons[type.value] as IActivatableWeapon).activate(x,y,this);
+            (_weapons[type.value] as IActivatableWeapon).activate(x, y, this);
         }
     }
 
     public function deactivateWeapon(type:WeaponType):void {
         if (_weapons[type.value] is IDeactivatableWeapon) {
-           (_weapons[type.value] as IDeactivatableWeapon).deactivate(this);
-
+            (_weapons[type.value] as IDeactivatableWeapon).deactivate(this);
         }
     }
 
@@ -237,6 +235,12 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         super.incBombPower()
         Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED)
 
+    }
+
+    public function decWeapon(wt:WeaponType):void {
+        if (_weapons[wt.value] is IActivatableWeapon) {
+            (_weapons[wt.value] as IActivatableWeapon).decCharges()
+        }
     }
 }
 }

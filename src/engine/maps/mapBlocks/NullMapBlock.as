@@ -4,13 +4,11 @@
  */
 
 package engine.maps.mapBlocks {
-import engine.bombss.NullBomb
-import engine.bombss.interfaces.IBomb
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.mapObjects.NullDynObject
+import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
 import engine.maps.interfaces.IMapBlockState
-import engine.maps.interfaces.IMapObject
-import engine.maps.mapObjects.NullMapObject
 import engine.model.explosionss.ExplosionType
 
 import org.osflash.signals.Signal
@@ -22,6 +20,12 @@ public class NullMapBlock extends MapBlockBase implements IMapBlock {
 
 
     private static var instance:NullMapBlock;
+
+    public static function getInstance():NullMapBlock {
+        if (instance == null)
+            instance = new NullMapBlock();
+        return instance;
+    }
 
     public function stopExplosion():void {
     }
@@ -35,12 +39,6 @@ public class NullMapBlock extends MapBlockBase implements IMapBlock {
 
     public function get objectCollected():Signal {
         return null;
-    }
-
-    public static function getInstance():NullMapBlock {
-        if (instance == null)
-            instance = new NullMapBlock();
-        return instance;
     }
 
 
@@ -75,10 +73,6 @@ public class NullMapBlock extends MapBlockBase implements IMapBlock {
         return false;
     }
 
-    public function get explodedWith():Class {
-        return null;
-    }
-
     public function explodesAndStopsExplosion():Boolean {
         return false;
     }
@@ -102,39 +96,29 @@ public class NullMapBlock extends MapBlockBase implements IMapBlock {
         return MapBlockType.NULL;
     }
 
-    public function get object():IMapObject {
-        return NullMapObject.getInstance();
-    }
-
-    public function setBomb(bomb:IBomb):void {
+    public function get object():IDynObject {
+        return NullDynObject.getInstance();
     }
 
     public override function get type():MapBlockType {
         return MapBlockType.NULL;
     }
 
-    public function get bomb():IBomb {
-        return NullBomb.getInstance();
-    }
-
-    public function clearBomb():void {
-    }
-
     public function NullMapBlock() {
     }
 
-    public function setObject(object:IMapObject):void {
+    public function setObject(object:IDynObject):void {
     }
 
     public function get canShowObjects():Boolean {
         return false;
     }
 
-    public function set hiddenObject(value:IMapObject):void {
+    public function set hiddenObject(value:IDynObject):void {
     }
 
-    public function get hiddenObject():IMapObject {
-        return NullMapObject.getInstance();
+    public function get hiddenObject():IDynObject {
+        return NullDynObject.getInstance();
     }
 
     public function setDieWall():void {

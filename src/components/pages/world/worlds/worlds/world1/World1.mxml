@@ -37,11 +37,11 @@
         /* sounds */
 
         /* [Embed(source="assets/sounds/pageworld/bg3.mp3")]
-        [Bindable]
-        public var sndBgClass:Class;
+         [Bindable]
+         public var sndBgClass:Class;
 
-        public var sndBg:Sound = new sndBgClass() as Sound;
-        public var sndChannel:SoundChannel; */
+         public var sndBg:Sound = new sndBgClass() as Sound;
+         public var sndChannel:SoundChannel; */
 
         /* for cursors */
 

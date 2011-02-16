@@ -4,9 +4,10 @@
  */
 
 package engine.model.managers.interfaces {
+import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IPlayerBomber
 import engine.explosionss.interfaces.IExplosion
-import engine.maps.interfaces.IMapObject
+import engine.maps.interfaces.IDynObject
 
 public interface IPlayerManager {
     function get me():IPlayerBomber;
@@ -19,10 +20,12 @@ public interface IPlayerManager {
 
     function checkPlayerMetExplosion(expl:IExplosion):void;
 
-    function checkPlayerMetObject(bonus:IMapObject):Boolean;
+    function checkPlayerMetObject(bonus:IDynObject):Boolean;
 
     function checkPlayerMetDieWall(x:int, y:int):Boolean;
 
     function killMe():void;
+
+    function isItMe(bomber:IBomber):Boolean
 }
 }

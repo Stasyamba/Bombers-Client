@@ -4,9 +4,6 @@
  */
 
 package engine.games {
-import com.smartfoxserver.v2.entities.Room
-import com.smartfoxserver.v2.entities.User
-
 import engine.data.location1.games.Games
 import engine.games.single.SinglePlayerGame
 import engine.games.single.goals.GoalsBuilder

@@ -4,7 +4,6 @@
  */
 
 package engine.maps.interfaces {
-import engine.bombss.interfaces.IBomb
 import engine.model.explosionss.ExplosionType
 
 import org.osflash.signals.Signal
@@ -18,15 +17,9 @@ public interface IMapBlock extends IMapBlockState {
 
     function get state():IMapBlockState
 
-    function get bomb():IBomb;
+    function get object():IDynObject;
 
-    function get object():IMapObject;
-
-    function setBomb(bomb:IBomb):void;
-
-    function clearBomb():void;
-
-    function setObject(object:IMapObject):void;
+    function setObject(object:IDynObject):void;
 
     function collectObject(byMe:Boolean):void;
 

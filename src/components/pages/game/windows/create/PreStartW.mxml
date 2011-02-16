@@ -1,183 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
-		 xmlns:mx1="library://ns.adobe.com/flex/halo"
-		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:fx="http://ns.adobe.com/mxml/2009"
-		 creationComplete="panelCreationComplete();"
-		 borderVisible="false"
-		 dropShadowVisible="false"
-		 skinClass="skins.common.EmptyPopUpS"
-		 xmlns:flexcomponents="components.common.flexcomponents.*"
-		 xmlns:create="components.pages.game.windows.create.*"
-		 >
-	<fx:Script>
+         xmlns:mx1="library://ns.adobe.com/flex/halo"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:fx="http://ns.adobe.com/mxml/2009"
+         creationComplete="panelCreationComplete();"
+         borderVisible="false"
+         dropShadowVisible="false"
+         skinClass="skins.common.EmptyPopUpS"
+         xmlns:flexcomponents="components.common.flexcomponents.*"
+         xmlns:create="components.pages.game.windows.create.*"
+        >
+    <fx:Script>
 		<![CDATA[
-		]]>
+        ]]>
 	</fx:Script>
-	
-	<fx:Declarations>
-		
-		<s:Animate id="disapearingAnimation" target="{this}" duration="200"
-				   effectEnd="{close();}">
-			<s:SimpleMotionPath property="alpha"
-								valueFrom="1"
-								valueTo="0"
-								/>
-		</s:Animate>
-		
-		<s:Animate id="apearingAnimation" target="{this}" duration="1200">
-			<s:SimpleMotionPath property="alpha"
-								valueFrom="0" valueTo="1"
-								/>
-		</s:Animate>
-		
-		
-		<s:Sequence id="pulseA" repeatCount="1000">
-			<s:Parallel duration="{pulseAnimationDuration}">
-				
-				<s:Animate target="{fireImage}">
-					<s:SimpleMotionPath property="scaleX" valueFrom="{fireImage.scaleX}"
-										valueTo="{scaleAnimationSize}"/>
-				</s:Animate>
-				<s:Animate target="{fireImage}">
-					<s:SimpleMotionPath property="scaleY" valueFrom="{fireImage.scaleY}"
-										valueTo="{scaleAnimationSize}"/>
-				</s:Animate>
-				<s:Animate target="{fireImage}">
-					<s:SimpleMotionPath property="y" valueFrom="{startYPostion}" valueTo="{differenceYPosition}"/>
-				</s:Animate>
-				
-				
-			</s:Parallel>
-			
-			<s:Parallel duration="{pulseAnimationDuration}">
-				
-				<s:Animate target="{fireImage}">
-					<s:SimpleMotionPath property="scaleX" valueFrom="{scaleAnimationSize}" valueTo="1"/>
-				</s:Animate>
-				<s:Animate target="{fireImage}">
-					<s:SimpleMotionPath property="scaleY" valueFrom="{scaleAnimationSize}" valueTo="1"/>
-				</s:Animate>
-				<s:Animate target="{fireImage}">
-					<s:SimpleMotionPath property="y" valueFrom="{differenceYPosition}" valueTo="{startYPostion}"/>
-				</s:Animate>
-				
-				
-			</s:Parallel>
-			
-		</s:Sequence>
-		
-	</fx:Declarations>
-	
-	<fx:Script>
+
+    <fx:Declarations>
+
+        <s:Animate id="disapearingAnimation" target="{this}" duration="200"
+                   effectEnd="{close();}">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="1"
+                                valueTo="0"
+                    />
+        </s:Animate>
+
+        <s:Animate id="apearingAnimation" target="{this}" duration="1200">
+            <s:SimpleMotionPath property="alpha"
+                                valueFrom="0" valueTo="1"
+                    />
+        </s:Animate>
+
+
+        <s:Sequence id="pulseA" repeatCount="1000">
+            <s:Parallel duration="{pulseAnimationDuration}">
+
+                <s:Animate target="{fireImage}">
+                    <s:SimpleMotionPath property="scaleX" valueFrom="{fireImage.scaleX}"
+                                        valueTo="{scaleAnimationSize}"/>
+                </s:Animate>
+                <s:Animate target="{fireImage}">
+                    <s:SimpleMotionPath property="scaleY" valueFrom="{fireImage.scaleY}"
+                                        valueTo="{scaleAnimationSize}"/>
+                </s:Animate>
+                <s:Animate target="{fireImage}">
+                    <s:SimpleMotionPath property="y" valueFrom="{startYPostion}" valueTo="{differenceYPosition}"/>
+                </s:Animate>
+
+
+            </s:Parallel>
+
+            <s:Parallel duration="{pulseAnimationDuration}">
+
+                <s:Animate target="{fireImage}">
+                    <s:SimpleMotionPath property="scaleX" valueFrom="{scaleAnimationSize}" valueTo="1"/>
+                </s:Animate>
+                <s:Animate target="{fireImage}">
+                    <s:SimpleMotionPath property="scaleY" valueFrom="{scaleAnimationSize}" valueTo="1"/>
+                </s:Animate>
+                <s:Animate target="{fireImage}">
+                    <s:SimpleMotionPath property="y" valueFrom="{differenceYPosition}" valueTo="{startYPostion}"/>
+                </s:Animate>
+
+
+            </s:Parallel>
+
+        </s:Sequence>
+
+    </fx:Declarations>
+
+    <fx:Script>
 		<![CDATA[
-			import components.common.utils.adjustcolor.ColorMatrix;
-			import components.common.utils.adjustcolor.ColorMatrixObject;
-			
-			import mx.managers.PopUpManager;
-			
-			import org.osmf.events.TimeEvent;
-			
-			[Bindable]
-			private var scaleAnimationSize:Number = 1.05;
-			[Bindable]
-			private var pulseAnimationDuration:Number = 200;
-			[Bindable]
-			private var differenceYPosition:Number;
-			[Bindable]
-			private var startYPostion:Number = -33;
-			
-			
-			private var closeTimer:Timer = new Timer(1000,3);
-			private var time: int = 3;
-            private var isClosing:Boolean = false
-			
-			
-			
-			public function close():void {
-				PopUpManager.removePopUp(this);
-			}
-			
-			public function closeWrapper():void {
-                if(isClosing)
-                    return
-                isClosing = true
-                closeTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerComplete)
-				disapearingAnimation.play();
-			}
-			
-			private function panelCreationComplete():void {
-				apearingAnimation.play();
-				
-				
-				closeTimer.addEventListener(TimerEvent.TIMER, timerTick);
-				closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerComplete);
-				
-				closeTimer.start();
-				
-				/* animation */
-				differenceYPosition = -33 + fireImage.height - fireImage.height * scaleAnimationSize;
-				pulseA.play();
-			}
-			
-			private function timerTick(e:TimerEvent): void
-			{
-				timeToStartLabel.text = time.toString();
-				if(time > 0)
-					time--;
-			}
-			
-			private function timerComplete(e: TimerEvent): void
-			{
-				//closeWrapper();
-			}
-		]]>
+        import mx.managers.PopUpManager
+
+        [Bindable]
+        private var scaleAnimationSize:Number = 1.05;
+        [Bindable]
+        private var pulseAnimationDuration:Number = 200;
+        [Bindable]
+        private var differenceYPosition:Number;
+        [Bindable]
+        private var startYPostion:Number = -33;
+
+
+        private var closeTimer:Timer = new Timer(1000, 3);
+        private var time:int = 3;
+        private var isClosing:Boolean = false
+
+
+        public function close():void {
+            PopUpManager.removePopUp(this);
+        }
+
+        public function closeWrapper():void {
+            if (isClosing)
+                return
+            isClosing = true
+            closeTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerComplete)
+            disapearingAnimation.play();
+        }
+
+        private function panelCreationComplete():void {
+            apearingAnimation.play();
+
+
+            closeTimer.addEventListener(TimerEvent.TIMER, timerTick);
+            closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerComplete);
+
+            closeTimer.start();
+
+            /* animation */
+            differenceYPosition = -33 + fireImage.height - fireImage.height * scaleAnimationSize;
+            pulseA.play();
+        }
+
+        private function timerTick(e:TimerEvent):void {
+            timeToStartLabel.text = time.toString();
+            if (time > 0)
+                time--;
+        }
+
+        private function timerComplete(e:TimerEvent):void {
+            //closeWrapper();
+        }
+        ]]>
 	</fx:Script>
-	<s:layout>
-		<s:BasicLayout/>
-	</s:layout>
-	
-	<s:VGroup horizontalAlign="center">
-		
-		<s:HGroup height="159" paddingLeft="20">
-			<s:Group>
-				<s:BitmapImage source="@Embed(source='assets/pagegame/windows/threeseconds/bomb.png')" />
-				
-				<s:HGroup id="fireImage"
-						  x="95" y="-33" 
-						  >
-					<s:BitmapImage source="@Embed(source='assets/pagegame/windows/threeseconds/fire.png')">
-						<s:filters>
-							<s:BlurFilter blurX="1" blurY="1" />
-						</s:filters>
-					</s:BitmapImage>
-				</s:HGroup>
-		
-				<s:Label id="timeToStartLabel" text="3" x="45" y="64"
-						 fontFamily="mpbc" fontSize="60" color="0xfef861"
-						 />
-			</s:Group>
-		</s:HGroup>
-		
-		
-		<s:Group>
-			<s:Rect alpha="0.8" height="75" width="522"
-					radiusX="40" radiusY="40"
-					>
-				<s:fill>
-					<s:SolidColor color="0x000000"/>
-				</s:fill>
-			</s:Rect>
-			<s:HGroup height="75" width="522"
-					  horizontalAlign="center" verticalAlign="middle"
-					  >
-				<s:Label text="Игра вот-вот начнется" fontFamily="mpbc" fontSize="48" color="0xfef861" />
-			</s:HGroup>
-			
-			
-		</s:Group>
-		
-	</s:VGroup>
-	
-	<s:controlBarContent/>
+    <s:layout>
+        <s:BasicLayout/>
+    </s:layout>
+
+    <s:VGroup horizontalAlign="center">
+
+        <s:HGroup height="159" paddingLeft="20">
+            <s:Group>
+                <s:BitmapImage source="@Embed(source='assets/pagegame/windows/threeseconds/bomb.png')"/>
+
+                <s:HGroup id="fireImage"
+                          x="95" y="-33"
+                        >
+                    <s:BitmapImage source="@Embed(source='assets/pagegame/windows/threeseconds/fire.png')">
+                        <s:filters>
+                            <s:BlurFilter blurX="1" blurY="1"/>
+                        </s:filters>
+                    </s:BitmapImage>
+                </s:HGroup>
+
+                <s:Label id="timeToStartLabel" text="3" x="45" y="64"
+                         fontFamily="mpbc" fontSize="60" color="0xfef861"
+                        />
+            </s:Group>
+        </s:HGroup>
+
+
+        <s:Group>
+            <s:Rect alpha="0.8" height="75" width="522"
+                    radiusX="40" radiusY="40"
+                    >
+                <s:fill>
+                    <s:SolidColor color="0x000000"/>
+                </s:fill>
+            </s:Rect>
+            <s:HGroup height="75" width="522"
+                      horizontalAlign="center" verticalAlign="middle"
+                    >
+                <s:Label text="Игра вот-вот начнется" fontFamily="mpbc" fontSize="48" color="0xfef861"/>
+            </s:HGroup>
+
+
+        </s:Group>
+
+    </s:VGroup>
+
+    <s:controlBarContent/>
 </s:Panel>

@@ -5,13 +5,13 @@
 
 package engine.maps.mapObjects {
 import engine.bombss.BombType
-import engine.maps.interfaces.IMapObjectType
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.maps.mapObjects.mines.MineType
+import engine.maps.interfaces.IDynObjectType
 
-public class MapObjectType implements IMapObjectType {
+public class DynObjectType implements IDynObjectType {
 
-    public static const NULL:MapObjectType = new MapObjectType(-1, "NULL");
+    public static const NULL:DynObjectType = new DynObjectType(-1, "NULL");
 
     private var _value:int;
     private var _key:String;
@@ -24,12 +24,12 @@ public class MapObjectType implements IMapObjectType {
         return _key;
     }
 
-    public function MapObjectType(value:int, key:String) {
+    public function DynObjectType(value:int, key:String) {
         _value = value;
         _key = key;
     }
 
-    public static function byValue(value:int):IMapObjectType {
+    public static function byValue(value:int):IDynObjectType {
         switch (value) {
             case NULL.value:return NULL;
             case BonusType.ADD_BOMB.value:return BonusType.ADD_BOMB;
@@ -49,7 +49,7 @@ public class MapObjectType implements IMapObjectType {
         throw new ArgumentError("bad value")
     }
 
-    public static function byKey(key:String):IMapObjectType {
+    public static function byKey(key:String):IDynObjectType {
         switch (key) {
             case NULL.key:return NULL;
             case BonusType.ADD_BOMB.key:return BonusType.ADD_BOMB;
@@ -67,7 +67,7 @@ public class MapObjectType implements IMapObjectType {
         throw new ArgumentError("bad value")
     }
 
-    public function get waitToAdd():Number {
+    public function get waitToAdd():int {
         return 0
     }
 }

@@ -1,5 +1,5 @@
 package {
-import flash.events.Event;
+import flash.events.Event
 
 public class ContextEvent extends Event {
     public static const USERS_PROFILES_LOADED:String = "UsersProfileLoaded";
@@ -23,7 +23,6 @@ public class ContextEvent extends Event {
     /***** friends creating game popUp *****/
     public static const NEED_TO_SHOW_WARNING_FRIENDS_GAMEW:String = "NeedToShowWarningFriendsGame";
     public static const NEED_TO_SHOW_ERROR_FRIENDS_GAMEW:String = "NeedToShowErrorFriendsGame"
-
 
 
     /***** world page - bottom panel events *****/
@@ -81,54 +80,53 @@ public class ContextEvent extends Event {
     public static const IM_REMOVE_RIGHT_CONTENT_SUB_MENU:String = "IMRemoveRightContentSubMenu";
     public static const IM_REMOVE_ITEM_RULES_DENIED_CONTENT:String = "IMRemoveNotEnoughtMoneyContent";
 
-	
-	/***** enegry market events *****/
-	public static const NEED_TO_OPEN_ENERGY_MARKET:String = "IMNeedToOpenEnergyMarket";
+
+    /***** enegry market events *****/
+    public static const NEED_TO_OPEN_ENERGY_MARKET:String = "IMNeedToOpenEnergyMarket";
 
     /***** game page event *****/
     public static const GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW:String = "GPAGENeedToShowGameIsCreatedWindow";
-	public static const GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW:String = "GPAGENeedToShowGameReadyWindow";
+    public static const GPAGE_NEED_TO_SHOW_GAME_READY_WINDOW:String = "GPAGENeedToShowGameReadyWindow";
     public static const GPAGE_NEED_TO_SHOW_IS_PLAYING_PACK_WINDOW:String = "GPAGENeedToShowIsPlayingPackWindow";
     public static const GPAGE_NEED_TO_SHOW_QUIT_THE_GAME_WINDOW:String = "GPAGENeedToShowQuitTheGameWindow";
     public static const GPAGE_NEED_TO_SHOW_RESULTS_WINDOW:String = "GPAGENeedToShowResultsWindow";
     // pass: GameResults
-	public static const GPAGE_NEED_TO_SHOW_THREESEC_WINDOW:String = "GPAGENeedToShowThreeSecWindow";
+    public static const GPAGE_NEED_TO_SHOW_THREESEC_WINDOW:String = "GPAGENeedToShowThreeSecWindow";
     public static const GPAGE_NEED_TO_CLOSE_GAME_IS_CREATED_WINDOW:String = "GPAGENeedToCloseGameIsCreatedWindow"
     public static const GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW:String = "GPAGENeedToCloseGameReadyWindow"
-	public static const GPAGE_MY_PARAMETERS_IS_CHANGED: String ="GPAGEMyParametersIsChanged";
-	
-		
+    public static const GPAGE_MY_PARAMETERS_IS_CHANGED:String = "GPAGEMyParametersIsChanged";
+
+
     /***** buy events: resources(RS), energy(EN), items(IT) *****/
     public static const RS_BUY_FAILED:String = "RSBuyFailed"
     public static const RS_BUY_SUCCESS:String = "RSBuySuccess"
     //pass: ResourcePrice -> how much bought each resource
     //EN_BUY_FAILED == RS_BUY_FAILED
-		
+
     public static const EN_BUY_SUCCESS:String = "ENBuySuccess"
     //pass: int -> how much bought energy
-		
+
     public static const IT_BUY_FAILED:String = "ITBuyFailed"
     public static const IT_BUY_SUCCESS:String = "ITBuySuccess"
     //pass: {it:ItemType, count:int} -> how much bought weapon
 
-		
-	/***** other events *****/	
-	public static const OE_SHOW_REQUEST_TO_GAME_WINDOW: String = "OENeedToOpenRequestToGameWindow";
-	public static const OE_REQUEST_COLLECTION_IS_CHANGED: String = "OERequestCollectionIsChanged";
-	// pass: {isActionDelete: Boolean, index: int} -> index element that was deleted
-	public static const OE_NEW_REQUEST_TO_GAME: String = "OENewRequestToGame";
-	// pass: RequestGameObject
-	public static const OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY: String = "QEChangeRequestToGameButtonActivity";
-	// pass: Boolean	
-	
-	
+
+    /***** other events *****/
+    public static const OE_SHOW_REQUEST_TO_GAME_WINDOW:String = "OENeedToOpenRequestToGameWindow";
+    public static const OE_REQUEST_COLLECTION_IS_CHANGED:String = "OERequestCollectionIsChanged";
+    // pass: {isActionDelete: Boolean, index: int} -> index element that was deleted
+    public static const OE_NEW_REQUEST_TO_GAME:String = "OENewRequestToGame";
+    // pass: RequestGameObject
+    public static const OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY:String = "QEChangeRequestToGameButtonActivity";
+    // pass: Boolean
+
+
     /***** common events *****/
     public static const BOMBER_CHANGED:String = "BomberChanged";
     public static const GAME_PROFILE_LOADED:String = "GameProfileLoaded";
 
 
     public var data:*;
-
 
 
     public function ContextEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false, data:* = null) {

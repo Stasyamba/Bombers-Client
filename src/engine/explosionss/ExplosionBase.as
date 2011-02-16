@@ -17,7 +17,7 @@ public class ExplosionBase {
     }
 
     protected var map:IMap;
-    public var timeToLive:Number;
+    public var timeToLive:int;
     protected var _centerX:int;
     protected var _centerY:int;
     private var _points:ArrayList = new ArrayList();
@@ -34,8 +34,8 @@ public class ExplosionBase {
         return null
     }
 
-    public function expireBy(elapsedSecs:Number):void {
-        timeToLive -= elapsedSecs;
+    public function expireBy(elapsedMilliSecs:int):void {
+        timeToLive -= elapsedMilliSecs;
     }
 
     public function expired():Boolean {

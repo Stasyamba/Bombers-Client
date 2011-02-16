@@ -6,7 +6,7 @@
 package engine.maps.interfaces {
 import engine.bombers.interfaces.IBomber
 
-public interface IMapObject {
+public interface IDynObject {
 
     function canExplosionGoThrough():Boolean;
 
@@ -20,12 +20,12 @@ public interface IMapObject {
 
     function get block():IMapBlock;
 
-    function get type():IMapObjectType;
+    function get type():IDynObjectType;
 
     function activateOn(player:IBomber):void;
 
-    function tryToTake():void;
+    function onAddedToMap():void
 
-    function get wasTriedToBeTaken():Boolean;
+    function get removeAfterActivation():Boolean
 }
 }

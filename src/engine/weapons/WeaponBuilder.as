@@ -6,9 +6,6 @@
 package engine.weapons {
 import components.common.items.ItemType
 
-import engine.bombss.BombsBuilder
-import engine.maps.builders.MapObjectBuilder
-import engine.model.managers.interfaces.IObjectManager
 import engine.model.managers.regular.MapManager
 import engine.weapons.interfaces.IActivatableWeapon
 import engine.weapons.interfaces.IDeactivatableWeapon
@@ -16,31 +13,25 @@ import engine.weapons.interfaces.IMineWeapon
 import engine.weapons.interfaces.IWeapon
 
 public class WeaponBuilder {
-    private var _bombsBuilder:BombsBuilder
     private var _mapManager:MapManager
-    private var _objectBuilder:MapObjectBuilder
-    private var _objectManager:IObjectManager
 
-    public function WeaponBuilder(bombsBuilder:BombsBuilder, mapManager:MapManager, objectBuilder:MapObjectBuilder, objectManager:IObjectManager) {
-        _bombsBuilder = bombsBuilder
+    public function WeaponBuilder(mapManager:MapManager) {
         _mapManager = mapManager
-        _objectBuilder = objectBuilder
-        _objectManager = objectManager
     }
 
     public function makeSpecialBomb(charges:int, type:WeaponType):IActivatableWeapon {
         switch (type) {
             case WeaponType.ATOM_BOMB_WEAPON:
-                return new AtomBombWeapon(_mapManager, _bombsBuilder, charges);
+                return new AtomBombWeapon(_mapManager, charges);
             case WeaponType.BOX_BOMB_WEAPON:
-                return new BoxBombWeapon(_mapManager, _bombsBuilder, charges);
+                return new BoxBombWeapon(_mapManager, charges);
             case WeaponType.DYNAMITE_WEAPON:
-                return new DynamiteWeapon(_mapManager, _bombsBuilder, charges);
+                return new DynamiteWeapon(_mapManager, charges);
         }
         throw new ArgumentError("unknown special bomb type");
     }
 
-    public function makePotion(duration:Number, charges:int, type:WeaponType):IDeactivatableWeapon {
+    public function makePotion(duration:int, charges:int, type:WeaponType):IDeactivatableWeapon {
         switch (type) {
             case WeaponType.HAMELEON:
                 return new HameleonWeapon(duration, charges)
@@ -51,7 +42,7 @@ public class WeaponBuilder {
     public function makeMine(charges:int, type:WeaponType):IMineWeapon {
         switch (type) {
             case WeaponType.REGULAR_MINE:
-                return new RegularMineWeapon(charges, _mapManager, _objectBuilder, _objectManager)
+                return new RegularMineWeapon(charges, _mapManager)
         }
         throw new ArgumentError("unknown mine type")
     }
@@ -68,7 +59,7 @@ public class WeaponBuilder {
             case WeaponType.DYNAMITE_WEAPON:
                 return makeSpecialBomb(count, weaponType);
             case WeaponType.HAMELEON:
-                return makePotion(20, count, weaponType)
+                return makePotion(HameleonWeapon.DURATION, count, weaponType)
             case WeaponType.REGULAR_MINE:
                 return makeMine(count, weaponType)
         }

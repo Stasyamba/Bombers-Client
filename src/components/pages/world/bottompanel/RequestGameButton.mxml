@@ -1,144 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 creationComplete="init();"
-		 useHandCursor="true" buttonMode="true"
-		 >
-	<fx:Declarations>
-		
-		<s:Parallel id="pulseA" repeatCount="55200">
-			
-			<s:Parallel>
-				<s:Animate target="{glowFilter}" duration="600">
-					<s:SimpleMotionPath property="blurX" valueFrom="0" valueTo="15"/>
-				</s:Animate>
-				<s:Animate target="{glowFilter}" duration="600">
-					<s:SimpleMotionPath property="blurY" valueFrom="0" valueTo="15"/>
-				</s:Animate>
-			</s:Parallel>
-			
-			<s:Parallel>
-				<s:Animate target="{glowFilter}" duration="600">
-					<s:SimpleMotionPath property="blurX" valueFrom="15" valueTo="3"/>
-				</s:Animate>
-				<s:Animate target="{glowFilter}" duration="600">
-					<s:SimpleMotionPath property="blurY" valueFrom="15" valueTo="3"/>
-				</s:Animate>
-			</s:Parallel>
-			
-			<s:Sequence>
-				<s:Animate id="jumpUpA" target="{iconGroup}" duration="{jumpUpTime}">
-					<s:SimpleMotionPath property="paddingTop" valueFrom="{amplitude}" valueTo="{-amplitude}"/>
-				</s:Animate>
-				
-				<s:Animate id="jumpDownA" target="{iconGroup}" duration="{jumpDownTime}">
-					<s:SimpleMotionPath property="paddingTop" valueFrom="{-amplitude}" valueTo="{amplitude}"/>
-				</s:Animate>
-				
-			</s:Sequence>
-			
-			
-		</s:Parallel>
-		
-	</fx:Declarations>
-	
-	<fx:Script>
-		<![CDATA[
-			
-			[Bindable]
-			private var amplitude:int = 5;
-			
-			[Bindable]
-			private var jumpUpTime:int = 300;
-			[Bindable]
-			private var jumpDownTime:int = 250;
-			
-			
-			public static const ACTIVE_STATE: int = 0;
-			public static const NOTACTIVE_STATE: int = 1;
-			
-			private var _currentButtonState: int = NOTACTIVE_STATE;
-			
-			[Bindable]
-			private var isAcitveState: Boolean = false;
-			
-			public function get currentButtonState():int
-			{
-				return _currentButtonState;
-			}
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         creationComplete="init();"
+         useHandCursor="true" buttonMode="true"
+        >
+    <fx:Declarations>
 
-			private function switchState(newState: int): void
-			{
-				pulseA.stop();
-				
-				switch(newState)
-				{
-					case ACTIVE_STATE:
-						_currentButtonState = ACTIVE_STATE;
-						pulseA.play();
-						isAcitveState = true;
-						break;
-					case NOTACTIVE_STATE:
-						_currentButtonState = NOTACTIVE_STATE;
-						isAcitveState = false;
-						break;
-				}
-			}	
-			
-			private function init(): void
-			{
-				
-				Context.Model.addCustomListener(ContextEvent.OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY, function (e: ContextEvent): void
-				{
-					if(e.data is Boolean)
-					{
-						if(e.data as Boolean)
-						{
-							switchState(ACTIVE_STATE);
-						}else
-						{
-							switchState(NOTACTIVE_STATE);
-						}
-					}
-				});
-				
-				// call once immitation
-				//switchState(ACTIVE_STATE);
-			}
-			
-			
-		]]>
+        <s:Parallel id="pulseA" repeatCount="55200">
+
+            <s:Parallel>
+                <s:Animate target="{glowFilter}" duration="600">
+                    <s:SimpleMotionPath property="blurX" valueFrom="0" valueTo="15"/>
+                </s:Animate>
+                <s:Animate target="{glowFilter}" duration="600">
+                    <s:SimpleMotionPath property="blurY" valueFrom="0" valueTo="15"/>
+                </s:Animate>
+            </s:Parallel>
+
+            <s:Parallel>
+                <s:Animate target="{glowFilter}" duration="600">
+                    <s:SimpleMotionPath property="blurX" valueFrom="15" valueTo="3"/>
+                </s:Animate>
+                <s:Animate target="{glowFilter}" duration="600">
+                    <s:SimpleMotionPath property="blurY" valueFrom="15" valueTo="3"/>
+                </s:Animate>
+            </s:Parallel>
+
+            <s:Sequence>
+                <s:Animate id="jumpUpA" target="{iconGroup}" duration="{jumpUpTime}">
+                    <s:SimpleMotionPath property="paddingTop" valueFrom="{amplitude}" valueTo="{-amplitude}"/>
+                </s:Animate>
+
+                <s:Animate id="jumpDownA" target="{iconGroup}" duration="{jumpDownTime}">
+                    <s:SimpleMotionPath property="paddingTop" valueFrom="{-amplitude}" valueTo="{amplitude}"/>
+                </s:Animate>
+
+            </s:Sequence>
+
+
+        </s:Parallel>
+
+    </fx:Declarations>
+
+    <fx:Script>
+		<![CDATA[
+        [Bindable]
+        private var amplitude:int = 5;
+
+        [Bindable]
+        private var jumpUpTime:int = 300;
+        [Bindable]
+        private var jumpDownTime:int = 250;
+
+
+        public static const ACTIVE_STATE:int = 0;
+        public static const NOTACTIVE_STATE:int = 1;
+
+        private var _currentButtonState:int = NOTACTIVE_STATE;
+
+        [Bindable]
+        private var isAcitveState:Boolean = false;
+
+        public function get currentButtonState():int {
+            return _currentButtonState;
+        }
+
+        private function switchState(newState:int):void {
+            pulseA.stop();
+
+            switch (newState) {
+                case ACTIVE_STATE:
+                    _currentButtonState = ACTIVE_STATE;
+                    pulseA.play();
+                    isAcitveState = true;
+                    break;
+                case NOTACTIVE_STATE:
+                    _currentButtonState = NOTACTIVE_STATE;
+                    isAcitveState = false;
+                    break;
+            }
+        }
+
+        private function init():void {
+
+            Context.Model.addCustomListener(ContextEvent.OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY, function (e:ContextEvent):void {
+                if (e.data is Boolean) {
+                    if (e.data as Boolean) {
+                        switchState(ACTIVE_STATE);
+                    } else {
+                        switchState(NOTACTIVE_STATE);
+                    }
+                }
+            });
+
+            // call once immitation
+            //switchState(ACTIVE_STATE);
+        }
+        ]]>
 	</fx:Script>
-	
-	<s:HGroup gap="15">
-		
-		<s:HGroup id="iconGroup">
-			<s:Group>
-				<s:BitmapImage id="imageIcon" source="@Embed(source='assets/pageworld/bottompanel/buttons/requestIcon.png')"
-							   smooth="true"
-							   visible="{!isAcitveState}"
-							   blendMode="luminosity"
-							   />
-				<s:BitmapImage id="imageIconOver" source="@Embed(source='assets/pageworld/bottompanel/buttons/requestIconOver.png')"
-							   smooth="true"
-							   visible="{isAcitveState}">
-					<s:filters>
-						<s:GlowFilter id="glowFilter"
-									  blurX="10" color="0xfff000" />
-					</s:filters>
-				</s:BitmapImage>
-			</s:Group>
-		</s:HGroup>
-		
-		
-		<s:HGroup height="100%"
-				  verticalAlign="middle"
-				  visible="false"
-				  >
-			<s:Label text="Предложения" fontSize="16" color="0x42d037" fontFamily="mpbc" />
-		</s:HGroup>
-	</s:HGroup>
-	
-	
+
+    <s:HGroup gap="15">
+
+        <s:HGroup id="iconGroup">
+            <s:Group>
+                <s:BitmapImage id="imageIcon"
+                               source="@Embed(source='assets/pageworld/bottompanel/buttons/requestIcon.png')"
+                               smooth="true"
+                               visible="{!isAcitveState}"
+                               blendMode="luminosity"
+                        />
+                <s:BitmapImage id="imageIconOver"
+                               source="@Embed(source='assets/pageworld/bottompanel/buttons/requestIconOver.png')"
+                               smooth="true"
+                               visible="{isAcitveState}">
+                    <s:filters>
+                        <s:GlowFilter id="glowFilter"
+                                      blurX="10" color="0xfff000"/>
+                    </s:filters>
+                </s:BitmapImage>
+            </s:Group>
+        </s:HGroup>
+
+
+        <s:HGroup height="100%"
+                  verticalAlign="middle"
+                  visible="false"
+                >
+            <s:Label text="Предложения" fontSize="16" color="0x42d037" fontFamily="mpbc"/>
+        </s:HGroup>
+    </s:HGroup>
+
+
 </s:Group>

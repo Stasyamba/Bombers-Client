@@ -9,34 +9,28 @@ import com.smartfoxserver.v2.entities.User
 import components.common.bombers.BomberType
 
 import engine.EngineContext
-import engine.bombers.PlayerBomber
 import engine.bombers.PlayersBuilder
 import engine.bombers.bots.AlongRightWallWalkingStrategy
 import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.interfaces.IPlayerBomber
-import engine.bombers.skin.BomberSkin
-import engine.bombss.BombType
-import engine.bombss.BombsBuilder
 import engine.data.location1.maps.Maps
 import engine.explosionss.ExplosionsBuilder
 import engine.games.*
 import engine.games.single.goals.IGoal
+import engine.maps.builders.DynObjectBuilder
 import engine.maps.builders.MapBlockBuilder
 import engine.maps.builders.MapBlockStateBuilder
-import engine.maps.builders.MapObjectBuilder
+import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock
-import engine.maps.interfaces.IMapObject
-import engine.maps.interfaces.IMapObjectType
 import engine.maps.mapBlocks.MapBlockType
 import engine.model.managers.regular.MapManager
 import engine.model.managers.regular.PlayerManager
-import engine.model.managers.singlePlayer.SinglePlayerBombsManager
+import engine.model.managers.singlePlayer.SPDynObjectManager
 import engine.model.managers.singlePlayer.SinglePlayerEnemiesManager
 import engine.model.managers.singlePlayer.SinglePlayerExplosionsManager
-import engine.model.managers.singlePlayer.SinglePlayerObjectManager
 import engine.playerColors.PlayerColor
-import engine.profiles.GameProfile
 import engine.profiles.GameProfile
 import engine.profiles.PlayerGameProfile
 import engine.utils.greensock.TweenMax
@@ -57,51 +51,38 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
     public function SinglePlayerGame() {
 
         mapBlockStateBuilder = new MapBlockStateBuilder();
-        mapObjectBuilder = new MapObjectBuilder();
-        mapBlockBuilder = new MapBlockBuilder(mapBlockStateBuilder, mapObjectBuilder)
+        dynObjectBuilder = new DynObjectBuilder();
+        mapBlockBuilder = new MapBlockBuilder(mapBlockStateBuilder, dynObjectBuilder)
 
         _mapManager = new MapManager(mapBlockBuilder);
 
         explosionsBuilder = new ExplosionsBuilder(mapManager);
-        bombsBuilder = new BombsBuilder(_mapManager, explosionsBuilder);
 
 
         _playerManager = new PlayerManager();
         _enemiesManager = new SinglePlayerEnemiesManager();
 
-        _bombsManager = new SinglePlayerBombsManager(mapManager);
         _explosionsManager = new SinglePlayerExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
-        _objectManager = new SinglePlayerObjectManager(playerManager, enemiesManager, mapManager);
-        weaponBuilder = new WeaponBuilder(bombsBuilder, _mapManager, mapObjectBuilder, objectManager)
-        playersBuilder = new PlayersBuilder(bombsBuilder,weaponBuilder)
+        _dynObjectManager = new SPDynObjectManager(playerManager, enemiesManager, mapManager);
+        weaponBuilder = new WeaponBuilder(_mapManager)
+        playersBuilder = new PlayersBuilder(weaponBuilder)
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
             EngineContext.frameEntered.add(playerManager.movePlayer);
             EngineContext.frameEntered.add(enemiesManager.moveEnemies);
-            EngineContext.frameEntered.add(bombsManager.checkBombs);
             EngineContext.frameEntered.add(explosionsManager.checkExplosions);
-            EngineContext.frameEntered.add(objectManager.checkObjectTaken);
-
-            EngineContext.triedToSetBomb.add(function(x:int, y:int, type:BombType):void {
-                EngineContext.bombSet.dispatch(playerManager.myId, x, y, type);
-            });
-            EngineContext.bombSet.add(onBombSet);
+            EngineContext.frameEntered.add(dynObjectManager.checkObjectsActivated);
 
             EngineContext.triedToActivateWeapon.add(function (playerId:int, x:int, y:int, type:WeaponType):void {
                 EngineContext.weaponActivated.dispatch(playerId, x, y, type);
             });
             EngineContext.weaponActivated.add(onWeaponUsed);
 
-//            EngineContext.triedToTakeObject.add(function (object:IMapObject):void{
-//                if(!object.wasTriedToBeTaken)
-//                    EngineContext.objectTaken.dispatch(playerManager.myId,object.block.x,object.block.y,object.type)
-//            })
-            EngineContext.objectTaken.add(onObjectTaken);
+            EngineContext.objectActivated.add(onObjectTaken);
 
-            EngineContext.objectAppeared.add(onObjectAppeared)
+            EngineContext.objectAdded.add(onObjectAppeared)
 
-            EngineContext.bombExploded.add(onBombExploded);
-            EngineContext.explosionsAdded.add(onExplosionsAdded)
+            EngineContext.explosionGroupAdded.add(onExplosionsAdded)
             EngineContext.explosionsRemoved.add(onExplosionsRemoved)
 
             EngineContext.taskAccomplished.add(onTaskAccomplished)
@@ -111,16 +92,16 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
         EngineContext.frameEntered.add(checkGoals);
     }
 
-    private function onObjectAppeared(x:int, y:int, type:IMapObjectType):void {
+    private function onObjectAppeared(x:int, y:int, type:IDynObjectType):void {
         var b:IMapBlock = mapManager.map.getBlock(x, y);
-        var object:IMapObject = mapObjectBuilder.make(type, b);
+        var object:IDynObject = dynObjectBuilder.make(type, b);
         b.setObject(object);
-        objectManager.addObject(object);
+        dynObjectManager.addObject(object);
     }
 
-    private function onObjectTaken(id:int, x:int, y:int, objType:IMapObjectType):void {
+    private function onObjectTaken(id:int, x:int, y:int, objType:IDynObjectType):void {
         var bomber:IBomber = getPlayer(id);
-        objectManager.takeObject(x, y, bomber);
+        dynObjectManager.activateObject(x, y, bomber);
     }
 
     private function onTaskAccomplished():void {
@@ -141,10 +122,10 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
         var b:IBomber = getPlayer(playerId);
         //todo: govnocode!!!
         var bomber:IPlayerBomber = b as IPlayerBomber
-        bomber.activateWeapon(x,y,type);
+        bomber.activateWeapon(x, y, type);
         if (bomber.currentWeapon is IDeactivatableWeapon) {
             var dw:IDeactivatableWeapon = IDeactivatableWeapon(bomber.currentWeapon)
-            TweenMax.delayedCall(dw.duration, bomber.deactivateWeapon)
+            TweenMax.delayedCall(dw.duration / 1000, bomber.deactivateWeapon)
         }
 
     }
@@ -154,12 +135,12 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
     }
 
     public function addPlayer(mySelf:User, color:PlayerColor):void {
-        var gp : GameProfile = Context.Model.currentSettings.gameProfile
-        playerManager.setPlayer(playersBuilder.makePlayer(this, gp,new PlayerGameProfile(1,gp.currentBomberType,0,0,gp.aursTurnedOn), color));
+        var gp:GameProfile = Context.Model.currentSettings.gameProfile
+        playerManager.setPlayer(playersBuilder.makePlayer(this, gp, new PlayerGameProfile(1, gp.currentBomberType, 0, 0, gp.aursTurnedOn), color));
     }
 
     public function addBot(color:PlayerColor):void {
-        enemiesManager.addEnemy(playersBuilder.makeEnemyBot(this, new PlayerGameProfile(enemiesManager.enemiesCount + 2,BomberType.R2D3, 0,0,new Array()), "bot" + enemiesManager.enemiesCount, color,new AlongRightWallWalkingStrategy()))
+        enemiesManager.addEnemy(playersBuilder.makeEnemyBot(this, new PlayerGameProfile(enemiesManager.enemiesCount + 2, BomberType.R2D3, 0, 0, new Array()), "bot" + enemiesManager.enemiesCount, color, new AlongRightWallWalkingStrategy()))
     }
 
 

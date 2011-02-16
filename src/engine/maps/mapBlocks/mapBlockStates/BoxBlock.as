@@ -5,15 +5,15 @@
 
 package engine.maps.mapBlocks.mapBlockStates {
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.mapObjects.NullDynObject
+import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlockState
-import engine.maps.interfaces.IMapObject
 import engine.maps.mapBlocks.MapBlockType
-import engine.maps.mapObjects.NullMapObject
 import engine.model.explosionss.ExplosionType
 
 public class BoxBlock implements IMapBlockState {
 
-    private var _hiddenObject:IMapObject = NullMapObject.getInstance();
+    private var _hiddenObject:IDynObject = NullDynObject.getInstance();
 
     public function BoxBlock() {
     }
@@ -54,11 +54,11 @@ public class BoxBlock implements IMapBlockState {
         return true;
     }
 
-    public function get hiddenObject():IMapObject {
+    public function get hiddenObject():IDynObject {
         return _hiddenObject;
     }
 
-    public function set hiddenObject(value:IMapObject):void {
+    public function set hiddenObject(value:IDynObject):void {
         _hiddenObject = value;
     }
 }

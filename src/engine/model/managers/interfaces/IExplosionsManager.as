@@ -6,13 +6,11 @@
 package engine.model.managers.interfaces {
 import engine.explosionss.interfaces.IExplosion
 
-import mx.collections.ArrayList
-
 public interface IExplosionsManager {
 
-    function checkExplosions(elapsedMiliSecs:Number):void;
+    function checkExplosions(elapsedMiliSecs:int):void;
 
-    function addExplosions(expls:ArrayList):void;
+    function addExplosions(expls:Array):void;
 
     function updateAllExplosions():void;
 

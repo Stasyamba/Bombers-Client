@@ -33,13 +33,13 @@ public class ExplosionsManager implements IExplosionsManager {
         this.enemiesManager = enemiesManager
     }
 
-    public function addExplosions(expls:ArrayList):void {
-        for each (var e:IExplosion in expls.source) {
+    public function addExplosions(expls:Array):void {
+        for each (var e:IExplosion in expls) {
             if (!e.expired())
                 explosions.addItem(e);
         }
         updateAllExplosions();
-        for each (e in expls.source) {
+        for each (e in expls) {
             e.forEachPoint(function (point:ExplosionPoint):void {
                 var b:IMapBlock = mapManager.map.getBlock(point.x, point.y);
                 b.explode(e);
@@ -109,15 +109,14 @@ public class ExplosionsManager implements IExplosionsManager {
         return result;
     }
 
-    public function checkExplosions(elapsedMiliSecs:Number):void {
-        var elapsedSecs:Number = elapsedMiliSecs / 1000;
+    public function checkExplosions(elapsedMilliSecs:int):void {
         var changed:Boolean = false;
         var removed:ArrayList = new ArrayList();
 
         var l:int = explosions.length;
         for (var i:int = 0; i < l; i++) {
             var expl:IExplosion = explosions.getItemAt(i) as IExplosion;
-            expl.expireBy(elapsedSecs);
+            expl.expireBy(elapsedMilliSecs);
             if (expl.expired()) {
                 explosions.removeItem(expl);
                 removed.addItem(expl);

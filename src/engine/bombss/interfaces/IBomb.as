@@ -5,28 +5,15 @@
 
 package engine.bombss.interfaces {
 import engine.bombers.interfaces.IBomber
-import engine.bombss.BombType
 import engine.explosionss.interfaces.IExplosion
-import engine.maps.interfaces.IMapBlock
+import engine.maps.interfaces.IDynObject
 
-public interface IBomb {
-    function canExplosionGoThrough():Boolean;
-
-    function canGoThrough():Boolean;
-
-    function explodesAndStopsExplosion():Boolean;
+public interface IBomb extends IDynObject {
 
     function explode():IExplosion;
 
     function get exploded():Boolean;
 
-    function get timeToExplode():int;
-
-    function onTimeElapsed(elapsedSecs:Number):void;
-
-    function get block():IMapBlock;
-
-    function get type():BombType
 
     function get power():int;
 

@@ -4,12 +4,13 @@
  */
 
 package engine.model.managers {
+import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IPlayerBomber
 import engine.data.Consts
 import engine.explosionss.ExplosionPoint
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
-import engine.maps.interfaces.IMapObject
 
 public class PlayerManagerBase {
     public function PlayerManagerBase() {
@@ -21,11 +22,10 @@ public class PlayerManagerBase {
         _me = player;
     }
 
-    public function movePlayer(elapsedMiliSecs:int):void {
+    public function movePlayer(elapsedMilliSecs:int):void {
         if (me.isDead)
             return;
-        var elapsedSecs:Number = elapsedMiliSecs / 1000;
-        me.move(elapsedSecs);
+        me.move(elapsedMilliSecs);
     }
 
     //todo: later maybe let explosion manager explode players, here just return bool
@@ -53,7 +53,7 @@ public class PlayerManagerBase {
         return _me.playerId;
     }
 
-    public function checkPlayerMetObject(object:IMapObject):Boolean {
+    public function checkPlayerMetObject(object:IDynObject):Boolean {
         if (me.isDead)
             return false;
         var b:IMapBlock = me.coords.getPartBlock();
@@ -83,6 +83,10 @@ public class PlayerManagerBase {
 
     public function killMe():void {
         me.kill();
+    }
+
+    public function isItMe(bomber:IBomber):Boolean {
+        return bomber == _me
     }
 }
 }

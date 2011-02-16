@@ -28,8 +28,8 @@ public interface IMapBlockState {
 
     function get canShowObjects():Boolean;
 
-    function get hiddenObject():IMapObject;
+    function get hiddenObject():IDynObject;
 
-    function set hiddenObject(value:IMapObject):void ;
+    function set hiddenObject(value:IDynObject):void ;
 }
 }

@@ -4,11 +4,11 @@
  */
 
 package engine.maps.interfaces {
-public interface IMapObjectType {
+public interface IDynObjectType {
     function get value():int;
 
     function get key():String;
 
-    function get waitToAdd():Number;
+    function get waitToAdd():int;
 }
 }

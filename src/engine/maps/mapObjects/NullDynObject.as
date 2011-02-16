@@ -5,22 +5,30 @@
 
 package engine.maps.mapObjects {
 import engine.bombers.interfaces.IBomber
+import engine.maps.mapObjects.DynObjectType
+import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock
-import engine.maps.interfaces.IMapObject
-import engine.maps.interfaces.IMapObjectType
 import engine.maps.mapBlocks.NullMapBlock
 
-public class NullMapObject implements IMapObject {
+public class NullDynObject implements IDynObject {
 
-    private static var instance:NullMapObject;
+    private static var instance:NullDynObject;
 
-    public static function getInstance():NullMapObject {
+    public function onAddedToMap():void {
+    }
+
+    public function get removeAfterActivation():Boolean {
+        return false
+    }
+
+    public static function getInstance():NullDynObject {
         if (instance == null)
-            instance = new NullMapObject();
+            instance = new NullDynObject();
         return instance;
     }
 
-    function NullMapObject() {
+    function NullDynObject() {
     }
 
     public function canExplosionGoThrough():Boolean {
@@ -35,8 +43,8 @@ public class NullMapObject implements IMapObject {
         return false;
     }
 
-    public function get type():IMapObjectType {
-        return MapObjectType.NULL;
+    public function get type():IDynObjectType {
+        return DynObjectType.NULL;
     }
 
     public function activateOn(player:IBomber):void {

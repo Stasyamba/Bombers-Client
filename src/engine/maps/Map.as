@@ -83,7 +83,7 @@ public class Map implements IMap {
             var descr:IBigObjectDescription = BigObjects.objects[String(bObj.@id)] as IBigObjectDescription;
             var origin:Point = new Point(bObj.@x, bObj.@y);
             var blocksArr:Vector.<IMapBlock> = new Vector.<IMapBlock>();
-            var bo:IBigObject = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.mapObjectBuilder, true)
+            var bo:IBigObject = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder, true)
             decorations.push(bo);
         }
         //bigObjects
@@ -96,7 +96,7 @@ public class Map implements IMap {
                 blocksArr.push(getBlock(origin.x + int(obj.x), origin.y + int(obj.y)));
             }
             //todo: BO builder
-            bo = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.mapObjectBuilder)
+            bo = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder)
             if (bObj.@layer == "higher")
                 higherBigObjects.push(bo);
             else

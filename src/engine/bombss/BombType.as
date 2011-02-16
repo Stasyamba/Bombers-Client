@@ -4,9 +4,9 @@
  */
 
 package engine.bombss {
-import engine.maps.interfaces.IMapObjectType
+import engine.maps.interfaces.IDynObjectType
 
-public class BombType implements IMapObjectType{
+public class BombType implements IDynObjectType {
 
     public static const NULL:BombType = new BombType(-1, "NULL", false);
     public static const REGULAR:BombType = new BombType(00, "REGULAR", true);
@@ -36,7 +36,7 @@ public class BombType implements IMapObjectType{
         return _needGlow;
     }
 
-    public function get waitToAdd():Number {
+    public function get waitToAdd():int {
         return 0
     }
 

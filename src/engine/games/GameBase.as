@@ -6,21 +6,17 @@
 package engine.games {
 import engine.bombers.PlayersBuilder
 import engine.bombers.interfaces.IBomber
-import engine.bombss.BombType
-import engine.bombss.BombsBuilder
-import engine.bombss.interfaces.IBomb
 import engine.explosionss.ExplosionPoint
 import engine.explosionss.ExplosionsBuilder
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.builders.DynObjectBuilder
 import engine.maps.builders.MapBlockBuilder
 import engine.maps.builders.MapBlockStateBuilder
-import engine.maps.builders.MapObjectBuilder
 import engine.maps.interfaces.IMapBlock
-import engine.model.managers.interfaces.IBombsManager
+import engine.model.managers.interfaces.IDynObjectManager
 import engine.model.managers.interfaces.IEnemiesManager
 import engine.model.managers.interfaces.IExplosionsManager
 import engine.model.managers.interfaces.IMapManager
-import engine.model.managers.interfaces.IObjectManager
 import engine.model.managers.interfaces.IPlayerManager
 import engine.model.managers.regular.MapManager
 import engine.weapons.WeaponBuilder
@@ -36,18 +32,18 @@ public class GameBase {
     protected var _mapManager:MapManager;
     protected var _playerManager:IPlayerManager;
     protected var _enemiesManager:IEnemiesManager;
-    protected var _bombsManager:IBombsManager;
     protected var _explosionsManager:IExplosionsManager;
-    protected var _objectManager:IObjectManager;
+    protected var _dynObjectManager:IDynObjectManager;
 
     //builders
-    public var bombsBuilder:BombsBuilder;
     public var explosionsBuilder:ExplosionsBuilder;
     public var mapBlockBuilder:MapBlockBuilder;
-    public var mapObjectBuilder:MapObjectBuilder;
+    public var dynObjectBuilder:DynObjectBuilder;
     public var mapBlockStateBuilder:MapBlockStateBuilder;
     public var playersBuilder:PlayersBuilder;
     public var weaponBuilder:WeaponBuilder;
+
+    private var _explosionExchangeBuffer:Array = new Array()
 
     protected var _ready:Boolean = false;
 
@@ -63,12 +59,8 @@ public class GameBase {
         return _enemiesManager;
     }
 
-    public function get bombsManager():IBombsManager {
-        return _bombsManager;
-    }
-
-    public function get objectManager():IObjectManager {
-        return _objectManager;
+    public function get dynObjectManager():IDynObjectManager {
+        return _dynObjectManager;
     }
 
     public function get explosionsManager():IExplosionsManager {
@@ -83,17 +75,6 @@ public class GameBase {
 
     //----------------Handlers---------------
 
-    protected function onBombSet(playerId:int, bombX:int, bombY:int, bombType:BombType):void {
-        var owner:IBomber = getPlayer(playerId);
-        var bomb:IBomb = bombsBuilder.makeBomb(bombType, mapManager.map.getBlock(bombX, bombY), owner)
-        bomb.onSet();
-        bombsManager.addBombAt(bombX, bombY, bomb);
-    }
-
-    protected function onBombExploded(bombX:int, bombY:int, power_bonus:int):void {
-        bombsManager.explodeBombAt(bombX, bombY, power_bonus);
-    }
-
     protected function onExplosionsRemoved(expls:ArrayList):void {
         for each (var e:IExplosion in expls.source)
             e.forEachPoint(function (point:ExplosionPoint):void {
@@ -102,7 +83,7 @@ public class GameBase {
             })
     }
 
-    protected function onExplosionsAdded(expls:ArrayList):void {
+    protected function onExplosionsAdded(expls:Array):void {
         explosionsManager.addExplosions(expls);
     }
 
@@ -111,5 +92,8 @@ public class GameBase {
         return _ready;
     }
 
+    public function get explosionExchangeBuffer():Array {
+        return _explosionExchangeBuffer
+    }
 }
 }

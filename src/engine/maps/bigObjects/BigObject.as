@@ -6,15 +6,15 @@
 package engine.maps.bigObjects {
 import engine.EngineContext
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.builders.DynObjectBuilder
 import engine.maps.builders.MapBlockStateBuilder
-import engine.maps.builders.MapObjectBuilder
+import engine.maps.mapObjects.DynObjectType
 import engine.maps.interfaces.IBigObject
 import engine.maps.interfaces.IBigObjectDescription
 import engine.maps.interfaces.IMapBlock
 import engine.maps.interfaces.IMapBlockState
 import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapBlocks.mapBlockStates.BlockUnderBigObject
-import engine.maps.mapObjects.MapObjectType
 import engine.utils.greensock.TweenMax
 
 import org.osflash.signals.Signal
@@ -22,7 +22,7 @@ import org.osflash.signals.Signal
 public class BigObject implements IBigObject {
 
     private var _mapBlockStateBuilder:MapBlockStateBuilder;
-    private var _mapObjectBuilder:MapObjectBuilder;
+    private var _mapObjectBuilder:DynObjectBuilder;
 
     private var _x:int;
     private var _y:int;
@@ -36,7 +36,7 @@ public class BigObject implements IBigObject {
     private var _explosionStarted:Signal = new Signal();
     private var _destroyed:Signal = new Signal();
 
-    public function BigObject(x:int, y:int, description:IBigObjectDescription, blocks:Vector.<IMapBlock>, mapBlockStateBuilder:MapBlockStateBuilder, mapObjectBuilder:MapObjectBuilder, decoration:Boolean = false, life:int = -1) {
+    public function BigObject(x:int, y:int, description:IBigObjectDescription, blocks:Vector.<IMapBlock>, mapBlockStateBuilder:MapBlockStateBuilder, mapObjectBuilder:DynObjectBuilder, decoration:Boolean = false, life:int = -1) {
         _x = x;
         _y = y;
         _description = description;
@@ -56,7 +56,7 @@ public class BigObject implements IBigObject {
                     obj.canExplosionGoThrough == "true",
                     obj.canSetBomb == "true",
                     MapBlockType.byKey(obj.typeAfterObjectDestroyed),
-                    MapObjectType.byKey(obj.objectAfterObjectDestroyed),
+                    DynObjectType.byKey(obj.objectAfterObjectDestroyed),
                     obj.explodes == "true",
                     this);
             blocks[i].setState(state);
@@ -118,8 +118,8 @@ public class BigObject implements IBigObject {
 //                if (newObj.type != MapObjectType.NULL){
 //                    block.setObject(newObj);
 //                }
-                if (oldState.objectAfterObjectDestroyed != MapObjectType.NULL)
-                    EngineContext.objectAppeared.dispatch(block.x, block.y, oldState.objectAfterObjectDestroyed)
+                if (oldState.objectAfterObjectDestroyed != DynObjectType.NULL)
+                    EngineContext.objectAdded.dispatch(block.x, block.y, oldState.objectAfterObjectDestroyed)
             }
         }
         destroyed.dispatch();

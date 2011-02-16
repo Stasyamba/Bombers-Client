@@ -7,7 +7,6 @@ package engine.bombers {
 import engine.EngineContext
 import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.skin.BomberSkin
-import engine.bombss.BombsBuilder
 import engine.data.Consts
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
@@ -20,8 +19,8 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     protected var _direction:Direction = Direction.NONE;
 
 
-    public function EnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, bombBuilder:BombsBuilder, color:PlayerColor) {
-        super(game, playerProfile.playerId,playerProfile.bomberType, userName, color, BomberSkin.fromBomberType(playerProfile.bomberType), bombBuilder);
+    public function EnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, color:PlayerColor) {
+        super(game, playerProfile.playerId, playerProfile.bomberType, userName, color, BomberSkin.fromBomberType(playerProfile.bomberType));
 
         for (var i:int = 0; i < playerProfile.auras.length; i++) {
             var object:Object = playerProfile.auras[i];
@@ -60,7 +59,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     }
 
     public function performSmoothMotion(moveAmount:Number):void {
-        if(_coords == null)
+        if (_coords == null)
             return
         switch (_direction) {
             case Direction.NONE:
@@ -81,8 +80,8 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
         EngineContext.enemySmoothMovePerformed.dispatch(playerId, _coords.getRealX(), _coords.getRealY());
     }
 
-    public override function move(elapsedTime:Number):void {
-        performSmoothMotion(elapsedTime * speed);
+    public override function move(elapsedMilliSecs:int):void {
+        performSmoothMotion(elapsedMilliSecs * speed / 1000);
     }
 
     public override function kill():void {

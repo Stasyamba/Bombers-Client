@@ -5,12 +5,12 @@
 
 package engine.maps.mapBlocks.mapBlockStates {
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.mapObjects.NullDynObject
 import engine.maps.interfaces.IBigObject
+import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlockState
-import engine.maps.interfaces.IMapObject
-import engine.maps.interfaces.IMapObjectType
 import engine.maps.mapBlocks.MapBlockType
-import engine.maps.mapObjects.NullMapObject
 import engine.model.explosionss.ExplosionType
 
 public class BlockUnderBigObject implements IMapBlockState {
@@ -20,7 +20,7 @@ public class BlockUnderBigObject implements IMapBlockState {
     private var _canSetBomb:Boolean;
     private var _canExplosionGoThrough:Boolean;
     private var _typeAfterObjectDestroyed:MapBlockType;
-    private var _objectAfterObjectDestroyed:IMapObjectType;
+    private var _objectAfterObjectDestroyed:IDynObjectType;
 
     private var objectUnder:IBigObject;
     private var _explodes:Boolean;
@@ -62,15 +62,15 @@ public class BlockUnderBigObject implements IMapBlockState {
         return false;
     }
 
-    public function get hiddenObject():IMapObject {
-        return NullMapObject.getInstance();
+    public function get hiddenObject():IDynObject {
+        return NullDynObject.getInstance();
     }
 
-    public function set hiddenObject(value:IMapObject):void {
+    public function set hiddenObject(value:IDynObject):void {
 
     }
 
-    public function BlockUnderBigObject(explodesAndStopsExplosion:Boolean, canGoThrough:Boolean, canSetBomb:Boolean, canExplosionGoThrough:Boolean, typeAfterObjectDestroyed:MapBlockType, objectAfterObjectDestroyed:IMapObjectType, explodes:Boolean, objectUnder:IBigObject) {
+    public function BlockUnderBigObject(explodesAndStopsExplosion:Boolean, canGoThrough:Boolean, canSetBomb:Boolean, canExplosionGoThrough:Boolean, typeAfterObjectDestroyed:MapBlockType, objectAfterObjectDestroyed:IDynObjectType, explodes:Boolean, objectUnder:IBigObject) {
         _explodesAndStopsExplosion = explodesAndStopsExplosion;
         _canGoThrough = canGoThrough;
         _canSetBomb = canSetBomb;
@@ -85,7 +85,7 @@ public class BlockUnderBigObject implements IMapBlockState {
         return _typeAfterObjectDestroyed;
     }
 
-    public function get objectAfterObjectDestroyed():IMapObjectType {
+    public function get objectAfterObjectDestroyed():IDynObjectType {
         return _objectAfterObjectDestroyed;
     }
 

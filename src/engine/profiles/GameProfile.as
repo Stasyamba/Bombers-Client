@@ -11,8 +11,6 @@ import components.common.worlds.locations.LocationType
 
 import engine.bombers.skin.BomberSkin
 
-import mx.controls.Alert
-
 public class GameProfile {
 
     private var _nick:String;
@@ -208,13 +206,13 @@ public class GameProfile {
         }
         var a:int = obj.getInt("AuraOne");
         if (a != 0)
-            res.setAura(null, ItemType.byValue(a),false)
+            res.setAura(null, ItemType.byValue(a), false)
         a = obj.getInt("AuraTwo");
         if (a != 0)
-            res.setAura(null, ItemType.byValue(a),false)
+            res.setAura(null, ItemType.byValue(a), false)
         a = obj.getInt("AuraThree");
         if (a != 0)
-            res.setAura(null, ItemType.byValue(a),false)
+            res.setAura(null, ItemType.byValue(a), false)
 
         res.resources = new ResourcePrice(obj.getInt("Gold"), obj.getInt("Crystal"), obj.getInt("Adamantium"), obj.getInt("Antimatter"))
 
@@ -231,19 +229,19 @@ public class GameProfile {
     }
 
     public function addItem(iType:ItemType, count:int):void {
-        if(selectedWeaponRightHand.itemType == iType){
+        if (selectedWeaponRightHand.itemType == iType) {
             selectedWeaponRightHand.itemCount += count
             return
-        }else{
+        } else {
             for (var i:int = 0; i < gotItems.length; i++) {
                 var io:ItemProfileObject = gotItems[i];
-                if(io.itemType == iType) {
+                if (io.itemType == iType) {
                     io.itemCount += count
                     return
                 }
             }
         }
-        io = new ItemProfileObject(iType,count)
+        io = new ItemProfileObject(iType, count)
         gotItems.push(io)
         packItems.push(io)
     }

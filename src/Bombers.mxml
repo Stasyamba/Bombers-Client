@@ -34,32 +34,28 @@
         components
         "componentes.*";
 
-        @font-face
-        {
+        @font-face {
             src: url("../assets/fonts/MPBoldCond.otf")
         ;
             fontFamily: mpbc
         ;
         }
 
-        @font-face
-        {
+        @font-face {
             src: url("../assets/fonts/MPSemibold.ttf")
         ;
             fontFamily: mps
         ;
         }
 
-        @font-face
-        {
+        @font-face {
             src: url("../assets/fonts/MPRegular.otf")
         ;
             fontFamily: mpr
         ;
         }
 
-        @font-face
-        {
+        @font-face {
             src: url("../assets/fonts/MPBoldCondItalic.otf")
         ;
             fontFamily: mpbi

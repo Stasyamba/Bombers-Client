@@ -5,10 +5,10 @@
 
 package engine.maps.mapBlocks.mapBlockStates {
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.mapObjects.NullDynObject
+import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlockState
-import engine.maps.interfaces.IMapObject
 import engine.maps.mapBlocks.MapBlockType
-import engine.maps.mapObjects.NullMapObject
 import engine.model.explosionss.ExplosionType
 
 public class WallBlock implements IMapBlockState {
@@ -54,11 +54,11 @@ public class WallBlock implements IMapBlockState {
         return (explType == ExplosionType.ATOM)
     }
 
-    public function get hiddenObject():IMapObject {
-        return NullMapObject.getInstance();
+    public function get hiddenObject():IDynObject {
+        return NullDynObject.getInstance();
     }
 
-    public function set hiddenObject(value:IMapObject):void {
+    public function set hiddenObject(value:IDynObject):void {
     }
 }
 }

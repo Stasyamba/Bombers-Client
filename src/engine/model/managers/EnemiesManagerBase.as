@@ -46,10 +46,9 @@ public class EnemiesManagerBase {
         }
     }
 
-    public function moveEnemies(elapsedMiliSecs:int):void {
-        var elapsedSecs:Number = elapsedMiliSecs / 1000;
+    public function moveEnemies(elapsedMilliSecs:int):void {
         forEachAliveEnemy(function (enemy:IEnemyBomber, playerId:int):void {
-            enemy.move(elapsedSecs);
+            enemy.move(elapsedMilliSecs);
         })
     }
 }

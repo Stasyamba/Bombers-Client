@@ -4,9 +4,9 @@
  */
 
 package engine.maps.mapObjects.mines {
-import engine.maps.interfaces.IMapObjectType
+import engine.maps.interfaces.IDynObjectType
 
-public class MineType implements IMapObjectType {
+public class MineType implements IDynObjectType {
     public static const REGULAR:MineType = new MineType(41, "REGULAR");
 
     private var _key:String;
@@ -25,8 +25,8 @@ public class MineType implements IMapObjectType {
         return _key
     }
 
-    public function get waitToAdd():Number {
-        return 2
+    public function get waitToAdd():int {
+        return 2000
     }
 }
 }

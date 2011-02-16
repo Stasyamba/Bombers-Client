@@ -14,7 +14,7 @@ public interface IDeactivatableWeapon extends IActivatableWeapon {
 
     function get isActivated():Boolean
 
-    function get duration():Number;
+    function get duration():int;
 
     function deactivateStatic(b:IBomber):void
 }

@@ -10,19 +10,15 @@
     <fx:Script><![CDATA[
         import components.ApplicationView
         import components.common.game.multygameresult.GameResults
+        import components.common.game.multygameresult.Result
         import components.common.utils.adjustcolor.ColorMatrix
         import components.common.utils.adjustcolor.ColorMatrixObject
-        import components.common.game.multygameresult.Result
 
         import engine.EngineContext
         import engine.profiles.LobbyProfile
         import engine.ui.GameFieldView
         import engine.ui.GameResultsView
         import engine.ui.ThreeSecondsToStart
-
-        import mx.managers.PopUpManager
-
-        import org.osmf.layout.AbsoluteLayoutFacet
 
         private var now:int,then:int;
 
@@ -64,8 +60,8 @@
                 var gr:GameResults = new GameResults(new Array(), new Array())
                 for each (var object:Object in endData) {
                     for each (var lobbyProfile:LobbyProfile in Context.gameModel.lastGameLobbyProfiles) {
-                        if(object.id == lobbyProfile.id)
-                            gr.getResults().push(new Result(lobbyProfile,object.place,object.exp))
+                        if (object.id == lobbyProfile.id)
+                            gr.getResults().push(new Result(lobbyProfile, object.place, object.exp))
                     }
                 }
                 Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, gr)

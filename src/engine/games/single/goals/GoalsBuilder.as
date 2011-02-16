@@ -4,8 +4,8 @@
  */
 
 package engine.games.single.goals {
+import engine.maps.mapObjects.DynObjectType
 import engine.maps.mapBlocks.MapBlockType
-import engine.maps.mapObjects.MapObjectType
 
 public class GoalsBuilder {
     public function GoalsBuilder() {
@@ -30,7 +30,7 @@ public class GoalsBuilder {
     }
 
     private static function makeCollectObjectsGoal(xml:XML):IGoal {
-        return new CollectObjectsGoal(new MapObjectAmount(MapObjectType.byKey(xml.@type), int(xml.@amount)))
+        return new CollectObjectsGoal(new MapObjectAmount(DynObjectType.byKey(xml.@type), int(xml.@amount)))
     }
 
     private static function makeDefeatEnemyGoal(xml:XML):DefeatEnemyGoal {
