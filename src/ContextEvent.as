@@ -96,7 +96,7 @@ public class ContextEvent extends Event {
 
 	public static const GPAGE_MY_PARAMETERS_IS_CHANGED: String ="GPAGEMyParametersIsChanged";
 	public static const GPAGE_UPDATE_GAME_WEAPONS: String = "GPAGEUpdateGameWeapons";
-
+    public static const GPAGE_INCREASE_CURRENT_WEAPON_INDEX: String = "GPAGEIncreaseCurrentWeaponIndex";
     /***** buy events: resources(RS), energy(EN), items(IT) *****/
     public static const RS_BUY_FAILED:String = "RSBuyFailed"
     public static const RS_BUY_SUCCESS:String = "RSBuySuccess"

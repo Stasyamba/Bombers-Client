@@ -22,9 +22,9 @@ import components.common.items.ItemType
 import components.common.resources.ResourcePrice
 
 import engine.EngineContext
-import engine.maps.mapObjects.DynObjectType
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IDynObjectType
+import engine.maps.mapObjects.DynObjectType
 import engine.model.signals.InGameMessageReceivedSignal
 import engine.model.signals.ProfileLoadedSignal
 import engine.model.signals.manage.GameServerConnectedSignal
@@ -319,6 +319,7 @@ public class GameServer extends SmartFox {
         var responseParams:ISFSObject = event.params.params as SFSObject;
         switch (event.params.cmd) {
             case INPUT_DIRECTION_CHANGED:
+                //special case, message is broadcasted
                 var user:User = userManager.getUserById(responseParams.getInt("userId"));
                 if (user.isItMe)
                     return;
@@ -421,6 +422,8 @@ public class GameServer extends SmartFox {
                 TweenMax.delayedCall(3.0, function ():void {
                     Context.gameModel.gameEnded.dispatch(gameEndData)
                 })
+                var arr:ISFSArray = responseParams.getSFSArray("profiles");
+                Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
                 break;
             case INT_GAME_PROFILE_LOADED:
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
@@ -450,7 +453,7 @@ public class GameServer extends SmartFox {
                 }
                 break;
             case INT_BUY_ITEM_RESULT:
-                trace("resources bought");
+                trace("item bought");
                 status = responseParams.getBool("interface.buyItem.result.fields.status")
                 if (!status) {
                     Context.Model.dispatchCustomEvent(ContextEvent.IT_BUY_FAILED)
@@ -476,20 +479,8 @@ public class GameServer extends SmartFox {
                 fastJoinFailed.dispatch()
                 break;
             case LOBBY_PROFILES:
-                var resultArray:Array = new Array();
                 var arr:ISFSArray = responseParams.getSFSArray("profiles");
-                for (var i:int = 0; i < arr.size(); i++) {
-                    var item:ISFSObject = arr.getSFSObject(i);
-                    var id:int = item.getInt("Id");
-                    var name:String = String(id);
-                    var user:User = userManager.getUserByName(name)
-                    var exp:int = item.getInt("Experience");
-                    var nick:String = item.getUtfString("Nick");
-                    var photo:String = item.getUtfString("Photo");
-                    var ready:Boolean = item.getBool("IsReady");
-                    resultArray[user.playerId] = new LobbyProfile(id, nick, photo, exp, user.playerId, ready)
-                }
-                Context.gameModel.lobbyProfiles = resultArray;
+                Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
                 someoneJoinedToGame.dispatch();
                 break;
             case LOBBY_READY:
@@ -503,6 +494,21 @@ public class GameServer extends SmartFox {
                     lp.isReady = ready;
                 Context.gameModel.playerReadyChanged.dispatch();
         }
+    }
+
+    public function getLobbyProfilesFromSFSArray(arr:ISFSArray):Array {
+        var resultArray:Array = new Array();
+        for (var i:int = 0; i < arr.size(); i++) {
+            var item:ISFSObject = arr.getSFSObject(i);
+            var id:String = item.getUtfString("Id");
+            var user:User = userManager.getUserByName(id)
+            var exp:int = item.getInt("Experience");
+            var nick:String = item.getUtfString("Nick");
+            var photo:String = item.getUtfString("Photo");
+            var ready:Boolean = item.getBool("IsReady");
+            resultArray[user.playerId] = new LobbyProfile(id, nick, photo, exp, user.playerId, ready)
+        }
+        return resultArray
     }
 
     public function get myPlayerId():int {
