@@ -12,11 +12,6 @@
          xmlns:preloaders="components.common.utils.preloaders.*"
          implements="components.common.base.window.IWindow"
         >
-    <fx:Script>
-		<![CDATA[
-        ]]>
-	</fx:Script>
-
     <fx:Declarations>
 
         <s:Animate id="disapearingAnimation" target="{this}" duration="300"
@@ -93,6 +88,7 @@
         import components.common.utils.adjustcolor.ColorMatrix
         import components.common.utils.adjustcolor.ColorMatrixObject
 
+        import mx.controls.Alert
         import mx.managers.PopUpManager
 
         private var requestsAll:Array = new Array();
@@ -100,6 +96,8 @@
         private var currentPage:int = 0;
         [Bindable]
         private var pagesCount:int = 0;
+
+        private var preloaderTimer:Timer
 
         public function close():void {
             Context.Model.windowsManager.deleteWindow(this);
@@ -154,6 +152,35 @@
 
         private function preloaderVisible(visible:Boolean):void {
             preloaderContainer.visible = visible;
+        }
+
+        private function buyEnergy(count:int):void {
+            preloaderVisible(true);
+            preloaderTimer = new Timer(1000)
+            preloaderTimer.start()
+            Context.Model.addCustomListener(ContextEvent.EN_BUY_SUCCESS, onBuySuccess)
+            Context.Model.addCustomListener(ContextEvent.RS_BUY_FAILED, onBuyFailed)
+            Context.gameServer.buyEnergyRequest(count)
+        }
+
+        private function onBuyFailed(e:*):void {
+            Alert.show("Buy failed")
+            finishRequest()
+        }
+
+        private function onBuySuccess(e:*):void {
+            //Alert.show("Buy success")
+            finishRequest()
+        }
+
+        private function finishRequest():void {
+            Context.Model.removeCustomEventListener(ContextEvent.EN_BUY_SUCCESS, onBuySuccess)
+            Context.Model.removeCustomEventListener(ContextEvent.RS_BUY_FAILED, onBuyFailed)
+            preloaderTimer.addEventListener(TimerEvent.TIMER, function(e:*):void {
+                preloaderTimer.stop()
+                preloaderVisible(false)
+                Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED)
+            })
         }
         ]]>
 	</fx:Script>
@@ -211,7 +238,7 @@
                                               customLabel="Согласен!"
                                               scale="0.8"
                                               mouseOver="changeGlowState(true);" mouseOut="changeGlowState(false);"
-                                              click="preloaderVisible(true);"
+                                              click="buyEnergy(3)"
                         />
             </s:VGroup>
 
@@ -241,7 +268,7 @@
                                               customLabel="Рискнем"
                                               mouseOver="changeGlowState(true);" mouseOut="changeGlowState(false);"
                                               scale="0.8"
-                                              click="preloaderVisible(true);"
+                                              click="buyEnergy(8)"
                         />
             </s:VGroup>
         </s:HGroup>

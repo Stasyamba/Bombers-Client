@@ -14,7 +14,7 @@ import engine.bombers.skin.BomberSkin
 public class GameProfile {
 
     private var _nick:String;
-    public var expirance:int;
+    public var experience:int;
     public var energy:int;
     public var id:String;
     public var photoURL:String = "http://moikompas.ru/img/compas/2008-01-04/gennifer_lopes/31534971.jpg";
@@ -190,7 +190,7 @@ public class GameProfile {
         var res:GameProfile = new GameProfile();
         res.id = obj.getUtfString("Id");
         res.nick = obj.getUtfString("Nick");
-        res.expirance = obj.getInt("Experience")
+        res.experience = obj.getInt("Experience")
         res.energy = obj.getInt("Energy")
         res.currentBomberType = BomberType.byValue(obj.getInt("BomberId"))
         res.selectedWeaponRightHand = new ItemProfileObject(res.currentBomberType.baseBomb, -1);

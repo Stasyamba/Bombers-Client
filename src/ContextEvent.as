@@ -46,6 +46,8 @@ public class ContextEvent extends Event {
     public static const GP_PACKITEMS_IS_CHANGED:String = "GPPackItemsIsChanged";
     public static const GP_AURS_TURNED_ON_IS_CHANGED:String = "GPAursTurnedOnIsChanged";
     public static const GP_ENERGY_IS_CHANGED:String = "GPEnegryIsChanged";
+    public static const GP_EXPERIENCE_CHANGED:String = "GPExperienceChanged"
+
 
     /***** inventory market events *****/
 

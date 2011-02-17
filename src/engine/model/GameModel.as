@@ -140,12 +140,18 @@ public class GameModel {
 
     private function onProfileLoaded(profile:GameProfile):void {
         Context.Model.currentSettings.gameProfile = profile
+        if (profile.photoURL == "") {
+            Context.gameServer.sendSetPhotoRequest(Context.Model.currentSettings.socialProfile.photoURL)
+            profile.photoURL = Context.Model.currentSettings.socialProfile.photoURL
+        }
         Context.Model.dispatchCustomEvent(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED)
+
+        Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER,false)
     }
 
 
@@ -171,7 +177,7 @@ public class GameModel {
     }
 
     private function onLeftGame():void {
-         Context.gameServer.someoneLeftGame.remove(onSomeoneLeftGame)
+        Context.gameServer.someoneLeftGame.remove(onSomeoneLeftGame)
     }
 
     private function onSomeoneLeftGame(user:User):void {
@@ -202,14 +208,14 @@ public class GameModel {
     }
 
     private function onGameStarted():void {
-        lastGameLobbyProfiles = lobbyProfiles
+        lastGameLobbyProfiles = lobbyProfiles.concat()
         for each (var lobbyProfile:LobbyProfile in lobbyProfiles) {
             lobbyProfile.isReady = false
         }
         gameEnded.addOnce(onGameEnded);
     }
 
-    private function onGameEnded(p1:*):void {
+    private function onGameEnded(p1:*, p2:*):void {
         EngineContext.clear();
         readyToPlayAgain.addOnce(onReadyToPlayAgain)
     }

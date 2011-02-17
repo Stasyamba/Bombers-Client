@@ -12,6 +12,9 @@ public class LobbyProfile {
     public var playerId:int
     public var isReady:Boolean
 
+    public var place : int
+    public var expEarned : int
+
     public function LobbyProfile(id:String, nick:String, photo:String, experience:int, playerId:int, isReady:Boolean) {
         this.id = id
         this.nick = nick

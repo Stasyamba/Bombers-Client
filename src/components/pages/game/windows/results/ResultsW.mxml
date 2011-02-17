@@ -37,9 +37,9 @@
         import components.common.utils.adjustcolor.ColorMatrix
         import components.common.utils.adjustcolor.ColorMatrixObject
 
-        import mx.managers.PopUpManager
+        import engine.profiles.LobbyProfile
 
-        public var gameResults:GameResults;
+        import mx.managers.PopUpManager
 
         public function close():void {
             PopUpManager.removePopUp(this);
@@ -69,34 +69,35 @@
 
             var place:int = 1;
             while (true) {
-                for each(var r:Result in gameResults.getResults()) {
-                    if (r.place == place) {
+                var found : Boolean = false
+                for each(var lp:LobbyProfile in Context.gameModel.lastGameLobbyProfiles) {
+                    if(lp==null)
+                        continue
+                    if (lp.place == place) {
+                        found = true
                         var l:Label = new Label();
-                        l.text = place.toString() + ". " + r.lobbyProfile.nick;
+                        l.text = place.toString() + ". " + lp.nick + "  +" + lp.expEarned + " опыта";
                         l.minWidth = 180;
                         l.setStyle("fontFamily", "mpbc");
-
-
-                        if (Context.Model.currentSettings.gameProfile.id == r.lobbyProfile.id) {
+                        if (Context.Model.currentSettings.gameProfile.id == lp.id) {
                             l.setStyle("fontSize", 18);
                             l.setStyle("color", 0xfbb044);
                         } else {
                             l.setStyle("fontSize", 14);
                             l.setStyle("color", 0xffffff);
-
                         }
 
                         resultsVGroup.addElement(l);
 
                         place++;
-                        continue
                     }
                 }
-                break
+                if(!found)
+                    break
             }
-            for each(var i:ItemProfileObject in gameResults.getItems()) {
+//            for each(var i:ItemProfileObject in gameResults.getItems()) {
 
-            }
+//            }
         }
 
         private function onClose():void {

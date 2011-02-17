@@ -70,6 +70,7 @@ public class GameServer extends SmartFox {
 
     //interface
     private static const INT_GAME_PROFILE_LOADED:String = "interface.gameProfileLoaded";
+    private static const INT_SET_PHOTO:String = "interface.setPhoto";
     private static const INT_BUY_RESOURCES:String = "interface.buyResources"
     private static const INT_BUY_RESOURCES_RESULT:String = "interface.buyResources.result"
     private static const INT_BUY_ITEM:String = "interface.buyItem";
@@ -154,6 +155,12 @@ public class GameServer extends SmartFox {
 
     public function joinDefaultRoom():void {
         send(new JoinRoomRequest(defaultRoom));
+    }
+
+    public function sendSetPhotoRequest(photo:String):void {
+        var params:ISFSObject = new SFSObject();
+        params.putUtfString("interface.setPhoto.fields.photoUrl",photo);
+        send(new ExtensionRequest(INT_SET_PHOTO, params, null));
     }
 
     public function leaveCurrentGame():void {
@@ -254,6 +261,17 @@ public class GameServer extends SmartFox {
         params.putInt("interface.buyResources.fields.resourceType2", rp.adamant.value)
         params.putInt("interface.buyResources.fields.resourceType3", rp.antimatter.value)
         params.putInt("interface.buyResources.fields.resourceType4", 0)
+
+        send(new ExtensionRequest(INT_BUY_RESOURCES, params, null))
+    }
+
+    public function buyEnergyRequest(count:int):void {
+        var params:ISFSObject = new SFSObject();
+        params.putInt("interface.buyResources.fields.resourceType0", 0)
+        params.putInt("interface.buyResources.fields.resourceType1", 0)
+        params.putInt("interface.buyResources.fields.resourceType2", 0)
+        params.putInt("interface.buyResources.fields.resourceType3", 0)
+        params.putInt("interface.buyResources.fields.resourceType4", count)
 
         send(new ExtensionRequest(INT_BUY_RESOURCES, params, null))
     }
@@ -396,12 +414,28 @@ public class GameServer extends SmartFox {
                 trace("damaged enemy " + responseParams.getInt("HealthLeft"))
                 break;
             case PLAYER_DIED:
+                var playerId:int
                 user = userManager.getUserByName(responseParams.getUtfString("UserId"));
-                if (user == null)
-                    return
-                if (user.isItMe)
-                    return;
-                EngineContext.enemyDied.dispatch(user.playerId);
+                if (user != null) {
+                    playerId = user.playerId
+                    if (user.isItMe) {
+                        updLobbyExperience(playerId, responseParams.getInt("Rank"), responseParams.getInt("Experience"))
+                        Context.Model.currentSettings.gameProfile.experience = responseParams.getInt("Experience")
+                        Context.Model.dispatchCustomEvent(ContextEvent.GP_EXPERIENCE_CHANGED)
+                        return
+                    }
+                } else {
+                    for each (var lobbyProfile:LobbyProfile in Context.gameModel.lastGameLobbyProfiles) {
+                        if (lobbyProfile != null) {
+                            if (lobbyProfile.id == responseParams.getUtfString("UserId")) {
+                                playerId = lobbyProfile.playerId
+                                break
+                            }
+                        }
+                    }
+                }
+                updLobbyExperience(playerId, responseParams.getInt("Rank"), responseParams.getInt("Experience"))
+                EngineContext.enemyDied.dispatch(playerId);
                 break;
             case DEATH_WALL_APPEARED:
                 EngineContext.deathWallAppeared.dispatch(
@@ -409,20 +443,18 @@ public class GameServer extends SmartFox {
                         responseParams.getInt("y"))
                 break;
             case GAME_ENDED:
-                var gameEndData:Array = new Array()
-                var sfsArr:ISFSArray = responseParams.getSFSArray("game.gameEnded.fields.Stats")
-                for (var i:int = 0; i < sfsArr.size(); i++) {
-                    var obj:ISFSObject = sfsArr.getSFSObject(i)
-                    var name:String = obj.getUtfString("UserId")
-                    var user:User = userManager.getUserByName(name)
-                    var place:int = obj.getInt("Place")
-                    var exp:int = obj.getInt("ExperienceEarned")
-                    gameEndData.push({playerId:user.playerId,place:place,exp:exp})
+                var wId:String = responseParams.getUtfString("game.gameEnded.WinnerId")
+                var wExp:int = responseParams.getInt("game.gameEnded.WinnerExperience")
+                var user:User = userManager.getUserByName(wId)
+                updLobbyExperience(user.playerId, 1, wExp)
+                if (user.isItMe) {
+                    Context.Model.currentSettings.gameProfile.experience = responseParams.getInt("Experience")
+                    Context.Model.dispatchCustomEvent(ContextEvent.GP_EXPERIENCE_CHANGED)
                 }
                 TweenMax.delayedCall(3.0, function ():void {
-                    Context.gameModel.gameEnded.dispatch(gameEndData)
+                    Context.gameModel.gameEnded.dispatch(wId, wExp)
                 })
-                var arr:ISFSArray = responseParams.getSFSArray("profiles");
+				var arr:ISFSArray = responseParams.getSFSArray("profiles");
                 Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
                 break;
             case INT_GAME_PROFILE_LOADED:
@@ -448,7 +480,7 @@ public class GameServer extends SmartFox {
                     } else {
                         Context.Model.currentSettings.gameProfile.energy += en;
                         Context.Model.dispatchCustomEvent(ContextEvent.EN_BUY_SUCCESS, en)
-                        Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED)
+                        // GP event dispatched in EnergyMarketW
                     }
                 }
                 break;
@@ -471,7 +503,7 @@ public class GameServer extends SmartFox {
                 Context.Model.dispatchCustomEvent(ContextEvent.IT_BUY_SUCCESS, {it:iType,count:count})
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
-				Context.Model.dispatchCustomEvent(ContextEvent.IM_ITEMBUY_SUCCESS, iType)
+                Context.Model.dispatchCustomEvent(ContextEvent.IM_ITEMBUY_SUCCESS, iType)
                 break;
             case INT_GAME_NAME_RESULT:
                 newGameNameObtained.dispatch(responseParams.getUtfString("interface.gameManager.findGameName.result.fields.gameName"))
@@ -516,6 +548,11 @@ public class GameServer extends SmartFox {
         return mySelf.playerId;
     }
 
-
+    private function updLobbyExperience(playerId:int, place:int, exp:int):void {
+        var lp:LobbyProfile = (Context.gameModel.lastGameLobbyProfiles[playerId] as LobbyProfile)
+        lp.place = place
+        lp.expEarned = exp - lp.experience
+        lp.experience = exp
+    }
 }
 }
