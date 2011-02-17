@@ -191,6 +191,8 @@
 						basePreloaderGroup.visible = e.data as Boolean;
 					});
 					
+					Context.gameModel.init();
+					
                     break;
                 default:
                     break;
