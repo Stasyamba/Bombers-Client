@@ -14,11 +14,7 @@
 		<![CDATA[
         import com.smartfoxserver.v2.entities.User
 
-        import components.common.game.multygameresult.GameResults
-        import components.common.game.multygameresult.Result
-
         import engine.games.GameType
-        import engine.model.signals.manage.GameAddedSignal
         import engine.profiles.LobbyProfile
 
         private var players:Array = new Array();
@@ -58,8 +54,8 @@
         }
 
         private function onReadyToPlayAgain():void {
-            if(Context.gameModel.gameType == GameType.REGULAR){
-                  onConnectedToGame()
+            if (Context.gameModel.gameType == GameType.REGULAR) {
+                onConnectedToGame()
             }
         }
 
@@ -109,7 +105,6 @@
                 }
             }
         }
-
         ]]>
 	</fx:Script>
 

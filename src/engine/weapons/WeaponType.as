@@ -8,6 +8,7 @@ public class WeaponType {
 
     public static const NULL:WeaponType = new WeaponType(-1, "NULL");
     //bombs
+    public static const REGULAR_BOMB_WEAPON:WeaponType = new WeaponType(00, "REGULAR_BOMB_WEAPON");
     public static const ATOM_BOMB_WEAPON:WeaponType = new WeaponType(01, "ATOM_BOMB_WEAPON");
     public static const BOX_BOMB_WEAPON:WeaponType = new WeaponType(02, "BOX_BOMB_WEAPON")
     public static const DYNAMITE_WEAPON:WeaponType = new WeaponType(03, "DYNAMITE_WEAPON");
@@ -42,7 +43,9 @@ public class WeaponType {
     }
 
     public static function byValue(value:int):WeaponType {
-        switch(value){
+        switch (value) {
+            case REGULAR_BOMB_WEAPON.value:
+                return REGULAR_BOMB_WEAPON
             case ATOM_BOMB_WEAPON.value:
                 return ATOM_BOMB_WEAPON
             case HAMELEON.value:

@@ -8,7 +8,6 @@ import components.common.base.window.WindowsManager
 import components.common.bombers.BombersManager
 import components.common.items.ItemsManager
 import components.common.items.categories.ItemsCategoriesManager
-import components.common.profiles.VkontakteProfile
 import components.common.resources.ResourceViewManager
 import components.common.worlds.locations.LocationManager
 import components.common.worlds.locations.LocationViewManager
@@ -35,33 +34,33 @@ public class ApplicationModel extends VkontakteApplicationModel {
             uids: uidP,
             fields: [UserProfileField.UID, UserProfileField.SEX, UserProfileField.PHOTO_BIG, UserProfileField.PHOTO, UserProfileField.PHOTO_MEDIUM, UserProfileField.FIRST_NAME, UserProfileField.LAST_NAME, UserProfileField.NICKNAME]
         }).dispatch(
-                   function (result:*):void {
+                function (result:*):void {
 
-                      /* var returningData:Array = new Array();
+                    /* var returningData:Array = new Array();
 
-                       for each (var o:* in result.response) {
+                     for each (var o:* in result.response) {
 
-                           var up:VkontakteProfile = new VkontakteProfile(o[UserProfileField.UID]);
-                           up.sex = o[UserProfileField.SEX];
-                           up.firstName = o[UserProfileField.FIRST_NAME];
-                           up.lastName = o[UserProfileField.LAST_NAME];
-                           up.photoBigSrc = o[UserProfileField.PHOTO_BIG];
-                           up.photoSrc = o[UserProfileField.PHOTO];
-                           up.photoMediumSrc = o[UserProfileField.PHOTO_MEDIUM];
+                     var up:VkontakteProfile = new VkontakteProfile(o[UserProfileField.UID]);
+                     up.sex = o[UserProfileField.SEX];
+                     up.firstName = o[UserProfileField.FIRST_NAME];
+                     up.lastName = o[UserProfileField.LAST_NAME];
+                     up.photoBigSrc = o[UserProfileField.PHOTO_BIG];
+                     up.photoSrc = o[UserProfileField.PHOTO];
+                     up.photoMediumSrc = o[UserProfileField.PHOTO_MEDIUM];
 
-                           if (addToLoadedUsers) {
-                               Context.Model.currentSettings.apiResult.loadedUsers = pushIntoArray(up, Context.Model.currentSettings.apiResult.loadedUsers, "id");
-                           }
+                     if (addToLoadedUsers) {
+                     Context.Model.currentSettings.apiResult.loadedUsers = pushIntoArray(up, Context.Model.currentSettings.apiResult.loadedUsers, "id");
+                     }
 
-                           returningData.push(up);
-                       }
+                     returningData.push(up);
+                     }
 
-                       if (afterEvent == "") {
-                           dispatchCustomEvent(ContextEvent.USERS_PROFILES_LOADED, returningData);
-                       } else {
-                           dispatchCustomEvent(afterEvent, returningData);
-                       }*/
-                   });
+                     if (afterEvent == "") {
+                     dispatchCustomEvent(ContextEvent.USERS_PROFILES_LOADED, returningData);
+                     } else {
+                     dispatchCustomEvent(afterEvent, returningData);
+                     }*/
+                });
     }
 
     public function wallSavePhotoID(wallIdP:String, photoIdP:String, postIdP:String, messageP:String):void {
@@ -73,11 +72,11 @@ public class ApplicationModel extends VkontakteApplicationModel {
             post_id: postIdP,
             message: messageP
         }).dispatch(
-                   function (result:*):void {
-                       for each (var o:* in result.response) {
-                           //mx.controls.Alert.show("responce:"+ObjectUtil.toString(result.response));
-                       }
-                   });
+                function (result:*):void {
+                    for each (var o:* in result.response) {
+                        //mx.controls.Alert.show("responce:"+ObjectUtil.toString(result.response));
+                    }
+                });
     }
 
     public function pushIntoArray(val:*, arr:Array, compareProperty:String = ""):Array {

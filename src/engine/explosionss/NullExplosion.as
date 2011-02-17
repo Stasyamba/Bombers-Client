@@ -33,7 +33,7 @@ public class NullExplosion implements IExplosion {
     public function addPoint(point:ExplosionPoint):void {
     }
 
-    public function expireBy(elapsedSecs:Number):void {
+    public function expireBy(elapsedMilliSecs:int):void {
     }
 
     public function expired():Boolean {

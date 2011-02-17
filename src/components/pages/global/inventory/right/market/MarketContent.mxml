@@ -12,11 +12,9 @@
     <fx:Script>
 		<![CDATA[
         import components.common.items.ItemObject
-        import components.common.items.ItemType
         import components.common.items.categories.MarketCategory
 
         import mx.collections.ArrayCollection
-        import mx.controls.Alert
 
         import spark.events.IndexChangeEvent
 
@@ -42,12 +40,10 @@
             itemsCollection = new ArrayCollection();
 
             for each(var it:ItemObject in allItems) {
-                if (Context.Model.itemsCategoryManager.getItemMarketCategory(it.type) == marketCategory) 
-				{
-					if(!Context.Model.itemsCategoryManager.isBombBase(it.type))
-					{
-                    	categoryItems.push(it.type);
-					}
+                if (Context.Model.itemsCategoryManager.getItemMarketCategory(it.type) == marketCategory) {
+                    if (!Context.Model.itemsCategoryManager.isBombBase(it.type)) {
+                        categoryItems.push(it.type);
+                    }
                 }
             }
 

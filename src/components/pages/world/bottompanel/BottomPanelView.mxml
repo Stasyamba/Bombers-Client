@@ -14,8 +14,6 @@
         import components.pages.world.windows.friendsgame.GameWithFriendsW
         import components.pages.world.windows.randomgame.CreatingRandomGameW
 
-        import engine.games.GameType
-
         import mx.controls.Alert
         import mx.managers.PopUpManager
 

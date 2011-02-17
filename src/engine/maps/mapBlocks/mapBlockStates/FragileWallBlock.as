@@ -5,10 +5,10 @@
 
 package engine.maps.mapBlocks.mapBlockStates {
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.mapObjects.NullDynObject
+import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlockState
-import engine.maps.interfaces.IMapObject
 import engine.maps.mapBlocks.MapBlockType
-import engine.maps.mapObjects.NullMapObject
 import engine.model.explosionss.ExplosionType
 
 public class FragileWallBlock implements IMapBlockState {
@@ -19,7 +19,7 @@ public class FragileWallBlock implements IMapBlockState {
 
     public var lifePoints:int;
 
-    private var _hiddenObject:IMapObject = NullMapObject.getInstance();
+    private var _hiddenObject:IDynObject = NullDynObject.getInstance();
 
     public function canSetBomb():Boolean {
         return false;
@@ -57,11 +57,11 @@ public class FragileWallBlock implements IMapBlockState {
         return lifePoints > 1;
     }
 
-    public function get hiddenObject():IMapObject {
+    public function get hiddenObject():IDynObject {
         return _hiddenObject;
     }
 
-    public function set hiddenObject(value:IMapObject):void {
+    public function set hiddenObject(value:IDynObject):void {
         _hiddenObject = value;
     }
 }

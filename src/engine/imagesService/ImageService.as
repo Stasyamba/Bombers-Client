@@ -16,10 +16,10 @@ import engine.data.location1.mapObjects.mines.Mines
 import engine.data.location1.maps.MapBlocks
 import engine.data.location1.skins.BomberSkins
 import engine.explosionss.ExplosionPointType
-import engine.maps.interfaces.IMapObjectType
-import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.maps.mapObjects.mines.MineType
+import engine.maps.interfaces.IDynObjectType
+import engine.maps.mapBlocks.MapBlockType
 import engine.model.explosionss.ExplosionType
 import engine.playerColors.PlayerColor
 
@@ -84,7 +84,7 @@ public class ImageService {
         return null;
     }
 
-    public function getObject(type:IMapObjectType):BitmapData {
+    public function getObject(type:IDynObjectType):BitmapData {
         if (type is BonusType) {
             return Bonuses[type.key];
         } else if (type is MineType)

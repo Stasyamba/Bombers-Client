@@ -3,11 +3,12 @@ import api.vkontakte.business.*
 
 import appmodel.ApplicationModel
 
+import components.common.resources.resourcemarket.ResourceMarket
+
 import engine.games.IGame
 import engine.imagesService.ImageService
 import engine.model.GameModel
 import engine.model.gameServer.GameServer
-import components.common.resources.resourcemarket.ResourceMarket
 
 public final class Context extends VyanaContext {
 

@@ -11,15 +11,15 @@ import engine.maps.mapBlocks.MapBlockType
 public class MapBlockBuilder {
 
     public var mapBlockStateBuilder:MapBlockStateBuilder;
-    public var mapObjectBuilder:MapObjectBuilder;
+    public var dynObjectBuilder:DynObjectBuilder;
 
-    public function MapBlockBuilder(mapBlockTypeBuilder:MapBlockStateBuilder, mapObjectBuilder:MapObjectBuilder) {
+    public function MapBlockBuilder(mapBlockTypeBuilder:MapBlockStateBuilder, dynObjectBuilder:DynObjectBuilder) {
         this.mapBlockStateBuilder = mapBlockTypeBuilder;
-        this.mapObjectBuilder = mapObjectBuilder;
+        this.dynObjectBuilder = dynObjectBuilder;
     }
 
     public function make(x:int, y:int, type:MapBlockType):IMapBlock {
-        return new MapBlock(x, y, mapBlockStateBuilder.make(type), mapBlockStateBuilder, mapObjectBuilder);
+        return new MapBlock(x, y, mapBlockStateBuilder.make(type), mapBlockStateBuilder, dynObjectBuilder);
     }
 }
 }

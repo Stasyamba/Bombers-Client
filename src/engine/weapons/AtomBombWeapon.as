@@ -7,27 +7,22 @@ package engine.weapons {
 import engine.EngineContext
 import engine.bombers.interfaces.IBomber
 import engine.bombss.BombType
-import engine.bombss.BombsBuilder
 import engine.model.managers.interfaces.IMapManager
 import engine.weapons.interfaces.IActivatableWeapon
 
-public class AtomBombWeapon implements IActivatableWeapon {
+public class AtomBombWeapon extends ActivatableWeaponBase implements IActivatableWeapon {
 
-    private var _charges:int;
     private var mapManager:IMapManager;
-    private var bombsBuilder:BombsBuilder;
 
-    public function AtomBombWeapon(mapManager:IMapManager, bombsBuilder:BombsBuilder, charges:int = 3) {
+    public function AtomBombWeapon(mapManager:IMapManager, charges:int = 3) {
+        super(charges)
         this.mapManager = mapManager;
-        this.bombsBuilder = bombsBuilder;
-
-        _charges = charges;
     }
 
     public function activate(x:uint, y:uint, by:IBomber):void {
         if (!canActivate(x, y, by)) return;
         _charges--;
-        EngineContext.triedToSetBomb.dispatch(x, y, BombType.ATOM)
+        EngineContext.triedToActivateWeapon.dispatch(by.playerId, x, y, BombType.ATOM)
     }
 
     public function canActivate(x:uint, y:uint, by:IBomber):Boolean {
@@ -36,7 +31,7 @@ public class AtomBombWeapon implements IActivatableWeapon {
         return _charges > 0 && mapManager.map.getBlock(x, y).canSetBomb();
     }
 
-    public function get type():WeaponType {
+    public override function get type():WeaponType {
         return WeaponType.ATOM_BOMB_WEAPON;
     }
 
@@ -44,8 +39,5 @@ public class AtomBombWeapon implements IActivatableWeapon {
     public function activateStatic(b:IBomber, x:int, y:int):void {
     }
 
-    public function get charges():int {
-        return _charges
-    }
 }
 }

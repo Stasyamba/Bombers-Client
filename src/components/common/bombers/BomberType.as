@@ -3,8 +3,8 @@ import components.common.items.ItemType
 
 public class BomberType {
 
-    public static const FURY_JOE:BomberType = new BomberType(0, "FURY_JOE", ItemType.BASE_BOMB,1,1,100,3);
-    public static const R2D3:BomberType = new BomberType(1, "R2D3", ItemType.BASE_BOMB,1,1,100,3);
+    public static const FURY_JOE:BomberType = new BomberType(0, "FURY_JOE", ItemType.BASE_BOMB, 1, 1, 100, 3);
+    public static const R2D3:BomberType = new BomberType(1, "R2D3", ItemType.BASE_BOMB, 1, 1, 100, 3);
 
     private var _value:int;
     private var _name:String;
@@ -65,8 +65,8 @@ public class BomberType {
         return _startLife
     }
 
-    public static function getViewSpeed(type:BomberType,speed:Number):int {
-       return int(Math.round((Math.log(speed) - Math.log(type.speed))/Math.log(1.1))) + 1
+    public static function getViewSpeed(type:BomberType, speed:Number):int {
+        return int(Math.round((Math.log(speed) - Math.log(type.speed)) / Math.log(1.1))) + 1
     }
 }
 }

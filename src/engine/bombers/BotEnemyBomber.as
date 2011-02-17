@@ -7,33 +7,30 @@ package engine.bombers {
 import engine.EngineContext
 import engine.bombers.bots.IWalkingStrategy
 import engine.bombers.interfaces.IEnemyBomber
-import engine.bombers.skin.BomberSkin
-import engine.bombss.BombsBuilder
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
 import engine.playerColors.PlayerColor
 import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
-import engine.weapons.interfaces.IWeapon
 
 public class BotEnemyBomber extends EnemyBomber implements IEnemyBomber {
 
     private var walkingStrategy:IWalkingStrategy;
 
-    public function BotEnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, bombBuilder:BombsBuilder, color:PlayerColor, walkingStrategy:IWalkingStrategy) {
-        super(game, playerProfile, userName, bombBuilder, color)
+    public function BotEnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, color:PlayerColor, walkingStrategy:IWalkingStrategy) {
+        super(game, playerProfile, userName, color)
 
         this.walkingStrategy = walkingStrategy;
     }
 
-    public override function move(elapsedTime:Number):void {
-        var willCover:Number = elapsedTime * speed;
+    public override function move(elapsedMilliSecs:int):void {
+        var willCover:Number = elapsedMilliSecs * speed / 1000;
         if (willGetToBlockCenter(willCover)) {
             var d:Direction = walkingStrategy.getDirection(_direction, _coords);
             if (d != _direction)
                 EngineContext.enemyInputDirectionChanged.dispatch(playerId, _coords.getRealX(), _coords.getRealY(), d);
         }
-        super.move(elapsedTime);
+        super.move(elapsedMilliSecs);
     }
 
     private function willGetToBlockCenter(willCover:Number):Boolean {

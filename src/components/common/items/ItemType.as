@@ -11,8 +11,8 @@ public class ItemType {
     public static const X_RAY_BOMB:ItemType = new ItemType(-1, "X_RAY_BOMB");
     public static const MINA_BOMB:ItemType = new ItemType(41, "MINA_BOMB");
     public static const BOX_BOMB:ItemType = new ItemType(02, "BOX_BOMB")
-	public static const DINAMIT_BOMB:ItemType = new ItemType(03, "DINAMIT_BOMB");
-	
+    public static const DINAMIT_BOMB:ItemType = new ItemType(03, "DINAMIT_BOMB");
+
     private var _value:int;
     private var _name:String;
 

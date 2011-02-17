@@ -4,8 +4,6 @@
  */
 
 package engine.model {
-import com.smartfoxserver.v2.entities.User
-
 import engine.EngineContext
 import engine.games.GameBuilder
 import engine.games.GameType
@@ -23,8 +21,6 @@ import engine.utils.greensock.TweenMax
 
 import flash.events.TimerEvent
 import flash.utils.Timer
-
-import mx.controls.Alert
 
 public class GameModel {
 
@@ -64,7 +60,7 @@ public class GameModel {
         Context.gameServer.connected.add(onGameServerConnected);
         Context.gameServer.loggedIn.add(onLoggedIn);
         Context.gameServer.connectDefault();
-		Context.gameServer.profileLoaded.add(onProfileLoaded);
+        Context.gameServer.profileLoaded.add(onProfileLoaded);
     }
 
     private function onGameServerConnected():void {
@@ -98,8 +94,8 @@ public class GameModel {
 
     //----------multiplayer-----------
 
-    public function tryCreateRegularGame(name:String, pass:String,locationId:int):void {
-        Context.gameServer.createNewGameRequest(name,pass,locationId)
+    public function tryCreateRegularGame(name:String, pass:String, locationId:int):void {
+        Context.gameServer.createNewGameRequest(name, pass, locationId)
         Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
         createdByMe = true;
         Context.gameModel.gameType = GameType.REGULAR
@@ -120,7 +116,7 @@ public class GameModel {
     }
 
     public function joinConcreteGame(name:String, pass:String):void {
-        Context.gameServer.concreteJoinRequest(name,pass);
+        Context.gameServer.concreteJoinRequest(name, pass);
         Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
         Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
         createdByMe = false;

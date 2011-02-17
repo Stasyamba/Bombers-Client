@@ -74,7 +74,6 @@
         import components.common.utils.adjustcolor.ColorMatrix
         import components.common.utils.adjustcolor.ColorMatrixObject
 
-        import engine.profiles.GameProfile
         import engine.profiles.LobbyProfile
 
         private var _profile:LobbyProfile;

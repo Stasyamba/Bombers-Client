@@ -13,7 +13,7 @@ public interface IExplosion {
 
     function addPoint(point:ExplosionPoint):void;
 
-    function expireBy(elapsedSecs:Number):void;
+    function expireBy(elapsedMilliSecs:int):void;
 
     function expired():Boolean;
 

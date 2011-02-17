@@ -4,20 +4,16 @@
  */
 
 package engine {
-import components.common.items.ItemProfileObject
-
 import engine.model.signals.DieWallAppearedSignal
 import engine.model.signals.FrameEnteredSignal
 import engine.model.signals.MissionAccomplishedSignal
 import engine.model.signals.MissionFailedSignal
 import engine.model.signals.WeaponActivatedSignal
 import engine.model.signals.WeaponDeactivatedSignal
-import engine.model.signals.bombs.BombSetSignal
-import engine.model.signals.bombs.BombsExplodedSignal
-import engine.model.signals.bombs.TriedToSetBombSignal
-import engine.model.signals.bonuses.ObjectAppearedSignal
-import engine.model.signals.bonuses.ObjectTakenSignal
-import engine.model.signals.bonuses.TriedToTakeObjectSignal
+import engine.model.signals.WeaponUnitSpentSignal
+import engine.model.signals.bonuses.ObjectActivatedSignal
+import engine.model.signals.bonuses.ObjectAddedSignal
+import engine.model.signals.bonuses.TriedToActivateObjectSignal
 import engine.model.signals.damage.EnemyDamagedSignal
 import engine.model.signals.damage.EnemyDiedSignal
 import engine.model.signals.damage.PlayerDamagedSignal
@@ -31,7 +27,7 @@ import engine.model.signals.movement.EnemySmoothMovePerformedSignal
 import engine.model.signals.movement.PlayerCoordsChangedSignal
 import engine.model.signals.movement.PlayerInputDirectionChangedSignal
 import engine.model.signals.movement.PlayerViewDirectionChangedSignal
-import engine.model.signals.weapons.TriedToUseWeaponSignal
+import engine.model.signals.weapons.TriedToActivateWeaponSignal
 
 import org.osflash.signals.Signal
 
@@ -46,24 +42,20 @@ public class EngineContext {
     private var _playerInputDirectionChanged:PlayerInputDirectionChangedSignal = new PlayerInputDirectionChangedSignal();
     private var _enemyInputDirectionChanged:EnemyInputDirectionChangedSignal = new EnemyInputDirectionChangedSignal();
     private var _enemySmoothMovePerformed:EnemySmoothMovePerformedSignal = new EnemySmoothMovePerformedSignal();
-    //---bombs
-    private var _bombSet:BombSetSignal = new BombSetSignal();
-    private var _bombExploded:BombsExplodedSignal = new BombsExplodedSignal();
-    private var _triedToSetBomb:TriedToSetBombSignal = new TriedToSetBombSignal();
     //---weapons
     private var _currentWeaponChanged:Signal = new Signal();
-    private var _triedToActivateWeapon:TriedToUseWeaponSignal = new TriedToUseWeaponSignal();
+    private var _triedToActivateWeapon:TriedToActivateWeaponSignal = new TriedToActivateWeaponSignal();
     private var _weaponActivated:WeaponActivatedSignal = new WeaponActivatedSignal();
     private var _weaponDeactivated:WeaponDeactivatedSignal = new WeaponDeactivatedSignal();
     //---explosions
     private var _explosionsChanged:ExplosionsChangedSignal = new ExplosionsChangedSignal();
-    private var _explosionsAdded:ExplosionsAddedSignal = new ExplosionsAddedSignal();
+    private var _explosionGroupAdded:ExplosionsAddedSignal = new ExplosionsAddedSignal();
     private var _explosionsUpdated:ExplosionsUpdatedSignal = new ExplosionsUpdatedSignal();
     private var _explosionsRemoved:ExplosionsRemovedSignal = new ExplosionsRemovedSignal();
-    //---bonuses
-    private var _objectAppeared:ObjectAppearedSignal = new ObjectAppearedSignal();
-    private var _triedToTakeObject:TriedToTakeObjectSignal = new TriedToTakeObjectSignal();
-    private var _objectTaken:ObjectTakenSignal = new ObjectTakenSignal();
+    //---dynObjects
+    private var _objectAdded:ObjectAddedSignal = new ObjectAddedSignal();
+    private var _triedToActivateObject:TriedToActivateObjectSignal = new TriedToActivateObjectSignal();
+    private var _objectActivated:ObjectActivatedSignal = new ObjectActivatedSignal();
     //---damage
     private var _playerDamaged:PlayerDamagedSignal = new PlayerDamagedSignal();
     private var _enemyDamaged:EnemyDamagedSignal = new EnemyDamagedSignal();
@@ -76,6 +68,7 @@ public class EngineContext {
 
     //---frame
     private var _frameEntered:FrameEnteredSignal = new FrameEnteredSignal();
+    private var _weaponUnitSpent:WeaponUnitSpentSignal = new WeaponUnitSpentSignal()
 
     function EngineContext() {
     }
@@ -107,23 +100,11 @@ public class EngineContext {
         return instance._enemySmoothMovePerformed;
     }
 
-    public static function get bombSet():BombSetSignal {
-        return instance._bombSet;
-    }
-
-    public static function get bombExploded():BombsExplodedSignal {
-        return instance._bombExploded;
-    }
-
-    public static function get triedToSetBomb():TriedToSetBombSignal {
-        return instance._triedToSetBomb;
-    }
-
     public static function get currentWeaponChanged():Signal {
         return instance._currentWeaponChanged
     }
 
-    public static function get triedToActivateWeapon():TriedToUseWeaponSignal {
+    public static function get triedToActivateWeapon():TriedToActivateWeaponSignal {
         return instance._triedToActivateWeapon;
     }
 
@@ -135,12 +116,16 @@ public class EngineContext {
         return instance._weaponDeactivated;
     }
 
+    public static function get weaponUnitSpent():WeaponUnitSpentSignal {
+        return instance._weaponUnitSpent
+    }
+
     public static function get explosionsChanged():ExplosionsChangedSignal {
         return instance._explosionsChanged;
     }
 
-    public static function get explosionsAdded():ExplosionsAddedSignal {
-        return instance._explosionsAdded;
+    public static function get explosionGroupAdded():ExplosionsAddedSignal {
+        return instance._explosionGroupAdded;
     }
 
     public static function get explosionsUpdated():ExplosionsUpdatedSignal {
@@ -151,16 +136,16 @@ public class EngineContext {
         return instance._explosionsRemoved;
     }
 
-    public static function get objectAppeared():ObjectAppearedSignal {
-        return instance._objectAppeared;
+    public static function get objectAdded():ObjectAddedSignal {
+        return instance._objectAdded;
     }
 
-    public static function get triedToTakeObject():TriedToTakeObjectSignal {
-        return instance._triedToTakeObject;
+    public static function get triedToActivateObject():TriedToActivateObjectSignal {
+        return instance._triedToActivateObject;
     }
 
-    public static function get objectTaken():ObjectTakenSignal {
-        return instance._objectTaken;
+    public static function get objectActivated():ObjectActivatedSignal {
+        return instance._objectActivated;
     }
 
     public static function get playerDamaged():PlayerDamagedSignal {
@@ -202,22 +187,18 @@ public class EngineContext {
         playerInputDirectionChanged.removeAll()
         enemyInputDirectionChanged.removeAll()
         enemySmoothMovePerformed.removeAll()
-        //---bombs
-        bombSet.removeAll()
-        bombExploded.removeAll()
-        triedToSetBomb.removeAll()
         //---weapons
         triedToActivateWeapon.removeAll()
         weaponActivated.removeAll()
         //---explosions
         explosionsChanged.removeAll()
-        explosionsAdded.removeAll()
+        explosionGroupAdded.removeAll()
         explosionsUpdated.removeAll()
         explosionsRemoved.removeAll()
-        //---bonuses
-        objectAppeared.removeAll()
-        triedToTakeObject.removeAll()
-        objectTaken.removeAll()
+        //---dynObjects
+        objectAdded.removeAll()
+        triedToActivateObject.removeAll()
+        objectActivated.removeAll()
         //---damage
         playerDamaged.removeAll()
         enemyDamaged.removeAll()

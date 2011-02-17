@@ -8,8 +8,8 @@
                     xmlns:bottompanel="components.pages.game.bottompanel.*"
                     xmlns:rightpanel="components.pages.game.rightpanel.*"
                     xmlns:game="components.pages.game.*"
-					xmlns:subbottompanel="components.pages.game.subbottompanel.*"
-                    width="100%" height="100%" 
+                    xmlns:subbottompanel="components.pages.game.subbottompanel.*"
+                    width="100%" height="100%"
         >
 
     <fx:Declarations>
@@ -26,9 +26,8 @@
 			import components.pages.game.windows.create.PreStartW;
 			import components.pages.game.windows.results.ResultsW;
 			
-			import mx.controls.Alert;
-			import mx.core.IVisualElement;
 			import mx.managers.PopUpManager;
+
 
         private var now:int,then:int;
 		private var readyWindow: GameReadyW = null;
@@ -70,7 +69,7 @@
                 openThreeSecondsToStart();
             });
 
-            Context.gameModel.threeSecondsToStart.add(function(t1:*,t2:*):void{
+            Context.gameModel.threeSecondsToStart.add(function(t1:*, t2:*):void {
                 Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW)
             })
 				
@@ -93,7 +92,7 @@
             pw.x += 58;
             pw.y -= 105;
 
-            Context.gameModel.gameStarted.addOnce( function ():void{
+            Context.gameModel.gameStarted.addOnce(function ():void {
                 pw.closeWrapper()
             })
         }
@@ -148,14 +147,14 @@
         ]]>
     </fx:Script>
 
-      
+
     <!-- <s:VGroup id="group">
-         <s:BitmapImage id="background"
-                        source="{MapBlocks.MAP_GRASS()}"
-                        width="680" height="440"/>
-         <ui:ChatControl left="10" id="chat" messageSent="onSend(event)"/>
-     </s:VGroup>-->
-     
+        <s:BitmapImage id="background"
+                       source="{MapBlocks.MAP_GRASS()}"
+                       width="680" height="440"/>
+        <ui:ChatControl left="10" id="chat" messageSent="onSend(event)"/>
+    </s:VGroup>-->
+
     <s:Rect width="100%" height="100%">
         <s:fill>
             <s:SolidColor color="0x000000"/>
@@ -165,8 +164,10 @@
     <game:GameView id="gameView" y="{topPanel.height + 2}" x="{leftPanel.width}"/>
 
     <toppanel:TopPanelView id="topPanel" y="0"/>
+
     <!--<subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>-->
 	<subbottompanel:SubBottomPanelView y="526" />
+
 
     <bottompanel:BottomPanelView y="485"/>
     <leftpanel:LeftPanelView id="leftPanel" y="41"/>

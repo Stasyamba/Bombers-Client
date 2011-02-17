@@ -4,9 +4,9 @@
  */
 
 package engine.maps.mapObjects.bonuses {
-import engine.maps.interfaces.IMapObjectType
+import engine.maps.interfaces.IDynObjectType
 
-public class BonusType implements IMapObjectType {
+public class BonusType implements IDynObjectType {
 
     public static const ADD_BOMB:BonusType = new BonusType(101, "ADD_BOMB");
     public static const ADD_BOMB_POWER:BonusType = new BonusType(102, "ADD_BOMB_POWER");
@@ -51,7 +51,7 @@ public class BonusType implements IMapObjectType {
         return _key;
     }
 
-    public function get waitToAdd():Number {
+    public function get waitToAdd():int {
         return 0
     }
 }

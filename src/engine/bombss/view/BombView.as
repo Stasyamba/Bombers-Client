@@ -5,40 +5,58 @@
 
 package engine.bombss.view {
 import engine.EngineContext
-import engine.bombss.NullBomb
+import engine.bombss.BombType
 import engine.data.Consts
 import engine.interfaces.IDrawable
+import engine.maps.mapObjects.DynObjectType
 import engine.maps.interfaces.IMapBlock
+import engine.maps.interfaces.ITimeActivatableDynObject
+import engine.maps.mapBlocks.view.DestroyableSprite
 
 import flash.display.BlendMode
 import flash.display.Sprite
 
-public class BombView extends Sprite implements IDrawable {
+public class BombView extends DestroyableSprite implements IDrawable {
     private var block:IMapBlock;
 
     private var glow:Sprite = new Sprite;
 
     private var pulsing:Boolean = false;
 
-    private static const TIME_TO_BOOM_WHEN_TO_FASTEN_PULSE:Number = 0.6
+    private static const TIME_TO_BOOM_WHEN_TO_FASTEN_PULSE:int = 600
 
+    private var _baseView:Sprite
 
-    public function BombView(block:IMapBlock) {
+    public function BombView(block:IMapBlock, baseView:Sprite) {
         super();
         this.block = block;
         glow.blendMode = BlendMode.OVERLAY;
         addChild(glow);
+        _baseView = baseView;
+
+        this.block.objectCollected.add(onCollected)
+
     }
 
-    public function draw():void {
+    private function onCollected(byMe:Boolean):void {
+        destroy()
+    }
+
+    override public function destroy():void {
+        block.objectCollected.remove(onCollected);
+        if (_baseView.contains(this))
+            _baseView.removeChild(this);
+    }
+
+    public override function draw():void {
         graphics.clear();
-        if (block.bomb is NullBomb) {
+        if (block.object.type == DynObjectType.NULL) {
             if (pulsing) stopPulsing();
             return;
         }
         if (!pulsing) startPulsing();
 
-        graphics.beginBitmapFill(Context.imageService.getBomb(block.bomb.type, block.bomb.owner.color), null, false, true);
+        graphics.beginBitmapFill(Context.imageService.getBomb(block.object.type as BombType, (block.object as ITimeActivatableDynObject).owner.color), null, false, true);
         graphics.drawRect(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE);
         graphics.endFill();
     }
@@ -56,7 +74,9 @@ public class BombView extends Sprite implements IDrawable {
     private function onPulse(elapsedMilliSecs:int):void {
         var offset:Number;
         var scale:Number;
-        if (block.bomb.timeToExplode < TIME_TO_BOOM_WHEN_TO_FASTEN_PULSE) {
+        if (block.object.type == DynObjectType.NULL)
+            return
+        if ((block.object as ITimeActivatableDynObject).timeToActivate < TIME_TO_BOOM_WHEN_TO_FASTEN_PULSE) {
             offset = BombPulseSynchronizer.fastOffset;
             scale = BombPulseSynchronizer.fastScale;
         } else {

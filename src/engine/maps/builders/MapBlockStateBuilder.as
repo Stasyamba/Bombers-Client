@@ -5,8 +5,8 @@
 
 package engine.maps.builders {
 import engine.maps.interfaces.IBigObject
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlockState
-import engine.maps.interfaces.IMapObjectType
 import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapBlocks.NullMapBlock
 import engine.maps.mapBlocks.mapBlockStates.BlockUnderBigObject
@@ -39,7 +39,7 @@ public class MapBlockStateBuilder {
     public function MapBlockStateBuilder() {
     }
 
-    public function makeUnderObject(explodesAndStopsExplosion:Boolean, canGoThrough:Boolean, canExplosionGoThrough:Boolean, canSetBomb:Boolean, stateAfterObjectDestroyed:MapBlockType, objectAfterObjectDestroyed:IMapObjectType, explodes:Boolean, under:IBigObject):IMapBlockState {
+    public function makeUnderObject(explodesAndStopsExplosion:Boolean, canGoThrough:Boolean, canExplosionGoThrough:Boolean, canSetBomb:Boolean, stateAfterObjectDestroyed:MapBlockType, objectAfterObjectDestroyed:IDynObjectType, explodes:Boolean, under:IBigObject):IMapBlockState {
         return new BlockUnderBigObject(explodesAndStopsExplosion,
                 canGoThrough,
                 canSetBomb,

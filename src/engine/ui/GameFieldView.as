@@ -134,7 +134,7 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
             game.playerManager.me.addDirection(Utils.arrowKeyCodeToDirection(event.keyCode))
         } else if (event.keyCode == Keyboard.SPACE) {
             game.playerManager.me.setBomb(BombType.REGULAR);
-        } else if (event.keyCode == Keyboard.CONTROL) {
+        } else if (event.keyCode == 88) {   //x
             game.playerManager.me.tryActivateWeapon();
         }
     }

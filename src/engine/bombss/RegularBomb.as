@@ -5,48 +5,35 @@
 
 package engine.bombss {
 import engine.bombers.interfaces.IBomber
-import engine.bombss.interfaces.IBomb
 import engine.explosionss.ExplosionsBuilder
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock
+import engine.maps.interfaces.ITimeActivatableDynObject
 import engine.model.explosionss.ExplosionType
-import engine.model.managers.interfaces.IMapManager
 
-public class RegularBomb extends BombBase implements IBomb {
+public class RegularBomb extends BombBase implements ITimeActivatableDynObject {
 
-    private static const EXPLODE_TIME:Number = 3;
+    private static const EXPLODE_TIME:int = 2000;
 
     protected var _power:int;
 
-    public function RegularBomb(mapManager:IMapManager, explosionsBuilder:ExplosionsBuilder, block:IMapBlock, player:IBomber) {
-        super(mapManager, explosionsBuilder, block, player);
-
+    public function RegularBomb(explosionsBuilder:ExplosionsBuilder, block:IMapBlock, player:IBomber) {
+        super(explosionsBuilder, block, player);
         _power = player.bombPower;
         _explodeTime = EXPLODE_TIME;
     }
 
-
-    public function explode():IExplosion {
-        var expl:IExplosion = _explosionsBuilder.make(ExplosionType.REGULAR, block.x, block.y, power)
-        expl.perform();
-        _owner.returnBomb();
-        return expl;
-    }
-
-    public function set power(value:int):void {
-        _power = value;
-    }
-
-    public function get power():int {
-        return _power;
-    }
-
-    public function get type():BombType {
+    public override function get type():IDynObjectType {
         return BombType.REGULAR;
     }
 
-    public function onSet():void {
-        owner.takeBomb();
+    public override function onAddedToMap():void {
+        owner.takeBomb()
+    }
+
+    override protected function getExplosion():IExplosion {
+        return _explosionsBuilder.make(ExplosionType.REGULAR, block.x, block.y, _power)
     }
 }
 }

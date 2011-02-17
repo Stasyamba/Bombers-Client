@@ -6,12 +6,12 @@
 package engine.model.explosionss {
 public class ExplosionType {
 
-    public static const REGULAR:ExplosionType = new ExplosionType("REGULAR", 1, true, false);
+    public static const REGULAR:ExplosionType = new ExplosionType("REGULAR", 1000, true, false);
     public static const NULL:ExplosionType = new ExplosionType("NULL", 0, true, false);
     public static const COMPLEX:ExplosionType = new ExplosionType("COMPLEX", 0, true, false);
-    public static const ATOM:ExplosionType = new ExplosionType("ATOM", 3, true, true);
+    public static const ATOM:ExplosionType = new ExplosionType("ATOM", 3000, true, true);
     public static const BOX:ExplosionType = new ExplosionType("BOX", 0, false, false);
-    public static const DYNAMITE:ExplosionType = new ExplosionType("DYNAMITE", 2, true, false);
+    public static const DYNAMITE:ExplosionType = new ExplosionType("DYNAMITE", 2000, true, false);
 
 
     public static function byValue(value:String):ExplosionType {
@@ -26,7 +26,7 @@ public class ExplosionType {
     }
 
     private var _printsPrints:Boolean
-    private var _timeToLive:Number;
+    private var _timeToLive:int;
     private var _value:String;
     private var _printsEverywhere:Boolean;
 
@@ -41,7 +41,7 @@ public class ExplosionType {
         return _value;
     }
 
-    public function get timeToLive():Number {
+    public function get timeToLive():int {
         return _timeToLive;
     }
 

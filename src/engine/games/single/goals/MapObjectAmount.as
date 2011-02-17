@@ -4,14 +4,14 @@
  */
 
 package engine.games.single.goals {
-import engine.maps.interfaces.IMapObjectType
+import engine.maps.interfaces.IDynObjectType
 
 public class MapObjectAmount {
 
-    private var _type:IMapObjectType;
+    private var _type:IDynObjectType;
     private var _amount:int;
 
-    public function get type():IMapObjectType {
+    public function get type():IDynObjectType {
         return _type;
     }
 
@@ -19,7 +19,7 @@ public class MapObjectAmount {
         return _amount;
     }
 
-    public function MapObjectAmount(type:IMapObjectType, count:int) {
+    public function MapObjectAmount(type:IDynObjectType, count:int) {
         _type = type;
         _amount = count;
     }

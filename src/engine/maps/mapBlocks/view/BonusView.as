@@ -6,8 +6,8 @@
 package engine.maps.mapBlocks.view {
 import engine.data.Consts
 import engine.interfaces.IDrawable
+import engine.maps.mapObjects.DynObjectType
 import engine.maps.interfaces.IMapBlock
-import engine.maps.mapObjects.MapObjectType
 import engine.utils.greensock.TweenMax
 
 import flash.display.Sprite
@@ -26,7 +26,7 @@ public class BonusView extends DestroyableSprite implements IDrawable {
 
     public override function draw():void {
         graphics.clear();
-        if (block.object.type == MapObjectType.NULL)
+        if (block.object.type == DynObjectType.NULL)
             return;
         graphics.beginBitmapFill(Context.imageService.getObject(block.object.type));
         graphics.drawRect(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE);

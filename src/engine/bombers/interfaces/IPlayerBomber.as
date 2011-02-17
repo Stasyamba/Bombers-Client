@@ -18,10 +18,12 @@ public interface IPlayerBomber extends IBomber {
 
     function tryActivateWeapon():void;
 
-    function activateWeapon(x:int,y:int,type:WeaponType):void;
+    function activateWeapon(x:int, y:int, type:WeaponType):void;
 
     function deactivateWeapon(type:WeaponType):void
 
     function get currentWeapon():IWeapon;
+
+    function decWeapon(wt:WeaponType):void;
 }
 }

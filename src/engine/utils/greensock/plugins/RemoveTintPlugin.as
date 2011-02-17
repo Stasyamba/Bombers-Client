@@ -7,10 +7,6 @@
 package engine.utils.greensock.plugins {
 
 
-
-
-
-
 /**
  * Removes the tint of a DisplayObject over time. <br /><br />
  *

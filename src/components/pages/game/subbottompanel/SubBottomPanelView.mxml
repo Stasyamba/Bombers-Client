@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark"
-         xmlns:mx="library://ns.adobe.com/flex/mx" 
-		 xmlns:subbottompanel="components.pages.game.subbottompanel.*"
-		 >
-	
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         xmlns:subbottompanel="components.pages.game.subbottompanel.*"
+        >
+
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
 
     <s:BitmapImage source="@Embed(source='assets/pageworld/subbottompanel/bg.jpg')"/>
-	<s:HGroup width="100%" height="100%"
-			  horizontalAlign="left" verticalAlign="middle">
-		<subbottompanel:Chat paddingLeft="10" />	
-	</s:HGroup>
-	
-	
+    <s:HGroup width="100%" height="100%"
+              horizontalAlign="left" verticalAlign="middle">
+        <subbottompanel:Chat paddingLeft="10"/>
+    </s:HGroup>
+
+
 </s:Group>

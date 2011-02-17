@@ -1,91 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
-<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 gap="10"
-		 creationComplete="init();"
-		 >
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	
-	<fx:Metadata>
-		[Event(name="messageSent", type="ContextEvent")]
-	</fx:Metadata>
-	
-	<fx:Script>
-		<![CDATA[
-			import flash.utils.getTimer;
-			
-			import flashx.textLayout.conversion.TextConverter;
-			
-			import mx.core.ScrollPolicy;
-			
-			import spark.utils.TextFlowUtil;
-			
-			//private var chatText: String = "";
-			
-			private function init(): void
-			{
-			 	chatTextArea.verticalScrollPolicy = ScrollPolicy.OFF;
-				
-				addEventListener(KeyboardEvent.KEY_DOWN, function(e:KeyboardEvent):void {
-					
-					if (e.keyCode == Keyboard.ENTER)
-						onSend(null);
-					
-				});
-			}
-			
-			public function printMessage(from:String, text:String):void {
-				chatTextArea.htmlText += "<font size='14' face='mps'><i> " + name + "</i></font>" + ": <font size='14'>"+text+"</font>\n";
-			}
-			
-			public function printICame():void {
-				chatTextArea.htmlText +=  "<font size='18' face='mps'><i>" + "Вы зашли в игру </i></font>\n";
-			}
-			
-			public function printSomeoneCame(name:String):void {
-				chatTextArea.htmlText += "<font size='18' face='mps'><i>" + name + "</i></font>" + "<font size='18'><i> зашел(ла) в игру </i></font>\n";
-			}
-			
-			public function printSomeoneLeft(name:String):void {
-				chatTextArea.htmlText += "<font size='18' face='mps'><i>" + name + "<i></font>" + "<font size='18'> в страхе выбежал из комнаты </font>\n";
-			}
-			
-			private function onSend(event:MouseEvent):void {
-				if (messageText.text.length > 0) {
-					dispatchEvent(new ContextEvent('messageSent', false, false, {message: messageText.text}));
-					printMessage("Big Billy", messageText.text);
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009"
+          xmlns:s="library://ns.adobe.com/flex/spark"
+          xmlns:mx="library://ns.adobe.com/flex/mx"
+          gap="10"
+          creationComplete="init();"
+        >
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
 
-					messageText.setFocus();
-					messageText.text = "";
-					
-					chatTextArea.verticalScrollPosition = chatTextArea.maxVerticalScrollPosition;
-				}
-			}
-			
-		]]>
+    <fx:Metadata>
+        [Event(name="messageSent", type="ContextEvent")]
+    </fx:Metadata>
+
+    <fx:Script>
+		<![CDATA[
+        import mx.core.ScrollPolicy
+
+        //private var chatText: String = "";
+
+        private function init():void {
+            chatTextArea.verticalScrollPolicy = ScrollPolicy.OFF;
+
+            addEventListener(KeyboardEvent.KEY_DOWN, function(e:KeyboardEvent):void {
+
+                if (e.keyCode == Keyboard.ENTER)
+                    onSend(null);
+
+            });
+        }
+
+        public function printMessage(from:String, text:String):void {
+            chatTextArea.htmlText += "<font size='14' face='mps'><i> " + name + "</i></font>" + ": <font size='14'>" + text + "</font>\n";
+        }
+
+        public function printICame():void {
+            chatTextArea.htmlText += "<font size='18' face='mps'><i>" + "Вы зашли в игру </i></font>\n";
+        }
+
+        public function printSomeoneCame(name:String):void {
+            chatTextArea.htmlText += "<font size='18' face='mps'><i>" + name + "</i></font>" + "<font size='18'><i> зашел(ла) в игру </i></font>\n";
+        }
+
+        public function printSomeoneLeft(name:String):void {
+            chatTextArea.htmlText += "<font size='18' face='mps'><i>" + name + "<i></font>" + "<font size='18'> в страхе выбежал из комнаты </font>\n";
+        }
+
+        private function onSend(event:MouseEvent):void {
+            if (messageText.text.length > 0) {
+                dispatchEvent(new ContextEvent('messageSent', false, false, {message: messageText.text}));
+                printMessage("Big Billy", messageText.text);
+
+                messageText.setFocus();
+                messageText.text = "";
+
+                chatTextArea.verticalScrollPosition = chatTextArea.maxVerticalScrollPosition;
+            }
+        }
+        ]]>
 	</fx:Script>
-	
-	<!--<s:TextArea id="chatTextArea" width="500" height="111" />-->
-	<mx:TextArea id="chatTextArea" width="500" height="121" contentBackgroundAlpha="0" borderVisible="false"
-				 color="0xffffff"
-				 focusAlpha="0"
-				 editable="false"
-				 selectable="false"
-				 />
-	<s:HGroup height="32" verticalAlign="middle">
-		<s:TextInput id="messageText" width="567" borderColor="0x999999" contentBackgroundColor="0x000000" alpha="0.37"
-					 focusSkin="skins.common.NoFocusS" color="0xffffff" fontFamily="mpbc" fontSize="14"
-					 />
-		<s:HGroup gap="0" verticalAlign="middle"> 
-			<s:Button id="send" width="50" click="onSend(event);" skinClass="skins.buttons.SendChatButtonS"
-					  buttonMode="true" useHandCursor="true"
-					  />
-			<s:Label text="Запостить в чатик" fontFamily="mpbi" fontSize="18" color="0xf2f2f2" />
-		</s:HGroup>
-		
-	</s:HGroup>
-	
+
+    <!--<s:TextArea id="chatTextArea" width="500" height="111" />-->
+    <mx:TextArea id="chatTextArea" width="500" height="121" contentBackgroundAlpha="0" borderVisible="false"
+                 color="0xffffff"
+                 focusAlpha="0"
+                 editable="false"
+                 selectable="false"
+            />
+    <s:HGroup height="32" verticalAlign="middle">
+        <s:TextInput id="messageText" width="567" borderColor="0x999999" contentBackgroundColor="0x000000" alpha="0.37"
+                     focusSkin="skins.common.NoFocusS" color="0xffffff" fontFamily="mpbc" fontSize="14"
+                />
+        <s:HGroup gap="0" verticalAlign="middle">
+            <s:Button id="send" width="50" click="onSend(event);" skinClass="skins.buttons.SendChatButtonS"
+                      buttonMode="true" useHandCursor="true"
+                    />
+            <s:Label text="Запостить в чатик" fontFamily="mpbi" fontSize="18" color="0xf2f2f2"/>
+        </s:HGroup>
+
+    </s:HGroup>
+
 </s:VGroup>

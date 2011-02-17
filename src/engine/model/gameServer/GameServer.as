@@ -22,12 +22,9 @@ import components.common.items.ItemType
 import components.common.resources.ResourcePrice
 
 import engine.EngineContext
-import engine.bombss.BombType
-import engine.maps.interfaces.IMapObject
-import engine.maps.interfaces.IMapObjectType
-import engine.maps.mapObjects.MapObjectType
-import engine.maps.mapObjects.bonuses.BonusType
-import engine.maps.mapObjects.mines.MineType
+import engine.maps.mapObjects.DynObjectType
+import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IDynObjectType
 import engine.model.signals.InGameMessageReceivedSignal
 import engine.model.signals.ProfileLoadedSignal
 import engine.model.signals.manage.GameServerConnectedSignal
@@ -111,7 +108,7 @@ public class GameServer extends SmartFox {
 
 
     public function GameServer() {
-        super(true)
+        super(false)
 
         addEventListener(SFSEvent.CONNECTION, onConnected);
 
@@ -224,16 +221,6 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(VIEW_DIRECTION_CHANGED, params, gameRoom));
     }
 
-
-    public function sendSetBomb(bombX:int, bombY:int, type:BombType):void {
-        var params:ISFSObject = new SFSObject();
-        params.putInt("game.AW.f.x", bombX);
-        params.putInt("game.AW.f.y", bombY);
-        params.putInt("game.AW.f.t", type.value);
-
-        send(new ExtensionRequest(ACTIVATE_WEAPON, params, gameRoom));
-    }
-
     public function sendPlayerDamaged(damage:int, isDead:Boolean):void {
         var params:ISFSObject = new SFSObject();
         params.putInt("game.damagePlayer.fields.damage", damage);
@@ -242,7 +229,7 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(DAMAGE_PLAYER, params, gameRoom));
     }
 
-    public function sendActivateDynamicObject(object:IMapObject):void {
+    public function sendActivateDynamicObject(object:IDynObject):void {
         var params:ISFSObject = new SFSObject();
         params.putInt("game.actDO.f.x", object.x);
         params.putInt("game.actDO.f.y", object.y);
@@ -371,50 +358,22 @@ public class GameServer extends SmartFox {
                 Context.gameModel.gameStarted.dispatch();
                 break;
             case DYNAMIC_OBJECT_ADDED:
-                var ot:IMapObjectType = MapObjectType.byValue(responseParams.getInt("game.DOAdd.f.type"))
-                if (ot is BombType) {
-                    user = userManager.getUserByName(responseParams.getUtfString("game.DOAdd.f.userId"));
-                    EngineContext.bombSet.dispatch(
-                            user.playerId,
-                            responseParams.getInt("game.DOAdd.f.x"),
-                            responseParams.getInt("game.DOAdd.f.y"),
-                            ot as BombType)
-                } else if (ot is BonusType) {
-                    EngineContext.objectAppeared.dispatch(
-                            -1,
-                            responseParams.getInt("game.DOAdd.f.x"),
-                            responseParams.getInt("game.DOAdd.f.y"),
-                            ot as BonusType)
-                } else if (ot is MineType) {
-                    user = userManager.getUserByName(responseParams.getUtfString("game.DOAdd.f.userId"));
-                    EngineContext.objectAppeared.dispatch(
-                            user.playerId,
-                            responseParams.getInt("game.DOAdd.f.x"),
-                            responseParams.getInt("game.DOAdd.f.y"),
-                            ot as MineType)
-                }
-                break;
+                var ot:IDynObjectType = DynObjectType.byValue(responseParams.getInt("game.DOAdd.f.type"))
+                user = userManager.getUserByName(responseParams.getUtfString("game.DOAdd.f.userId"));
+                EngineContext.objectAdded.dispatch(
+                        user == null ? -1 : user.playerId,
+                        responseParams.getInt("game.DOAdd.f.x"),
+                        responseParams.getInt("game.DOAdd.f.y"),
+                        ot)
+                break
             case DYNAMIC_OBJECT_ACTIVATED:
                 user = userManager.getUserByName(responseParams.getUtfString("game.DOAct.f.userId"));
-                var ot:IMapObjectType = MapObjectType.byValue(responseParams.getInt("game.DOAct.f.type"))
-                if (ot is BombType) {
-                    EngineContext.bombExploded.dispatch(responseParams.getInt("game.DOAct.f.x"),
-                            responseParams.getInt("game.DOAct.f.y"),
-                            responseParams.getInt("game.DOAct.f.s.power")
-                            )
-                } else if (ot is BonusType) {
-                    EngineContext.objectTaken.dispatch(
-                            user.playerId,
-                            responseParams.getInt("game.DOAct.f.x"),
-                            responseParams.getInt("game.DOAct.f.y"),
-                            ot as BonusType)
-                } else if (ot is MineType) {
-                    EngineContext.objectTaken.dispatch(
-                            user.playerId,
-                            responseParams.getInt("game.DOAct.f.x"),
-                            responseParams.getInt("game.DOAct.f.y"),
-                            ot as MineType)
-                }
+                var ot:IDynObjectType = DynObjectType.byValue(responseParams.getInt("game.DOAct.f.type"))
+                EngineContext.objectActivated.dispatch(
+                        user.playerId,
+                        responseParams.getInt("game.DOAct.f.x"),
+                        responseParams.getInt("game.DOAct.f.y"),
+                        ot)
                 break;
             case WEAPON_ACTIVATED:
                 user = userManager.getUserByName(responseParams.getUtfString("game.WA.f.userId"));
@@ -455,8 +414,8 @@ public class GameServer extends SmartFox {
                     var obj:ISFSObject = sfsArr.getSFSObject(i)
                     var name:String = obj.getUtfString("UserId")
                     var user:User = userManager.getUserByName(name)
-                    var place : int = obj.getInt("Place")
-                    var exp : int = obj.getInt("ExperienceEarned")
+                    var place:int = obj.getInt("Place")
+                    var exp:int = obj.getInt("ExperienceEarned")
                     gameEndData.push({playerId:user.playerId,place:place,exp:exp})
                 }
                 TweenMax.delayedCall(3.0, function ():void {

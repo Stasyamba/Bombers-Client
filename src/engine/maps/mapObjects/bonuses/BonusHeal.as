@@ -5,23 +5,23 @@
 
 package engine.maps.mapObjects.bonuses {
 import engine.bombers.interfaces.IBomber
-import engine.maps.interfaces.IBonus
+import engine.maps.interfaces.ICollectableDynObject
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock
-import engine.maps.interfaces.IMapObjectType
 
-public class BonusHeal extends BonusBase implements IBonus {
+public class BonusHeal extends BonusBase implements ICollectableDynObject {
 
     public function BonusHeal(block:IMapBlock) {
         super(block)
     }
 
-    public function activateOn(player:IBomber):void {
-        //todo:replace 3 with profile property startLife
-        if (player.life < 3)
+    public override function activateOn(player:IBomber):void {
+        super.activateOn(player)
+        if (player.life < player.startLife)
             player.life += 1;
     }
 
-    public function get type():IMapObjectType {
+    public function get type():IDynObjectType {
         return BonusType.HEAL;
     }
 

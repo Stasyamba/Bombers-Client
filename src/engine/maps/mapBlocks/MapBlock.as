@@ -4,16 +4,14 @@
  */
 
 package engine.maps.mapBlocks {
-import engine.bombss.BombType
-import engine.bombss.NullBomb
-import engine.bombss.interfaces.IBomb
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.builders.DynObjectBuilder
 import engine.maps.builders.MapBlockStateBuilder
-import engine.maps.builders.MapObjectBuilder
+import engine.maps.mapObjects.DynObjectType
+import engine.maps.mapObjects.NullDynObject
+import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
 import engine.maps.interfaces.IMapBlockState
-import engine.maps.interfaces.IMapObject
-import engine.maps.mapObjects.NullMapObject
 import engine.model.explosionss.ExplosionType
 
 import org.osflash.signals.Signal
@@ -23,11 +21,10 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
 
 
     private var _mapBlockStateBuilder:MapBlockStateBuilder;
-    private var _mapObjectBuilder:MapObjectBuilder;
+    private var _mapObjectBuilder:DynObjectBuilder;
 
 
-    private var _object:IMapObject;
-    private var _bomb:IBomb;
+    private var _object:IDynObject;
 
     private var _isExplodingNow:Boolean = false;
 
@@ -36,7 +33,7 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
     private var _explodedBy:ExplosionType;
     private var _hasExplosionPrint:Boolean = false;
     private var _destroyed:Signal = new Signal(int, int, MapBlockType);
-    private var _objectSet:Signal = new Signal(IMapObject);
+    private var _objectSet:Signal = new Signal(IDynObject);
 
     public function get isExplodingNow():Boolean {
         return _isExplodingNow;
@@ -44,13 +41,13 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
 
 
     public function canSetBomb():Boolean {
-        if (bomb.type == BombType.NULL)
+        if (object.type == DynObjectType.NULL)
             return state.canSetBomb();
         return false;
     }
 
     public function canGoThrough():Boolean {
-        if (_bomb.canGoThrough() && object.canGoThrough())
+        if (object.canGoThrough())
             return state.canGoThrough();
         return false;
     }
@@ -123,42 +120,30 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
     /*
      * use mapblock builder instead
      * */
-    function MapBlock(x:int, y:int, block:IMapBlockState, mapBlockStateBuilder:MapBlockStateBuilder, mapObjectBuilder:MapObjectBuilder) {
+    function MapBlock(x:int, y:int, block:IMapBlockState, mapBlockStateBuilder:MapBlockStateBuilder, mapObjectBuilder:DynObjectBuilder) {
         _x = x;
         _y = y;
         _state = block;
         _mapBlockStateBuilder = mapBlockStateBuilder;
         _mapObjectBuilder = mapObjectBuilder;
 
-        _object = NullMapObject.getInstance();
-        _bomb = NullBomb.getInstance();
+        _object = NullDynObject.getInstance();
     }
-
 
     public function collectObject(byMe:Boolean):void {
         objectCollected.dispatch(byMe)
         viewUpdated.dispatch();
-        _object = NullMapObject.getInstance();
+        _object = NullDynObject.getInstance();
     }
 
-    public function clearBomb():void {
-        _bomb = NullBomb.getInstance();
-        viewUpdated.dispatch();
-    }
-
-    public function setBomb(bomb:IBomb):void {
-        _bomb = bomb;
-        _viewUpdated.dispatch();
-    }
-
-    public function setObject(object:IMapObject):void {
+    public function setObject(object:IDynObject):void {
+        objectSet.dispatch(object);
         if (state.canShowObjects) {
             _object = object;
             viewUpdated.dispatch();
         } else {
             state.hiddenObject = object;
         }
-        objectSet.dispatch(object);
     }
 
     public function setDieWall():void {
@@ -172,17 +157,13 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
     }
 
 
-    public function get object():IMapObject {
+    public function get object():IDynObject {
         return _object;
     }
 
 
     public function stateAfterExplosion(expl:IExplosion):MapBlockType {
         return state.stateAfterExplosion(expl);
-    }
-
-    public function get bomb():IBomb {
-        return _bomb;
     }
 
     public function get objectCollected():Signal {
@@ -193,11 +174,11 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
         return _objectSet;
     }
 
-    public function get hiddenObject():IMapObject {
+    public function get hiddenObject():IDynObject {
         return state.hiddenObject;
     }
 
-    public function set hiddenObject(value:IMapObject):void {
+    public function set hiddenObject(value:IDynObject):void {
         state.hiddenObject = value;
     }
 

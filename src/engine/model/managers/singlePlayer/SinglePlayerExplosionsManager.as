@@ -12,8 +12,6 @@ import engine.model.managers.interfaces.IMapManager
 import engine.model.managers.interfaces.IPlayerManager
 import engine.model.managers.regular.*
 
-import mx.collections.ArrayList
-
 public class SinglePlayerExplosionsManager extends ExplosionsManager implements IExplosionsManager {
 
 
@@ -21,15 +19,15 @@ public class SinglePlayerExplosionsManager extends ExplosionsManager implements 
         super(explosionsBuilder, mapManager, playerManager, enemiesManager)
     }
 
-    override public function addExplosions(expls:ArrayList):void {
+    override public function addExplosions(expls:Array):void {
         super.addExplosions(expls);
-        for each (var e:IExplosion in expls.source) {
+        for each (var e:IExplosion in expls) {
             enemiesManager.checkEnemiesMetExplosion(e);
         }
 
     }
 
-    override public function checkExplosions(elapsedMiliSecs:Number):void {
+    override public function checkExplosions(elapsedMiliSecs:int):void {
         super.checkExplosions(elapsedMiliSecs);
         var l:int = explosions.length;
         for (var i:int = 0; i < l; i++) {

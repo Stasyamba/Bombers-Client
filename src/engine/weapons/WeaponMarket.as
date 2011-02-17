@@ -1,6 +1,4 @@
 package engine.weapons {
-import engine.resources.Price
-
 import mx.collections.ArrayList
 
 public class WeaponMarket {

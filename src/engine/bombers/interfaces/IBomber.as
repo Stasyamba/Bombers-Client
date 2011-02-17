@@ -9,7 +9,6 @@ import engine.maps.IMap
 import engine.model.signals.StateAddedSignal
 import engine.model.signals.StateRemovedSignal
 import engine.playerColors.PlayerColor
-import engine.weapons.interfaces.IWeapon
 
 import org.osflash.signals.Signal
 
@@ -24,7 +23,7 @@ public interface IBomber {
 
     function get coords():IMapCoords;
 
-    function move(elapsedSeconds:Number):void;
+    function move(elapsedMilliSeconds:int):void;
 
     /**
      *
@@ -69,7 +68,7 @@ public interface IBomber {
 
     function get baseBombPower():int
 
-    function get immortalTime():Number
+    function get immortalTime():int
 
     function incSpeed():void
 

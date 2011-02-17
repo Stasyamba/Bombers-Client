@@ -6,7 +6,7 @@
 package engine.model.managers.regular {
 import engine.bombers.interfaces.IEnemyBomber
 import engine.explosionss.interfaces.IExplosion
-import engine.maps.interfaces.IMapObject
+import engine.maps.interfaces.IDynObject
 import engine.model.managers.EnemiesManagerBase
 import engine.model.managers.interfaces.IEnemiesManager
 
@@ -19,7 +19,7 @@ public class EnemiesManager extends EnemiesManagerBase implements IEnemiesManage
         throw new Error("call is not allowed")
     }
 
-    public function checkEnemyTakenObject(enemie:IEnemyBomber, object:IMapObject):Boolean {
+    public function checkEnemyTakenObject(enemie:IEnemyBomber, object:IDynObject):Boolean {
         throw new Error("call is not allowed")
     }
 }

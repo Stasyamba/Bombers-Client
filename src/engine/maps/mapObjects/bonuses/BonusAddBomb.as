@@ -5,24 +5,23 @@
 
 package engine.maps.mapObjects.bonuses {
 import engine.bombers.interfaces.IBomber
-import engine.maps.interfaces.IBonus
+import engine.maps.interfaces.ICollectableDynObject
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock
-import engine.maps.interfaces.IMapObjectType
 
-public class BonusAddBomb extends BonusBase implements IBonus {
-
+public class BonusAddBomb extends BonusBase implements ICollectableDynObject {
 
     public function BonusAddBomb(block:IMapBlock) {
         super(block);
     }
 
-
-    public function activateOn(player:IBomber):void {
+    public override function activateOn(player:IBomber):void {
+        super.activateOn(player)
         player.incBombCount();
         trace("player " + player.playerId + " collected bonus bomb , bombs = " + player.bombCount);
     }
 
-    public function get type():IMapObjectType {
+    public function get type():IDynObjectType {
         return BonusType.ADD_BOMB;
     }
 

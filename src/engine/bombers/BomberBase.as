@@ -12,7 +12,6 @@ import engine.bombers.interfaces.IMapCoords
 import engine.bombers.mapInfo.MapCoords
 import engine.bombers.skin.BomberSkin
 import engine.bombers.skin.GameSkin
-import engine.bombss.BombsBuilder
 import engine.data.Consts
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
@@ -22,7 +21,6 @@ import engine.model.signals.StateRemovedSignal
 import engine.playerColors.PlayerColor
 import engine.utils.ViewState
 import engine.utils.greensock.TweenMax
-import engine.weapons.interfaces.IWeapon
 
 import org.osflash.signals.Signal
 
@@ -30,7 +28,6 @@ public class BomberBase implements IBomber {
 
     protected var game:IGame;
     protected var _map:IMap;
-    protected var _bombBuilder:BombsBuilder;
 
     protected var _coords:IMapCoords;
     protected var _gameSkin:IGameSkin;
@@ -44,8 +41,8 @@ public class BomberBase implements IBomber {
     protected var _life:int;
     protected var _startLife:int
     protected var _speed:Number;
-    protected var _bombCount:Number;
-    protected var _bombPower:Number;
+    protected var _bombCount:int;
+    protected var _bombPower:int;
     protected var _bombTaken:int
 
 
@@ -57,10 +54,9 @@ public class BomberBase implements IBomber {
     private var _stateRemoved:StateRemovedSignal = new StateRemovedSignal();
 
 
-    public function BomberBase(game:IGame, playerId:int,bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin, bombBuilder:BombsBuilder) {
+    public function BomberBase(game:IGame, playerId:int, bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin) {
         this.game = game;
         _playerId = playerId;
-        _bombBuilder = bombBuilder;
         _gameSkin = new GameSkin(skin, color);
         _color = color;
         _userName = userName;
@@ -73,14 +69,14 @@ public class BomberBase implements IBomber {
         _bombCount = bomberType.bombCount;
     }
 
-    public function makeImmortalFor(secs:Number, blink:Boolean = true):void {
+    public function makeImmortalFor(millisecs:int, blink:Boolean = true):void {
         if (isDead || isImmortal)
             return;
         _isImmortal = true;
         if (blink) {
             stateAdded.dispatch(new ViewState(ViewState.BLINKING, {}, TweenMax.fromTo(new Object(), Consts.BLINKING_TIME, {alpha:0}, {alpha:ViewState.GET_DEFAULT_VALUE, repeat:-1,yoyo:true,paused:true,data:{alpha:ViewState.GET_DEFAULT_VALUE}})))
         }
-        TweenMax.delayedCall(secs, function():void {
+        TweenMax.delayedCall(millisecs / 1000, function():void {
             _isImmortal = false;
             if (blink)
                 stateRemoved.dispatch(ViewState.BLINKING);
@@ -195,17 +191,19 @@ public class BomberBase implements IBomber {
 
     public function takeBomb():void {
         _bombTaken++;
+        trace("bomb taken")
     }
 
     public function returnBomb():void {
         _bombTaken--;
+        trace("bomb returned")
     }
 
-    public function get immortalTime():Number {
-        return 3.0
+    public function get immortalTime():int {
+        return 3000
     }
 
-    public function move(elapsedSeconds:Number):void {
+    public function move(elapsedMilliSeconds:int):void {
         throw new Error("method BomberBase.move can't be called")
     }
 

@@ -5,8 +5,8 @@
 
 package engine.games.single.goals {
 import engine.games.ISinglePlayerGame
-import engine.maps.interfaces.IMapObject
-import engine.maps.interfaces.IMapObjectType
+import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IDynObjectType
 
 public class CollectObjectsGoal implements IGoal {
 
@@ -21,13 +21,13 @@ public class CollectObjectsGoal implements IGoal {
         return _amount;
     }
 
-    public function get objectType():IMapObjectType {
+    public function get objectType():IDynObjectType {
         return amount.type
     }
 
     public function check(game:ISinglePlayerGame):Boolean {
         var i:int = 0;
-        for each (var mapObject:IMapObject in game.gameStats.collectedObjects.source) {
+        for each (var mapObject:IDynObject in game.gameStats.collectedObjects.source) {
             if (mapObject.type == _amount.type)
                 i++
             if (i >= _amount.amount)

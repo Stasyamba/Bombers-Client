@@ -6,11 +6,11 @@
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
 
-	<s:BitmapImage source="@Embed(source='assets/pageworld/subbottompanel/bg.jpg')"/>
-	
-	<!-- immitation -->
-	<!--<s:HGroup width="100%" height="100%"
-			  horizontalAlign="left" verticalAlign="middle">
-		<subbottompanel:Chat />
-	</s:HGroup>-->
+    <s:BitmapImage source="@Embed(source='assets/pageworld/subbottompanel/bg.jpg')"/>
+
+    <!-- immitation -->
+    <!--<s:HGroup width="100%" height="100%"
+               horizontalAlign="left" verticalAlign="middle">
+         <subbottompanel:Chat />
+     </s:HGroup>-->
 </s:Group>
