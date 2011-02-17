@@ -87,13 +87,14 @@
 		{
 			buyProgressVisible(false);
 			close();
-			Alert.show("buy success");
+			
+			//Alert.show("buy success");
 		}
 			
 		private function buyFail(e: ContextEvent):void
 		{
-			buyProgressVisible(false);
-			Alert.show("buy failed");
+			buyProgressVisible(false, true);
+			//Alert.show("Не удалось купить ресурс");
 		}
 
         private function resourceValueChanged(e:ContextEvent):void {
@@ -110,16 +111,19 @@
 
         }
 
-        private function buyProgressVisible(visible:Boolean):void {
+        private function buyProgressVisible(visible:Boolean, failedLabelVisible: Boolean = false):void {
             buyButton.visible = !visible;
             buyPreloader.visible = visible;
+			failedBuyLabel.visible = failedLabelVisible;
         }
 
-        public function test():void {
+        public function test():void 
+		{
             //Alert.show(rp.toString());
             buyProgressVisible(true);
             Context.gameServer.buyResourcesRequest(rp);
         }
+			
         ]]>
 	</fx:Script>
     <s:layout>
@@ -214,17 +218,21 @@
                 </s:VGroup>
 
                 <s:Group>
-                    <flexcomponents:PatternButton id="buyButton"
-                                                  customLabel="Купить"
-                                                  skinClass="skins.buttons.Pattern3ButtonS"
-                                                  fontSize="24" fontSizeOver="24"
-                                                  colorMatrixObject="{new ColorMatrixObject(0, 0.6)}"
-                                                  visible="true"
-                                                  click="test();"
-                            />
-
-                    <!-- hueShift="0" saturationShift="0.6" -->
-
+					<s:VGroup horizontalAlign="center">
+						<flexcomponents:PatternButton id="buyButton"
+													  customLabel="Купить"
+													  skinClass="skins.buttons.Pattern3ButtonS"
+													  fontSize="24" fontSizeOver="24"
+													  colorMatrixObject="{new ColorMatrixObject(0, 0.6)}"
+													  visible="true"
+													  click="test();"
+													  />
+						<s:Label id="failedBuyLabel" visible="false" 
+								 text="Покупка не удалась, читер поганый"
+								 color="0xffffff" fontFamily="mpbc" fontSize="14"
+								 />
+					</s:VGroup>
+                    
                     <s:VGroup id="buyPreloader"
                               visible="false"
                               horizontalAlign="center"

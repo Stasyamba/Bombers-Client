@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:buttons="skins.buttons.*"
+		 xmlns:flexcomponents="components.common.flexcomponents.*"
+		 xmlns:slots="components.pages.global.inventory.right.market.slots.*"
+		 width="100%" height="100%" 
+		 alpha="0"
+		 creationComplete="init();"
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+
+		<s:Sequence id="apearingAnimation" effectEnd="{disApearingAnimation.play();}">	
+			<s:Animate  target="{this}" duration="500">
+				<s:SimpleMotionPath property="alpha"
+									valueFrom="0" valueTo="0.99"
+									/>
+			</s:Animate>
+			
+			<s:Animate target="{this}" duration="1000">
+				<s:SimpleMotionPath property="alpha"
+									valueFrom="0.99" valueTo="1" />
+			</s:Animate>
+		</s:Sequence>
+		
+		
+		<s:Parallel id="disApearingAnimation" effectEnd="close();">
+			<s:Animate  target="{this}" duration="500">
+				<s:SimpleMotionPath property="alpha"
+									valueFrom="1" valueTo="0"
+									/>
+			</s:Animate>
+			
+		</s:Parallel>
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.resources.ResourcePrice;
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+			import components.pages.game.bottompanel.Time;
+			
+				
+			private function close():void {
+				Context.Model.dispatchCustomEvent(ContextEvent.IM_REMOVE_ITEM_RULES_DENIED_CONTENT);
+			}
+			
+			private function init():void
+			{
+				
+				var cm:ColorMatrix = new ColorMatrix();
+				var cmo: ColorMatrixObject = new ColorMatrixObject(160);
+				cm.applyColorMatrixObject(cmo);
+				bgImage.filters = [cm.filter];
+				
+				apearingAnimation.play();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:BitmapImage id="bgImage" source="@Embed(source='assets/windows/global/inventory/itemMarketRedBG.png')"
+				   width="394" height="130"
+				   />
+	<s:VGroup width="394" height="100%"
+			  paddingLeft="15" paddingTop="10"
+			  gap="10"
+			  horizontalAlign="center" verticalAlign="middle"
+			  >
+		<s:Label text="Куплено" color="0xffffff" fontFamily="mpbc" fontSize="44" />
+	</s:VGroup>
+	
+	<!--<flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonOriginS"
+								scale="0.8"
+								y="10" x="345"
+								click="close();"
+								/>-->
+	
+</s:Group>
