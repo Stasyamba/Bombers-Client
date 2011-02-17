@@ -8,7 +8,7 @@
         usePreloader="false"
         width="807" height="700"
         backgroundColor="0xffffff"
-        frameRate="60"
+        frameRate="60" xmlns:preloaders="components.common.utils.preloaders.*"
         >
 
     <vkUI:layout>
@@ -72,18 +72,20 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals
-        import api.vkontakte.util.json.JSON
-
-        import appmodel.ApplicationModel
-
-        import components.ApplicationView
-        import components.WallView
-        import components.common.utils.enviroment.vkontakte.FlashVars
-
-        import mx.core.IVisualElement
-        import mx.rpc.events.FaultEvent
-        import mx.rpc.events.ResultEvent
+		import api.vkontakte.VkontakteGlobals;
+		import api.vkontakte.util.json.JSON;
+		
+		import appmodel.ApplicationModel;
+		
+		import components.ApplicationView;
+		import components.WallView;
+		import components.common.utils.enviroment.vkontakte.ApiResult;
+		import components.common.utils.enviroment.vkontakte.FlashVars;
+		
+		import mx.controls.Alert;
+		import mx.core.IVisualElement;
+		import mx.rpc.events.FaultEvent;
+		import mx.rpc.events.ResultEvent;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
@@ -95,23 +97,11 @@
         override protected function onAddedToStage(e:Event):void {
             super.onAddedToStage(e);
 
-            //Context.Model.t = getTimer();
-            //loginHTTP.addEventListener(ResultEvent.RESULT,  httpLoginResult);
-            //loginHTTP.addEventListener(FaultEvent.FAULT,  httpServerFault);
-
-
             if (isWrapperExists) {
-
-
+				
                 VkontakteGlobals.wrapper.addEventListener("onSettingsChanged", onSettingsChanged);
                 VkontakteGlobals.wrapper.addEventListener("onApplicationAdded", onApplicationAdded);
                 VkontakteGlobals.wrapper.addEventListener("onLocationChanged", onLocationChanged);
-
-
-                //Context.Model.currentSettings.ownVkProfile = 
-                //Context.Model.currentSettings.ownGameProfile.vkProfile = new VkontakteProfile(VkontakteGlobals.wrapper.application.parameters.viewer_id);
-                //Context.Model.currentSettings.socialProfile.vkProfile = new VkontakteProfile(
-                //Context.Model.currentSettings.gameProfile.id = ApplicationModel.APPLICATION_AUTHOR_ID;
 
                 Context.Model.viewer.id = VkontakteGlobals.wrapper.application.parameters.viewer_id;
 
@@ -122,19 +112,26 @@
                 Context.Model.currentSettings.flashVars.scaleMode = VkontakteGlobals.wrapper.application.scaleMode;
                 Context.Model.currentSettings.flashVars.postId = VkontakteGlobals.wrapper.application.parameters.post_id;
                 Context.Model.currentSettings.flashVars.userId = VkontakteGlobals.wrapper.application.parameters.user_id;
-
-                if (Context.Model.currentSettings.flashVars.referrer == FlashVars.WALL_VIEW_INLINE) {
-                    //mx.controls.Alert.show("App started from wall!");
+				Context.Model.currentSettings.flashVars.userId = VkontakteGlobals.wrapper.application.parameters.auth_key;
+				
+                if (Context.Model.currentSettings.flashVars.referrer == FlashVars.WALL_VIEW_INLINE) 
+				{
                     initApp(APP_STARTED_FROM_WALL);
                 } else {
-                    //Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
-
-                    if (VkontakteGlobals.wrapper.application.parameters.is_app_user == 0) {
+					
+					//mx.controls.Alert.show(VkontakteGlobals.wrapper.application.parameters.api_result.toString());
+                    Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
+					
+					//mx.controls.Alert.show(Context.Model.currentSettings.apiResult.toString());
+					initApp(APP_STARTED_COMMON);
+					
+					
+                    /* if (VkontakteGlobals.wrapper.application.parameters.is_app_user == 0) {
                         VkontakteGlobals.wrapper.external.showInstallBox();
                     }
                     else {
                         onApplicationAdded(null);
-                    }
+                    } */
                 }
             } else {
                 // local testing
@@ -174,6 +171,8 @@
             switch (type) {
                 case APP_STARTED_FROM_WALL:
 
+					basePreloaderGroup.visible = false;
+					
                     mainContentGroup = new WallView();
                     mainApplicationGroup.addElement(mainContentGroup);
 
@@ -186,38 +185,19 @@
 
                     mainContentGroup = new ApplicationView();
                     mainApplicationGroup.addElement(mainContentGroup);
-
-                    //						var sigObj: Object = Context.getSigObject();
-                    //						loginHTTP.send({
-                    //							userId: Context.Model.currentSettings.ownVkProfile.id,
-                    //							userTime: sigObj["time"],
-                    //							rand: sigObj["rand"],
-                    //							signature: sigObj["sig"]
-                    //						});
-
+					
+					Context.Model.addCustomListener(ContextEvent.SHOW_MAIN_PREALODER, function(e:ContextEvent): void
+					{
+						basePreloaderGroup.visible = e.data as Boolean;
+					});
+					
                     break;
-
                 default:
                     break;
             }
         }
+			
 
-
-        private function httpLoginResult(e:ResultEvent):void {
-            var value:* = JSON.decode(e.result.toString())["Status"];
-            if (value != null) {
-                if (value == 1) {
-                    Context.Model.currentSettings.authKey = JSON.decode(e.result.toString())["AuthKey"];
-
-                    //mainContentGroup = new ApplicationView();
-                    //mainApplicationGroup.addElement(mainContentGroup);
-                }
-            }
-        }
-
-        private function httpServerFault(e:FaultEvent):void {
-            // do somethings
-        }
         ]]>
 	</fx:Script>
 
@@ -227,6 +207,22 @@
             backgroundColor="0xffffff"
             borderVisible="false"
             />
-
+	
+	<s:Group id="basePreloaderGroup" width="100%" height="100%">
+		<s:Rect width="100%" height="100%"
+				alpha="0.6"
+				>
+			<s:fill>
+				<s:SolidColor color="0x000000" />
+			</s:fill>
+		</s:Rect>
+		<s:HGroup width="100%" height="100%"
+				  horizontalAlign="center" verticalAlign="middle"
+				  paddingTop="-200"
+				  >
+			<preloaders:Spinner tickColor="0xeeeeee" tickWidth="6" size="60" /> 
+			<s:Label text="Загружаю всякий стафф" fontFamily="mpbc" fontSize="50" color="0xeeeeee" />
+		</s:HGroup>
+	</s:Group>
 
 </vkUI:VkontakteApplication> 
