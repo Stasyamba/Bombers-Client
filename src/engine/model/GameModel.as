@@ -202,14 +202,14 @@ public class GameModel {
     }
 
     private function onGameStarted():void {
-        lastGameLobbyProfiles = lobbyProfiles
+        lastGameLobbyProfiles = lobbyProfiles.concat()
         for each (var lobbyProfile:LobbyProfile in lobbyProfiles) {
             lobbyProfile.isReady = false
         }
         gameEnded.addOnce(onGameEnded);
     }
 
-    private function onGameEnded(p1:*):void {
+    private function onGameEnded(p1:*,p2:*):void {
         EngineContext.clear();
         readyToPlayAgain.addOnce(onReadyToPlayAgain)
     }

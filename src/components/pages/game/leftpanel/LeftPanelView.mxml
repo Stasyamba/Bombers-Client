@@ -67,6 +67,7 @@
 
         private function onLeftGame():void {
             for (var j:int = 1; j < 5; j++) {
+                setReady(false,j)
                 deletePlayer(j)
             }
         }

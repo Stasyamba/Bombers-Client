@@ -205,7 +205,7 @@
                     if (levelRule != null) {
                         minimumLevel = (levelRule as AccessLevelRule).minimumLevel;
 
-                        if (minimumLevel <= Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.gameProfile.expirance)) {
+                        if (minimumLevel <= Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.gameProfile.experience)) {
                             isLevelRached = true;
                         }
                     }

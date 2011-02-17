@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark"
          xmlns:mx="library://ns.adobe.com/flex/mx" xmlns:ui="engine.ui.*"
-         creationComplete="init()">
+         creationComplete="init()" width="100%" height="100%">
 
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -11,8 +11,6 @@
         import components.ApplicationView
         import components.common.game.multygameresult.GameResults
         import components.common.game.multygameresult.Result
-        import components.common.utils.adjustcolor.ColorMatrix
-        import components.common.utils.adjustcolor.ColorMatrixObject
 
         import engine.EngineContext
         import engine.profiles.LobbyProfile
@@ -29,11 +27,11 @@
         private var gameResultsView:GameResultsView = new GameResultsView();
 
         public function init():void {
-            var cm1:ColorMatrix = new ColorMatrix();
-            var cmo1:ColorMatrixObject = new ColorMatrixObject(0, 0);
-            cm1.applyColorMatrixObject(cmo1);
-
-            patternBorderContainer.filters = [cm1.filter];
+//            var cm1:ColorMatrix = new ColorMatrix();
+//            var cmo1:ColorMatrixObject = new ColorMatrixObject(0, 0);
+//            cm1.applyColorMatrixObject(cmo1);
+//
+//            patternBorderContainer.filters = [cm1.filter];
         }
 
         public function everyGameInit():void {
@@ -54,17 +52,10 @@
         }
 
         private function initMultiPlayer():void {
-            Context.gameModel.gameEnded.add(function (endData:Array):void {
+            Context.gameModel.gameEnded.add(function (winnerId:String, winnerExp:int):void {
 
                 endGame();
-                var gr:GameResults = new GameResults(new Array(), new Array())
-                for each (var object:Object in endData) {
-                    for each (var lobbyProfile:LobbyProfile in Context.gameModel.lastGameLobbyProfiles) {
-                        if (object.id == lobbyProfile.id)
-                            gr.getResults().push(new Result(lobbyProfile, object.place, object.exp))
-                    }
-                }
-                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, gr)
+                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW)
             });
             //initChat();
         }
@@ -73,7 +64,7 @@
             Context.gameModel.gameEnded.add(function ():void {
 
                 endGame();
-                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, new GameResults([], []))
+                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW)
                 Context.gameModel.readyToPlayAgain.addOnce(function ():void {
                     changeTabBack();
                 })
@@ -114,10 +105,9 @@
         }
         ]]></fx:Script>
     <s:BorderContainer id="patternBorderContainer" width="100%" height="100%"
-                       backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
-                       backgroundImageFillMode="repeat"/>
-    <mx:Image id="backgroundImage" source="http://www.vensella.ru/eg/testmap.jpg" visible="false"
-              complete="backgroundImage.visible = true;"/>
+                       backgroundImage="@Embed(source='/assets/pagegame/grassPattern.jpg')"
+                       backgroundImageFillMode="repeat"
+                       borderVisible="false"/>
     <s:Group id="group"/>
 
 </s:Group>

@@ -60,11 +60,7 @@
             });
 
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, function (e:ContextEvent):void {
-                if (e.data != null) {
-                    if (e.data is GameResults) {
-                        showResultsWindow(e.data as GameResults);
-                    }
-                }
+                showResultsWindow();
             });
 
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW, function (e:ContextEvent):void {
@@ -82,13 +78,13 @@
 
         private function keyDown(event:KeyboardEvent):void {
             if (Utils.isArrowKey(event.keyCode)) {
-                if(Context.game != null)
+                if (Context.game != null)
                     Context.game.playerManager.me.addDirection(Utils.arrowKeyCodeToDirection(event.keyCode))
             } else if (event.keyCode == Keyboard.SPACE) {
-                if(Context.game != null)
+                if (Context.game != null)
                     Context.game.playerManager.me.setBomb(BombType.REGULAR);
             } else if (event.keyCode == 88) {   //x
-                if(Context.game != null)
+                if (Context.game != null)
                     Context.game.playerManager.me.tryActivateWeapon();
             } else if (event.keyCode == 90) {   //z
                 Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_INCREASE_CURRENT_WEAPON_INDEX)
@@ -97,7 +93,7 @@
 
         private function keyUp(event:KeyboardEvent):void {
             if (Utils.isArrowKey(event.keyCode)) {
-                if(Context.game != null)
+                if (Context.game != null)
                     Context.game.playerManager.me.removeDirection(Utils.arrowKeyCodeToDirection(event.keyCode))
             }
         }
@@ -135,9 +131,8 @@
             PopUpManager.addPopUp(cgw, this, false);
         }
 
-        private function showResultsWindow(gr:GameResults):void {
+        private function showResultsWindow():void {
             var rw:ResultsW = new ResultsW();
-            rw.gameResults = gr;
             rw.x = 265;
             rw.y = 86;
 

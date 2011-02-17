@@ -74,7 +74,7 @@
             closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
             closeTimer.stop();
 
-            levelStringView = Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.gameProfile.expirance).toString();
+            levelStringView = Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.gameProfile.experience).toString();
         }
 
         private function timerCompleteHandler(e:TimerEvent):void {
