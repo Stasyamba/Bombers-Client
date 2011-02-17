@@ -9,6 +9,7 @@ public class ContextEvent extends Event {
     // pass: String (const) -> tab name (const in ApplicationView)
 
     public static const SHOW_MAIN_PREALODER:String = "ShowMainPreloder";
+	// pass: Boolean -> preloader visible
     public static const NEED_TO_SHOW_ERROR:String = "NeedToShowError";
 
 

@@ -19,7 +19,7 @@ import org.vyana.control.VyanaEvent
 public class ApplicationModel extends VkontakteApplicationModel {
 
     public static const APPLICATION_ID:String = '2141693';
-    public static const APPLICATION_LINK:String = "http://www.vkontakte.ru/app1954763";
+    public static const APPLICATION_LINK:String = "http://www.vkontakte.ru/app2141693";
     public static const APPLICATION_SECRET:String = 'tMj1GkYhnX';
     public static const APPLICATION_AUTHOR_ID:String = '72969483';
 
@@ -110,7 +110,7 @@ public class ApplicationModel extends VkontakteApplicationModel {
     public var currentSettings:Settings = new Settings();
 
     [Bindable]
-    public var trustContent:Boolean = false;
+    public var trustContent:Boolean = true;
 
 
     public var resourceViewManager:ResourceViewManager = new ResourceViewManager();
