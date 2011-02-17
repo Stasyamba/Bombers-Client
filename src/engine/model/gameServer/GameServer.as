@@ -70,6 +70,7 @@ public class GameServer extends SmartFox {
 
     //interface
     private static const INT_GAME_PROFILE_LOADED:String = "interface.gameProfileLoaded";
+    private static const INT_SET_PHOTO:String = "interface.setPhoto";
     private static const INT_BUY_RESOURCES:String = "interface.buyResources"
     private static const INT_BUY_RESOURCES_RESULT:String = "interface.buyResources.result"
     private static const INT_BUY_ITEM:String = "interface.buyItem";
@@ -154,6 +155,12 @@ public class GameServer extends SmartFox {
 
     public function joinDefaultRoom():void {
         send(new JoinRoomRequest(defaultRoom));
+    }
+
+    public function sendSetPhotoRequest(photo:String):void {
+        var params:ISFSObject = new SFSObject();
+        params.putUtfString("interface.setPhoto.fields.photoUrl",photo);
+        send(new ExtensionRequest(INT_SET_PHOTO, params, null));
     }
 
     public function leaveCurrentGame():void {
