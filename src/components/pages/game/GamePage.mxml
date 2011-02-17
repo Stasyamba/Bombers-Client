@@ -17,22 +17,24 @@
 
     <fx:Script>
 		<![CDATA[
-			import components.ApplicationView;
-			import components.common.game.multygameresult.GameResults;
-			import components.pages.game.windows.common.PackIsPlayingW;
-			import components.pages.game.windows.common.QuitTheGameW;
-			import components.pages.game.windows.create.GameCreatedW;
-			import components.pages.game.windows.create.GameReadyW;
-			import components.pages.game.windows.create.PreStartW;
-			import components.pages.game.windows.results.ResultsW;
-			
-			import mx.managers.PopUpManager;
+        import components.ApplicationView
+        import components.common.game.multygameresult.GameResults
+        import components.pages.game.windows.common.PackIsPlayingW
+        import components.pages.game.windows.common.QuitTheGameW
+        import components.pages.game.windows.create.GameCreatedW
+        import components.pages.game.windows.create.GameReadyW
+        import components.pages.game.windows.create.PreStartW
+        import components.pages.game.windows.results.ResultsW
 
+        import engine.bombss.BombType
+        import engine.utils.Utils
+
+        import mx.managers.PopUpManager
 
         private var now:int,then:int;
-		private var readyWindow: GameReadyW = null;
-			
-			
+        private var readyWindow:GameReadyW = null;
+
+
         private function init():void {
 
             Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function (e:ContextEvent):void {
@@ -72,15 +74,32 @@
             Context.gameModel.threeSecondsToStart.add(function(t1:*, t2:*):void {
                 Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW)
             })
-				
-				
-			/* Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function(e: ContextEvent):void
-			{
-				if(e.data == ApplicationView.TAB_NAME_GAME)
-				{
-					Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
-				}
-			}); */
+
+
+            stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDown);
+            stage.addEventListener(KeyboardEvent.KEY_UP, keyUp);
+        }
+
+        private function keyDown(event:KeyboardEvent):void {
+            if (Utils.isArrowKey(event.keyCode)) {
+                if(Context.game != null)
+                    Context.game.playerManager.me.addDirection(Utils.arrowKeyCodeToDirection(event.keyCode))
+            } else if (event.keyCode == Keyboard.SPACE) {
+                if(Context.game != null)
+                    Context.game.playerManager.me.setBomb(BombType.REGULAR);
+            } else if (event.keyCode == 88) {   //x
+                if(Context.game != null)
+                    Context.game.playerManager.me.tryActivateWeapon();
+            } else if (event.keyCode == 90) {   //z
+                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_INCREASE_CURRENT_WEAPON_INDEX)
+            }
+        }
+
+        private function keyUp(event:KeyboardEvent):void {
+            if (Utils.isArrowKey(event.keyCode)) {
+                if(Context.game != null)
+                    Context.game.playerManager.me.removeDirection(Utils.arrowKeyCodeToDirection(event.keyCode))
+            }
         }
 
         private function openThreeSecondsToStart():void {
@@ -98,14 +117,14 @@
         }
 
         private function showReadyWindow():void {
-			//if(readyWindow == null)
-			//{
-				readyWindow = new GameReadyW();
-				readyWindow.x = 215;
-				readyWindow.y = 66;
+            //if(readyWindow == null)
+            //{
+            readyWindow = new GameReadyW();
+            readyWindow.x = 215;
+            readyWindow.y = 66;
 
-            	PopUpManager.addPopUp(readyWindow, this, false);
-			//}
+            PopUpManager.addPopUp(readyWindow, this, false);
+            //}
         }
 
         private function showCreatedGameWindow():void {
@@ -166,7 +185,7 @@
     <toppanel:TopPanelView id="topPanel" y="0"/>
 
     <!--<subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>-->
-	<subbottompanel:SubBottomPanelView y="526" />
+    <subbottompanel:SubBottomPanelView y="526"/>
 
 
     <bottompanel:BottomPanelView y="485"/>

@@ -16,7 +16,7 @@ public class GameProfile {
     private var _nick:String;
     public var expirance:int;
     public var energy:int;
-    public var id:int;
+    public var id:String;
     public var photoURL:String = "http://moikompas.ru/img/compas/2008-01-04/gennifer_lopes/31534971.jpg";
 
     public var currentLocation:LocationType;
@@ -188,7 +188,7 @@ public class GameProfile {
 
     public static function fromISFSObject(obj:ISFSObject):GameProfile {
         var res:GameProfile = new GameProfile();
-        res.id = obj.getInt("Id");
+        res.id = obj.getUtfString("Id");
         res.nick = obj.getUtfString("Nick");
         res.expirance = obj.getInt("Experience")
         res.energy = obj.getInt("Energy")

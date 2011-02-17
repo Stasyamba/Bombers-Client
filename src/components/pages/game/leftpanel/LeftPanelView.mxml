@@ -92,7 +92,8 @@
                 deletePlayer(j)
             }
             for each (var prof:LobbyProfile in Context.gameModel.lobbyProfiles) {
-                addPlayer(prof, prof.playerId)
+                if(prof != null)
+                    addPlayer(prof, prof.playerId)
             }
             onReadyChanged()
         }
@@ -102,6 +103,8 @@
                 var lp:LobbyProfile = Context.gameModel.lobbyProfiles[i] as LobbyProfile
                 if (lp != null) {
                     setReady(lp.isReady, i);
+                }else{
+                    deletePlayer(i)
                 }
             }
         }

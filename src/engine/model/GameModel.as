@@ -4,6 +4,8 @@
  */
 
 package engine.model {
+import com.smartfoxserver.v2.entities.User
+
 import engine.EngineContext
 import engine.games.GameBuilder
 import engine.games.GameType
@@ -16,6 +18,7 @@ import engine.model.signals.manage.PlayerReadyChangedSignal
 import engine.model.signals.manage.ReadyToCreateGameSignal
 import engine.model.signals.manage.ThreeSecondsToStartSignal
 import engine.profiles.GameProfile
+import engine.profiles.LobbyProfile
 import engine.profiles.PlayerGameProfile
 import engine.utils.greensock.TweenMax
 
@@ -162,8 +165,17 @@ public class GameModel {
 
         //todo:room variables must have vars describing gameType and map.
         _gameType = GameType.REGULAR;
-
+        Context.gameServer.someoneLeftGame.add(onSomeoneLeftGame)
+        Context.gameServer.leftGame.addOnce(onLeftGame)
         threeSecondsToStart.addOnce(onThreeSecondsToStart);
+    }
+
+    private function onLeftGame():void {
+         Context.gameServer.someoneLeftGame.remove(onSomeoneLeftGame)
+    }
+
+    private function onSomeoneLeftGame(user:User):void {
+        lobbyProfiles[user.playerId] = null
     }
 
     private function onFastJoinFailed():void {
@@ -191,6 +203,9 @@ public class GameModel {
 
     private function onGameStarted():void {
         lastGameLobbyProfiles = lobbyProfiles
+        for each (var lobbyProfile:LobbyProfile in lobbyProfiles) {
+            lobbyProfile.isReady = false
+        }
         gameEnded.addOnce(onGameEnded);
     }
 

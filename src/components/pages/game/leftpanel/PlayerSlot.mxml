@@ -100,7 +100,7 @@
             return !isProfileNull;
         }
 
-        public function hasPlayer(id:int):Boolean {
+        public function hasPlayer(id:String):Boolean {
             return !isProfileNull && (_profile.id == id);
         }
 

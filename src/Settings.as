@@ -92,17 +92,17 @@ public class Settings
     // immitation
     public function fillRequestsTest():void {
         var profile:GameProfile = new GameProfile();
-        profile.id = 0;
+        profile.id = "0";
         profile.photoURL = "http://cs11249.vkontakte.ru/u19180/e_d754d9b9.jpg";
         var rgo:RequestGameObject = new RequestGameObject(GameType.REGULAR, profile);
 
         var profile1:GameProfile = new GameProfile();
-        profile1.id = 1;
+        profile1.id = "1";
         profile1.photoURL = "http://cs10541.vkontakte.ru/u7265902/d_8040d7fb.jpg";
         var rgo1:RequestGameObject = new RequestGameObject(GameType.REGULAR, profile1);
 
         var profile2:GameProfile = new GameProfile();
-        profile2.id = 2;
+        profile2.id = "3";
         profile2.photoURL = "http://cs9656.vkontakte.ru/u196221/e_69797b06.jpg";
         var rgo2:RequestGameObject = new RequestGameObject(GameType.REGULAR, profile2);
 

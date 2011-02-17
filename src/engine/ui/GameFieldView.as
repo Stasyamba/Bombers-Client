@@ -129,21 +129,7 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
         //trace(horizontalScrollPosition + "," + verticalScrollPosition);
     }
 
-    private function keyDown(event:KeyboardEvent):void {
-        if (Utils.isArrowKey(event.keyCode)) {
-            game.playerManager.me.addDirection(Utils.arrowKeyCodeToDirection(event.keyCode))
-        } else if (event.keyCode == Keyboard.SPACE) {
-            game.playerManager.me.setBomb(BombType.REGULAR);
-        } else if (event.keyCode == 88) {   //x
-            game.playerManager.me.tryActivateWeapon();
-        }
-    }
 
-    private function keyUp(event:KeyboardEvent):void {
-        if (Utils.isArrowKey(event.keyCode)) {
-            game.playerManager.me.removeDirection(Utils.arrowKeyCodeToDirection(event.keyCode))
-        }
-    }
 
     public function draw():void {
         mapView.draw();
@@ -156,17 +142,13 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
 
     private function addedToStageHandler(event:Event):void {
 
-        stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDown);
-        stage.addEventListener(KeyboardEvent.KEY_UP, keyUp);
+
 
         addElement(contentUI)
     }
 
 
     public function destroy():void {
-        stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyDown);
-        stage.removeEventListener(KeyboardEvent.KEY_UP, keyUp);
-        removeEventListener(Event.ADDED_TO_STAGE, addedToStageHandler)
     }
 }
 }
