@@ -136,7 +136,7 @@
             rw.x = 265;
             rw.y = 86;
 
-            PopUpManager.addPopUp(rw, this, true);
+            PopUpManager.addPopUp(rw, this, false);
         }
 
         private function showQuitTheGameWindow():void {

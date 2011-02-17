@@ -58,7 +58,7 @@ public class ApiResult {
 				 
 				 Context.Model.currentSettings.socialProfile.name = p["first_name"];
 				 Context.Model.currentSettings.socialProfile.surname = p["last_name"];
-				 Context.Model.currentSettings.socialProfile.photoURL = p["photo"]
+				 Context.Model.currentSettings.socialProfile.photoURL = p["photo_medium"]
 				
 			 }
 			 

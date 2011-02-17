@@ -35,21 +35,14 @@
 
             Context.Model.addCustomListener(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED, function(e:ContextEvent):void {
                 initContent();
-//					
-//					var rText: String = "";
-//					if(Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand == null)
-//					{
-//						rText = "null";
-//					}else
-//					{
-//						rText = Context.Model.currentSettings.ownGameProfile.selectedWeaponLeftHand.toString();
-//					}
-//					mx.controls.Alert.show("left weapon is "+rText);
-
             });
 
             Context.Model.addCustomListener(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED, function(e:ContextEvent):void {
                 initAurs();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.GP_CURRENT_BOMBER_CHANGED, function(e:ContextEvent):void {
+                initContent();
             });
         }
 

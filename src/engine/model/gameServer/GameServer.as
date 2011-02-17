@@ -41,6 +41,10 @@ import engine.utils.Direction
 import engine.utils.greensock.TweenMax
 import engine.weapons.WeaponType
 
+import flash.events.TimerEvent
+
+import flash.utils.Timer
+
 import org.osflash.signals.Signal
 
 public class GameServer extends SmartFox {
@@ -107,6 +111,8 @@ public class GameServer extends SmartFox {
     public var inGameMessageReceived:InGameMessageReceivedSignal = new InGameMessageReceivedSignal();
     public var newGameNameObtained:Signal = new Signal(String)
 
+    private var startPingFlag:Boolean = true
+    private var tenSecondsTimer:Timer = new Timer(10000);
 
     public function GameServer() {
         super(false)
@@ -253,6 +259,11 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(ACTIVATE_WEAPON, params, gameRoom));
     }
 
+    public function sendChangeBomberRequest(type:BomberType):void {
+        var params:ISFSObject = new SFSObject();
+        params.putInt("game.lobby.userReady.fields.isReady", type.value);
+        send(new ExtensionRequest("game.lobby.userReady", params, null));
+    }
 
     public function buyResourcesRequest(rp:ResourcePrice):void {
         var params:ISFSObject = new SFSObject();
@@ -283,10 +294,14 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(INT_BUY_ITEM, params, null))
     }
 
-    public function ping():void {
+    public function ping(e:*):void {
         send(new ExtensionRequest(PING, null, null));
     }
 
+    private function startPing():void {
+        tenSecondsTimer.addEventListener(TimerEvent.TIMER, ping)
+        tenSecondsTimer.start()
+    }
     //----------------------Handlers---------------------------
 
     private function onConnected(event:SFSEvent):void {
@@ -296,6 +311,10 @@ public class GameServer extends SmartFox {
 
     private function onRoomJoin(event:SFSEvent):void {
         var room:Room = event.params.room;
+        if(startPingFlag){
+            startPing()
+            startPingFlag = false
+        }
         trace("Room joined successfully: " + room);
 
         if (room.isGame) {

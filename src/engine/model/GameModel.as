@@ -22,8 +22,7 @@ import engine.profiles.LobbyProfile
 import engine.profiles.PlayerGameProfile
 import engine.utils.greensock.TweenMax
 
-import flash.events.TimerEvent
-import flash.utils.Timer
+import mx.controls.Alert
 
 public class GameModel {
 
@@ -43,8 +42,6 @@ public class GameModel {
     public var gameEnded:GameEndedSignal = new GameEndedSignal();
     public var readyToPlayAgain:ReadyToPlayAgainSignal = new ReadyToPlayAgainSignal();
 
-
-    private var tenSecondsTimer:Timer = new Timer(10000);
 
     private var _gameType:GameType;
     public var lobbyProfiles:Array
@@ -67,7 +64,6 @@ public class GameModel {
     }
 
     private function onGameServerConnected():void {
-        //todo: here should be special login process
         Context.gameServer.login(Context.Model.currentSettings.socialProfile.id, Context.Model.currentSettings.socialProfile.id)
     }
 
@@ -131,10 +127,6 @@ public class GameModel {
         Context.gameServer.setReadyRequest(ready);
     }
 
-    private function startPing():void {
-        tenSecondsTimer.addEventListener(TimerEvent.TIMER, onPing)
-        tenSecondsTimer.start()
-    }
 
     //--------------------------------HANDLERS--------------------------------
 
@@ -142,7 +134,7 @@ public class GameModel {
         Context.Model.currentSettings.gameProfile = profile
         if (profile.photoURL == "") {
             Context.gameServer.sendSetPhotoRequest(Context.Model.currentSettings.socialProfile.photoURL)
-            profile.photoURL = Context.Model.currentSettings.socialProfile.photoURL
+            Context.Model.currentSettings.gameProfile.photoURL = Context.Model.currentSettings.socialProfile.photoURL
         }
         Context.Model.dispatchCustomEvent(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED)
@@ -151,25 +143,18 @@ public class GameModel {
         Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED)
 
-        Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER,false)
+        Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER, false)
     }
 
 
     private function onLoggedIn(name:String):void {
         Context.gameServer.joinDefaultRoom();
-        startPing()
-    }
-
-
-    private function onPing(e:TimerEvent):void {
-        Context.gameServer.ping();
     }
 
     private function onJoinedToGame():void {
         Context.gameServer.fastJoinFailed.removeAll()
         connectedToGame.dispatch();
 
-        //todo:room variables must have vars describing gameType and map.
         _gameType = GameType.REGULAR;
         Context.gameServer.someoneLeftGame.add(onSomeoneLeftGame)
         Context.gameServer.leftGame.addOnce(onLeftGame)
@@ -210,7 +195,8 @@ public class GameModel {
     private function onGameStarted():void {
         lastGameLobbyProfiles = lobbyProfiles.concat()
         for each (var lobbyProfile:LobbyProfile in lobbyProfiles) {
-            lobbyProfile.isReady = false
+            if(lobbyProfile != null)
+                lobbyProfile.isReady = false
         }
         gameEnded.addOnce(onGameEnded);
     }

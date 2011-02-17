@@ -9,7 +9,7 @@ public class VkontakteProfile implements ISocialProfile {
 
     private var _id:String = "";
 
-    private var _photoURL:String = "http://cs4476.vkontakte.ru/u72969483/a_8037612a.jpg";
+    private var _photoURL:String = "";
     public var photoMediumSrc:String = "";
     public var photoBigSrc:String = "";
 

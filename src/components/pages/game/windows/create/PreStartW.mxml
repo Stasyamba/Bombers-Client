@@ -101,13 +101,13 @@
         }
 
         private function panelCreationComplete():void {
-            apearingAnimation.play();
-
-
             closeTimer.addEventListener(TimerEvent.TIMER, timerTick);
             closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerComplete);
 
             closeTimer.start();
+
+
+            apearingAnimation.play();
 
             /* animation */
             differenceYPosition = -33 + fireImage.height - fireImage.height * scaleAnimationSize;
@@ -121,7 +121,7 @@
         }
 
         private function timerComplete(e:TimerEvent):void {
-            //closeWrapper();
+            closeWrapper();
         }
         ]]>
 	</fx:Script>

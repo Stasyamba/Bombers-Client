@@ -39,7 +39,8 @@ public class EnemiesManagerBase {
 
 
     public function forEachAliveEnemy(todo:Function):void {
-        for (var i:int = 1; i <= _enemiesCount + 1; i++) {
+		//todo:renove this shit
+        for (var i:int = 1; i <= 5; i++) {
             var enemy:IEnemyBomber = enemies[i];
             if (enemy != null && !enemy.isDead)
                 todo(enemy, i);
