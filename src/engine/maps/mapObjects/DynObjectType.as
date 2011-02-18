@@ -5,9 +5,9 @@
 
 package engine.maps.mapObjects {
 import engine.bombss.BombType
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.maps.mapObjects.mines.MineType
-import engine.maps.interfaces.IDynObjectType
 
 public class DynObjectType implements IDynObjectType {
 

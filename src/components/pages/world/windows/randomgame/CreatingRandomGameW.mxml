@@ -101,6 +101,11 @@
             timer.reset();
             timer.stop();
         }
+
+        private function cancelConnecting():void {
+            closeWrapper();
+            Context.gameModel.cancelConnectingToGame()
+        }
         ]]>
 	</fx:Script>
     <s:layout>
@@ -121,7 +126,7 @@
         <flexcomponents:CloseButton
                 skinClass="skins.buttons.CloseButtonOriginS"
                 scale="0.8"
-                click="closeWrapper();"
+                click="cancelConnecting()"
                 />
         <s:Label text="{closeText}" maxWidth="405" fontSize="14"
                  fontFamily="mpr" color="0xe4e4e4"

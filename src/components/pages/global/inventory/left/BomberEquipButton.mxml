@@ -106,7 +106,7 @@
 
         private function changeBomber():void {
             //todo:when there will be more than two bombers, do something else
-            if(Context.Model.currentSettings.gameProfile.currentBomberType == BomberType.FURY_JOE)
+            if (Context.Model.currentSettings.gameProfile.currentBomberType == BomberType.FURY_JOE)
                 Context.gameServer.sendChangeBomberRequest(BomberType.R2D3)
             else
                 Context.gameServer.sendChangeBomberRequest(BomberType.FURY_JOE)

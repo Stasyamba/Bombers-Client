@@ -28,12 +28,7 @@ import engine.maps.mapObjects.DynObjectType
 import engine.model.signals.InGameMessageReceivedSignal
 import engine.model.signals.ProfileLoadedSignal
 import engine.model.signals.manage.GameServerConnectedSignal
-import engine.model.signals.manage.JoinedToGameSignal
-import engine.model.signals.manage.JoinedToRoomSignal
-import engine.model.signals.manage.LeftGameSignal
 import engine.model.signals.manage.LoggedInSignal
-import engine.model.signals.manage.SomeoneJoinedToGameSignal
-import engine.model.signals.manage.SomeoneLeftGameSignal
 import engine.profiles.GameProfile
 import engine.profiles.LobbyProfile
 import engine.profiles.PlayerGameProfile
@@ -42,7 +37,6 @@ import engine.utils.greensock.TweenMax
 import engine.weapons.WeaponType
 
 import flash.events.TimerEvent
-
 import flash.utils.Timer
 
 import org.osflash.signals.Signal
@@ -100,13 +94,6 @@ public class GameServer extends SmartFox {
 
     public var profileLoaded:ProfileLoadedSignal = new ProfileLoadedSignal();
 
-    public var fastJoinFailed:Signal = new Signal();
-
-    public var joinedToRoom:JoinedToRoomSignal = new JoinedToRoomSignal();
-    public var joinedToGame:JoinedToGameSignal = new JoinedToGameSignal();
-    public var someoneJoinedToGame:SomeoneJoinedToGameSignal = new SomeoneJoinedToGameSignal();
-    public var someoneLeftGame:SomeoneLeftGameSignal = new SomeoneLeftGameSignal();
-    public var leftGame:LeftGameSignal = new LeftGameSignal();
 
     public var inGameMessageReceived:InGameMessageReceivedSignal = new InGameMessageReceivedSignal();
     public var newGameNameObtained:Signal = new Signal(String)
@@ -165,14 +152,14 @@ public class GameServer extends SmartFox {
 
     public function sendSetPhotoRequest(photo:String):void {
         var params:ISFSObject = new SFSObject();
-        params.putUtfString("interface.setPhoto.fields.photoUrl",photo);
+        params.putUtfString("interface.setPhoto.fields.photoUrl", photo);
         send(new ExtensionRequest(INT_SET_PHOTO, params, null));
     }
 
     public function leaveCurrentGame():void {
         send(new LeaveRoomRequest(gameRoom));
         gameRoom = null;
-        leftGame.dispatch();
+
     }
 
     public function fastJoinRequest(locationId:int = -1):void {
@@ -302,6 +289,7 @@ public class GameServer extends SmartFox {
         tenSecondsTimer.addEventListener(TimerEvent.TIMER, ping)
         tenSecondsTimer.start()
     }
+
     //----------------------Handlers---------------------------
 
     private function onConnected(event:SFSEvent):void {
@@ -311,7 +299,7 @@ public class GameServer extends SmartFox {
 
     private function onRoomJoin(event:SFSEvent):void {
         var room:Room = event.params.room;
-        if(startPingFlag){
+        if (startPingFlag) {
             startPing()
             startPingFlag = false
         }
@@ -319,10 +307,10 @@ public class GameServer extends SmartFox {
 
         if (room.isGame) {
             gameRoom = room;
-            joinedToGame.dispatch()
+            Context.gameModel.joinedToGameRoom.dispatch()
         }
         else
-            joinedToRoom.dispatch(room.id, room.name, room.userList)
+            Context.gameModel.joinedToRoom.dispatch(room.id, room.name, room.userList)
     }
 
     private function onRoomJoinError(event:SFSEvent):void {
@@ -342,7 +330,7 @@ public class GameServer extends SmartFox {
         var room:Room = event.params.room;
         trace(event.params.user.name + " left room " + room.name);
         if (IsRoomCurrentGame(room)) {
-            someoneLeftGame.dispatch(event.params.user);
+            Context.gameModel.someoneLeftGame.dispatch(event.params.user);
         }
     }
 
@@ -473,7 +461,7 @@ public class GameServer extends SmartFox {
                 TweenMax.delayedCall(3.0, function ():void {
                     Context.gameModel.gameEnded.dispatch(wId, wExp)
                 })
-				var arr:ISFSArray = responseParams.getSFSArray("profiles");
+                var arr:ISFSArray = responseParams.getSFSArray("profiles");
                 Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
                 break;
             case INT_GAME_PROFILE_LOADED:
@@ -528,12 +516,12 @@ public class GameServer extends SmartFox {
                 newGameNameObtained.dispatch(responseParams.getUtfString("interface.gameManager.findGameName.result.fields.gameName"))
                 break;
             case INT_FAST_JOIN_RESULT:
-                fastJoinFailed.dispatch()
+                Context.gameModel.fastJoinFailed.dispatch()
                 break;
             case LOBBY_PROFILES:
                 var arr:ISFSArray = responseParams.getSFSArray("profiles");
                 Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
-                someoneJoinedToGame.dispatch();
+                Context.gameModel.someoneJoinedToGame.dispatch();
                 break;
             case LOBBY_READY:
                 var ready:Boolean = responseParams.getBool("IsReady")

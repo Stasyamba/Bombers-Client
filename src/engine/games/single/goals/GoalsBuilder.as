@@ -4,8 +4,8 @@
  */
 
 package engine.games.single.goals {
-import engine.maps.mapObjects.DynObjectType
 import engine.maps.mapBlocks.MapBlockType
+import engine.maps.mapObjects.DynObjectType
 
 public class GoalsBuilder {
     public function GoalsBuilder() {

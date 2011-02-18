@@ -12,9 +12,9 @@
 		<![CDATA[
         import components.ApplicationView
         import components.pages.world.windows.friendsgame.GameWithFriendsW
+        import components.pages.world.windows.friendsgame.TypeGameToggle
         import components.pages.world.windows.randomgame.CreatingRandomGameW
 
-        import mx.controls.Alert
         import mx.managers.PopUpManager
 
         public static const OPEN_MARKET_TYPE:int = 0;
@@ -34,13 +34,17 @@
                 case OPEN_RANDOM_GAME_TYPE:
                     Context.gameModel.fastJoin()
                     showRandomGameCreating();
-                    Context.gameModel.connectedToGame.addOnce(function ():void {
+                    Context.gameModel.someoneJoinedToGame.addOnce(function ():void {
                         closeRandomGameCreating();
                         Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
                     });
-                    Context.gameServer.fastJoinFailed.addOnce(function ():void {
+                    Context.gameModel.fastJoinFailed.addOnce(function ():void {
                         closeRandomGameCreating();
-                        Alert.show("FAST_JOIN_FAIL")
+                        Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
+                        {
+                            text: "Не удалось присоединиться к игре!",
+                            type: TypeGameToggle.TOGGLE_STATE_CREATE
+                        });
                     })
                     break;
                 case OPEN_FRIENDS_GAME_TYPE:

@@ -53,7 +53,6 @@
         import components.common.resources.ResourceType
         import components.common.resources.resourcemarket.ResourcePriceToolTip
 
-        import mx.controls.Alert
         import mx.managers.PopUpManager
 
         [Bindable]
@@ -84,20 +83,17 @@
         }
 
 
-			
-		private function buySuccess(e: ContextEvent):void
-		{
-			buyProgressVisible(false);
-			close();
-			
-			//Alert.show("buy success");
-		}
-			
-		private function buyFail(e: ContextEvent):void
-		{
-			buyProgressVisible(false, true);
-			//Alert.show("Не удалось купить ресурс");
-		}
+        private function buySuccess(e:ContextEvent):void {
+            buyProgressVisible(false);
+            close();
+
+            //Alert.show("buy success");
+        }
+
+        private function buyFail(e:ContextEvent):void {
+            buyProgressVisible(false, true);
+            //Alert.show("Не удалось купить ресурс");
+        }
 
         private function resourceValueChanged(e:ContextEvent):void {
             rp.setResourceValue(e.data.resourceType, e.data.value);
@@ -113,19 +109,17 @@
 
         }
 
-        private function buyProgressVisible(visible:Boolean, failedLabelVisible: Boolean = false):void {
+        private function buyProgressVisible(visible:Boolean, failedLabelVisible:Boolean = false):void {
             buyButton.visible = !visible;
             buyPreloader.visible = visible;
-			failedBuyLabel.visible = failedLabelVisible;
+            failedBuyLabel.visible = failedLabelVisible;
         }
 
-        public function test():void 
-		{
+        public function test():void {
             //Alert.show(rp.toString());
             buyProgressVisible(true);
             Context.gameServer.buyResourcesRequest(rp);
         }
-			
         ]]>
 	</fx:Script>
     <s:layout>
@@ -220,21 +214,21 @@
                 </s:VGroup>
 
                 <s:Group>
-					<s:VGroup horizontalAlign="center">
-						<flexcomponents:PatternButton id="buyButton"
-													  customLabel="Купить"
-													  skinClass="skins.buttons.Pattern3ButtonS"
-													  fontSize="24" fontSizeOver="24"
-													  colorMatrixObject="{new ColorMatrixObject(0, 0.6)}"
-													  visible="true"
-													  click="test();"
-													  />
-						<s:Label id="failedBuyLabel" visible="false" 
-								 text="Покупка не удалась, читер поганый"
-								 color="0xffffff" fontFamily="mpbc" fontSize="14"
-								 />
-					</s:VGroup>
-                    
+                    <s:VGroup horizontalAlign="center">
+                        <flexcomponents:PatternButton id="buyButton"
+                                                      customLabel="Купить"
+                                                      skinClass="skins.buttons.Pattern3ButtonS"
+                                                      fontSize="24" fontSizeOver="24"
+                                                      colorMatrixObject="{new ColorMatrixObject(0, 0.6)}"
+                                                      visible="true"
+                                                      click="test();"
+                                />
+                        <s:Label id="failedBuyLabel" visible="false"
+                                 text="Покупка не удалась, читер поганый"
+                                 color="0xffffff" fontFamily="mpbc" fontSize="14"
+                                />
+                    </s:VGroup>
+
                     <s:VGroup id="buyPreloader"
                               visible="false"
                               horizontalAlign="center"

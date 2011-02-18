@@ -67,14 +67,17 @@
 
             readyButton.filters = [cm.filter];
 
-            //closing
             Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
+
+            //closing
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_CLOSE_GAME_IS_CREATED_WINDOW, function (e:ContextEvent):void {
+                Context.gameModel.threeSecondsToStart.remove(onThreeSecondsToStart)
                 closeWrapper()
             });
         }
 
         private function onThreeSecondsToStart(data:Array, mapId:int):void {
+            Context.gameModel.threeSecondsToStart.remove(onThreeSecondsToStart)
             closeWrapper()
         }
 

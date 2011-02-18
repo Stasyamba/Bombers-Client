@@ -101,6 +101,9 @@
         }
 
         private function panelCreationComplete():void {
+            Context.gameModel.gameStarted.addOnce(function ():void {
+                closeWrapper()
+            })
             closeTimer.addEventListener(TimerEvent.TIMER, timerTick);
             closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerComplete);
 
@@ -121,7 +124,8 @@
         }
 
         private function timerComplete(e:TimerEvent):void {
-            closeWrapper();
+            //no need to clode it by timer. or game starts, or disconnect, which will close it any way
+            //closeWrapper();
         }
         ]]>
 	</fx:Script>

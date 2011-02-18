@@ -6,9 +6,9 @@
 package engine.maps.mapBlocks.view {
 import engine.bombss.BombType
 import engine.bombss.view.BombView
+import engine.maps.interfaces.IDynObject
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.maps.mapObjects.mines.MineType
-import engine.maps.interfaces.IDynObject
 
 import flash.display.Sprite
 

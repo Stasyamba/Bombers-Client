@@ -11,6 +11,9 @@ import engine.bombss.BoxBomb
 import engine.bombss.DynamiteBomb
 import engine.bombss.RegularBomb
 import engine.explosionss.ExplosionsBuilder
+import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IDynObjectType
+import engine.maps.interfaces.IMapBlock
 import engine.maps.mapObjects.DynObjectType
 import engine.maps.mapObjects.NullDynObject
 import engine.maps.mapObjects.bonuses.BonusAddBomb
@@ -20,9 +23,6 @@ import engine.maps.mapObjects.bonuses.BonusHeal
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.maps.mapObjects.mines.MineType
 import engine.maps.mapObjects.mines.RegularMine
-import engine.maps.interfaces.IDynObject
-import engine.maps.interfaces.IDynObjectType
-import engine.maps.interfaces.IMapBlock
 
 public class DynObjectBuilder {
 

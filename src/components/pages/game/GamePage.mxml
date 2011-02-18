@@ -18,7 +18,6 @@
     <fx:Script>
 		<![CDATA[
         import components.ApplicationView
-        import components.common.game.multygameresult.GameResults
         import components.pages.game.windows.common.PackIsPlayingW
         import components.pages.game.windows.common.QuitTheGameW
         import components.pages.game.windows.create.GameCreatedW
@@ -39,7 +38,11 @@
 
             Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function (e:ContextEvent):void {
                 if (e.data == ApplicationView.TAB_NAME_GAME) {
-                    gameView.everyGameInit();
+                    gameView.everyGameTabOpeningInit();
+                    //listener'll be removed in gameModel
+                    Context.gameModel.threeSecondsToStart.add(function(t1:*, t2:*):void {
+                        Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW)
+                    })
                 }
             });
 
@@ -66,11 +69,6 @@
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW, function (e:ContextEvent):void {
                 openThreeSecondsToStart();
             });
-
-            Context.gameModel.threeSecondsToStart.add(function(t1:*, t2:*):void {
-                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW)
-            })
-
 
             stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDown);
             stage.addEventListener(KeyboardEvent.KEY_UP, keyUp);
@@ -107,9 +105,6 @@
             pw.x += 58;
             pw.y -= 105;
 
-            Context.gameModel.gameStarted.addOnce(function ():void {
-                pw.closeWrapper()
-            })
         }
 
         private function showReadyWindow():void {

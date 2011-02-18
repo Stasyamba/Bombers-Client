@@ -71,7 +71,7 @@
         public var isOpenedFromGamePage:Boolean = false;
 
         public function close():void {
-			Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
+            Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
             Context.Model.dispatchCustomEvent(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY, true);
             Context.Model.windowsManager.deleteWindow(this);
             PopUpManager.removePopUp(this);
@@ -123,7 +123,7 @@
             Context.Model.addCustomListener(ContextEvent.IT_BUY_SUCCESS, function (e:ContextEvent):void {
                 var it:ItemType = e.data.it as ItemType
                 var count:int = int(e.data.count)
-               // Alert.show("item buy success: " + it.name + ", " + count)
+                // Alert.show("item buy success: " + it.name + ", " + count)
             })
 
 

@@ -5,10 +5,10 @@
 
 package engine.maps.mapBlocks.mapBlockStates {
 import engine.explosionss.interfaces.IExplosion
-import engine.maps.mapObjects.NullDynObject
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlockState
 import engine.maps.mapBlocks.MapBlockType
+import engine.maps.mapObjects.NullDynObject
 import engine.model.explosionss.ExplosionType
 
 public class WallBlock implements IMapBlockState {

@@ -72,20 +72,16 @@
 
     <fx:Script>
 		<![CDATA[
-		import api.vkontakte.VkontakteGlobals;
-		import api.vkontakte.util.json.JSON;
-		
-		import appmodel.ApplicationModel;
-		
-		import components.ApplicationView;
-		import components.WallView;
-		import components.common.utils.enviroment.vkontakte.ApiResult;
-		import components.common.utils.enviroment.vkontakte.FlashVars;
-		
-		import mx.controls.Alert;
-		import mx.core.IVisualElement;
-		import mx.rpc.events.FaultEvent;
-		import mx.rpc.events.ResultEvent;
+        import api.vkontakte.VkontakteGlobals
+
+        import appmodel.ApplicationModel
+
+        import components.ApplicationView
+        import components.WallView
+        import components.common.utils.enviroment.vkontakte.ApiResult
+        import components.common.utils.enviroment.vkontakte.FlashVars
+
+        import mx.core.IVisualElement
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
@@ -98,9 +94,9 @@
             super.onAddedToStage(e);
 
             if (isWrapperExists) {
-				
-				basePreloaderGroup.visible = true;
-				
+
+                basePreloaderGroup.visible = true;
+
                 VkontakteGlobals.wrapper.addEventListener("onSettingsChanged", onSettingsChanged);
                 VkontakteGlobals.wrapper.addEventListener("onApplicationAdded", onApplicationAdded);
                 VkontakteGlobals.wrapper.addEventListener("onLocationChanged", onLocationChanged);
@@ -114,32 +110,31 @@
                 Context.Model.currentSettings.flashVars.scaleMode = VkontakteGlobals.wrapper.application.scaleMode;
                 Context.Model.currentSettings.flashVars.postId = VkontakteGlobals.wrapper.application.parameters.post_id;
                 Context.Model.currentSettings.flashVars.userId = VkontakteGlobals.wrapper.application.parameters.user_id;
-				Context.Model.currentSettings.flashVars.userId = VkontakteGlobals.wrapper.application.parameters.auth_key;
-				
-                if (Context.Model.currentSettings.flashVars.referrer == FlashVars.WALL_VIEW_INLINE) 
-				{
+                Context.Model.currentSettings.flashVars.userId = VkontakteGlobals.wrapper.application.parameters.auth_key;
+
+                if (Context.Model.currentSettings.flashVars.referrer == FlashVars.WALL_VIEW_INLINE) {
                     initApp(APP_STARTED_FROM_WALL);
                 } else {
-					
-					//mx.controls.Alert.show(VkontakteGlobals.wrapper.application.parameters.api_result.toString());
+
+                    //mx.controls.Alert.show(VkontakteGlobals.wrapper.application.parameters.api_result.toString());
                     Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
-					
-					//mx.controls.Alert.show(Context.Model.currentSettings.apiResult.toString());
-					initApp(APP_STARTED_COMMON);
-					
-					
+
+                    //mx.controls.Alert.show(Context.Model.currentSettings.apiResult.toString());
+                    initApp(APP_STARTED_COMMON);
+
+
                     /* if (VkontakteGlobals.wrapper.application.parameters.is_app_user == 0) {
-                        VkontakteGlobals.wrapper.external.showInstallBox();
-                    }
-                    else {
-                        onApplicationAdded(null);
-                    } */
+                     VkontakteGlobals.wrapper.external.showInstallBox();
+                     }
+                     else {
+                     onApplicationAdded(null);
+                     } */
                 }
             } else {
                 // local testing
 
                 Context.Model.viewer.id = "72969483";
-				
+
                 initApp(APP_STARTED_COMMON);
             }
         }
@@ -172,8 +167,8 @@
             switch (type) {
                 case APP_STARTED_FROM_WALL:
 
-					basePreloaderGroup.visible = false;
-					
+                    basePreloaderGroup.visible = false;
+
                     mainContentGroup = new WallView();
                     mainApplicationGroup.addElement(mainContentGroup);
 
@@ -186,24 +181,20 @@
 
                     mainContentGroup = new ApplicationView();
                     mainApplicationGroup.addElement(mainContentGroup);
-					
-					Context.Model.addCustomListener(ContextEvent.SHOW_MAIN_PREALODER, function(e:ContextEvent): void
-					{
-						basePreloaderGroup.visible = e.data as Boolean;
-					});
-					
-					if(isWrapperExists)
-					{
-						Context.gameModel.init();
-					}
-					
+
+                    Context.Model.addCustomListener(ContextEvent.SHOW_MAIN_PREALODER, function(e:ContextEvent):void {
+                        basePreloaderGroup.visible = e.data as Boolean;
+                    });
+
+                    if (isWrapperExists) {
+                        Context.gameModel.init();
+                    }
+
                     break;
                 default:
                     break;
             }
         }
-			
-
         ]]>
 	</fx:Script>
 
@@ -213,23 +204,23 @@
             backgroundColor="0xffffff"
             borderVisible="false"
             />
-	
-	<s:Group id="basePreloaderGroup" width="100%" height="100%"
-			 visible="false">
-		<s:Rect width="100%" height="100%"
-				alpha="0.6"
-				>
-			<s:fill>
-				<s:SolidColor color="0x000000" />
-			</s:fill>
-		</s:Rect>
-		<s:HGroup width="100%" height="100%"
-				  horizontalAlign="center" verticalAlign="middle"
-				  paddingTop="-200"
-				  >
-			<preloaders:Spinner tickColor="0xeeeeee" tickWidth="6" size="60" /> 
-			<s:Label text="Загружаю всякий стафф" fontFamily="mpbc" fontSize="50" color="0xeeeeee" />
-		</s:HGroup>
-	</s:Group>
+
+    <s:Group id="basePreloaderGroup" width="100%" height="100%"
+             visible="false">
+        <s:Rect width="100%" height="100%"
+                alpha="0.6"
+                >
+            <s:fill>
+                <s:SolidColor color="0x000000"/>
+            </s:fill>
+        </s:Rect>
+        <s:HGroup width="100%" height="100%"
+                  horizontalAlign="center" verticalAlign="middle"
+                  paddingTop="-200"
+                >
+            <preloaders:Spinner tickColor="0xeeeeee" tickWidth="6" size="60"/>
+            <s:Label text="Загружаю всякий стафф" fontFamily="mpbc" fontSize="50" color="0xeeeeee"/>
+        </s:HGroup>
+    </s:Group>
 
 </vkUI:VkontakteApplication> 

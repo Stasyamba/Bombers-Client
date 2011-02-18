@@ -5,7 +5,6 @@
 
 package engine.maps.mapObjects {
 import engine.bombers.interfaces.IBomber
-import engine.maps.mapObjects.DynObjectType
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock

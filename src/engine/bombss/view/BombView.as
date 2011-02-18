@@ -8,10 +8,10 @@ import engine.EngineContext
 import engine.bombss.BombType
 import engine.data.Consts
 import engine.interfaces.IDrawable
-import engine.maps.mapObjects.DynObjectType
 import engine.maps.interfaces.IMapBlock
 import engine.maps.interfaces.ITimeActivatableDynObject
 import engine.maps.mapBlocks.view.DestroyableSprite
+import engine.maps.mapObjects.DynObjectType
 
 import flash.display.BlendMode
 import flash.display.Sprite
@@ -46,6 +46,7 @@ public class BombView extends DestroyableSprite implements IDrawable {
         block.objectCollected.remove(onCollected);
         if (_baseView.contains(this))
             _baseView.removeChild(this);
+        EngineContext.frameEntered.remove(onPulse);
     }
 
     public override function draw():void {

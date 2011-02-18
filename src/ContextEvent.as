@@ -9,7 +9,7 @@ public class ContextEvent extends Event {
     // pass: String (const) -> tab name (const in ApplicationView)
 
     public static const SHOW_MAIN_PREALODER:String = "ShowMainPreloder";
-	// pass: Boolean -> preloader visible
+    // pass: Boolean -> preloader visible
     public static const NEED_TO_SHOW_ERROR:String = "NeedToShowError";
 
 
@@ -82,10 +82,10 @@ public class ContextEvent extends Event {
 
     public static const IM_REMOVE_RIGHT_CONTENT_SUB_MENU:String = "IMRemoveRightContentSubMenu";
     public static const IM_REMOVE_ITEM_RULES_DENIED_CONTENT:String = "IMRemoveNotEnoughtMoneyContent";
-	public static const IM_ITEMBUY_SUCCESS:String = "IMWeaponBoughtSuccess";
-	
-	/***** enegry market events *****/
-	public static const NEED_TO_OPEN_ENERGY_MARKET:String = "IMNeedToOpenEnergyMarket";
+    public static const IM_ITEMBUY_SUCCESS:String = "IMWeaponBoughtSuccess";
+
+    /***** enegry market events *****/
+    public static const NEED_TO_OPEN_ENERGY_MARKET:String = "IMNeedToOpenEnergyMarket";
 
     /***** game page event *****/
     public static const GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW:String = "GPAGENeedToShowGameIsCreatedWindow";
@@ -98,9 +98,9 @@ public class ContextEvent extends Event {
     public static const GPAGE_NEED_TO_CLOSE_GAME_IS_CREATED_WINDOW:String = "GPAGENeedToCloseGameIsCreatedWindow"
     public static const GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW:String = "GPAGENeedToCloseGameReadyWindow"
 
-	public static const GPAGE_MY_PARAMETERS_IS_CHANGED: String ="GPAGEMyParametersIsChanged";
-	public static const GPAGE_UPDATE_GAME_WEAPONS: String = "GPAGEUpdateGameWeapons";
-    public static const GPAGE_INCREASE_CURRENT_WEAPON_INDEX: String = "GPAGEIncreaseCurrentWeaponIndex";
+    public static const GPAGE_MY_PARAMETERS_IS_CHANGED:String = "GPAGEMyParametersIsChanged";
+    public static const GPAGE_UPDATE_GAME_WEAPONS:String = "GPAGEUpdateGameWeapons";
+    public static const GPAGE_INCREASE_CURRENT_WEAPON_INDEX:String = "GPAGEIncreaseCurrentWeaponIndex";
     /***** buy events: resources(RS), energy(EN), items(IT) *****/
     public static const RS_BUY_FAILED:String = "RSBuyFailed"
     public static const RS_BUY_SUCCESS:String = "RSBuySuccess"

@@ -36,14 +36,12 @@
 
     <fx:Script>
 		<![CDATA[
-			import components.common.utils.adjustcolor.ColorMatrix;
-			import components.common.utils.adjustcolor.ColorMatrixObject;
-			
-			import engine.profiles.LobbyProfile;
-			
-			import mx.managers.PopUpManager;
-			
-			import skins.buttons.CloseButtonBlackS;
+        import components.common.utils.adjustcolor.ColorMatrix
+        import components.common.utils.adjustcolor.ColorMatrixObject
+
+        import engine.profiles.LobbyProfile
+
+        import mx.managers.PopUpManager
 
         public function close():void {
             PopUpManager.removePopUp(this);
@@ -67,11 +65,13 @@
             //closing
             Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_CLOSE_GAME_READY_WINDOW, function (e:ContextEvent):void {
+                Context.gameModel.threeSecondsToStart.remove(onThreeSecondsToStart)
                 closeWrapper();
             });
         }
 
         private function onThreeSecondsToStart(data:Array, mapId:int):void {
+            Context.gameModel.threeSecondsToStart.remove(onThreeSecondsToStart)
             closeWrapper()
         }
 
@@ -123,18 +123,18 @@
                 </s:HGroup>
 
                 <s:HGroup width="100%" horizontalAlign="center">
-						<s:HGroup width="100%" horizontalAlign="center"
-								  verticalAlign="middle">
-							<s:VGroup horizontalAlign="center" verticalAlign="middle"
-									  gap="0"
-									  >
-								<s:Label text="Ваш бомбастер:" fontSize="24" fontFamily="mpbc" color="0xfcb29c"/>
-								<mx:Image id="bomberImage"/>
-							</s:VGroup>
-							
-							<s:BitmapImage source="@Embed(source='assets/pagegame/windows/controls.png')" alpha="0.80" />
-						</s:HGroup>
-					
+                    <s:HGroup width="100%" horizontalAlign="center"
+                              verticalAlign="middle">
+                        <s:VGroup horizontalAlign="center" verticalAlign="middle"
+                                  gap="0"
+                                >
+                            <s:Label text="Ваш бомбастер:" fontSize="24" fontFamily="mpbc" color="0xfcb29c"/>
+                            <mx:Image id="bomberImage"/>
+                        </s:VGroup>
+
+                        <s:BitmapImage source="@Embed(source='assets/pagegame/windows/controls.png')" alpha="0.80"/>
+                    </s:HGroup>
+
                 </s:HGroup>
 
                 <s:HGroup>
@@ -155,8 +155,8 @@
         <s:BitmapImage source="@Embed(source='assets/pagegame/windows/lineBg.jpg')"/>
     </s:VGroup>
 
-	<!-- immitation -->
-	<!--<flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS" click="close();" />-->
+    <!-- immitation -->
+    <!--<flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS" click="close();" />-->
 
     <s:controlBarContent/>
 </s:Panel>

@@ -14,15 +14,20 @@ import engine.model.signals.GameReadySignal
 import engine.model.signals.MapLoadedSignal
 import engine.model.signals.ReadyToPlayAgainSignal
 import engine.model.signals.manage.GameStartedSignal
+import engine.model.signals.manage.JoinedToGameSignal
+import engine.model.signals.manage.JoinedToRoomSignal
+import engine.model.signals.manage.LeftGameSignal
 import engine.model.signals.manage.PlayerReadyChangedSignal
 import engine.model.signals.manage.ReadyToCreateGameSignal
+import engine.model.signals.manage.SomeoneJoinedToGameSignal
+import engine.model.signals.manage.SomeoneLeftGameSignal
 import engine.model.signals.manage.ThreeSecondsToStartSignal
 import engine.profiles.GameProfile
 import engine.profiles.LobbyProfile
 import engine.profiles.PlayerGameProfile
 import engine.utils.greensock.TweenMax
 
-import mx.controls.Alert
+import org.osflash.signals.Signal
 
 public class GameModel {
 
@@ -30,19 +35,28 @@ public class GameModel {
     private var gameBuilder:GameBuilder = new GameBuilder();
 
     //---signals
-    public var connectedToGame:ReadyToCreateGameSignal = new ReadyToCreateGameSignal();
+    public var fastJoinFailed:Signal = new Signal();
+    public var someoneJoinedToGame:SomeoneJoinedToGameSignal = new SomeoneJoinedToGameSignal();
+    public var someoneLeftGame:SomeoneLeftGameSignal = new SomeoneLeftGameSignal();
+    public var leftGame:LeftGameSignal = new LeftGameSignal();
 
     public var playerReadyChanged:PlayerReadyChangedSignal = new PlayerReadyChangedSignal();
+
     public var threeSecondsToStart:ThreeSecondsToStartSignal = new ThreeSecondsToStartSignal();
     public var mapLoaded:MapLoadedSignal = new MapLoadedSignal();
-    public var readyToCreateGame:ReadyToCreateGameSignal = new ReadyToCreateGameSignal();
     public var gameReady:GameReadySignal = new GameReadySignal();
-    public var gameStarted:GameStartedSignal = new GameStartedSignal();
 
+    public var gameStarted:GameStartedSignal = new GameStartedSignal();
     public var gameEnded:GameEndedSignal = new GameEndedSignal();
     public var readyToPlayAgain:ReadyToPlayAgainSignal = new ReadyToPlayAgainSignal();
 
 
+    public var readyToCreateGame:ReadyToCreateGameSignal = new ReadyToCreateGameSignal();
+    //not used now
+    public var joinedToRoom:JoinedToRoomSignal = new JoinedToRoomSignal();
+    public var joinedToGameRoom:JoinedToGameSignal = new JoinedToGameSignal();
+
+    // fields
     private var _gameType:GameType;
     public var lobbyProfiles:Array
     public var lastGameLobbyProfiles:Array
@@ -52,7 +66,6 @@ public class GameModel {
 
     function GameModel() {
     }
-
 
     //----------init-------------
 
@@ -77,7 +90,7 @@ public class GameModel {
                 gameStarted.dispatch();
             })
         })
-        Context.gameModel.gameType = GameType.SINGLE
+        _gameType = GameType.SINGLE
         createdByMe = true
 
         Context.game = gameBuilder.makeSinglePlayer(GameType.SINGLE, gameId);
@@ -93,34 +106,40 @@ public class GameModel {
 
     //----------multiplayer-----------
 
-    public function tryCreateRegularGame(name:String, pass:String, locationId:int):void {
-        Context.gameServer.createNewGameRequest(name, pass, locationId)
-        Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
-        createdByMe = true;
-        Context.gameModel.gameType = GameType.REGULAR
-    }
-
     public function leaveCurrentGame():void {
         Context.gameServer.leaveCurrentGame();
+        leftGame.dispatch();
+    }
+
+    public function tryCreateRegularGame(name:String, pass:String, locationId:int):void {
+        Context.gameServer.createNewGameRequest(name, pass, locationId)
+        someoneJoinedToGame.addOnce(onJoinedToGame)
+        //todo: fail case
+        createdByMe = true;
+        _gameType = GameType.REGULAR
     }
 
     public function fastJoin(locationId:int = -1):void {
-
         Context.gameServer.fastJoinRequest(locationId);
-        Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
-        Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
+        someoneJoinedToGame.addOnce(onJoinedToGame)
+        fastJoinFailed.addOnce(onFastJoinFailed)
         createdByMe = false;
-        Context.gameModel.gameType = GameType.REGULAR
+        _gameType = GameType.REGULAR
 
     }
 
     public function joinConcreteGame(name:String, pass:String):void {
         Context.gameServer.concreteJoinRequest(name, pass);
-        Context.gameServer.someoneJoinedToGame.addOnce(onJoinedToGame)
-        Context.gameServer.fastJoinFailed.addOnce(onFastJoinFailed)
+        someoneJoinedToGame.addOnce(onJoinedToGame)
+        fastJoinFailed.addOnce(onFastJoinFailed)
         createdByMe = false;
-        Context.gameModel.gameType = GameType.REGULAR
+        _gameType = GameType.REGULAR
 
+    }
+
+    public function cancelConnectingToGame():void {
+        _gameType = null
+        onLeftGame()
     }
 
     public function setMeReady(ready:Boolean):void {
@@ -146,32 +165,40 @@ public class GameModel {
         Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER, false)
     }
 
-
     private function onLoggedIn(name:String):void {
         Context.gameServer.joinDefaultRoom();
     }
 
     private function onJoinedToGame():void {
-        Context.gameServer.fastJoinFailed.removeAll()
-        connectedToGame.dispatch();
+        fastJoinFailed.removeAll()
 
-        _gameType = GameType.REGULAR;
-        Context.gameServer.someoneLeftGame.add(onSomeoneLeftGame)
-        Context.gameServer.leftGame.addOnce(onLeftGame)
-        threeSecondsToStart.addOnce(onThreeSecondsToStart);
+        someoneLeftGame.add(onSomeoneLeftGame)
+        leftGame.add(onLeftGame)
+        threeSecondsToStart.add(onThreeSecondsToStart);
+    }
+
+    private function onFastJoinFailed():void {
+        someoneJoinedToGame.removeAll()
     }
 
     private function onLeftGame():void {
-        Context.gameServer.someoneLeftGame.remove(onSomeoneLeftGame)
+        EngineContext.clear()
+
+        fastJoinFailed.removeAll()
+        someoneJoinedToGame.removeAll()
+        someoneLeftGame.removeAll()
+        leftGame.removeAll()
+        playerReadyChanged.removeAll()
+        threeSecondsToStart.removeAll()
+        mapLoaded.removeAll()
+        gameReady.removeAll()
+        gameStarted.removeAll()
+        gameEnded.removeAll()
+        readyToPlayAgain.removeAll()
     }
 
     private function onSomeoneLeftGame(user:User):void {
         lobbyProfiles[user.playerId] = null
-    }
-
-    private function onFastJoinFailed():void {
-        Context.gameServer.someoneJoinedToGame.remove(onJoinedToGame)
-        connectedToGame.removeAll()
     }
 
     private function onThreeSecondsToStart(data:Array, mapId:int):void {
@@ -195,7 +222,7 @@ public class GameModel {
     private function onGameStarted():void {
         lastGameLobbyProfiles = lobbyProfiles.concat()
         for each (var lobbyProfile:LobbyProfile in lobbyProfiles) {
-            if(lobbyProfile != null)
+            if (lobbyProfile != null)
                 lobbyProfile.isReady = false
         }
         gameEnded.addOnce(onGameEnded);
@@ -207,19 +234,12 @@ public class GameModel {
     }
 
     private function onReadyToPlayAgain():void {
-        EngineContext.clear();
         Context.game = null;
-        threeSecondsToStart.addOnce(onThreeSecondsToStart);
     }
 
     // getters & setters
     public function get gameType():GameType {
         return _gameType;
-    }
-
-
-    public function set gameType(gameType:GameType):void {
-        _gameType = gameType;
     }
 
 

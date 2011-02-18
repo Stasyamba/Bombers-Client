@@ -8,7 +8,6 @@ import engine.EngineContext
 import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.view.EnemyView
 import engine.bombers.view.PlayerView
-import engine.bombss.BombType
 import engine.data.Consts
 import engine.explosionss.ExplosionView
 import engine.games.IGame
@@ -18,11 +17,8 @@ import engine.maps.MapView
 import engine.maps.OverMapView
 import engine.maps.bigObjects.view.BigObjectsView
 import engine.maps.mapBlocks.view.MapBlocksView
-import engine.utils.Utils
 
 import flash.events.Event
-import flash.events.KeyboardEvent
-import flash.ui.Keyboard
 
 import mx.collections.ArrayList
 import mx.core.UIComponent
@@ -130,7 +126,6 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
     }
 
 
-
     public function draw():void {
         mapView.draw();
         explosionsView.draw();
@@ -141,7 +136,6 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
     }
 
     private function addedToStageHandler(event:Event):void {
-
 
 
         addElement(contentUI)

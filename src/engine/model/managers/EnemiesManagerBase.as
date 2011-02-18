@@ -6,13 +6,11 @@
 package engine.model.managers {
 import engine.bombers.interfaces.IEnemyBomber
 
-import flash.utils.Dictionary
-
 public class EnemiesManagerBase {
     public function EnemiesManagerBase() {
     }
 
-    private var enemies:Dictionary = new Dictionary();
+    private var enemies:Array = new Array();
     private var _enemiesCount:int = 0;
 
     public function addEnemy(enemy:IEnemyBomber):void {
@@ -39,8 +37,7 @@ public class EnemiesManagerBase {
 
 
     public function forEachAliveEnemy(todo:Function):void {
-		//todo:renove this shit
-        for (var i:int = 1; i <= 5; i++) {
+        for (var i:int = 1; i < enemies.length; i++) {
             var enemy:IEnemyBomber = enemies[i];
             if (enemy != null && !enemy.isDead)
                 todo(enemy, i);

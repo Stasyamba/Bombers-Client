@@ -47,6 +47,8 @@ public class EngineContext {
     private var _triedToActivateWeapon:TriedToActivateWeaponSignal = new TriedToActivateWeaponSignal();
     private var _weaponActivated:WeaponActivatedSignal = new WeaponActivatedSignal();
     private var _weaponDeactivated:WeaponDeactivatedSignal = new WeaponDeactivatedSignal();
+
+    private var _weaponUnitSpent:WeaponUnitSpentSignal = new WeaponUnitSpentSignal()
     //---explosions
     private var _explosionsChanged:ExplosionsChangedSignal = new ExplosionsChangedSignal();
     private var _explosionGroupAdded:ExplosionsAddedSignal = new ExplosionsAddedSignal();
@@ -68,7 +70,6 @@ public class EngineContext {
 
     //---frame
     private var _frameEntered:FrameEnteredSignal = new FrameEnteredSignal();
-    private var _weaponUnitSpent:WeaponUnitSpentSignal = new WeaponUnitSpentSignal()
 
     function EngineContext() {
     }
@@ -190,6 +191,10 @@ public class EngineContext {
         //---weapons
         triedToActivateWeapon.removeAll()
         weaponActivated.removeAll()
+        currentWeaponChanged.removeAll()
+        weaponDeactivated.removeAll()
+
+
         //---explosions
         explosionsChanged.removeAll()
         explosionGroupAdded.removeAll()

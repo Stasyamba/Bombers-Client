@@ -19,19 +19,19 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals;
-        
-        import components.common.game.requesttogame.RequestGameObject;
-        import components.common.profiles.VkontakteProfile;
-        import components.common.resources.ResourcePrice;
-        import components.pages.global.energymarket.EnergyMarketW;
-        import components.pages.global.gamerequest.ConnectToGameW;
-        import components.pages.global.inventory.InventoryW;
-        import components.pages.global.resourcemarket.ResourceMarketW;
-        import components.pages.global.tutorial.TutorialPreviewW;
-        
-        import mx.controls.Alert;
-        import mx.managers.PopUpManager;
+        import api.vkontakte.VkontakteGlobals
+
+        import components.common.game.requesttogame.RequestGameObject
+        import components.common.profiles.VkontakteProfile
+        import components.common.resources.ResourcePrice
+        import components.pages.global.energymarket.EnergyMarketW
+        import components.pages.global.gamerequest.ConnectToGameW
+        import components.pages.global.inventory.InventoryW
+        import components.pages.global.resourcemarket.ResourceMarketW
+        import components.pages.global.tutorial.TutorialPreviewW
+
+        import mx.controls.Alert
+        import mx.managers.PopUpManager
 
         public static const TAB_NAME_WORLD:String = "WorldPage";
         public static const TAB_NAME_GAME:String = "GamePage";
@@ -153,8 +153,8 @@
 
 
             /// immitation
-			idGroup.visible = !(parentApplication as Bombers).isWrapperExists;
-			
+            idGroup.visible = !(parentApplication as Bombers).isWrapperExists;
+
 
         }
 

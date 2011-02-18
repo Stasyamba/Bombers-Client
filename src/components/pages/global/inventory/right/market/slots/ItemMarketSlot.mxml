@@ -17,14 +17,14 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.base.access.AccessManager;
-        import components.common.base.access.rules.AccessRuleObject;
-        import components.common.base.access.rules.levelrule.AccessLevelRule;
-        import components.common.items.ItemObject;
-        import components.common.items.ItemProfileObject;
-        import components.common.items.ItemType;
-        import components.common.items.categories.ItemCategory;
-        import components.common.resources.ResourcePrice;
+        import components.common.base.access.AccessManager
+        import components.common.base.access.rules.AccessRuleObject
+        import components.common.base.access.rules.levelrule.AccessLevelRule
+        import components.common.items.ItemObject
+        import components.common.items.ItemProfileObject
+        import components.common.items.ItemType
+        import components.common.items.categories.ItemCategory
+        import components.common.resources.ResourcePrice
 
         private var itemType:ItemType = null;
         private var itemObject:ItemObject;
@@ -50,19 +50,18 @@
 
         public function init():void {
             Context.Model.addCustomListener(ContextEvent.IM_REMOVE_ITEM_RULES_DENIED_CONTENT, function (e:ContextEvent):void {
-				rulesDenied.visible = false;
+                rulesDenied.visible = false;
                 rulesDenied.removeAllElements();
-				rulesDenied.visible = true;
-				
+                rulesDenied.visible = true;
+
             });
-			
-			Context.Model.addCustomListener(ContextEvent.IM_ITEMBUY_SUCCESS, function (e:ContextEvent):void {
-				if(e.data is ItemType && e.data == itemType)
-				{
-					rulesDenied.removeAllElements();
-					rulesDenied.addElement(new BoughtSuccess());
-				}
-			});
+
+            Context.Model.addCustomListener(ContextEvent.IM_ITEMBUY_SUCCESS, function (e:ContextEvent):void {
+                if (e.data is ItemType && e.data == itemType) {
+                    rulesDenied.removeAllElements();
+                    rulesDenied.addElement(new BoughtSuccess());
+                }
+            });
         }
 
         public function initContent(itemTypeP:ItemType):void {
@@ -121,7 +120,7 @@
 
             if (!ownResources.isBiggerOrEqual(thisItemPrice)) {
                 rulesDenied.removeAllElements();
-				
+
                 var rdContent:NotEnoughResources = new NotEnoughResources();
                 rdContent.initContent(thisItemPrice.getDifference(ownResources));
 

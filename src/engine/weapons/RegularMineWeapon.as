@@ -5,8 +5,8 @@
 
 package engine.weapons {
 import engine.bombers.interfaces.IBomber
-import engine.maps.mapObjects.DynObjectType
 import engine.maps.interfaces.IMapBlock
+import engine.maps.mapObjects.DynObjectType
 import engine.model.managers.interfaces.IMapManager
 import engine.weapons.interfaces.IMineWeapon
 

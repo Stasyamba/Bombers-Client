@@ -6,8 +6,8 @@
 package engine.maps.mapBlocks.view {
 import engine.data.Consts
 import engine.interfaces.IDrawable
-import engine.maps.mapObjects.DynObjectType
 import engine.maps.interfaces.IMapBlock
+import engine.maps.mapObjects.DynObjectType
 import engine.utils.greensock.TweenMax
 
 import flash.display.Sprite

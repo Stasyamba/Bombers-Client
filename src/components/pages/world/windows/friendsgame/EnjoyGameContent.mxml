@@ -26,7 +26,14 @@
                     text: "Подключаюсь (ну я стараюсь, подожди, блеать!!!)",
                     type: TypeGameToggle.TOGGLE_STATE_ENJOY
                 });
-                Context.gameModel.connectedToGame.addOnce(function():void {
+                Context.gameModel.fastJoinFailed.addOnce(function():void {
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
+                    {
+                        text: "Не удалось подключиться к игре, блеать!",
+                        type: TypeGameToggle.TOGGLE_STATE_ENJOY
+                    });
+                })
+                Context.gameModel.someoneJoinedToGame.addOnce(function():void {
                     Context.Model.windowsManager.closeAll(true);
                     Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
                 })

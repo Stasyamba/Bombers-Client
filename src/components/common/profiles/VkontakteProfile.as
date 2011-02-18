@@ -29,15 +29,14 @@ public class VkontakteProfile implements ISocialProfile {
         this._id = id;
     }
 
-	public function clone(profile:ISocialProfile): void
-	{
-		this._id = profile.id;
-		this._name = profile.name;
-		this._photoURL = profile.photoURL;
-		this._surname = profile.surname;
-		this._profileLink = profile.profileLink;
-	}
-	
+    public function clone(profile:ISocialProfile):void {
+        this._id = profile.id;
+        this._name = profile.name;
+        this._photoURL = profile.photoURL;
+        this._surname = profile.surname;
+        this._profileLink = profile.profileLink;
+    }
+
     /* GET and SET */
 
     public function get profileLink():String {

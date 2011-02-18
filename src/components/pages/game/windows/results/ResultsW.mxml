@@ -30,9 +30,6 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.game.multygameresult.GameResults
-        import components.common.game.multygameresult.Result
-        import components.common.items.ItemProfileObject
         import components.common.utils.adjustcolor.Color
         import components.common.utils.adjustcolor.ColorMatrix
         import components.common.utils.adjustcolor.ColorMatrixObject
@@ -69,9 +66,9 @@
 
             var place:int = 1;
             while (true) {
-                var found : Boolean = false
+                var found:Boolean = false
                 for each(var lp:LobbyProfile in Context.gameModel.lastGameLobbyProfiles) {
-                    if(lp==null)
+                    if (lp == null)
                         continue
                     if (lp.place == place) {
                         found = true
@@ -92,7 +89,7 @@
                         place++;
                     }
                 }
-                if(!found)
+                if (!found)
                     break
             }
 //            for each(var i:ItemProfileObject in gameResults.getItems()) {

@@ -11,18 +11,18 @@
         >
     <fx:Script>
 		<![CDATA[
+        import components.ApplicationView
         import components.common.bombers.BomberType
 
         private function init():void {
             Context.Model.addCustomListener(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED, function(e:ContextEvent):void {
                 leftHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand);
             });
-			
-			Context.Model.addCustomListener(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS, function(e: ContextEvent): void
-			{
-				updateWeapons();
-			});
-            
+
+            Context.Model.addCustomListener(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS, function(e:ContextEvent):void {
+                updateWeapons();
+            });
+
             Context.Model.addCustomListener(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED, function (e:ContextEvent):void {
                 mySpeed.count = BomberType.getViewSpeed(Context.Model.currentSettings.gameProfile.currentBomberType, Context.game.playerManager.me.speed);
                 myBombsCount.count = Context.game.playerManager.me.baseBombCount;
@@ -30,18 +30,20 @@
                 myHealth.count = Context.game.playerManager.me.life;
             });
 
-			
-			updateWeapons();
+
+            updateWeapons();
             updateFromBomberType();
-            Context.gameModel.readyToPlayAgain.add(onReadyToPlayAgain);
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, function(e:ContextEvent):void {
+                if (e.data == ApplicationView.TAB_NAME_GAME)
+                    Context.gameModel.readyToPlayAgain.add(onReadyToPlayAgain);
+            })
         }
 
-		private function updateWeapons(): void
-		{
-			rightHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponRightHand);
-			leftHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand);
-		}
-		
+        private function updateWeapons():void {
+            rightHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponRightHand);
+            leftHandWeapon.initContent(Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand);
+        }
+
         private function onReadyToPlayAgain():void {
             updateFromBomberType()
         }

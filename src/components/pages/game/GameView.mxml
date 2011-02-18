@@ -9,11 +9,8 @@
     </fx:Declarations>
     <fx:Script><![CDATA[
         import components.ApplicationView
-        import components.common.game.multygameresult.GameResults
-        import components.common.game.multygameresult.Result
 
         import engine.EngineContext
-        import engine.profiles.LobbyProfile
         import engine.ui.GameFieldView
         import engine.ui.GameResultsView
         import engine.ui.ThreeSecondsToStart
@@ -27,20 +24,20 @@
         private var gameResultsView:GameResultsView = new GameResultsView();
 
         public function init():void {
-//            var cm1:ColorMatrix = new ColorMatrix();
-//            var cmo1:ColorMatrixObject = new ColorMatrixObject(0, 0);
-//            cm1.applyColorMatrixObject(cmo1);
-//
-//            patternBorderContainer.filters = [cm1.filter];
+
+
         }
 
-        public function everyGameInit():void {
-
+        public function everyGameTabOpeningInit():void {
+            //listener'll be removed in gameModel
             Context.gameModel.gameReady.add(function ():void {
                 gameView = new GameFieldView(Context.game);
                 addElement(gameView);
             });
-
+            Context.gameModel.leftGame.add(function():void {
+                while (hasEventListener(Event.ENTER_FRAME))
+                    unsubscribeEnterFrameEvent();
+            })
             if (Context.gameModel.gameType.isMultiplayer) {
                 initMultiPlayer();
             } else {
@@ -48,10 +45,12 @@
             }
 
             subscribeEnterFrameEvent();
+
             Context.gameModel.readyToCreateGame.dispatch();
         }
 
         private function initMultiPlayer():void {
+            //listener'll be removed in gameModel
             Context.gameModel.gameEnded.add(function (winnerId:String, winnerExp:int):void {
 
                 endGame();
@@ -61,6 +60,7 @@
         }
 
         private function initSinglePlayer():void {
+            //listener'll be removed in gameModel
             Context.gameModel.gameEnded.add(function ():void {
 
                 endGame();

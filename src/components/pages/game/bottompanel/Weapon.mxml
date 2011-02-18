@@ -128,12 +128,11 @@
                 if (page == pagesCount - 1) {
                     forwardPageButton.enabled = false;
                 }
-				
-				if(pagesCount == 0)
-				{
-					backPageButton.enabled = false;
-					forwardPageButton.enabled = false;
-				}
+
+                if (pagesCount == 0) {
+                    backPageButton.enabled = false;
+                    forwardPageButton.enabled = false;
+                }
             }
         }
 

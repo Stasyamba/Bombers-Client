@@ -16,10 +16,10 @@ import engine.data.location1.mapObjects.mines.Mines
 import engine.data.location1.maps.MapBlocks
 import engine.data.location1.skins.BomberSkins
 import engine.explosionss.ExplosionPointType
-import engine.maps.mapObjects.bonuses.BonusType
-import engine.maps.mapObjects.mines.MineType
 import engine.maps.interfaces.IDynObjectType
 import engine.maps.mapBlocks.MapBlockType
+import engine.maps.mapObjects.bonuses.BonusType
+import engine.maps.mapObjects.mines.MineType
 import engine.model.explosionss.ExplosionType
 import engine.playerColors.PlayerColor
 

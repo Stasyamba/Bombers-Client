@@ -14,15 +14,37 @@
 		<![CDATA[
         import com.smartfoxserver.v2.entities.User
 
+        import components.ApplicationView
+
         import engine.games.GameType
         import engine.profiles.LobbyProfile
 
         private var players:Array = new Array();
 
+        private function init():void {
+            Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function(e:ContextEvent):void {
+                if (e.data == ApplicationView.TAB_NAME_GAME)
+                    onTabChanged()
+            })
+            //init is called the first time gamepage is shown, so:
+            onTabChanged()
+        }
+
+        private function getPlayerSlot(playerId:int):PlayerSlot {
+            switch (playerId) {
+                case 1:return player1
+                case 2:return player2
+                case 3:return player3
+                case 4:return player4
+            }
+            return null
+        }
+
         private function deletePlayer(playerId:int):void {
             var el:PlayerSlot;
-            el = playersGroup.getChildAt(playerId - 1) as PlayerSlot;
-            el.removePlayer();
+            el = getPlayerSlot(playerId);
+            if (el != null)
+                el.removePlayer();
         }
 
         private function addPlayer(newProfile:LobbyProfile, playerId:int):void {
@@ -30,25 +52,27 @@
                 return;
 
             var el:PlayerSlot;
-            el = playersGroup.getChildAt(playerId - 1) as PlayerSlot;
-            el.setPlayer(newProfile);
+            el = getPlayerSlot(playerId);
+            if (el != null)
+                el.setPlayer(newProfile);
         }
+
 
         private function setReady(isReady:Boolean, playerId:int):void {
             var el:PlayerSlot;
-            el = playersGroup.getChildAt(playerId - 1) as PlayerSlot;
-            el.isReady = isReady;
+            el = getPlayerSlot(playerId);
+            if (el != null)
+                el.isReady = isReady;
         }
 
-
-        private function init():void {
-            Context.gameModel.connectedToGame.add(onConnectedToGame)
-            Context.gameServer.someoneJoinedToGame.add(onSomeoneJoinedToGame)
-            Context.gameServer.someoneLeftGame.add(onSomeoneLeftGame)
+        private function onTabChanged():void {
+            //listeners will be removed in gameModel, when user leaves game
+            Context.gameModel.someoneJoinedToGame.add(onSomeoneJoinedToGame)
+            Context.gameModel.someoneLeftGame.add(onSomeoneLeftGame)
             Context.gameModel.playerReadyChanged.add(onReadyChanged)
             Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
 
-            Context.gameServer.leftGame.add(onLeftGame)
+            Context.gameModel.leftGame.add(onLeftGame)
             Context.gameModel.readyToPlayAgain.add(onReadyToPlayAgain)
             onConnectedToGame()
         }
@@ -67,7 +91,7 @@
 
         private function onLeftGame():void {
             for (var j:int = 1; j < 5; j++) {
-                setReady(false,j)
+                setReady(false, j)
                 deletePlayer(j)
             }
         }
@@ -93,7 +117,7 @@
                 deletePlayer(j)
             }
             for each (var prof:LobbyProfile in Context.gameModel.lobbyProfiles) {
-                if(prof != null)
+                if (prof != null)
                     addPlayer(prof, prof.playerId)
             }
             onReadyChanged()
@@ -104,7 +128,7 @@
                 var lp:LobbyProfile = Context.gameModel.lobbyProfiles[i] as LobbyProfile
                 if (lp != null) {
                     setReady(lp.isReady, i);
-                }else{
+                } else {
                     deletePlayer(i)
                 }
             }

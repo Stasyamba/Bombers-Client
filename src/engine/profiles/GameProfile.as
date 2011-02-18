@@ -52,7 +52,7 @@ public class GameProfile {
     /*
      * content = [BomberType,...]
      * */
-    public var bombersOpened = [BomberType.FURY_JOE,BomberType.R2D3];
+    public var bombersOpened:Array = [BomberType.FURY_JOE,BomberType.R2D3];
     //public var vkProfile:VkontakteProfile;
 
 

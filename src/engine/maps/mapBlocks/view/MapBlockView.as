@@ -7,9 +7,9 @@ package engine.maps.mapBlocks.view {
 import engine.EngineContext
 import engine.data.Consts
 import engine.interfaces.IDrawable
-import engine.maps.mapObjects.DynObjectType
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
+import engine.maps.mapObjects.DynObjectType
 
 import flash.display.BitmapData
 import flash.display.Sprite

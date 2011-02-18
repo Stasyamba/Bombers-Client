@@ -9,8 +9,7 @@ import engine.games.GameType
 import engine.profiles.GameProfile
 
 [Bindable]
-public class Settings 
-{
+public class Settings {
 
     public var flashVars:FlashVars = new FlashVars();
     public var apiResult:ApiResult;

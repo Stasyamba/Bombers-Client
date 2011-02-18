@@ -21,9 +21,9 @@ public interface ISocialProfile {
     function get profileLink():String;
 
     function set profileLink(value:String):void;
-	
-	function clone(profile: ISocialProfile): void;
-	
+
+    function clone(profile:ISocialProfile):void;
+
     //public function get age:int;
 
     //public function get country:int;

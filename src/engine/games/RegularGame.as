@@ -79,8 +79,28 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
             EngineContext.objectActivated.add(onObjectActivated);
 
             EngineContext.deathWallAppeared.add(onDeathWallAppeared)
+
+            Context.gameModel.gameEnded.addOnce(onEndedGE)
+            Context.gameModel.leftGame.addOnce(onEndedLG)
         })
 
+    }
+
+    private function onEndedGE(p1:*, p2:*):void {
+        destroy()
+        Context.gameModel.leftGame.remove(onEndedLG)
+    }
+
+    private function onEndedLG():void {
+        destroy()
+        Context.gameModel.gameEnded.remove(onEndedGE)
+    }
+
+    private function destroy():void {
+        EngineContext.frameEntered.remove(playerManager.movePlayer);
+        EngineContext.frameEntered.remove(enemiesManager.moveEnemies);
+        EngineContext.frameEntered.remove(explosionsManager.checkExplosions);
+        EngineContext.frameEntered.remove(dynObjectManager.checkObjectsActivated);
     }
 
     private function onWeaponDeactivated(playerId:int, type:WeaponType):void {
