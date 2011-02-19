@@ -121,7 +121,7 @@ public class GameProfile {
                 }
 
                 if (_selectedWeaponLeftHand != null) {
-                    packItems.push(_selectedWeaponLeftHand.clone());
+                    packItems.push(_selectedWeaponLeftHand);
                 }
 
                 _selectedWeaponLeftHand = value;

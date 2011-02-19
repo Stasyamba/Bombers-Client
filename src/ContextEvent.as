@@ -11,7 +11,8 @@ public class ContextEvent extends Event {
     public static const SHOW_MAIN_PREALODER:String = "ShowMainPreloder";
     // pass: Boolean -> preloader visible
     public static const NEED_TO_SHOW_ERROR:String = "NeedToShowError";
-
+    public static const NEED_TO_SHOW_DISCONNECTED_WINDOW:String = "NeedToShowDisconnectedWindow"
+    public static const NEED_TO_SHOW_CANT_CONNECT_WINDOW:String = "NeedToShowCantConnectWindow"
 
     /***** worlds and locations *****/
     public static const NEED_TO_CHANGE_WORLD:String = "NeedToChangeWorld";
@@ -100,7 +101,6 @@ public class ContextEvent extends Event {
 
     public static const GPAGE_MY_PARAMETERS_IS_CHANGED:String = "GPAGEMyParametersIsChanged";
     public static const GPAGE_UPDATE_GAME_WEAPONS:String = "GPAGEUpdateGameWeapons";
-    public static const GPAGE_INCREASE_CURRENT_WEAPON_INDEX:String = "GPAGEIncreaseCurrentWeaponIndex";
     /***** buy events: resources(RS), energy(EN), items(IT) *****/
     public static const RS_BUY_FAILED:String = "RSBuyFailed"
     public static const RS_BUY_SUCCESS:String = "RSBuySuccess"

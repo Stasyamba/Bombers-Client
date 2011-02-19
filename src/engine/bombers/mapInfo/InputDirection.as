@@ -17,7 +17,12 @@ public class InputDirection {
 
 
     public function InputDirection() {
+        dir1 = Direction.NONE;
+        dir2 = Direction.NONE;
 
+        lastDir = Direction.NONE;
+        lastVertDir = Direction.NONE;
+        lastHorDir = Direction.NONE;
     }
 
     private function hasDir(move:Direction):Boolean {

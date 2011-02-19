@@ -194,7 +194,7 @@ public class EngineContext {
         currentWeaponChanged.removeAll()
         weaponDeactivated.removeAll()
 
-
+        weaponUnitSpent.removeAll()
         //---explosions
         explosionsChanged.removeAll()
         explosionGroupAdded.removeAll()

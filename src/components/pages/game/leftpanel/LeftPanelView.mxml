@@ -98,7 +98,7 @@
 
         private function onConnectedToGame():void {
             if (Context.gameModel.gameType == GameType.REGULAR) {
-                onSomeoneJoinedToGame()
+                onSomeoneJoinedToGame(null)
                 if (Context.gameModel.createdByMe) {
                     Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_GAME_IS_CREATED_WINDOW);
                 } else {
@@ -107,12 +107,14 @@
             }
         }
 
-        private function onSomeoneLeftGame(user:User):void {
-            setReady(false, user.playerId)
-            deletePlayer(user.playerId)  //todo: check if playerId is still correct
+        private function onSomeoneLeftGame(lp:LobbyProfile):void {
+			if(lp != null){
+            	setReady(false, lp.playerId)
+            	deletePlayer(lp.playerId)
+			}
         }
 
-        private function onSomeoneJoinedToGame():void {
+        private function onSomeoneJoinedToGame(p1:*):void {
             for (var j:int = 1; j < 5; j++) {
                 deletePlayer(j)
             }

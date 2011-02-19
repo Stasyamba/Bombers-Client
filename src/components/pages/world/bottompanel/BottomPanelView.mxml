@@ -34,7 +34,7 @@
                 case OPEN_RANDOM_GAME_TYPE:
                     Context.gameModel.fastJoin()
                     showRandomGameCreating();
-                    Context.gameModel.someoneJoinedToGame.addOnce(function ():void {
+                    Context.gameModel.someoneJoinedToGame.addOnce(function (p1:*):void {
                         closeRandomGameCreating();
                         Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
                     });
@@ -97,7 +97,7 @@
             ww.warningText = message;
             ww.closeText = closeMessage;
 
-            PopUpManager.addPopUp(ww, this, true);
+            PopUpManager.addPopUp(ww, parentApplication as Bombers, true);
         }
 
         private function closeRandomGameCreating():void {

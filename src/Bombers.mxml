@@ -4,7 +4,7 @@
         xmlns:s="library://ns.adobe.com/flex/spark"
         xmlns:fx="http://ns.adobe.com/mxml/2009"
         xmlns:mx="library://ns.adobe.com/flex/mx"
-        xmlns:components="components.*"
+        xmlns:components="components.*" xmlns:flexcomponents="components.common.flexcomponents.*"
         usePreloader="true"
         width="807" height="700"
         backgroundColor="0x000000"
@@ -188,6 +188,16 @@
                         basePreloaderGroup.visible = e.data as Boolean;
                     });
 
+                    Context.Model.addCustomListener(ContextEvent.NEED_TO_SHOW_CANT_CONNECT_WINDOW, function(e:ContextEvent):void {
+                        basePreloaderGroup.visible = false
+                        disconnectedText.text = "Не удалось подключиться к серверу"
+                        disconnectedWindow.visible = true;
+                    });
+
+                    Context.Model.addCustomListener(ContextEvent.NEED_TO_SHOW_DISCONNECTED_WINDOW, function(e:ContextEvent):void {
+                        disconnectedWindow.visible = true;
+                    });
+
                     if (isWrapperExists) {
                         Context.gameModel.init();
                     }
@@ -195,6 +205,12 @@
                     break;
                 default:
                     break;
+            }
+        }
+
+        private function retry():void {
+            if(isWrapperExists){
+                navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
             }
         }
         ]]>
@@ -223,6 +239,29 @@
             <preloaders:Spinner tickColor="0xeeeeee" tickWidth="6" size="60"/>
             <s:Label text="Загружаю всякий стафф" fontFamily="mpbc" fontSize="50" color="0xeeeeee"/>
         </s:HGroup>
+    </s:Group>
+
+    <s:Group id="disconnectedWindow" width="100%" height="100%"
+             visible="false">
+        <s:Rect width="100%" height="100%"
+                alpha="0.6"
+                >
+            <s:fill>
+                <s:SolidColor color="0x000000"/>
+            </s:fill>
+        </s:Rect>
+        <s:VGroup width="100%" height="100%"
+                  horizontalAlign="center" verticalAlign="middle"
+                  paddingTop="-200"
+                >
+            <s:Label id="disconnectedText" text="Произошло отключение от сервера" fontFamily="mpbc" fontSize="50" color="0xeeeeee"/>
+            <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+                                          customLabel="Еще раз"
+                                          fontSize="30"
+                                          fontSizeOver="30"
+                                          click="retry()"
+                    />
+        </s:VGroup>
     </s:Group>
 
 </vkUI:VkontakteApplication> 
