@@ -6,11 +6,13 @@
 package engine.model.signals {
 import com.smartfoxserver.v2.entities.User
 
+import engine.profiles.LobbyProfile
+
 import org.osflash.signals.Signal
 
 public class InGameMessageReceivedSignal extends Signal {
     public function InGameMessageReceivedSignal() {
-        super(User, String);
+        super(LobbyProfile, String);
     }
 }
 }

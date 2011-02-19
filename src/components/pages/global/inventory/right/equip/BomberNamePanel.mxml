@@ -7,22 +7,48 @@
           creationComplete="init();">
 
 
-    <fx:Script>
-		<![CDATA[
-        ]]>
-	</fx:Script>
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
 
     <fx:Script>
 		<![CDATA[
+        import engine.utils.Utils
+
+        import mx.controls.Alert
+
+        import spark.events.TextOperationEvent
+
+        private var lastName:String
+
         public function init():void {
             initContent();
         }
 
         public function initContent():void {
-            bomberNameTextInput.text = Context.Model.currentSettings.gameProfile.nick;
+            lastName = Context.Model.currentSettings.gameProfile.nick
+            bomberNameTextInput.text = lastName;
+        }
+
+        private function saveNick():void {
+            if (checkNick(bomberNameTextInput.text)) {
+                Context.gameServer.sendSaveNickRequest(bomberNameTextInput.text)
+                Context.Model.currentSettings.gameProfile.nick = bomberNameTextInput.text
+            }
+            else {
+                Alert.show("Недозволенное имя")
+            }
+        }
+
+        private function checkNick(name:String):Boolean {
+            return Utils.checkNick(name);
+        }
+
+        private function onChanging(event:TextOperationEvent):void {
+            if (!checkNick(bomberNameTextInput.text))
+                bomberNameTextInput.text = lastName
+            else
+                lastName = bomberNameTextInput.text
         }
         ]]>
 	</fx:Script>
@@ -44,6 +70,7 @@
                      borderColor="0x2f2a21"
                      textAlign="center"
                      id="bomberNameTextInput"
+                     changing="onChanging(event)"
                 />
     </s:Group>
 
@@ -53,6 +80,8 @@
                                    textFontFamily="mpbc"
                                    textColor="0xbd9566"
                                    textSize="18"
+                                   click="saveNick()"
+
             />
 
 </s:HGroup>

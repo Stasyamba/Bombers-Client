@@ -33,7 +33,7 @@
                         type: TypeGameToggle.TOGGLE_STATE_ENJOY
                     });
                 })
-                Context.gameModel.someoneJoinedToGame.addOnce(function():void {
+                Context.gameModel.someoneJoinedToGame.addOnce(function(p1:*):void {
                     Context.Model.windowsManager.closeAll(true);
                     Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
                 })

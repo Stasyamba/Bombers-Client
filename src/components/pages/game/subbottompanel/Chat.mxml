@@ -15,6 +15,10 @@
 
     <fx:Script>
 		<![CDATA[
+        import components.ApplicationView
+
+        import engine.profiles.LobbyProfile
+
         import mx.core.ScrollPolicy
 
         //private var chatText: String = "";
@@ -28,6 +32,33 @@
                     onSend(null);
 
             });
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, function(e:ContextEvent):void {
+                if (e.data == ApplicationView.TAB_NAME_GAME) {
+                    initChat()
+                }
+            })
+            initChat()
+        }
+
+        private function initChat():void {
+            for each (var lp:LobbyProfile in Context.gameModel.lobbyProfiles) {
+                if (lp.id != Context.gameServer.mySelf.name) {
+                    printSomeoneCame(lp.nick)
+                }
+            }
+            printICame()
+            Context.gameModel.someoneJoinedToGame.add(function(lp:LobbyProfile):void {
+                if (lp != null)
+                    printSomeoneCame(lp.nick)
+            })
+            Context.gameModel.someoneLeftGame.add(function(lp:LobbyProfile):void {
+                if (lp != null)
+                    printSomeoneLeft(lp.nick)
+            })
+            Context.gameServer.inGameMessageReceived.add(function(lp:LobbyProfile, message:String):void {
+                if (lp != null)
+                    printMessage(lp.nick, message);
+            })
         }
 
         public function printMessage(from:String, text:String):void {
@@ -43,7 +74,7 @@
         }
 
         public function printSomeoneLeft(name:String):void {
-            chatTextArea.htmlText += "<font size='18' face='mps'><i>" + name + "<i></font>" + "<font size='18'> в страхе выбежал из комнаты </font>\n";
+            chatTextArea.htmlText += "<font size='18' face='mps'><i>" + name + "<i></font>" + "<font size='18'> в страхе выбежал(а) из комнаты </font>\n";
         }
 
         private function onSend(event:MouseEvent):void {

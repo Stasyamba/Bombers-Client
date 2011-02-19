@@ -1,20 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark"
-         xmlns:mx="library://ns.adobe.com/flex/mx">
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+         creationComplete="init()">
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
 
     <fx:Script>
 		<![CDATA[
-        //			private var _timeMilliseconds: int;
-        //			public function start();
-        //			public function stop();
-        //			public function pause();
+        import components.ApplicationView
 
         [Bindable]
-        private var timeStringView:String = "3 : 15";
+        private var timeStringView:String = "0 : 00";
+
+        private var time:int
+        private var timer:Timer= new Timer(1000)
+
+        public function init():void {
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, function(e:ContextEvent):void {
+                if (e.data == ApplicationView.TAB_NAME_GAME) {
+                    Context.gameModel.gameStarted.add(function():void {
+                        time = 0
+                        timeStringView = "0 : 00"
+                        start()
+                    })
+                    Context.gameModel.gameEnded.add(function(p1:*, p2:*):void {
+                        stop()
+                    })
+                }
+            })
+            timer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void{
+                time += 1
+                timeStringView = getStringTime()
+            })
+        }
+
+        private function getStringTime():String {
+            var mins:int = int(time/60)
+            var secs :int = time - int(time/60)
+            return mins + " : " + secs
+        }
+
+        private function stop():void {
+            timer.stop()
+            time = 0
+            timeStringView = "0 : 00"
+        }
+
+        private function start():void {
+            time = 0
+            timeStringView = "0 : 00"
+            timer.start()
+        }
         ]]>
 	</fx:Script>
 

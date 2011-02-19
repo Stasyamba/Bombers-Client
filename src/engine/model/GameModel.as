@@ -28,6 +28,7 @@ import engine.profiles.PlayerGameProfile
 import engine.utils.greensock.TweenMax
 
 import org.osflash.signals.Signal
+import org.osflash.signals.Signal
 
 public class GameModel {
 
@@ -36,6 +37,7 @@ public class GameModel {
 
     //---signals
     public var fastJoinFailed:Signal = new Signal();
+    public var createGameFailed:Signal = new Signal()
     public var someoneJoinedToGame:SomeoneJoinedToGameSignal = new SomeoneJoinedToGameSignal();
     public var someoneLeftGame:SomeoneLeftGameSignal = new SomeoneLeftGameSignal();
     public var leftGame:LeftGameSignal = new LeftGameSignal();
@@ -115,7 +117,7 @@ public class GameModel {
     public function tryCreateRegularGame(name:String, pass:String, locationId:int):void {
         Context.gameServer.createNewGameRequest(name, pass, locationId)
         someoneJoinedToGame.addOnce(onJoinedToGame)
-        //todo: fail case
+        createGameFailed.addOnce(onFastJoinFailed)
         createdByMe = true;
         _gameType = GameType.REGULAR
     }
@@ -174,7 +176,7 @@ public class GameModel {
         Context.gameServer.joinDefaultRoom();
     }
 
-    private function onJoinedToGame():void {
+    private function onJoinedToGame(p1:*):void {
         fastJoinFailed.removeAll()
 
         someoneLeftGame.add(onSomeoneLeftGame)
@@ -202,8 +204,8 @@ public class GameModel {
         readyToPlayAgain.removeAll()
     }
 
-    private function onSomeoneLeftGame(user:User):void {
-        lobbyProfiles[user.playerId] = null
+    private function onSomeoneLeftGame(lp:LobbyProfile):void {
+        lobbyProfiles[lp.playerId] = null
     }
 
     private function onThreeSecondsToStart(data:Array, mapId:int):void {

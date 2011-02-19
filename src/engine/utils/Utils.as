@@ -16,15 +16,15 @@ import mx.utils.ObjectUtil
 
 public class Utils {
 
+    private static const allowedForName:String = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_éöóêåíãøùçõúôûâàïðîëäæýÿ÷ñìèòüáþ¸ÉÖÓÊÅÍÃØÙÇÕÚÔÛÂÀÏÐÎËÄÆÝß×ÑÌÈÒÜÁÞ¨-1234567890"
+
     public static function getClass(value:*):Class {
         return getDefinitionByName(getQualifiedClassName(value)) as Class;
     }
 
-    public static function getAfterExplosionBitmap(expl:Explosion):Bitmap {
-        var explClass:Class = getDefinitionByName(ObjectUtil.getClassInfo(expl).name) as Class;
-        return (new explClass["AFTER"]()) as Bitmap;
+    public static function checkNick(nick:String):Boolean {
+        return nick.length > 0 && !(nick.length > 12)
     }
-
     public static function isArrowKey(code:uint):Boolean {
         return code == Keyboard.LEFT || code == Keyboard.RIGHT || code == Keyboard.UP || code == Keyboard.DOWN;
     }
@@ -52,7 +52,6 @@ public class Utils {
 
     public static function isCorrectGameName(name:String):Boolean {
         return name.length >= 3;
-
     }
 
     public static function getXml(c:Class):XML {

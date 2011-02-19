@@ -12,16 +12,12 @@
 
         import engine.EngineContext
         import engine.ui.GameFieldView
-        import engine.ui.GameResultsView
-        import engine.ui.ThreeSecondsToStart
 
         private var now:int,then:int;
 
         private var gameView:GameFieldView;
 
         //temporary ui elements
-        private var threeSecsToStart:ThreeSecondsToStart = new ThreeSecondsToStart();
-        private var gameResultsView:GameResultsView = new GameResultsView();
 
         public function init():void {
 

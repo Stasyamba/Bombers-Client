@@ -106,7 +106,7 @@ public class GameServer extends SmartFox {
         super(true)
 
         addEventListener(SFSEvent.CONNECTION, onConnected);
-        addEventListener(SFSEvent.CONNECTION_LOST,onDisconnected)
+        addEventListener(SFSEvent.CONNECTION_LOST, onDisconnected)
 
         addEventListener(SFSEvent.LOGIN, onLoggedIn);
         addEventListener(SFSEvent.LOGIN_ERROR, onLoginError);
@@ -283,6 +283,12 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(INT_BUY_ITEM, params, null))
     }
 
+    public function sendSaveNickRequest(name:String):void {
+        var params:ISFSObject = new SFSObject();
+        params.putUtfString("interface.setNick.fields.nick", name);
+        send(new ExtensionRequest("interface.setNick", params, null));
+    }
+
     public function ping(e:*):void {
         send(new ExtensionRequest(PING, null, null));
     }
@@ -295,8 +301,12 @@ public class GameServer extends SmartFox {
     //----------------------Handlers---------------------------
 
     private function onConnected(event:SFSEvent):void {
-        trace("connected successfully");
-        connected.dispatch();
+        if (event.params.success) {
+            trace("connected successfully");
+            connected.dispatch();
+        }else{
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_CANT_CONNECT_WINDOW)
+        }
     }
 
     private function onDisconnected(e:SFSEvent):void {
@@ -335,14 +345,18 @@ public class GameServer extends SmartFox {
     private function onUserExitedRoom(event:SFSEvent):void {
         var room:Room = event.params.room;
         trace(event.params.user.name + " left room " + room.name);
-        if (IsRoomCurrentGame(room)) {
-            Context.gameModel.someoneLeftGame.dispatch(event.params.user);
+        if (!IsRoomCurrentGame(room)) {
+            return
         }
+        var lp:LobbyProfile = Context.gameModel.lobbyProfiles[event.params.user.playerId]
+        Context.gameModel.someoneLeftGame.dispatch(lp);
     }
 
     private function onPublicMessageRecieved(event:SFSEvent):void {
         if (event.params.room == gameRoom) {
-            inGameMessageReceived.dispatch(event.params.sender, event.params.message);
+            if (Context.gameModel.lobbyProfiles != null)
+                if (Context.gameModel.lobbyProfiles[event.params.sender.playerId] != null)
+                    inGameMessageReceived.dispatch(Context.gameModel.lobbyProfiles[event.params.sender.playerId], event.params.message);
         }
     }
 
@@ -524,10 +538,15 @@ public class GameServer extends SmartFox {
             case INT_FAST_JOIN_RESULT:
                 Context.gameModel.fastJoinFailed.dispatch()
                 break;
+            case INT_CREATE_GAME_RESULT:
+                Context.gameModel.createGameFailed.dispatch()
+                break;
             case LOBBY_PROFILES:
                 var arr:ISFSArray = responseParams.getSFSArray("profiles");
-                Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
-                Context.gameModel.someoneJoinedToGame.dispatch();
+                var newLPs:Array = getLobbyProfilesFromSFSArray(arr)
+                var lp:LobbyProfile = getNewLobbyProfile(newLPs)
+                Context.gameModel.lobbyProfiles = newLPs
+                Context.gameModel.someoneJoinedToGame.dispatch(lp);
                 break;
             case LOBBY_READY:
                 var ready:Boolean = responseParams.getBool("IsReady")
@@ -540,6 +559,18 @@ public class GameServer extends SmartFox {
                     lp.isReady = ready;
                 Context.gameModel.playerReadyChanged.dispatch();
         }
+    }
+
+    private function getNewLobbyProfile(newLPs:Array):LobbyProfile {
+        if(Context.gameModel.lobbyProfiles == null)
+            return null
+        for (var i:int = 1; i < gameRoom.userCount; i++) {
+            var lpOld:LobbyProfile = Context.gameModel.lobbyProfiles[i];
+            var lpNew:LobbyProfile = newLPs[i];
+            if (lpOld == null && lpNew != null)
+                return lpNew
+        }
+        return null
     }
 
     public function getLobbyProfilesFromSFSArray(arr:ISFSArray):Array {
