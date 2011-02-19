@@ -5,10 +5,11 @@
         xmlns:fx="http://ns.adobe.com/mxml/2009"
         xmlns:mx="library://ns.adobe.com/flex/mx"
         xmlns:components="components.*"
-        usePreloader="false"
+        usePreloader="true"
         width="807" height="700"
-        backgroundColor="0xffffff"
+        backgroundColor="0x000000"
         frameRate="60" xmlns:preloaders="components.common.utils.preloaders.*"
+		preloader="components.common.utils.preloaders.MainPreloader"
         >
 
     <vkUI:layout>
@@ -72,16 +73,16 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals
-
-        import appmodel.ApplicationModel
-
-        import components.ApplicationView
-        import components.WallView
-        import components.common.utils.enviroment.vkontakte.ApiResult
-        import components.common.utils.enviroment.vkontakte.FlashVars
-
-        import mx.core.IVisualElement
+        import api.vkontakte.VkontakteGlobals;
+        
+        import appmodel.ApplicationModel;
+        
+        import components.ApplicationView;
+        import components.WallView;
+        import components.common.utils.enviroment.vkontakte.ApiResult;
+        import components.common.utils.enviroment.vkontakte.FlashVars;
+        
+        import mx.core.IVisualElement;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
@@ -152,6 +153,7 @@
 //            } else {
 //                initApp(APP_STARTED_COMMON);
 //            }
+			
             initApp(APP_STARTED_COMMON);
         }
 
