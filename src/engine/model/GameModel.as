@@ -78,8 +78,9 @@ public class GameModel {
 
     private function onGameServerConnected():void {
         Context.gameServer.login(Context.Model.currentSettings.socialProfile.id, Context.Model.currentSettings.socialProfile.id)
+        Context.gameServer.disconnected.removeAll()
+        Context.gameServer.disconnected.addOnce(onServerDisconnected)
     }
-
 
     //----------singleplayer-----------
 
@@ -148,6 +149,10 @@ public class GameModel {
 
 
     //--------------------------------HANDLERS--------------------------------
+
+    private function onServerDisconnected():void {
+        onLeftGame()
+    }
 
     private function onProfileLoaded(profile:GameProfile):void {
         Context.Model.currentSettings.gameProfile = profile

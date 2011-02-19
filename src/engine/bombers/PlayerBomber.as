@@ -53,6 +53,21 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         _direction = direction;
 
         EngineContext.currentWeaponChanged.add(onCurrentWeaponChanged)
+        EngineContext.weaponUnitSpent.add(onWeaponUnitSpent)
+    }
+
+    private function onWeaponUnitSpent(type:WeaponType):void {
+        for (var i:int = 0; i < Context.Model.currentSettings.gameProfile.gotItems.length; i++) {
+            var obj:ItemProfileObject = Context.Model.currentSettings.gameProfile.gotItems[i];
+            if (obj.itemType.value == type.value) {
+                obj.itemCount--;
+                break
+            }
+        }
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED)
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
+        Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
     }
 
     private function onCurrentWeaponChanged():void {
@@ -63,9 +78,9 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     public function performMotion(moveAmount:Number):void {
+
         if (_direction.direction == Direction.NONE)
             return;
-
         var x:int = _coords.getRealX();
         var y:int = _coords.getRealY();
 
@@ -241,6 +256,45 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         if (_weapons[wt.value] is IActivatableWeapon) {
             (_weapons[wt.value] as IActivatableWeapon).decCharges()
         }
+    }
+
+    public function increaseWeaponIndex():void {
+        var gp:GameProfile = Context.Model.currentSettings.gameProfile
+        if (gp.selectedWeaponLeftHand == null) {
+            var newW:ItemProfileObject = getNextWeapon(-1)
+            if (newW != null)
+                gp.selectedWeaponLeftHand = newW
+        } else {
+            for (var i:int = 0; i < gp.gotItems.length; i++) {
+                var obj:ItemProfileObject = gp.gotItems[i];
+                if (obj.itemType == gp.selectedWeaponLeftHand.itemType) {
+                    var newW:ItemProfileObject = getNextWeapon(i)
+                    gp.selectedWeaponLeftHand = newW
+                    break
+                }
+            }
+        }
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
+        Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
+
+        EngineContext.currentWeaponChanged.dispatch()
+    }
+
+    private function getNextWeapon(from:int):ItemProfileObject {
+        var gp:GameProfile = Context.Model.currentSettings.gameProfile;
+        for (var i:int = from + 1; i < gp.gotItems.length; i++) {
+            var obj:ItemProfileObject = gp.gotItems[i];
+            if (obj != null && Context.Model.itemsCategoryManager.getItemCategory(obj.itemType) == ItemCategory.WEAPON) {
+                return obj
+            }
+        }
+        for (var i:int = 0; i <= from; i++) {
+            var obj:ItemProfileObject = gp.gotItems[i];
+            if (obj != null && Context.Model.itemsCategoryManager.getItemCategory(obj.itemType) == ItemCategory.WEAPON) {
+                return obj
+            }
+        }
+        return null
     }
 }
 }

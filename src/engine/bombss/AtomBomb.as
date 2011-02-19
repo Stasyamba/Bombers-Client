@@ -14,7 +14,7 @@ import engine.model.explosionss.ExplosionType
 
 public class AtomBomb extends BombBase implements ITimeActivatableDynObject {
 
-    private static const EXPLODE_TIME:int = 3000;
+    private static const EXPLODE_TIME:int = 2000;
 
     public function AtomBomb(explosionsBuilder:ExplosionsBuilder, block:IMapBlock, player:IBomber) {
         super(explosionsBuilder, block, player);

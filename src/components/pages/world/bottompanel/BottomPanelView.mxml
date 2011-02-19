@@ -97,7 +97,7 @@
             ww.warningText = message;
             ww.closeText = closeMessage;
 
-            PopUpManager.addPopUp(ww, this, true);
+            PopUpManager.addPopUp(ww, parentApplication as Bombers, true);
         }
 
         private function closeRandomGameCreating():void {

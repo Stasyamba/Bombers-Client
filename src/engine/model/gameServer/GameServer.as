@@ -90,6 +90,7 @@ public class GameServer extends SmartFox {
     public var gameRoom:Room;
 
     public var connected:GameServerConnectedSignal = new GameServerConnectedSignal();
+    public var disconnected:Signal = new Signal()
     public var loggedIn:LoggedInSignal = new LoggedInSignal();
 
     public var profileLoaded:ProfileLoadedSignal = new ProfileLoadedSignal();
@@ -102,9 +103,10 @@ public class GameServer extends SmartFox {
     private var tenSecondsTimer:Timer = new Timer(10000);
 
     public function GameServer() {
-        super(false)
+        super(true)
 
         addEventListener(SFSEvent.CONNECTION, onConnected);
+        addEventListener(SFSEvent.CONNECTION_LOST,onDisconnected)
 
         addEventListener(SFSEvent.LOGIN, onLoggedIn);
         addEventListener(SFSEvent.LOGIN_ERROR, onLoginError);
@@ -248,8 +250,8 @@ public class GameServer extends SmartFox {
 
     public function sendChangeBomberRequest(type:BomberType):void {
         var params:ISFSObject = new SFSObject();
-        params.putInt("game.lobby.userReady.fields.isReady", type.value);
-        send(new ExtensionRequest("game.lobby.userReady", params, null));
+        params.putInt("interface.setBomber.fields.bomberId", type.value);
+        send(new ExtensionRequest("interface.setBomber", params, null));
     }
 
     public function buyResourcesRequest(rp:ResourcePrice):void {
@@ -295,6 +297,10 @@ public class GameServer extends SmartFox {
     private function onConnected(event:SFSEvent):void {
         trace("connected successfully");
         connected.dispatch();
+    }
+
+    private function onDisconnected(e:SFSEvent):void {
+        disconnected.dispatch()
     }
 
     private function onRoomJoin(event:SFSEvent):void {

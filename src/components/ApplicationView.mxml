@@ -151,11 +151,19 @@
                 openEnergyMarket();
             });
 
+            /*disconnected*/
+
+            Context.gameServer.disconnected.add(onDisconnected)
 
             /// immitation
             idGroup.visible = !(parentApplication as Bombers).isWrapperExists;
 
 
+        }
+
+        private function onDisconnected():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB,TAB_NAME_GAME)
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_DISCONNECTED_WINDOW)
         }
 
 

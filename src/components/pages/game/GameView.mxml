@@ -81,7 +81,7 @@
         }
 
         private function subscribeEnterFrameEvent():void {
-
+            trace("subscribe")
             now = then = getTimer();
             addEventListener(Event.ENTER_FRAME, onEnterFrame)
         }
@@ -94,6 +94,7 @@
         }
 
         private function unsubscribeEnterFrameEvent():void {
+            trace("unsubscribe")
             removeEventListener(Event.ENTER_FRAME, onEnterFrame)
         }
 
