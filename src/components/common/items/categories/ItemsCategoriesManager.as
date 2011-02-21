@@ -40,6 +40,7 @@ public class ItemsCategoriesManager {
             case ItemType.BOX_BOMB:
 			case ItemType.HEALTH_PACK_ADVANCED_POISON:
 			case ItemType.HEALTH_PACK_POISON:
+			case ItemType.SMOKE_BOMB:
                 res = ItemCategory.WEAPON;
                 break;
         }
@@ -65,6 +66,7 @@ public class ItemsCategoriesManager {
             case ItemType.BOX_BOMB:
 			case ItemType.HEALTH_PACK_ADVANCED_POISON:
 			case ItemType.HEALTH_PACK_POISON:
+			case ItemType.SMOKE_BOMB:
                 res = MarketCategory.BOMBS_AND_POISONS;
                 break;
         }
