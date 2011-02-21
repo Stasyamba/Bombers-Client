@@ -155,5 +155,12 @@ public class ResourcePrice {
         adamant.value -= rp.adamant.value
         antimatter.value -= rp.antimatter.value
     }
+
+    public function setFrom(rp:ResourcePrice):void {
+        this.gold.value = rp.gold.value
+        this.crystals.value = rp.crystals.value
+        this.adamant.value = rp.adamant..value
+        this.antimatter.value = rp.antimatter.value
+    }
 }
 }

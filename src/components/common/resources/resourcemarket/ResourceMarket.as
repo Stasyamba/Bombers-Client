@@ -12,11 +12,14 @@ import mx.collections.ArrayList
 
 public class ResourceMarket {
 
-    public static var GOLD_VOICES:Number = 0.25
-    public static var CRYSTAL_VOICES:Number = 1
-    public static var ADAMANTIUM_VOICES:Number = 4
-    public static var ANTIMATTER_VOICES:Number = 8
+    public var GOLD_VOICES:Number = 25
+    public var CRYSTAL_VOICES:Number = 100
+    public var ADAMANTIUM_VOICES:Number = 400
+    public var ANTIMATTER_VOICES:Number = 800
 
+    public var ENERGY_VOICES:Array = new Array()
+
+    //array of {moreThan,discount}
     private var discounts:Array = new Array()
     private var exchangeRates:ArrayList = new ArrayList();
 
@@ -55,7 +58,7 @@ public class ResourceMarket {
         var basePrice:Number = getBaseVoicePrice(rp)
         for (var i:int = 0; i < discounts.length; i++) {
             var object:Object = discounts[i];
-            if (basePrice > object.moreThan) {
+            if (basePrice >= object.moreThan) {
                 return object.discount as Number
             }
         }
@@ -64,7 +67,7 @@ public class ResourceMarket {
 
     public function getVoicePrice(rp:ResourcePrice):Number {
         var basePrice:Number = getBaseVoicePrice(rp)
-        return basePrice - basePrice*getDiscount(rp)
+        return (basePrice - basePrice*getDiscount(rp))/100
     }
 
     public function getBaseVoicePrice(rp:ResourcePrice):Number {
@@ -74,12 +77,12 @@ public class ResourceMarket {
     public function getSliderStep(rt:ResourceType):int {
         if(rt == ResourceType.GOLD){
             if(GOLD_VOICES < 1)
-                return int(1/GOLD_VOICES)
+                return int(100/GOLD_VOICES)
             return 1
         }
         if(rt == ResourceType.CRYSTALS){
             if(CRYSTAL_VOICES < 1)
-                return int(1/CRYSTAL_VOICES)
+                return int(100/CRYSTAL_VOICES)
             return 1
         }
         // adamant and antimatter > 1 voice per unit

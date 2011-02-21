@@ -18,7 +18,7 @@ public class MarketManager {
     public function getItemPrice(itemType:ItemType):ItemMarketObject {
         if (_itemPrices[itemType.value] != null)
             return  _itemPrices[itemType.value]
-        return new ItemMarketObject(new ResourcePrice(1,0,0,0),1)
+        return new ItemMarketObject(new ResourcePrice(1,0,0,0),1,false)
     }
 }
 }

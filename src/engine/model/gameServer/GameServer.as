@@ -17,6 +17,7 @@ import com.smartfoxserver.v2.requests.LeaveRoomRequest
 import com.smartfoxserver.v2.requests.LoginRequest
 import com.smartfoxserver.v2.requests.PublicMessageRequest
 
+import components.common.base.market.ItemMarketObject
 import components.common.bombers.BomberType
 import components.common.items.ItemType
 import components.common.resources.ResourcePrice
@@ -285,7 +286,7 @@ public class GameServer extends SmartFox {
     }
 
     public function sendDropItemRequest(itemType:ItemType):void {
-         var params:ISFSObject = new SFSObject();
+        var params:ISFSObject = new SFSObject();
         params.putInt("interface.dropItem.fields.itemId", itemType.value)
 
         send(new ExtensionRequest("interface.dropItem", params, null))
@@ -312,7 +313,7 @@ public class GameServer extends SmartFox {
         if (event.params.success) {
             trace("connected successfully");
             connected.dispatch();
-        }else{
+        } else {
             Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_CANT_CONNECT_WINDOW)
         }
     }
@@ -496,6 +497,37 @@ public class GameServer extends SmartFox {
             case INT_GAME_PROFILE_LOADED:
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
                 profileLoaded.dispatch(gp);
+                //resourceCost
+                Context.resourceMarket.GOLD_VOICES = responseParams.getInt("GoldCost")
+                Context.resourceMarket.CRYSTAL_VOICES = responseParams.getInt("CrystalCost")
+                Context.resourceMarket.ADAMANTIUM_VOICES = responseParams.getInt("AdamantiumCost")
+                Context.resourceMarket.ANTIMATTER_VOICES = responseParams.getInt("AntimatterCost")
+                var enArr:ISFSArray = responseParams.getSFSArray("EnergyCost")
+                for (var i:int = 0; i < enArr.size(); i++) {
+                    var it:ISFSObject = enArr[i];
+                    Context.resourceMarket.ENERGY_VOICES[it.getInt("Count")] = it.getInt("Price")
+                }
+                var discArr:ISFSArray = responseParams.getSFSArray("Discounts")
+                var discs:Array = new Array()
+                for (var i:int = 0; i < discArr.size(); i++) {
+                    var it:ISFSObject = discArr[i];
+                    discs.push({moreThan:it.getInt("From"),discount:it.getInt("Value")})
+                }
+                Context.resourceMarket.setDiscounts(discs)
+                //itemCost
+                var plist:ISFSObject = responseParams.getSFSObject("Pricelist")
+                var itemsArr:ISFSArray = plist.getSFSArray("Items");
+                var prices:Array = new Array()
+                for (var i:int = 0; i < itemsArr.size(); i++) {
+                    var obj:ISFSObject = itemsArr.getSFSObject(i);
+                    var id:int = obj.getInt("Id")
+                    var rp:ResourcePrice = new ResourcePrice(obj.getInt("Gold"), obj.getInt("Crystal"), obj.getInt("Adamantium"), obj.getInt("Antimatter"))
+                    var stack:int = obj.getInt("Stack")
+                    var so:Boolean = obj.getBool("SpecialOffer")
+                    var imo:ItemMarketObject = new ItemMarketObject(rp, stack, so)
+                    prices[id] = imo
+                }
+                Context.Model.marketManager.setItemPrices(prices)
                 break;
             case INT_BUY_RESOURCES_RESULT:
                 trace("resources bought");
@@ -529,12 +561,11 @@ public class GameServer extends SmartFox {
                 }
                 var iType:ItemType = ItemType.byValue(responseParams.getInt("interface.buyItem.result.fields.itemId"))
                 var count:int = responseParams.getInt("interface.buyItem.result.fields.count")
-                rp = new ResourcePrice(responseParams.getInt("interface.buyItem.result.fields.itemCostResourceType0"),
-                        responseParams.getInt("interface.buyItem.result.fields.itemCostResourceType1"),
-                        responseParams.getInt("interface.buyItem.result.fields.itemCostResourceType2"),
-                        responseParams.getInt("interface.buyItem.result.fields.itemCostResourceType3"))
-                Context.Model.currentSettings.gameProfile.addItem(iType, count);
-                Context.Model.currentSettings.gameProfile.resources.subscract(rp);
+                rp = new ResourcePrice(responseParams.getInt("interface.buyItem.result.fields.resourceType0"),
+                        responseParams.getInt("interface.buyItem.result.fields.resourceType1"),
+                        responseParams.getInt("interface.buyItem.result.fields.resourceType2"),
+                        responseParams.getInt("interface.buyItem.result.fields.resourceType3"))
+                Context.Model.currentSettings.gameProfile.resources.setFrom(rp)
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.IT_BUY_SUCCESS, {it:iType,count:count})
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
@@ -571,7 +602,7 @@ public class GameServer extends SmartFox {
     }
 
     private function getNewLobbyProfile(newLPs:Array):LobbyProfile {
-        if(Context.gameModel.lobbyProfiles == null)
+        if (Context.gameModel.lobbyProfiles == null)
             return null
         for (var i:int = 1; i < gameRoom.userCount; i++) {
             var lpOld:LobbyProfile = Context.gameModel.lobbyProfiles[i];

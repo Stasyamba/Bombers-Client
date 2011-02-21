@@ -113,7 +113,7 @@ public class ItemsManager {
 
         items.push(new ItemObject(
                 ItemType.NUCLEAR_BOMB,
-                [new AccessLevelRule(1)],
+                [new AccessLevelRule(2)],
 
                 new ItemViewObject(
                         ItemType.NUCLEAR_BOMB,
