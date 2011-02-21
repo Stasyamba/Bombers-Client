@@ -17,14 +17,15 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.base.access.AccessManager
-        import components.common.base.access.rules.AccessRuleObject
-        import components.common.base.access.rules.levelrule.AccessLevelRule
-        import components.common.items.ItemObject
-        import components.common.items.ItemProfileObject
-        import components.common.items.ItemType
-        import components.common.items.categories.ItemCategory
-        import components.common.resources.ResourcePrice
+			import components.common.base.access.AccessManager;
+			import components.common.base.access.rules.AccessRuleObject;
+			import components.common.base.access.rules.levelrule.AccessLevelRule;
+			import components.common.base.market.ItemMarketObject;
+			import components.common.items.ItemObject;
+			import components.common.items.ItemProfileObject;
+			import components.common.items.ItemType;
+			import components.common.items.categories.ItemCategory;
+			import components.common.resources.ResourcePrice;
 
         private var itemType:ItemType = null;
         private var itemObject:ItemObject;
@@ -47,7 +48,9 @@
 
 
         private var thisItemPrice:ResourcePrice;
-
+		[Bindable]
+		private var itemPackCount: int = 1;
+			
         public function init():void {
             Context.Model.addCustomListener(ContextEvent.IM_REMOVE_ITEM_RULES_DENIED_CONTENT, function (e:ContextEvent):void {
                 rulesDenied.visible = false;
@@ -74,8 +77,9 @@
 
             weaponImage.source = itemObject.viewObject.smallImageURL;
 
-
-            thisItemPrice = Context.Model.marketManager.getItemPrice(itemType);
+			var imo:ItemMarketObject = Context.Model.marketManager.getItemPrice(itemType);
+            thisItemPrice = imo.price;
+			itemPackCount = imo.amount;
             itemPricePanel.initContent(thisItemPrice);
 
 
@@ -195,8 +199,10 @@
                 <s:Label text="Цена: " color="0xf5d6b4" fontSize="18" fontFamily="mpbc"/>
                 <slots:PriceView id="itemPricePanel"/>
             </s:HGroup>
-
-
+			<s:HGroup paddingLeft="50">
+				<s:Label text="{itemPackCount} шт." color="0xf5d6b4" fontSize="14" fontFamily="mpr"/>
+			</s:HGroup>
+			
             <s:Group width="100%" height="100%">
                 <s:HGroup width="100%" height="100%"
                           horizontalAlign="right" verticalAlign="middle"
