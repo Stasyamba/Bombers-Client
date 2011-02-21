@@ -13,6 +13,7 @@ public class BombType implements IDynObjectType {
     public static const ATOM:BombType = new BombType(01, "ATOM", false);
     public static const BOX:BombType = new BombType(02, "BOX", false);
     public static const DYNAMITE:BombType = new BombType(03, "DYNAMITE", false);
+    public static const SMOKE:BombType = new BombType(04, "SMOKE", false);
 
     private var _value:int;
     private var _key:String;
@@ -52,6 +53,8 @@ public class BombType implements IDynObjectType {
                 return BOX;
             case DYNAMITE.value:
                 return DYNAMITE;
+            case SMOKE.value:
+                return SMOKE
         }
         throw new ArgumentError("wrong bombType value");
     }

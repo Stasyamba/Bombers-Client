@@ -92,6 +92,7 @@ public class GameServer extends SmartFox {
     public var connected:GameServerConnectedSignal = new GameServerConnectedSignal();
     public var disconnected:Signal = new Signal()
     public var loggedIn:LoggedInSignal = new LoggedInSignal();
+    public var loginError:Signal = new Signal()
 
     public var profileLoaded:ProfileLoadedSignal = new ProfileLoadedSignal();
 
@@ -347,6 +348,7 @@ public class GameServer extends SmartFox {
 
     private function onLoginError(event:SFSEvent):void {
         trace("login failure: " + event.params.errorMessage)
+        loginError.dispatch()
     }
 
     private function onUserExitedRoom(event:SFSEvent):void {

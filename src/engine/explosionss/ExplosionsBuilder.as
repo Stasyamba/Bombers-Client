@@ -27,6 +27,8 @@ public class ExplosionsBuilder {
                 var e:Explosion = new Explosion(mapManager.map, centerX, centerY, 2)
                 e.damage = 2;
                 return e
+            case ExplosionType.SMOKE:
+                return new SmokeExplosion(mapManager.map,centerX,centerY)
             case ExplosionType.NULL:
                 return NullExplosion.getInstance();
         }

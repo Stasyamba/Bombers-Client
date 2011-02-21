@@ -18,6 +18,9 @@ import engine.maps.OverMapView
 import engine.maps.bigObjects.view.BigObjectsView
 import engine.maps.mapBlocks.view.MapBlocksView
 
+import flash.display.Bitmap
+import flash.display.BitmapData
+import flash.display.Sprite
 import flash.events.Event
 
 import mx.collections.ArrayList
@@ -46,7 +49,8 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
     public var playerView:PlayerView;
     //interactive big objects players walk under
     public var higherBigObjectsView:BigObjectsView;
-
+    //for smoke and other stuff like that
+    public var highestView:Sprite = new Sprite()
 
     private var contentUI:UIComponent = new UIComponent();
 
@@ -87,12 +91,20 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
         higherBigObjectsView = new BigObjectsView(game.mapManager.map, true);
         contentUI.addChild(higherBigObjectsView);
 
+        contentUI.addChild(highestView)
+
         this.clipAndEnableScrolling = true;
         this.width = VIEWPORT_WIDTH;
         this.height = VIEWPORT_HEIGHT;
 
         onPlayerCoordinatesChanged(game.playerManager.me.coords.getRealX(), game.playerManager.me.coords.getRealY())
         EngineContext.playerCoordinatesChanged.add(onPlayerCoordinatesChanged);
+        EngineContext.smokeAdded.add(onSmokeAdded)
+    }
+
+    private function onSmokeAdded(x:int,y:int):void {
+        var sp:SmokeSprite = new SmokeSprite(x*Consts.BLOCK_SIZE,y*Consts.BOMBER_SIZE)
+        highestView.addChild(sp)
     }
 
     private function mapWidth():Number {

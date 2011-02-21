@@ -27,10 +27,6 @@ public class MapView extends Sprite implements IDrawable,IDestroyable {
 
         removeAllChildren();
 
-        graphics.beginBitmapFill(MapBlocks.MAP_GRASS());
-        graphics.drawRect(0, 0, map.width * Consts.BLOCK_SIZE, map.height * Consts.BLOCK_SIZE);
-        graphics.endFill();
-
         for each (var obj:IBigObject in map.decorations) {
             var sp:Sprite = new Sprite()
             sp.graphics.beginBitmapFill(Context.imageService.getBigObject(obj.description.skin));

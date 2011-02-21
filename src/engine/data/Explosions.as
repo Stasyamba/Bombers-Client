@@ -18,6 +18,7 @@ public class Explosions {
     private static var down:Bitmap;
 
     private static var print:Bitmap;
+    private static var smoke1:Bitmap;
 
     [Embed(source="location1/images/explosions/cross.png")]
     public static const CROSS_CLASS:Class;
@@ -34,8 +35,12 @@ public class Explosions {
     public static const UP_CLASS:Class;
     [Embed(source="location1/images/explosions/down.png")]
     public static const DOWN_CLASS:Class;
+
     [Embed(source="location1/images/explosions/print.png")]
     public static const PRINT_CLASS:Class;
+    [Embed(source="location1/images/explosions/smoke1.png")]
+    public static const SMOKE1_CLASS:Class;
+
 
     public static function get CROSS():BitmapData {
         if (cross == null)
@@ -85,6 +90,11 @@ public class Explosions {
         return print.bitmapData;
     }
 
+    public static function get SMOKE1():BitmapData {
+        if (smoke1 == null)
+            smoke1 = new SMOKE1_CLASS() as Bitmap;
+        return smoke1.bitmapData;
+    }
 
     // die explosions
 

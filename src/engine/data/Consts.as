@@ -27,6 +27,9 @@ public class Consts {
     public static const EXPLOSION_DEFLATION:int = 7;
     public static const POINTER_TIME:Number = 0.5;
 
+    public static const SMOKE_WIDTH:Number = 95
+    public static const SMOKE_HEIGHT:Number = 93
+
 
 }
 }

@@ -8,6 +8,7 @@ import engine.model.signals.DieWallAppearedSignal
 import engine.model.signals.FrameEnteredSignal
 import engine.model.signals.MissionAccomplishedSignal
 import engine.model.signals.MissionFailedSignal
+import engine.model.signals.SmokeAddedSignal
 import engine.model.signals.WeaponActivatedSignal
 import engine.model.signals.WeaponDeactivatedSignal
 import engine.model.signals.WeaponUnitSpentSignal
@@ -70,6 +71,7 @@ public class EngineContext {
 
     //---frame
     private var _frameEntered:FrameEnteredSignal = new FrameEnteredSignal();
+    private var _smokeAdded:SmokeAddedSignal
 
     function EngineContext() {
     }
@@ -135,6 +137,10 @@ public class EngineContext {
 
     public static function get explosionsRemoved():ExplosionsRemovedSignal {
         return instance._explosionsRemoved;
+    }
+
+     public static function get smokeAdded():SmokeAddedSignal {
+        return _instance._smokeAdded
     }
 
     public static function get objectAdded():ObjectAddedSignal {
