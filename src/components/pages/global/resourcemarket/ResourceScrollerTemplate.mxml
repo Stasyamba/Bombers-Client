@@ -35,13 +35,13 @@
         public function get value():int {
             return _value;
         }
-
+		[Bindable]
         public function set value(value:int):void {
-            _value = value;
-            valueStringView = value.toString();
 
+            _value = value
+            changeValue()
             dispatchEvent(new ContextEvent("resourceValueChanged", false, false,
-            {resourceType: _resourceType, value: value}));
+            {resourceType: _resourceType, value: _value}));
         }
 
         public function get resourceType():ResourceType {
@@ -51,10 +51,17 @@
         public function set resourceType(value:ResourceType):void {
             _resourceType = value;
             resourceViewObject = Context.Model.resourceViewManager.getResource(value);
-            slider.stepSize = Context.resourceMarket.getSliderStep(value)
-            slider.snapInterval = Context.resourceMarket.getSliderStep(value)
+            changeValue()
+        }
+
+        private function changeValue():void {
+            slider.stepSize = Context.resourceMarket.getSliderStep(_resourceType)
+            slider.snapInterval = Context.resourceMarket.getSliderStep(_resourceType)
+
+            value = value + ((value % slider.stepSize == 0) ? 0 : (slider.stepSize - value % slider.stepSize));
+            valueStringView = _value.toString();
             var max:int = 0
-            while(max < 30)
+            while (max < 30)
                 max += slider.stepSize
             slider.maximum = max
         }
