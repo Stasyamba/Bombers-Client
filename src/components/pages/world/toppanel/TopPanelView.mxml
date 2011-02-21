@@ -38,7 +38,7 @@
     <s:HGroup width="100%" height="100%"
               verticalAlign="middle" horizontalAlign="right">
 
-        <expirance:Expirance/>
+        <expirance:Experiance/>
         <energy:EnergyView click="openEnegryMarket();"/>
         <resources:ResourcesView paddingRight="20"/>
 
