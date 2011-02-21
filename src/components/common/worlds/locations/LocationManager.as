@@ -16,7 +16,7 @@ public class LocationManager {
 
         locations.push(new LocationObject(
                 LocationType.WORLD1_CASTLE,
-                []
+                [new AccessLevelRule(2)]
                 ));
 
 
@@ -55,7 +55,7 @@ public class LocationManager {
 
         locations.push(new LocationObject(
                 LocationType.WORLD1_SATTELITE,
-                [new AccessBetaRule()]
+                [new AccessOpenedLocationsRule([LocationType.WORLD1_ROCKET], true)]
                 ));
 
 

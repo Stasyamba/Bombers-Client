@@ -4,7 +4,7 @@ public class ExpiranceManager {
     }
 
     public function getLevel(expirance:int):int {
-        var res:int = 3;
+        var res:int = 1;
 
         return res;
     }
