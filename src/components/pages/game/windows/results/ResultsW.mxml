@@ -66,16 +66,23 @@
 
             var place:int = 1;
             while (true) {
-                var found:Boolean = false
+                
+				var found:Boolean = false;
+				
                 for each(var lp:LobbyProfile in Context.gameModel.lastGameLobbyProfiles) {
-                    if (lp == null)
-                        continue
-                    if (lp.place == place) {
-                        found = true
+                    
+					if (lp == null)
+                        continue;
+					
+                    if (lp.place == place) 
+					{
+                        found = true;
+						
                         var l:Label = new Label();
                         l.text = place.toString() + ". " + lp.nick + "  +" + lp.expEarned + " опыта";
                         l.minWidth = 180;
                         l.setStyle("fontFamily", "mpbc");
+						
                         if (Context.Model.currentSettings.gameProfile.id == lp.id) {
                             l.setStyle("fontSize", 18);
                             l.setStyle("color", 0xfbb044);
@@ -90,8 +97,10 @@
                     }
                 }
                 if (!found)
-                    break
+                    break;
+				
             }
+			
 //            for each(var i:ItemProfileObject in gameResults.getItems()) {
 
 //            }
@@ -110,27 +119,28 @@
     <s:BorderContainer id="lightBorderContainer"
                        backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
                        backgroundImageFillMode="repeat"
-                       width="335" height="310"
+                       width="335" height="280"
                        borderVisible="false"
             />
 
     <s:BorderContainer id="darkBorderContainer"
                        backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
                        backgroundImageFillMode="repeat"
-                       width="319" height="294"
+                       width="319" height="264"
                        borderVisible="false"
                        x="8" y="8"
             />
 
-    <s:VGroup width="319" height="294"
+    <s:VGroup width="319" height="264"
               x="8" y="8"
               horizontalAlign="center"
               verticalAlign="middle"
             >
         <s:Label text="Результаты:" fontFamily="mpbc" fontSize="24" color="0xffffff"/>
-        <s:VGroup id="resultsVGroup"/>
-        <s:Label text="Собрали: " fontFamily="mpbc" fontSize="24" color="0xffffff"/>
-        <s:HGroup id="collectItemsHGroup"/>
+        <s:VGroup id="resultsVGroup" horizontalAlign="left"/>
+       <!-- <s:Label text="Собрали: " fontFamily="mpbc" fontSize="24" color="0xffffff"/>
+        <s:HGroup id="collectItemsHGroup"/>-->
+		
     </s:VGroup>
 
     <flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS"

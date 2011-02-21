@@ -23,9 +23,15 @@
 
         import spark.primitives.BitmapImage
 
+		
+		
+		[Bindable]
+		private var betaGroupVisible:Boolean = false;
         [Bindable]
         private var warningGroupVisible:Boolean = false;
 
+				
+				
         [Embed(source="assets/pageworld/worlds/locationenter/energyLightings.png")]
         public var lightingsImage:Class;
 
@@ -53,7 +59,7 @@
         }
 
         private function singleGameButton_clickHandler(event:MouseEvent):void {
-            if (Context.Model.currentSettings.gameProfile.energy > enegryRequired) {
+            /* if (Context.Model.currentSettings.gameProfile.energy > enegryRequired) {
                 if (locationType == LocationType.WORLD1_GRASSFIELDS) {
                     Context.Model.windowsManager.closeAll(false);
                     Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
@@ -63,12 +69,18 @@
                 }
             } else {
                 setWarningGroupVisible(true);
-            }
+            } */
+			
+			setBetaGroupVisible(true);
         }
 
         private function setWarningGroupVisible(visible:Boolean):void {
             warningGroupVisible = visible;
         }
+		
+		private function setBetaGroupVisible(visible:Boolean):void {
+			betaGroupVisible = visible;
+		}
         ]]>
 	</fx:Script>
     <s:VGroup horizontalAlign="center" verticalAlign="middle"
@@ -134,4 +146,36 @@
         </s:VGroup>
     </s:Group>
 
+	<s:Group width="100%" height="100%"
+			 y="2"
+			 id="betaGroup"
+			 visible="{betaGroupVisible}"
+			 >
+		<s:Rect width="100%" height="100%">
+			<s:fill>
+				<s:SolidColor color="0x000000" alpha="0.9"/>
+			</s:fill>
+		</s:Rect>
+		
+		<s:VGroup width="100%" height="100%"
+				  horizontalAlign="center" verticalAlign="middle"
+				  gap="20"
+				  >
+			<s:Label
+				text="В заданиях вы можете добвать ресурсы за энергию! Но пока что у нас бета, и мы придумываем вам интересные задания."
+				maxWidth="400"
+				textAlign="center"
+				fontFamily="mpbc" fontSize="24" color="0xffe61c"
+				/>
+			<s:HGroup>
+				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+											  customLabel="Буду ждать"
+											  fontSize="22" fontSizeOver="22"
+											  click="setBetaGroupVisible(false);"
+											  />
+			</s:HGroup>
+			
+		</s:VGroup>
+	</s:Group>
+	
 </s:Group>
