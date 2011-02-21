@@ -87,6 +87,17 @@ public class ItemsManager {
 			)
 		));
 		
+		items.push(new ItemObject(
+			ItemType.SMOKE_BOMB,
+			[new AccessLevelRule(1)],
+			
+			new ItemViewObject(
+				ItemType.SMOKE_BOMB,
+				ImagesPrefixes.WEAPON_PREFIX + "smokeBomb.png",
+				"Дымовая бомба",
+				"Задыми всю карту, передвигайся как тень и верши свое правосудие в суде неравных"
+			)
+		));
 
         items.push(new ItemObject(
                 ItemType.HAMELEON_POISON,
