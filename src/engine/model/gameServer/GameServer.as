@@ -498,24 +498,25 @@ public class GameServer extends SmartFox {
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
                 profileLoaded.dispatch(gp);
                 //resourceCost
-                Context.resourceMarket.GOLD_VOICES = responseParams.getInt("GoldCost")
-                Context.resourceMarket.CRYSTAL_VOICES = responseParams.getInt("CrystalCost")
-                Context.resourceMarket.ADAMANTIUM_VOICES = responseParams.getInt("AdamantiumCost")
-                Context.resourceMarket.ANTIMATTER_VOICES = responseParams.getInt("AntimatterCost")
-                var enArr:ISFSArray = responseParams.getSFSArray("EnergyCost")
+                var plist:ISFSObject = responseParams.getSFSObject("Pricelist")
+
+                Context.resourceMarket.GOLD_VOICES = plist.getInt("GoldCost")
+                Context.resourceMarket.CRYSTAL_VOICES = plist.getInt("CrystalCost")
+                Context.resourceMarket.ADAMANTIUM_VOICES = plist.getInt("AdamantiumCost")
+                Context.resourceMarket.ANTIMATTER_VOICES = plist.getInt("AntimatterCost")
+                var enArr:ISFSArray = plist.getSFSArray("EnergyCost")
                 for (var i:int = 0; i < enArr.size(); i++) {
-                    var it:ISFSObject = enArr[i];
+                    var it:ISFSObject = enArr.getSFSObject(i);
                     Context.resourceMarket.ENERGY_VOICES[it.getInt("Count")] = it.getInt("Price")
                 }
-                var discArr:ISFSArray = responseParams.getSFSArray("Discounts")
+                var discArr:ISFSArray = plist.getSFSArray("Discounts")
                 var discs:Array = new Array()
                 for (var i:int = 0; i < discArr.size(); i++) {
-                    var it:ISFSObject = discArr[i];
+                    var it:ISFSObject = discArr.getSFSObject(i);
                     discs.push({moreThan:it.getInt("From"),discount:it.getInt("Value")})
                 }
                 Context.resourceMarket.setDiscounts(discs)
                 //itemCost
-                var plist:ISFSObject = responseParams.getSFSObject("Pricelist")
                 var itemsArr:ISFSArray = plist.getSFSArray("Items");
                 var prices:Array = new Array()
                 for (var i:int = 0; i < itemsArr.size(); i++) {
@@ -565,6 +566,7 @@ public class GameServer extends SmartFox {
                         responseParams.getInt("interface.buyItem.result.fields.resourceType1"),
                         responseParams.getInt("interface.buyItem.result.fields.resourceType2"),
                         responseParams.getInt("interface.buyItem.result.fields.resourceType3"))
+                Context.Model.currentSettings.gameProfile.addItem(iType, count)
                 Context.Model.currentSettings.gameProfile.resources.setFrom(rp)
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.IT_BUY_SUCCESS, {it:iType,count:count})
@@ -604,7 +606,7 @@ public class GameServer extends SmartFox {
     private function getNewLobbyProfile(newLPs:Array):LobbyProfile {
         if (Context.gameModel.lobbyProfiles == null)
             return null
-        for (var i:int = 1; i < gameRoom.userCount; i++) {
+        for (var i:int = 1; i < newLPs.length; i++) {
             var lpOld:LobbyProfile = Context.gameModel.lobbyProfiles[i];
             var lpNew:LobbyProfile = newLPs[i];
             if (lpOld == null && lpNew != null)

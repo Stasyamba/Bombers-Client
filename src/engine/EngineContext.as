@@ -71,7 +71,7 @@ public class EngineContext {
 
     //---frame
     private var _frameEntered:FrameEnteredSignal = new FrameEnteredSignal();
-    private var _smokeAdded:SmokeAddedSignal
+    private var _smokeAdded:SmokeAddedSignal = new SmokeAddedSignal()
 
     function EngineContext() {
     }

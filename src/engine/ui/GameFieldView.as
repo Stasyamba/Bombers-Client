@@ -103,7 +103,7 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
     }
 
     private function onSmokeAdded(x:int,y:int):void {
-        var sp:SmokeSprite = new SmokeSprite(x*Consts.BLOCK_SIZE,y*Consts.BOMBER_SIZE)
+        var sp:SmokeSprite = new SmokeSprite(x*Consts.BLOCK_SIZE,y*Consts.BLOCK_SIZE)
         highestView.addChild(sp)
     }
 
@@ -148,8 +148,6 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
     }
 
     private function addedToStageHandler(event:Event):void {
-
-
         addElement(contentUI)
     }
 

@@ -59,7 +59,7 @@ public class ResourceMarket {
         for (var i:int = 0; i < discounts.length; i++) {
             var object:Object = discounts[i];
             if (basePrice >= object.moreThan) {
-                return object.discount as Number
+                return (object.discount/100) as Number
             }
         }
         return 0
@@ -76,12 +76,12 @@ public class ResourceMarket {
 
     public function getSliderStep(rt:ResourceType):int {
         if(rt == ResourceType.GOLD){
-            if(GOLD_VOICES < 1)
+            if(GOLD_VOICES < 100)
                 return int(100/GOLD_VOICES)
             return 1
         }
         if(rt == ResourceType.CRYSTALS){
-            if(CRYSTAL_VOICES < 1)
+            if(CRYSTAL_VOICES < 100)
                 return int(100/CRYSTAL_VOICES)
             return 1
         }

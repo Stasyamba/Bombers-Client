@@ -62,6 +62,12 @@ public class ItemType {
                 return DINAMIT_BOMB
             case BOX_BOMB.value:
                 return BOX_BOMB
+            case SMOKE_BOMB.value:
+                return SMOKE_BOMB
+            case HEALTH_PACK_POISON.value:
+                return HEALTH_PACK_POISON
+            case HEALTH_PACK_ADVANCED_POISON.value:
+                return HEALTH_PACK_ADVANCED_POISON
         }
         throw new ArgumentError("no ItemType found with value = " + value);
     }

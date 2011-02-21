@@ -62,7 +62,7 @@
         }
 
         public function printMessage(from:String, text:String):void {
-            chatTextArea.htmlText += "<font size='14' face='mps'><i> " + name + "</i></font>" + ": <font size='14'>" + text + "</font>\n";
+            chatTextArea.htmlText += "<font size='14' face='mps'><i> " + from + "</i></font>" + ": <font size='14'>" + text + "</font>\n";
         }
 
         public function printICame():void {
@@ -79,9 +79,8 @@
 
         private function onSend(event:MouseEvent):void {
             if (messageText.text.length > 0) {
-                dispatchEvent(new ContextEvent('messageSent', false, false, {message: messageText.text}));
-                printMessage("Big Billy", messageText.text);
 
+                Context.gameServer.sendInGameMessage(messageText.text)
                 messageText.setFocus();
                 messageText.text = "";
 

@@ -185,7 +185,8 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     public override function explode(expl:IExplosion):void {
-
+        if(expl.damage <= 0) //smoke explosion
+            return
         life -= expl.damage;
         if (life < 0) life = 0;
 

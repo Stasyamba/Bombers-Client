@@ -79,5 +79,7 @@ public interface IBomber {
     function takeBomb():void;
 
     function returnBomb():void;
+
+    function get lifeChanged():Signal;
 }
 }

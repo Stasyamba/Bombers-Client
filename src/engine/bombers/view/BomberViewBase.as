@@ -44,6 +44,7 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
 
         this._bomber.stateAdded.add(addState);
         this._bomber.stateRemoved.add(removeState);
+        this._bomber.lifeChanged.add(draw)
         draw();
     }
 
@@ -62,7 +63,8 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
 
         if (_bomber.isDead) {
             graphics.clear()
-            removeChild(healthBar);
+            if(contains(healthBar))
+                removeChild(healthBar);
             return;
         }
 

@@ -53,6 +53,7 @@ public class BomberBase implements IBomber {
     private var _stateAdded:StateAddedSignal = new StateAddedSignal();
     private var _stateRemoved:StateRemovedSignal = new StateRemovedSignal();
 
+    private var _lifeChanged:Signal = new Signal();
 
     public function BomberBase(game:IGame, playerId:int, bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin) {
         this.game = game;
@@ -121,12 +122,17 @@ public class BomberBase implements IBomber {
         return _lostUntouchable;
     }
 
+    public function get lifeChanged():Signal {
+        return _lifeChanged
+    }
+
     public function get color():PlayerColor {
         return _color;
     }
 
     public function set life(life:int):void {
         _life = life;
+        _lifeChanged.dispatch()
     }
 
     public function get isDead():Boolean {
