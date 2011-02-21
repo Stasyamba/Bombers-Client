@@ -10,6 +10,7 @@ import engine.bombss.BombType
 import engine.bombss.BoxBomb
 import engine.bombss.DynamiteBomb
 import engine.bombss.RegularBomb
+import engine.bombss.SmokeBomb
 import engine.explosionss.ExplosionsBuilder
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IDynObjectType
@@ -41,6 +42,8 @@ public class DynObjectBuilder {
                 return new BoxBomb(explosionsBuilder, block, owner)
             case BombType.DYNAMITE:
                 return new DynamiteBomb(explosionsBuilder, block, owner)
+             case BombType.SMOKE:
+                return new SmokeBomb(explosionsBuilder, block, owner)
             //bonuses
             case BonusType.ADD_BOMB:
                 return new BonusAddBomb(block)

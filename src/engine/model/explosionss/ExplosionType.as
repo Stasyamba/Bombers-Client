@@ -12,6 +12,7 @@ public class ExplosionType {
     public static const ATOM:ExplosionType = new ExplosionType("ATOM", 3000, true, true);
     public static const BOX:ExplosionType = new ExplosionType("BOX", 0, false, false);
     public static const DYNAMITE:ExplosionType = new ExplosionType("DYNAMITE", 2000, true, false);
+    public static const SMOKE:ExplosionType = new ExplosionType("SMOKE", 0, false, false)
 
 
     public static function byValue(value:String):ExplosionType {
@@ -21,6 +22,7 @@ public class ExplosionType {
             case "ATOM":return ATOM;
             case "BOX":return BOX;
             case "DYNAMITE":return DYNAMITE;
+            case "SMOKE":return SMOKE;
         }
         throw new ArgumentError("Invalid explosion type value");
     }

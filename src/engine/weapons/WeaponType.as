@@ -12,8 +12,11 @@ public class WeaponType {
     public static const ATOM_BOMB_WEAPON:WeaponType = new WeaponType(01, "ATOM_BOMB_WEAPON");
     public static const BOX_BOMB_WEAPON:WeaponType = new WeaponType(02, "BOX_BOMB_WEAPON")
     public static const DYNAMITE_WEAPON:WeaponType = new WeaponType(03, "DYNAMITE_WEAPON");
+    public static const SMOKE_BOMB_WEAPON:WeaponType = new WeaponType(04, "SMOKE_BOMB_WEAPON")
     //potions
     public static const HAMELEON:WeaponType = new WeaponType(21, "HAMELEON_WEAPON");
+    public static const LITTLE_HEALTH_PACK_WEAPON:WeaponType = new WeaponType(22, "LITTLE_HEALTH_PACK_WEAPON")
+    public static const MEDIUM_HEALTH_PACK_WEAPON:WeaponType = new WeaponType(23, "MEDIUM_HEALTH_PACK_WEAPON")
     //mines
     public static const REGULAR_MINE:WeaponType = new WeaponType(41, "REGULAR_MINE_WEAPON");
     //auras
@@ -60,6 +63,12 @@ public class WeaponType {
                 return FIRE_AURA
             case DYNAMITE_WEAPON.value:
                 return DYNAMITE_WEAPON
+            case SMOKE_BOMB_WEAPON.value:
+                return SMOKE_BOMB_WEAPON
+            case LITTLE_HEALTH_PACK_WEAPON.value:
+                return LITTLE_HEALTH_PACK_WEAPON
+            case MEDIUM_HEALTH_PACK_WEAPON.value:
+                return MEDIUM_HEALTH_PACK_WEAPON
         }
         return NULL
     }

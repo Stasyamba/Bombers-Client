@@ -8,7 +8,6 @@ import components.common.items.ItemType
 
 import engine.model.managers.regular.MapManager
 import engine.weapons.interfaces.IActivatableWeapon
-import engine.weapons.interfaces.IDeactivatableWeapon
 import engine.weapons.interfaces.IMineWeapon
 import engine.weapons.interfaces.IWeapon
 
@@ -27,14 +26,20 @@ public class WeaponBuilder {
                 return new BoxBombWeapon(_mapManager, charges);
             case WeaponType.DYNAMITE_WEAPON:
                 return new DynamiteWeapon(_mapManager, charges);
+            case WeaponType.SMOKE_BOMB_WEAPON:
+                return new SmokeBombWeapon(_mapManager,charges)
         }
         throw new ArgumentError("unknown special bomb type");
     }
 
-    public function makePotion(duration:int, charges:int, type:WeaponType):IDeactivatableWeapon {
+    public function makePotion(duration:int, charges:int, type:WeaponType):IActivatableWeapon {
         switch (type) {
             case WeaponType.HAMELEON:
                 return new HameleonWeapon(duration, charges)
+            case WeaponType.LITTLE_HEALTH_PACK_WEAPON:
+                return new LittleHealthPack(charges)
+            case WeaponType.MEDIUM_HEALTH_PACK_WEAPON:
+                return new MediumHealthPack(charges)
         }
         throw new ArgumentError("unknown potion type")
     }
@@ -57,9 +62,13 @@ public class WeaponBuilder {
             case WeaponType.ATOM_BOMB_WEAPON:
             case WeaponType.BOX_BOMB_WEAPON:
             case WeaponType.DYNAMITE_WEAPON:
+            case WeaponType.SMOKE_BOMB_WEAPON:
                 return makeSpecialBomb(count, weaponType);
             case WeaponType.HAMELEON:
                 return makePotion(HameleonWeapon.DURATION, count, weaponType)
+            case WeaponType.LITTLE_HEALTH_PACK_WEAPON:
+            case WeaponType.MEDIUM_HEALTH_PACK_WEAPON:
+                return makePotion(0, count, weaponType)
             case WeaponType.REGULAR_MINE:
                 return makeMine(count, weaponType)
         }

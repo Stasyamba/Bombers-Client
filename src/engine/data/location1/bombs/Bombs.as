@@ -13,6 +13,7 @@ public class Bombs {
     private static var atomBombBitmap:Bitmap;
     private static var boxBombBitmap:Bitmap;
     private static var dynamiteBombBitmap:Bitmap;
+    private static var smokeBombBitmap:Bitmap;
 
     private static var blueGlowBitmap:Bitmap;
     private static var orangeGlowBitmap:Bitmap;
@@ -27,6 +28,8 @@ public class Bombs {
     private static var boxBomb:Class;
     [Embed(source="../images/bombs/dynamiteBomb.png")]
     private static var dynamiteBomb:Class;
+    [Embed(source="../images/bombs/smokeBomb.png")]
+    private static var smokeBomb:Class;
 
     [Embed(source="../images/bombs/blueGlow.png")]
     private static var blueGlow:Class;
@@ -67,6 +70,14 @@ public class Bombs {
             dynamiteBombBitmap.smoothing = true;
         }
         return dynamiteBombBitmap.bitmapData;
+    }
+
+    public static function get SMOKE():BitmapData {
+        if (smokeBombBitmap == null) {
+            smokeBombBitmap = new smokeBomb();
+            smokeBombBitmap.smoothing = true;
+        }
+        return smokeBombBitmap.bitmapData;
     }
 
     public static function get BLUE_GLOW():BitmapData {

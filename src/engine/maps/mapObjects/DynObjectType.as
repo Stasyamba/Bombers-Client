@@ -43,6 +43,7 @@ public class DynObjectType implements IDynObjectType {
             case BombType.BOX.value:return BombType.BOX
             case BombType.ATOM.value:return BombType.ATOM
             case BombType.DYNAMITE.value:return BombType.DYNAMITE
+            case BombType.SMOKE.value:return BombType.SMOKE
 
             case MineType.REGULAR.value: return MineType.REGULAR
         }

@@ -4,6 +4,8 @@
  */
 
 package engine.maps.mapBlocks {
+import engine.EngineContext
+import engine.explosionss.Explosion
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.builders.DynObjectBuilder
 import engine.maps.builders.MapBlockStateBuilder
@@ -82,6 +84,11 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
     public function explode(expl:IExplosion):void {
 
         checkExplosionPrint(expl);
+
+        if(expl.type == ExplosionType.SMOKE){
+            EngineContext.smokeAdded.dispatch(x,y)
+            return
+        }
 
         if (expl.type == ExplosionType.BOX) {
             setState(_mapBlockStateBuilder.make(MapBlockType.BOX));

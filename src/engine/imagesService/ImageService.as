@@ -105,5 +105,9 @@ public class ImageService {
     public function getBigObject(skin:String):BitmapData {
         return BigObjectsSkins[skin];
     }
+
+    public function getSmoke():BitmapData {
+         return Explosions["SMOKE1"]
+    }
 }
 }
