@@ -32,11 +32,13 @@
 
         private function saveNick():void {
             if (checkNick(bomberNameTextInput.text)) {
+				Context.Model.dispatchCustomEvent(ContextEvent.IM_RIGHT_CONTENT_WARNING, "Вы сменили ник, ура!");
+				
                 Context.gameServer.sendSaveNickRequest(bomberNameTextInput.text)
                 Context.Model.currentSettings.gameProfile.nick = bomberNameTextInput.text
             }
             else {
-                Alert.show("Недозволенное имя")
+				Context.Model.dispatchCustomEvent(ContextEvent.IM_RIGHT_CONTENT_WARNING, "Ник должен быть от 4 до 12 символов");
             }
         }
 
