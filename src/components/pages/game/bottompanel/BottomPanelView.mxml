@@ -49,14 +49,11 @@
         }
 
         private function openInventoryW():void {
-            // check Context isPlaying now!
-            // then
-
-            Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_IS_PLAYING_PACK_WINDOW);
-
-            // else
-
-            //Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, true);
+            if (Context.gameModel.isPlayingNow)
+                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_IS_PLAYING_PACK_WINDOW)
+            else {
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, true);
+            }
         }
 
         private function quitTheGame():void {

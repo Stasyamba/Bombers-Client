@@ -8,11 +8,14 @@
 
     <fx:Script>
 		<![CDATA[
+        import components.common.items.ItemType
         import components.common.utils.adjustcolor.ColorMatrixObject
         import components.pages.global.inventory.InventoryW
 
         [Bindable]
         private var confirmText:String = "";
+
+        private var itemType:ItemType
 
         public function initContent(passObject:Object):void {
             confirmText = passObject["message"];
@@ -24,6 +27,7 @@
                     okButton.fontSizeOver = 24;
                     break;
             }
+            itemType = passObject.itemType
         }
 
         private function init():void {
@@ -45,7 +49,10 @@
 
         private function doAction():void {
             // do action
-            Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
+            //Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
+            Context.Model.currentSettings.gameProfile.removeItem(itemType)
+            Context.gameServer.sendDropItemRequest(itemType)
+            closeWrapper()
         }
 
         private function cancel():void {

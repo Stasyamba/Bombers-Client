@@ -3,23 +3,21 @@ import components.common.items.ItemType
 import components.common.resources.ResourcePrice
 
 public class MarketManager {
+
+    private var _itemPrices:Array = new Array()
+
     public function MarketManager() {
     }
 
-    public function getItemPrice(itemType:ItemType):ResourcePrice {
-        var res:ResourcePrice = new ResourcePrice(0, 0, 0, 0);
-
-        switch (itemType) {
-            case ItemType.QUEST_ITEM_SNOWBOOTS:
-                res = new ResourcePrice(1, 1, 0, 0);
-                break;
-            default:
-                res = new ResourcePrice(0, 5, 0, 1);
-                break;
-        }
-
-        return res;
+    public function setItemPrices(prices:Array):void {
+        _itemPrices = prices
     }
 
+
+    public function getItemPrice(itemType:ItemType):ResourcePrice {
+        if (_itemPrices[itemType.value] != null)
+            return  _itemPrices[itemType.value]
+        return new ResourcePrice(1,0,0,0)
+    }
 }
 }

@@ -151,7 +151,7 @@
                             );
                 } else {
                     //Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
-                    Context.gameServer.buyItemRequest(itemType)
+                    Context.gameServer.sendBuyItemRequest(itemType)
 
                 }
 

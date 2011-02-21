@@ -19,11 +19,6 @@
          xmlns:topmenu1="components.pages.global.inventory.topmenu.*"
         >
 
-    <fx:Script>
-		<![CDATA[
-        ]]>
-	</fx:Script>
-
     <fx:Declarations>
 
 
@@ -71,6 +66,7 @@
         public var isOpenedFromGamePage:Boolean = false;
 
         public function close():void {
+            Context.gameModel.threeSecondsToStart.remove(onThreeSecsToStart)
             Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
             Context.Model.dispatchCustomEvent(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY, true);
             Context.Model.windowsManager.deleteWindow(this);
@@ -85,7 +81,9 @@
             Context.Model.windowsManager.closeAll(true);
             Context.Model.windowsManager.addWindow(this);
 
-
+            if(isOpenedFromGamePage){
+                Context.gameModel.threeSecondsToStart.add(onThreeSecsToStart)
+            }
             apearingAnimation.play();
 
             Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, function (e:ContextEvent):void {
@@ -176,6 +174,10 @@
             // immitation
             // Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
 
+        }
+
+        private function onThreeSecsToStart(p1:*,p2:*):void {
+            Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
         }
 
         private function switchMarketContent(e:ContextEvent):void {

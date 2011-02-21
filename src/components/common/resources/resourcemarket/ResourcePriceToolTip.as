@@ -3,17 +3,21 @@ public class ResourcePriceToolTip {
     public function ResourcePriceToolTip() {
     }
 
-    public static function getToolTipCost(cost:int):String {
+    public static function getToolTipCost(cost:Number):String {
         // просклонять потом слово голосов и сделать для раных соц сетей свои подсказки
 
-        return "Стоимость " + cost.toString() + " голосов.";
+        return "Стоимость " + roundCost(cost).toString() + " голосов.";
+    }
+
+    private static function roundCost(cost:Number):Number {
+         return ((int(cost * 100))/100)
     }
 
     public static function getToolTipDescibe(cost:int):String {
         var res:String = "";
 
         if (cost < 5) {
-            res = "С учетом ваших дипломатических навыков, стоимость составила " + cost.toString() + " голосов, со временем вы сможете покупать ресурсы по более выгодному для вас курсу.";
+            res = "С учетом ваших дипломатических навыков, стоимость составила " + roundCost(cost).toString() + " голосов, со временем вы сможете покупать ресурсы по более выгодному для вас курсу.";
 
         } else if (cost < 15 && cost >= 5) {
             res = "Говорят ресурсов много не бывает, но зачем тебе столько?!!!";

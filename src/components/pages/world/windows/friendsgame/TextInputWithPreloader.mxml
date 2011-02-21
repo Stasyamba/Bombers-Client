@@ -64,14 +64,14 @@
         }
 
         public function set isWarning(value:Boolean):void {
+            showWarningA.stop();
+            hideWarningA.stop();
             _isWarning = value;
 
-            if (!showWarningA.isPlaying && !hideWarningA.isPlaying) {
-                if (value) {
-                    showWarningA.play();
-                } else {
-                    hideWarningA.play();
-                }
+            if (value) {
+                showWarningA.play();
+            } else {
+                hideWarningA.play();
             }
         }
 

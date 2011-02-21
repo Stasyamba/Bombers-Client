@@ -245,6 +245,25 @@ public class GameProfile {
         gotItems.push(io)
         packItems.push(io)
     }
+
+    public function removeItem(itemType:ItemType):void {
+        removeItemFromArray(itemType, packItems)
+        removeItemFromArray(itemType, gotItems)
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED);
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED);
+    }
+
+    private function removeItemFromArray(itemType:ItemType, arr:Array):void {
+        for (var i:int = 0; i < arr.length; i++) {
+            var obj:ItemProfileObject = arr[i];
+            if (obj.itemType == itemType) {
+                for (var j:int = i; j < arr.length - 1; j++) {
+                    arr[j] = arr[j + 1]
+                }
+                arr.length--
+            }
+        }
+    }
 }
 }
 

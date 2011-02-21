@@ -254,7 +254,7 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest("interface.setBomber", params, null));
     }
 
-    public function buyResourcesRequest(rp:ResourcePrice):void {
+    public function sendBuyResourcesRequest(rp:ResourcePrice):void {
         var params:ISFSObject = new SFSObject();
         params.putInt("interface.buyResources.fields.resourceType0", rp.gold.value)
         params.putInt("interface.buyResources.fields.resourceType1", rp.crystals.value)
@@ -265,7 +265,7 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(INT_BUY_RESOURCES, params, null))
     }
 
-    public function buyEnergyRequest(count:int):void {
+    public function sendBuyEnergyRequest(count:int):void {
         var params:ISFSObject = new SFSObject();
         params.putInt("interface.buyResources.fields.resourceType0", 0)
         params.putInt("interface.buyResources.fields.resourceType1", 0)
@@ -276,11 +276,18 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(INT_BUY_RESOURCES, params, null))
     }
 
-    public function buyItemRequest(it:ItemType):void {
+    public function sendBuyItemRequest(it:ItemType):void {
         var params:ISFSObject = new SFSObject();
         params.putInt("interface.buyItem.fields.itemId", it.value)
 
         send(new ExtensionRequest(INT_BUY_ITEM, params, null))
+    }
+
+    public function sendDropItemRequest(itemType:ItemType):void {
+         var params:ISFSObject = new SFSObject();
+        params.putInt("interface.dropItem.fields.itemId", itemType.value)
+
+        send(new ExtensionRequest("interface.dropItem", params, null))
     }
 
     public function sendSaveNickRequest(name:String):void {

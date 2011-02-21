@@ -45,10 +45,7 @@
         }
 
         private function onChanging(event:TextOperationEvent):void {
-            if (!checkNick(bomberNameTextInput.text))
-                bomberNameTextInput.text = lastName
-            else
-                lastName = bomberNameTextInput.text
+
         }
         ]]>
 	</fx:Script>

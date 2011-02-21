@@ -98,7 +98,7 @@
         private function resourceValueChanged(e:ContextEvent):void {
             rp.setResourceValue(e.data.resourceType, e.data.value);
 
-            var price:int = Context.resourceMarket.getVoicePrice(rp);
+            var price:Number = Context.resourceMarket.getVoicePrice(rp);
             costText = ResourcePriceToolTip.getToolTipCost(price);
 
             var describeCostTextNew:String = ResourcePriceToolTip.getToolTipDescibe(price);
@@ -118,7 +118,7 @@
         public function test():void {
             //Alert.show(rp.toString());
             buyProgressVisible(true);
-            Context.gameServer.buyResourcesRequest(rp);
+            Context.gameServer.sendBuyResourcesRequest(rp);
         }
         ]]>
 	</fx:Script>
@@ -182,6 +182,7 @@
                 <resourcemarket:ResourceScrollerTemplate resourceType="{ResourceType.CRYSTALS}"
                                                          value="@{rp.crystals.value}"
                                                          resourceValueChanged="resourceValueChanged(event);"
+
                         />
                 <resourcemarket:ResourceScrollerTemplate resourceType="{ResourceType.ADAMANT}"
                                                          value="@{rp.adamant.value}"

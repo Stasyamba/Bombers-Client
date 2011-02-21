@@ -51,6 +51,12 @@
         public function set resourceType(value:ResourceType):void {
             _resourceType = value;
             resourceViewObject = Context.Model.resourceViewManager.getResource(value);
+            slider.stepSize = Context.resourceMarket.getSliderStep(value)
+            slider.snapInterval = Context.resourceMarket.getSliderStep(value)
+            var max:int = 0
+            while(max < 30)
+                max += slider.stepSize
+            slider.maximum = max
         }
 
         private function init():void {
@@ -63,7 +69,8 @@
     <s:HGroup paddingLeft="10" gap="20"
               verticalAlign="middle"
             >
-        <s:HSlider value="@{value}" skinClass="skins.worldpage.resourcemarket.sliders.sliders.HSliderResourceS"
+        <s:HSlider id="slider"
+                   value="@{value}" skinClass="skins.worldpage.resourcemarket.sliders.sliders.HSliderResourceS"
                    width="356" maximum="30"
                    showDataTip="false"
                 />

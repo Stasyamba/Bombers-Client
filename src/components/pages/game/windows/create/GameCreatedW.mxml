@@ -43,9 +43,9 @@
         import mx.managers.PopUpManager
 
         [Bindable]
-        private var gameName:String = "DUDUDURRRKA";
+        public var gameName:String;
         [Bindable]
-        private var gamePass:String = "Hagsjy8261";
+        public var gamePass:String;
 
 
         public function close():void {
@@ -66,6 +66,9 @@
             cm.applyColorMatrixObject(cmo);
 
             readyButton.filters = [cm.filter];
+
+            gameName = Context.gameModel.gameName;
+            gamePass = Context.gameModel.gamePass
 
             Context.gameModel.threeSecondsToStart.add(onThreeSecondsToStart)
 

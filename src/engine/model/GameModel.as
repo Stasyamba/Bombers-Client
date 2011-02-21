@@ -65,6 +65,10 @@ public class GameModel {
     public var playerGameProfiles:Array
     public var createdByMe:Boolean
 
+    public var gameName:String
+    public var gamePass:String
+    public var isPlayingNow:Boolean = false
+
 
     function GameModel() {
     }
@@ -119,6 +123,8 @@ public class GameModel {
         someoneJoinedToGame.addOnce(onJoinedToGame)
         createGameFailed.addOnce(onFastJoinFailed)
         createdByMe = true;
+        gameName = name
+        gamePass = pass
         _gameType = GameType.REGULAR
     }
 
@@ -136,6 +142,8 @@ public class GameModel {
         someoneJoinedToGame.addOnce(onJoinedToGame)
         fastJoinFailed.addOnce(onFastJoinFailed)
         createdByMe = false;
+        gameName = name
+        gamePass = pass
         _gameType = GameType.REGULAR
 
     }
@@ -189,6 +197,7 @@ public class GameModel {
     }
 
     private function onLeftGame():void {
+        isPlayingNow = false
         EngineContext.clear()
 
         fastJoinFailed.removeAll()
@@ -227,6 +236,7 @@ public class GameModel {
     }
 
     private function onGameStarted():void {
+        isPlayingNow = true
         lastGameLobbyProfiles = lobbyProfiles.concat()
         for each (var lobbyProfile:LobbyProfile in lobbyProfiles) {
             if (lobbyProfile != null)
@@ -236,6 +246,7 @@ public class GameModel {
     }
 
     private function onGameEnded(p1:*, p2:*):void {
+        isPlayingNow = false
         EngineContext.clear();
         readyToPlayAgain.addOnce(onReadyToPlayAgain)
     }

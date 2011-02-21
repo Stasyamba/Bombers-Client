@@ -160,7 +160,7 @@
             preloaderTimer.start()
             Context.Model.addCustomListener(ContextEvent.EN_BUY_SUCCESS, onBuySuccess)
             Context.Model.addCustomListener(ContextEvent.RS_BUY_FAILED, onBuyFailed)
-            Context.gameServer.buyEnergyRequest(count)
+            Context.gameServer.sendBuyEnergyRequest(count)
         }
 
         private function onBuyFailed(e:*):void {
