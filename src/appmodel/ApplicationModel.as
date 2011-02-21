@@ -2,7 +2,7 @@ package appmodel {
 import api.vkontakte.constant.UserProfileField
 import api.vkontakte.model.VkontakteApplicationModel
 
-import components.common.base.expirance.ExpiranceManager
+import components.common.base.expirance.ExperienceManager
 import components.common.base.market.MarketManager
 import components.common.base.window.WindowsManager
 import components.common.bombers.BombersManager
@@ -117,7 +117,7 @@ public class ApplicationModel extends VkontakteApplicationModel {
     public var locationViewManager:LocationViewManager = new LocationViewManager();
     public var locationManager:LocationManager = new LocationManager();
     public var windowsManager:WindowsManager = new WindowsManager();
-    public var expiranceManager:ExpiranceManager = new ExpiranceManager();
+    public var experianceManager:ExperienceManager = new ExperienceManager();
     public var itemsManager:ItemsManager = new ItemsManager();
     public var itemsCategoryManager:ItemsCategoriesManager = new ItemsCategoriesManager();
     public var bomberManager:BombersManager = new BombersManager();

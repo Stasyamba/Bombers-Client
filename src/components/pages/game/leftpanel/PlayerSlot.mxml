@@ -130,7 +130,7 @@
             _profile = value;
             isProfileNull = false;
 
-            levelStringView = Context.Model.expiranceManager.getLevel(value.experience).toString();
+            levelStringView = Context.Model.experianceManager.getLevel(value.experience).level.toString();
             userImage.source = _profile.photoURL;
             bgRect.alpha = 1;
         }

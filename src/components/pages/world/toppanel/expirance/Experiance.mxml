@@ -54,6 +54,7 @@
 
     <fx:Script>
 		<![CDATA[
+			import components.common.base.expirance.ExperianceObject;
         [Bindable]
         private var levelStringView:String = "1";
 
@@ -74,7 +75,13 @@
             closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
             closeTimer.stop();
 
-            levelStringView = Context.Model.expiranceManager.getLevel(Context.Model.currentSettings.gameProfile.experience).toString();
+			Context.Model.addCustomListener(ContextEvent.GP_EXPERIENCE_CHANGED, function (e: ContextEvent): void
+			{
+				setExpirance(int(e.data));	
+			});
+			
+			//setExpirance(100);
+            //levelStringView = Context.Model.experianceManager.getLevel(Context.Model.currentSettings.gameProfile.experience).level.toString();
         }
 
         private function timerCompleteHandler(e:TimerEvent):void {
@@ -131,11 +138,24 @@
 
         }
 
-        private function setExpirance(exp:int):void {
-            // get LevelInformationObject by expirance
-            //
+        private function setExpirance(exp:int):void 
+		{
+			var curentLevelObject:ExperianceObject = Context.Model.experianceManager.getLevel(exp);
+			var nextLevelObject: ExperianceObject = Context.Model.experianceManager.getNextLevel(exp);
+			
+			var currentLevel: int = curentLevelObject.level;
+			if(currentLevel == 1)
+			{
+				expToolTipLabel.text = "Сражайтесь, достигайте новых побед, вздувайте друзей в увлекательных онлайн боях!";
+			}else
+			{
+				expToolTipLabel.text = "Максимальный опыт который вы сможете набрать в бете 100 опыта, ждите релиза игры!"
+			}
+			
+			levelStringView = currentLevel.toString();
 
-
+			var currentPercent: Number = exp/(nextLevelObject.experiance - curentLevelObject.experiance);
+			expiranceMaskRect.width = int((expiranceMaskRect.maxWidth - expiranceMaskRect.minWidth)*currentPercent);
         }
         ]]>
 	</fx:Script>
@@ -188,7 +208,7 @@
                 />
 
         <s:Group id="expiranceMask">
-            <s:Rect height="18" width="170"
+            <s:Rect id="expiranceMaskRect" height="18" width="170"
                     minWidth="18"
                     maxWidth="210"
                     y="2" x="1"
@@ -253,6 +273,7 @@
 
                     <s:VGroup gap="5" paddingTop="10">
                         <s:Label
+								id="expToolTipLabel"
                                 text="Максимальный опыт который вы сможете набрать в бете 100 опыта, ждите релиза игры!"
                                 fontSize="18" fontFamily="mpbc"
                                 color="0xcfcfcf"
