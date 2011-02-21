@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark"
          xmlns:mx="library://ns.adobe.com/flex/mx"
-         creationComplete="init();">
+         creationComplete="init();" xmlns:slots="components.pages.global.inventory.left.slots.*">
 
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -15,7 +15,7 @@
 
         import mx.collections.ArrayCollection
 
-        public static const    QUEST_ITEMS_STATE:int = 0;
+        public static const QUEST_ITEMS_STATE:int = 0;
         public static const OTHER_ITEMS_STATE:int = 1;
 
         [Bindable]
@@ -95,9 +95,11 @@
             </s:HGroup>
 
             <s:HGroup id="bottomPanel" height="100%"
-                      horizontalAlign="center">
-                <s:Button label="Квесты" click="switchSlotState(QUEST_ITEMS_STATE);"/>
-                <s:Button label="Оружие" click="switchSlotState(OTHER_ITEMS_STATE);"/>
+                      horizontalAlign="center" verticalAlign="middle"
+					  paddingTop="-6" paddingLeft="6">
+				<slots:PackTypeToggleButton IMPackTypeToggleChanged="switchSlotState(event.data);" />
+                <!--<s:Button label="Квесты" click="switchSlotState(QUEST_ITEMS_STATE);"/>
+                <s:Button label="Оружие" click="switchSlotState(OTHER_ITEMS_STATE);"/>-->
             </s:HGroup>
         </s:VGroup>
     </s:Group>
