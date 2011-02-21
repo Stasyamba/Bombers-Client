@@ -13,7 +13,7 @@ import engine.maps.interfaces.ITimeActivatableDynObject
 import engine.model.explosionss.ExplosionType
 
 public class SmokeBomb extends BombBase implements ITimeActivatableDynObject {
-    private static const EXPLODE_TIME:int = 1000;
+    private static const EXPLODE_TIME:int = 1266;
 
     public function SmokeBomb(explosionsBuilder:ExplosionsBuilder, block:IMapBlock, player:IBomber) {
         super(explosionsBuilder, block, player);

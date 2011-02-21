@@ -216,7 +216,7 @@
 
         private function retry():void {
             if(isWrapperExists){
-                navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
+                navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK),"_self");
             }
         }
         ]]>
