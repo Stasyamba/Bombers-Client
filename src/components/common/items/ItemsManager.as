@@ -62,6 +62,31 @@ public class ItemsManager {
 
         /*** BOMBS AND POISONS ***/
 
+		
+		items.push(new ItemObject(
+			ItemType.HEALTH_PACK_POISON,
+			[new AccessLevelRule(1)],
+			
+			new ItemViewObject(
+				ItemType.HEALTH_PACK_POISON,
+				ImagesPrefixes.WEAPON_PREFIX + "healthPackPoison.png",
+				"Зелье здоровья",
+				"Приятное на вкус, бодрящее зелье. Хороший бой и 1 единица здоровья вам гарантированны."
+			)
+		));
+		
+		items.push(new ItemObject(
+			ItemType.HEALTH_PACK_ADVANCED_POISON,
+			[new AccessLevelRule(2)],
+			
+			new ItemViewObject(
+				ItemType.HEALTH_PACK_ADVANCED_POISON,
+				ImagesPrefixes.WEAPON_PREFIX + "healthPackAdvancedPoison.png",
+				"Зелье здоровья (увеличенное)",
+				"Редчайшая выжимка из ночного опоссума, восстанавливает целых 2 единицы здоровья."
+			)
+		));
+		
 
         items.push(new ItemObject(
                 ItemType.HAMELEON_POISON,

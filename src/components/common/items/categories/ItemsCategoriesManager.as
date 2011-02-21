@@ -38,6 +38,8 @@ public class ItemsCategoriesManager {
             case ItemType.HAMELEON_POISON:
             case ItemType.DINAMIT_BOMB:
             case ItemType.BOX_BOMB:
+			case ItemType.HEALTH_PACK_ADVANCED_POISON:
+			case ItemType.HEALTH_PACK_POISON:
                 res = ItemCategory.WEAPON;
                 break;
         }
@@ -61,6 +63,8 @@ public class ItemsCategoriesManager {
             case ItemType.MINA_BOMB:
             case ItemType.DINAMIT_BOMB:
             case ItemType.BOX_BOMB:
+			case ItemType.HEALTH_PACK_ADVANCED_POISON:
+			case ItemType.HEALTH_PACK_POISON:
                 res = MarketCategory.BOMBS_AND_POISONS;
                 break;
         }

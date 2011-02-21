@@ -104,11 +104,13 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.resources.ResourcePrice
-        import components.common.resources.ResourceType
-        import components.common.resources.ResourceViewObject
-        import components.common.utils.adjustcolor.ColorMatrixObject
+        import components.common.resources.ResourcePrice;
+        import components.common.resources.ResourceType;
+        import components.common.resources.ResourceViewObject;
+        import components.common.utils.adjustcolor.ColorMatrixObject;
 
+		private var isBlockedForTime: Boolean = false;
+		
         /* resource type with template will be filled */
 
         private var _resourceType:ResourceType;
@@ -253,6 +255,17 @@
             acceleratedDisppearingPreviewOver.play();
         }
 
+		public function openMarketWrapper():void {
+			/* isMouseOnPopUp = false;
+			isMouseOnPreview = false;
+			 */
+			
+			closingProccessA.play();
+			closeTimer.stop();
+			
+			openMarket();
+		}
+			
         public function openMarket():void {
             resourcePopUp.displayPopUp = false;
             var rp:ResourcePrice = new ResourcePrice(0, 0, 0, 0);
@@ -325,7 +338,10 @@
         </s:Group>
 
         <s:HGroup width="86" height="25" verticalAlign="middle"
-                  paddingLeft="4" paddingRight="7">
+                  paddingLeft="4" paddingRight="7" 
+				  click="openMarketWrapper();"
+				  useHandCursor="true" buttonMode="true"
+				  >
             <s:BitmapImage source="{resourceObject.smallImage}"
                            scaleX="0.8" scaleY="0.8"
                            smooth="true"

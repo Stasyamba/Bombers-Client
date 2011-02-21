@@ -101,10 +101,11 @@
                 unsubscribeEnterFrameEvent();
         }
         ]]></fx:Script>
+	
     <s:BorderContainer id="patternBorderContainer" width="100%" height="100%"
                        backgroundImage="@Embed(source='/assets/pagegame/grassPattern.jpg')"
                        backgroundImageFillMode="repeat"
                        borderVisible="false"/>
-    <s:Group id="group"/>
+	<mx:Image source="http://www.vensella.ru/eg/mapBGGrass.jpg" />
 
 </s:Group>

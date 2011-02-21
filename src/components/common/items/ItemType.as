@@ -13,6 +13,10 @@ public class ItemType {
     public static const BOX_BOMB:ItemType = new ItemType(02, "BOX_BOMB")
     public static const DINAMIT_BOMB:ItemType = new ItemType(03, "DINAMIT_BOMB");
 
+	public static const HEALTH_PACK_POISON:ItemType = new ItemType(22, "HEALTH_PACK_POISON");
+	public static const HEALTH_PACK_ADVANCED_POISON:ItemType = new ItemType(23, "HEALTH_PACK_ADVANCED_POISON");
+
+	
     private var _value:int;
     private var _name:String;
 
