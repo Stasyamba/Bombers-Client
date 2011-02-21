@@ -9,15 +9,16 @@ public class MarketManager {
     public function MarketManager() {
     }
 
+    //array of ItemMarketObject
     public function setItemPrices(prices:Array):void {
         _itemPrices = prices
     }
 
 
-    public function getItemPrice(itemType:ItemType):ResourcePrice {
+    public function getItemPrice(itemType:ItemType):ItemMarketObject {
         if (_itemPrices[itemType.value] != null)
             return  _itemPrices[itemType.value]
-        return new ResourcePrice(1,0,0,0)
+        return new ItemMarketObject(new ResourcePrice(1,0,0,0),1)
     }
 }
 }
