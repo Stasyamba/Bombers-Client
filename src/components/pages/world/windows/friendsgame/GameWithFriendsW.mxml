@@ -76,6 +76,7 @@
                 closeButton.enabled = false
             });
             Context.Model.addCustomListener(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW, function(e:ContextEvent):void {
+                closeButton.enabled = true
                 showError(e.data.text, e.data.type)
             });
         }
