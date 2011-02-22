@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 width="366" height="147"
+		 creationComplete="init();"
+		 >
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.resources.ResourceObject;
+			
+			import mx.collections.ArrayCollection;
+			
+			[Bindable]
+			private var chestsCollection:ArrayCollection = new ArrayCollection();
+			
+			private function init():void
+			{
+				Context.Model.addCustomListener(ContextEvent.L_RESET_CHESTS, chestReset);
+				
+				chestReset(null);
+			}
+			
+			private function chestReset(e: ContextEvent): void
+			{
+				chestsCollection = new ArrayCollection();
+				var arr:Array = Context.Model.currentSettings.lotteryTodayPrice.getResourceObjectArr();
+				
+				for(var i: int = 0; i<= 9; i++)
+				{
+					chestsCollection.addItem(new ChestObject(false, null));
+				}
+				
+				var workIndexes: Array = new Array();
+				
+				function checkInArray(index: int): Boolean
+				{
+					var res: Boolean = false;
+					for each(var index: int in workIndexes)
+					{
+						if(r == index)
+						{
+							res = true;
+							break;
+						}
+					}
+					
+					return res;
+				}
+				
+				for each(var ro:ResourceObject in arr) 
+				{
+					if (ro.value > 0) 
+					{
+						var r: int = Math.round(Math.random()*10);
+						if(r == 10) r = 0;
+						
+						while(checkInArray(r))
+						{
+							r = Math.round(Math.random()*10);
+							if(r == 10) r = 0;
+						}
+						
+						(chestsCollection[r] as ChestObject).price = ro.clone();
+						workIndexes.push(r);
+					}
+				}
+					
+				chestsCollection.refresh();
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:List itemRenderer="components.pages.global.lottery.ChestIR" dataProvider="{chestsCollection}"
+			contentBackgroundAlpha="0" borderVisible="false"
+			width="390">
+		<s:layout>
+			<s:TileLayout columnAlign="justifyUsingWidth" requestedRowCount="2" requestedColumnCount="5" />
+		</s:layout>
+	</s:List>
+	
+</s:Group>

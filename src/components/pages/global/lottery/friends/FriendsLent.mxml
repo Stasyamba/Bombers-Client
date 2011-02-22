@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 creationComplete="init();"
+		 verticalAlign="middle"
+		 >
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.profiles.SocialProfile;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.utils.ObjectUtil;
+			
+			[Bindable]
+			private var friendsCollection: ArrayCollection = new ArrayCollection();
+			private var allFriends:Array = new Array();
+			private var currentPage: int = 0;
+			
+			public static const FRIENDS_PER_PAGE:int = 9;
+			
+			
+			private function init(): void
+			{
+				allFriends = Context.Model.currentSettings.socialProfile.getFriends(SocialProfile.TYPE_NOT_APP_FRIENDS).concat();
+				//Alert.show(ObjectUtil.toString({t: allFriends}));
+				setPage(currentPage);
+			}
+					
+			
+			/* pages */
+			
+			private function setPage(page:int):void {
+				var tmp:Array = new Array();
+				
+				var pagesCount:int = Math.floor(allFriends.length / FRIENDS_PER_PAGE);
+				pagesCount += allFriends.length % FRIENDS_PER_PAGE > 0 ? 1 : 0;
+				
+				if (page >= 0 && page <= pagesCount) {
+					for (var i:int = page * FRIENDS_PER_PAGE; i <= (page + 1) * FRIENDS_PER_PAGE - 1; i++) {
+						if (i <= allFriends.length - 1) {
+							tmp.push(allFriends[i]);
+						}
+					}
+					
+					if (tmp.length != 0) {
+						friendsCollection = new ArrayCollection(tmp);
+					}
+					
+					currentPage = page;
+					
+					backPageButton.enabled = true;
+					forwardPageButton.enabled = true;
+					
+					if (currentPage == 0) {
+						backPageButton.enabled = false;
+					}
+					
+					if (page == pagesCount - 1) {
+						forwardPageButton.enabled = false;
+					}
+					
+					if (pagesCount == 0) {
+						backPageButton.enabled = false;
+						forwardPageButton.enabled = false;
+					}
+				}
+			}
+			
+			private function setNextPage(sign:int):void {
+				setPage(currentPage + sign);
+			}
+			
+		]]>
+	</fx:Script>
+	
+
+	<s:Button label="back" id="backPageButton" click="setNextPage(-1);"
+			  skinClass="skins.buttons.LeftArrowLottery"
+			  buttonMode="true" useHandCursor="true"
+			  />
+	<s:List dataProvider="{friendsCollection}" itemRenderer="components.pages.global.lottery.friends.FriendsIR"
+			borderVisible="false" contentBackgroundAlpha="0"
+			>
+		<s:layout>
+			<s:HorizontalLayout requestedColumnCount="9" />
+		</s:layout>
+	</s:List>
+	<s:Button label="forward" id="forwardPageButton" click="setNextPage(1);"
+			  skinClass="skins.buttons.RightArrowLottery"
+			  buttonMode="true" useHandCursor="true"
+			  />
+
+
+	
+</s:HGroup>

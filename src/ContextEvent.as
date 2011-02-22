@@ -1,5 +1,5 @@
 package {
-import flash.events.Event
+import flash.events.Event;
 
 public class ContextEvent extends Event {
     public static const USERS_PROFILES_LOADED:String = "UsersProfileLoaded";
@@ -130,6 +130,12 @@ public class ContextEvent extends Event {
     public static const BOMBER_CHANGED:String = "BomberChanged";
     public static const GAME_PROFILE_LOADED:String = "GameProfileLoaded";
 
+	
+	/** lottery events **/
+	public static const L_SHOW_CHEST_BLOCK:String = "LShowChestBlock";
+	// pass: Boolean -> show or hide chest block
+	public static const L_RESET_CHESTS:String = "LResetChests";
+	public static const L_TRY_COUNT_SET_CHANGED:String = "LTryCountSetChanged";
 
     public var data:*;
 

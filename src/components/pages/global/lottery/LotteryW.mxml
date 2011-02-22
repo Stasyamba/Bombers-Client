@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:mx1="library://ns.adobe.com/flex/halo"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 creationComplete="panelCreationComplete();"
+		 borderVisible="false"
+		 dropShadowVisible="false"
+		 skinClass="skins.common.EmptyPopUpS"
+		 implements="components.common.base.window.IWindow" 
+		 xmlns:flexcomponents="components.common.flexcomponents.*" xmlns:lottery="components.pages.global.lottery.*" xmlns:friends="components.pages.global.lottery.friends.*"
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+			
+			import skins.buttons.CloseButtonOriginS;
+			import skins.buttons.Pattern2ButtonS;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+		
+		<s:Animate id="disapearingAnimation" target="{this}" duration="300"
+				   effectEnd="{close();}">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="1"
+								valueTo="0"
+								/>
+		</s:Animate>
+		
+		<s:Animate id="apearingAnimation" target="{this}" duration="1000">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="0" valueTo="1"
+								/>
+		</s:Animate>
+		
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.utils.adjustcolor.Color;
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.bombers.BomberType
+				
+				import mx.managers.PopUpManager
+				
+				[Bindable]
+				private var tryCountStringView: String;
+				
+				public function close():void {
+					Context.Model.removeCustomEventListener(ContextEvent.L_SHOW_CHEST_BLOCK, showChestBlock);
+					Context.Model.removeCustomEventListener(ContextEvent.L_SHOW_CHEST_BLOCK, changeTryCount);
+					
+					Context.Model.windowsManager.deleteWindow(this);
+					PopUpManager.removePopUp(this);
+				}
+				
+				public function closeWrapper():void {
+					disapearingAnimation.play();
+				}
+				
+				private function panelCreationComplete():void {
+					Context.Model.windowsManager.closeAll(true);
+					Context.Model.windowsManager.addWindow(this);
+					
+					Context.Model.addCustomListener(ContextEvent.L_SHOW_CHEST_BLOCK, showChestBlock);
+					Context.Model.addCustomListener(ContextEvent.L_TRY_COUNT_SET_CHANGED, changeTryCount);
+					apearingAnimation.play();
+					
+					var matrix:Matrix = leftStarsImage.transform.matrix;
+					matrix.a = -1;
+					matrix.tx = leftStarsImage.width + leftStarsImage.x;
+					leftStarsImage.transform.matrix = matrix;
+					
+					
+					var cm: ColorMatrix = new ColorMatrix();
+					var cmo: ColorMatrixObject = new ColorMatrixObject(200,0.8);
+					cm.applyColorMatrixObject(cmo);
+					
+					closeButton.filters = [cm.filter];
+					
+					tryCountStringView = Context.Model.currentSettings.lotteryTryToWinCount.toString();
+				}
+				
+				private function changeTryCount(e: ContextEvent): void
+				{
+					tryCountStringView = Context.Model.currentSettings.lotteryTryToWinCount.toString();
+				}
+				
+				private function showChestBlock(e: ContextEvent): void
+				{
+					blockChestsGroup.visible = Boolean(e.data);
+					tryCountGroup.visible = !blockChestsGroup.visible;
+				}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	
+	<s:Group width="733" height="469">
+		
+		<s:BorderContainer backgroundImage="@Embed(source='assets/windows/global/lottery/patternBG.jpg')"
+						   backgroundImageFillMode="repeat"
+						   width="100%" height="100%"
+						   borderVisible="false"
+						   >
+			<s:filters>
+				<s:GlowFilter blurX="5" blurY="5" color="0xb6e1f2" />
+			</s:filters>
+		</s:BorderContainer>
+		<s:HGroup width="100%" height="100%"
+				  verticalAlign="top" horizontalAlign="center"
+				  paddingTop="20"
+				  >
+			<mx:Image id="leftStarsImage" source="http://www.vensella.ru/eg/lottery/stars.png" />
+			
+			<s:VGroup horizontalAlign="center" paddingTop="20">
+				<s:VGroup horizontalAlign="center" gap="30">
+					<s:VGroup gap="0" horizontalAlign="center">
+						<s:Label text="Испытай удачу на прочность!"
+								 fontFamily="mpbc" fontSize="22" color="0xb6e1f2"
+								 />
+						<s:Label text="В нескольких сундуках спрятаны ресурсы"
+								 fontFamily="mpbc" fontSize="22" color="0xb6e1f2"
+								 />
+					</s:VGroup>
+					
+					<s:Group>
+						
+						<lottery:Chests />
+						
+						<s:Group id="blockChestsGroup" visible="false">
+							<s:Rect height="147" width="387" radiusX="15" radiusY="15" alpha="0.9">
+								<s:fill>
+									<s:LinearGradient rotation="90">
+										<s:GradientEntry color="0xe26c00" ratio="0.0" />
+										<s:GradientEntry color="0xffa500" ratio="1.0" />
+									</s:LinearGradient>
+								</s:fill>
+							</s:Rect>
+							
+							<s:VGroup width="100%" height="100%" 
+									  horizontalAlign="center" verticalAlign="middle"
+									  gap="20"
+									  >
+								<s:Label text="Можно попробовать еще раз за 2 энергии." 
+										 fontFamily="mpbc" fontSize="22" color="0xddeaef"
+										 maxWidth="310" textAlign="center"
+										 />
+								<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+															  customLabel="Пробовать"
+															  fontSize="22"
+															  fontSizeOver="22"
+															  />
+							</s:VGroup>
+						</s:Group>
+					</s:Group>
+				</s:VGroup>
+				<s:HGroup paddingTop="-20" id="tryCountGroup">
+					<s:Label text="Осталось попыток: {tryCountStringView}"
+							 fontFamily="mpr" fontSize="14" color="0xb6e1f2"
+							 />
+				</s:HGroup>
+				
+				<s:VGroup horizontalAlign="center" width="400" paddingTop="20" gap="15">
+					<s:VGroup gap="0" horizontalAlign="center">
+						<s:Label text="Попроси друзей о помощи," fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />
+						<s:Label text="если друг угадает сундук, то вы оба получите приз! " fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />
+						<s:Label text="Больше друзей, больше призов!" fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />	
+					</s:VGroup>
+					
+					<friends:FriendsLent />
+					
+				</s:VGroup>
+				
+			</s:VGroup>
+			
+			<mx:Image source="http://www.vensella.ru/eg/lottery/stars.png" />
+			
+		</s:HGroup>
+		
+	</s:Group>
+	
+	<flexcomponents:CloseButton id="closeButton" 
+								x="690" y="17"
+								skinClass="skins.buttons.CloseButtonOriginS"
+								scale="0.7"
+								click="closeWrapper();"
+								/>
+	
+	<s:controlBarContent/>
+	
+	
+</s:Panel>

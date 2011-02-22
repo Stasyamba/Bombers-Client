@@ -24,7 +24,79 @@ public class VkontakteProfile implements ISocialProfile {
     private var _profileLink:String = "";
 
     public var isFriend:Boolean = false;
-
+	public var haveApp: Boolean = false;
+	
+	/* works only for own profile */
+	
+	public function getFriends(type: int): Array
+	{
+		var res:Array = new Array();
+		//if(Context.Model.currentSettings.socialProfile.id == this._id)
+		//{
+			var isAppFriends: Boolean = false;
+			var isNotAppFriends: Boolean = false;
+			
+			switch(type)
+			{
+				case SocialProfile.TYPE_APP_FRINEDS:
+					isAppFriends = true;
+					break;
+				case SocialProfile.TYPE_NOT_APP_FRIENDS:
+					isNotAppFriends = true;
+					break;
+				case SocialProfile.TYPE_ALL:
+					break;
+			}
+			
+			for each(var vp: VkontakteProfile in Context.Model.currentSettings.apiResult.friends)
+			{
+				if(!isAppFriends && !isNotAppFriends)
+				{
+					res.push(vp);
+				}else
+				{
+					if(isAppFriends)
+					{
+						if(vp.haveApp)
+						{
+							res.push(vp);
+						}
+					}else
+					{
+						if(!vp.haveApp)
+						{
+							res.push(vp);
+						}
+					}	
+				}
+			}
+		//}
+		
+		return res;
+	}
+	
+	/*public function setFriend(id: String, ): void
+	{
+		if(Context.Model.currentSettings.socialProfile.id == this._id)
+		{
+			for(var vp: VkontakteProfile in Context.Model.currentSettings.apiResult)	
+			{
+				if(vp.id == id)
+				{
+					vp = 
+				}
+			}
+		}
+	}*/
+	
+	public function updateFriends(): void
+	{
+		if(Context.Model.currentSettings.socialProfile.id == this._id)
+		{
+			// dispatch some event
+		}
+	}
+	
     public function VkontakteProfile(id:String) {
         this._id = id;
     }

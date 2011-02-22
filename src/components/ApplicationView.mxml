@@ -19,19 +19,20 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals
-
-        import components.common.game.requesttogame.RequestGameObject
-        import components.common.profiles.VkontakteProfile
-        import components.common.resources.ResourcePrice
-        import components.pages.global.energymarket.EnergyMarketW
-        import components.pages.global.gamerequest.ConnectToGameW
-        import components.pages.global.inventory.InventoryW
-        import components.pages.global.resourcemarket.ResourceMarketW
-        import components.pages.global.tutorial.TutorialPreviewW
-
-        import mx.controls.Alert
-        import mx.managers.PopUpManager
+			import api.vkontakte.VkontakteGlobals;
+			
+			import components.common.game.requesttogame.RequestGameObject;
+			import components.common.profiles.VkontakteProfile;
+			import components.common.resources.ResourcePrice;
+			import components.pages.global.energymarket.EnergyMarketW;
+			import components.pages.global.gamerequest.ConnectToGameW;
+			import components.pages.global.inventory.InventoryW;
+			import components.pages.global.lottery.LotteryW;
+			import components.pages.global.resourcemarket.ResourceMarketW;
+			import components.pages.global.tutorial.TutorialPreviewW;
+			
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
 
         public static const TAB_NAME_WORLD:String = "WorldPage";
         public static const TAB_NAME_GAME:String = "GamePage";
@@ -155,12 +156,25 @@
 
             Context.gameServer.disconnected.add(onDisconnected)
 
-            /// immitation
+            /* for local testing */
             idGroup.visible = !(parentApplication as Bombers).isWrapperExists;
-
+			
+			
+			/// immitation
+			showLottery();
 
         }
 
+		private function showLottery():void	
+		{
+			var lw:LotteryW = new LotteryW()
+			
+			PopUpManager.addPopUp(lw, this, true);
+			PopUpManager.centerPopUp(lw);
+			
+			lw.y -= 42;
+		}
+			
         private function onDisconnected():void {
             Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB,TAB_NAME_GAME)
             Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_DISCONNECTED_WINDOW)

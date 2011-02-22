@@ -13,9 +13,9 @@ public class ResourcePrice {
         _adamant.value = adamantCount;
         _antimatter.value = antimatterCount;
     }
-
+	
     public function getResourceObjectArr():Array {
-        return [gold, crystals, adamant, antimatter];
+        return [gold.clone(), crystals.clone(), adamant.clone(), antimatter.clone()];
     }
 
     /* getters */
