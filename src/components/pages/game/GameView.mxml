@@ -29,7 +29,7 @@
             Context.gameModel.gameReady.add(function ():void {
                 gameView = new GameFieldView(Context.game);
                 addElement(gameView);
-                parentApplication.stage.focus = gameView
+                gameView.focusManager.activate()
             });
             Context.gameModel.leftGame.add(function():void {
                 endGame()
