@@ -24,18 +24,11 @@ public interface ISocialProfile {
 
     function clone(profile:ISocialProfile):void;
 
-    //public function get age:int;
-
-    //public function get country:int;
-
-    //public function get city:int;
-
-
-    //public function getFriendsId():Array;
-
-    //public function getAlbumsId():Array;
-
-    //public function getAlbumsPhotosId(albumId:String):Array;
+	//function setFriend(id: String): void;
+	
+	function getFriends(type: int): Array; // type = [ISocialProfile, ... ] (const in SocialProfile)
+	
+	function updateFriends(): void;
 }
 
 }

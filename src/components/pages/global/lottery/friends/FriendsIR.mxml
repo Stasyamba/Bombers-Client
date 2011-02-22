@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:mx1="http://ns.adobe.com/mxml/mx"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				autoDrawBackground="false"
+				useHandCursor="true"
+				buttonMode="true"
+				height="51" width="51"
+				>
+	<s:layout>
+		<s:BasicLayout />
+	</s:layout>
+	
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="hovered" />
+		<s:State name="selected" />
+	</s:states>
+	
+	<fx:Declarations>
+		
+		<s:Parallel  id="fadeAnimation">
+			<s:Animate target="{userImage}"  duration="300">
+				<s:SimpleMotionPath property="alpha" valueFrom="0.0" valueTo="1.0" />
+			</s:Animate>	
+			
+			<s:Animate target="{blurFilter}"  duration="300">
+				<s:SimpleMotionPath property="blurX" valueFrom="5.0" valueTo="0.0" />
+			</s:Animate>
+			<s:Animate target="{blurFilter}"  duration="300">
+				<s:SimpleMotionPath property="blurY" valueFrom="5.0" valueTo="0.0" />
+			</s:Animate>	
+			
+		</s:Parallel>
+			
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.core.IVisualElement;
+			
+			override public function set data( value:Object ) : void {
+				super.data = value;
+			}
+			
+			
+		]]>
+	</fx:Script>
+	
+	<s:Group>
+		<s:BorderContainer id="imageMask" backgroundColor="0x000000" width="51" height="51" />
+		<mx:Image id="userImage" mask="{imageMask}" source="{data.photoURL}" trustContent="{Context.Model.trustContent}"
+				  complete="fadeAnimation.play();"
+				  alpha="0"
+				  />
+
+		<s:filters>
+			<s:BlurFilter id="blurFilter" blurX="5" blurY="5" />
+		</s:filters>
+	</s:Group>
+	
+	
+</s:ItemRenderer>

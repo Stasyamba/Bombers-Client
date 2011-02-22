@@ -1,4 +1,5 @@
 package components.common.resources {
+	
 [Bindable]
 public class ResourceObject {
     private var _type:ResourceType;
@@ -28,6 +29,11 @@ public class ResourceObject {
         this._type = ro.type;
         this._value = ro.value;
     }
+	
+	public function clone(): ResourceObject
+	{
+		return new ResourceObject(this._type, this._value);
+	}
 
 }
 }

@@ -28,6 +28,8 @@ public class ApplicationModel extends VkontakteApplicationModel {
 
     }
 
+	/* Vkontakte API */
+	
     public function getUsersProfiles(uidP:Array, afterEvent:String = "", addToLoadedUsers:Boolean = true):void {
         new VyanaEvent(APIVkontakte.GET_PROFILE_FIELDS,
         {

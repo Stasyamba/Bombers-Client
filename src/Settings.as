@@ -1,12 +1,13 @@
 package {
-import components.common.game.requesttogame.RequestGameObject
-import components.common.profiles.ISocialProfile
-import components.common.profiles.SocialProfile
-import components.common.utils.enviroment.vkontakte.ApiResult
-import components.common.utils.enviroment.vkontakte.FlashVars
+import components.common.game.requesttogame.RequestGameObject;
+import components.common.profiles.ISocialProfile;
+import components.common.profiles.SocialProfile;
+import components.common.resources.ResourcePrice;
+import components.common.utils.enviroment.vkontakte.ApiResult;
+import components.common.utils.enviroment.vkontakte.FlashVars;
 
-import engine.games.GameType
-import engine.profiles.GameProfile
+import engine.games.GameType;
+import engine.profiles.GameProfile;
 
 [Bindable]
 public class Settings {
@@ -19,7 +20,9 @@ public class Settings {
     public var currentSocialWeb:int = SocialProfile.VKONTAKTE;
 
     private var _requestToGames:Array = new Array(); // type = [RequestGameObject, ...]
-
+	
+	public var lotteryTodayPrice: ResourcePrice = new ResourcePrice(10,2,0,0);
+	public var lotteryTryToWinCount: int = 9;
 
     public function get requestToGames():Array {
         return _requestToGames;

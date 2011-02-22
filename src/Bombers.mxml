@@ -135,6 +135,7 @@
                 // local testing
 
                 Context.Model.viewer.id = "72969483";
+				Context.Model.currentSettings.apiResult = new ApiResult("", true);
 
                 initApp(APP_STARTED_COMMON);
             }
