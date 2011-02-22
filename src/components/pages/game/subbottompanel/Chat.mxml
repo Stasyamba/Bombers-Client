@@ -37,6 +37,10 @@
                     initChat()
                 }
             })
+            Context.gameServer.inGameMessageReceived.add(function(lp:LobbyProfile, message:String):void {
+                if (lp != null)
+                    printMessage(lp.nick, message);
+            })
             initChat()
         }
 
@@ -55,10 +59,7 @@
                 if (lp != null)
                     printSomeoneLeft(lp.nick)
             })
-            Context.gameServer.inGameMessageReceived.add(function(lp:LobbyProfile, message:String):void {
-                if (lp != null)
-                    printMessage(lp.nick, message);
-            })
+
         }
 
         public function printMessage(from:String, text:String):void {
