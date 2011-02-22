@@ -17,9 +17,11 @@ import com.smartfoxserver.v2.requests.LeaveRoomRequest
 import com.smartfoxserver.v2.requests.LoginRequest
 import com.smartfoxserver.v2.requests.PublicMessageRequest
 
+import components.common.base.access.rules.levelrule.AccessLevelRule
 import components.common.base.expirance.ExperianceObject
 import components.common.base.market.ItemMarketObject
 import components.common.bombers.BomberType
+import components.common.items.ItemObject
 import components.common.items.ItemType
 import components.common.resources.ResourcePrice
 
@@ -494,7 +496,7 @@ public class GameServer extends SmartFox {
                 Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
                 break;
             case INT_GAME_PROFILE_LOADED:
-                
+
                 //resourceCost
                 var plist:ISFSObject = responseParams.getSFSObject("Pricelist")
 
@@ -525,17 +527,21 @@ public class GameServer extends SmartFox {
                     var so:Boolean = obj.getBool("SpecialOffer")
                     var imo:ItemMarketObject = new ItemMarketObject(rp, stack, so)
                     prices[id] = imo
+                    var lev:int = obj.getInt("Level")
+                    var io:ItemObject = Context.Model.itemsManager.getItem(ItemType.byValue(id))
+                    if (io != null)
+                        io.addRule(new AccessLevelRule(lev))
                 }
                 Context.Model.marketManager.setItemPrices(prices)
                 //levels
                 var levelsArr:ISFSArray = plist.getSFSArray("Levels")
                 for (var i:int = 0; i < levelsArr.size(); i++) {
                     var exp:int = levelsArr.getInt(i);
-                    Context.Model.experianceManager.levelExperiencePair.push(new ExperianceObject(i+1,exp))
+                    Context.Model.experianceManager.levelExperiencePair.push(new ExperianceObject(i + 1, exp))
                 }
-				//gp
-				var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
-				profileLoaded.dispatch(gp);
+                //gp
+                var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
+                profileLoaded.dispatch(gp);
                 break;
             case INT_BUY_RESOURCES_RESULT:
                 trace("resources bought");

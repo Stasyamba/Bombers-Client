@@ -23,7 +23,7 @@ public class ItemsManager {
 
         items.push(new ItemObject(
                 ItemType.QUEST_ITEM_SNOWBOOTS,
-                [new AccessLevelRule(2)],
+                [],
 
                 new ItemViewObject(
                         ItemType.QUEST_ITEM_SNOWBOOTS,
@@ -49,7 +49,7 @@ public class ItemsManager {
 
         items.push(new ItemObject(
                 ItemType.AURA_FIRE,
-                [new AccessLevelRule(1)],
+                [],
 
                 new ItemViewObject(
                         ItemType.AURA_FIRE,
@@ -65,7 +65,7 @@ public class ItemsManager {
 		
 		items.push(new ItemObject(
 			ItemType.HEALTH_PACK_POISON,
-			[new AccessLevelRule(1)],
+			[],
 			
 			new ItemViewObject(
 				ItemType.HEALTH_PACK_POISON,
@@ -77,7 +77,7 @@ public class ItemsManager {
 		
 		items.push(new ItemObject(
 			ItemType.HEALTH_PACK_ADVANCED_POISON,
-			[new AccessLevelRule(2)],
+			[],
 			
 			new ItemViewObject(
 				ItemType.HEALTH_PACK_ADVANCED_POISON,
@@ -89,7 +89,7 @@ public class ItemsManager {
 		
 		items.push(new ItemObject(
 			ItemType.SMOKE_BOMB,
-			[new AccessLevelRule(1)],
+			[],
 			
 			new ItemViewObject(
 				ItemType.SMOKE_BOMB,
@@ -101,7 +101,7 @@ public class ItemsManager {
 
         items.push(new ItemObject(
                 ItemType.HAMELEON_POISON,
-                [new AccessLevelRule(1)],
+                [],
 
                 new ItemViewObject(
                         ItemType.HAMELEON_POISON,
@@ -113,7 +113,7 @@ public class ItemsManager {
 
         items.push(new ItemObject(
                 ItemType.NUCLEAR_BOMB,
-                [new AccessLevelRule(2)],
+                [],
 
                 new ItemViewObject(
                         ItemType.NUCLEAR_BOMB,
@@ -124,20 +124,8 @@ public class ItemsManager {
                 ));
 
         items.push(new ItemObject(
-                ItemType.X_RAY_BOMB,
-                [new AccessLevelRule(1)],
-
-                new ItemViewObject(
-                        ItemType.X_RAY_BOMB,
-                        ImagesPrefixes.WEAPON_PREFIX + "xrayBomb.png",
-                        "Бомба рентген",
-                        "Уничтожает только коробки в которымх могут находиться бонусы, не трогая при этом бомбастеров"
-                        )
-                ));
-
-        items.push(new ItemObject(
                 ItemType.MINA_BOMB,
-                [new AccessLevelRule(1)],
+                [],
 
                 new ItemViewObject(
                         ItemType.MINA_BOMB,
@@ -148,21 +136,8 @@ public class ItemsManager {
                 ));
 
         items.push(new ItemObject(
-                ItemType.BOX_BOMB,
-                [new AccessLevelRule(1)],
-
-                new ItemViewObject(
-                        ItemType.BOX_BOMB,
-                        ImagesPrefixes.WEAPON_PREFIX + "boxBomb.png",
-                        "Разбрасыватель",
-                        "Когда вы спасаетесь от врагов, нет ничего лучше чем заградить им стенами! Почувствуй себя архитектором карты, мечи коробки!"
-                        )
-                ));
-
-
-        items.push(new ItemObject(
                 ItemType.DINAMIT_BOMB,
-                [new AccessLevelRule(1)],
+                [],
 
                 new ItemViewObject(
                         ItemType.DINAMIT_BOMB,

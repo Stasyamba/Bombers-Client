@@ -36,5 +36,9 @@ public class ItemObject {
 
         return res;
     }
+
+    public function addRule(rule:IAccessRule):void {
+        _rulesList.push(rule)
+    }
 }
 }
