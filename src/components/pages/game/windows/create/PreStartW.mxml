@@ -25,7 +25,7 @@
                     />
         </s:Animate>
 
-        <s:Animate id="apearingAnimation" target="{this}" duration="1200">
+        <s:Animate id="apearingAnimation" target="{this}" duration="200">
             <s:SimpleMotionPath property="alpha"
                                 valueFrom="0" valueTo="1"
                     />
@@ -96,8 +96,8 @@
             if (isClosing)
                 return
             isClosing = true
-            closeTimer.removeEventListener(TimerEvent.TIMER_COMPLETE, timerComplete)
             disapearingAnimation.play();
+            closeTimer.removeEventListener(TimerEvent.TIMER, timerTick);
         }
 
         private function panelCreationComplete():void {
@@ -105,7 +105,6 @@
                 closeWrapper()
             })
             closeTimer.addEventListener(TimerEvent.TIMER, timerTick);
-            closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerComplete);
 
             closeTimer.start();
 
@@ -118,14 +117,10 @@
         }
 
         private function timerTick(e:TimerEvent):void {
-            timeToStartLabel.text = time.toString();
-            if (time > 0)
+            if (time >= 0) {
                 time--;
-        }
-
-        private function timerComplete(e:TimerEvent):void {
-            //no need to clode it by timer. or game starts, or disconnect, which will close it any way
-            //closeWrapper();
+                timeToStartLabel.text = time.toString();
+            }
         }
         ]]>
 	</fx:Script>

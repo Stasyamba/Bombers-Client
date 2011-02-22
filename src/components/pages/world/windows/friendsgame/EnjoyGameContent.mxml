@@ -23,13 +23,13 @@
                 Context.gameModel.joinConcreteGame(gameNameTextInput.text, gamePassTextInput.text)
                 Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
                 {
-                    text: "Подключаюсь (ну я стараюсь, подожди, блеать!!!)",
+                    text: "Подключаюсь (ну я стараюсь, подожди!)",
                     type: TypeGameToggle.TOGGLE_STATE_ENJOY
                 });
                 Context.gameModel.fastJoinFailed.addOnce(function():void {
                     Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
                     {
-                        text: "Не удалось подключиться к игре, блеать!",
+                        text: "Не удалось подключиться к игре!",
                         type: TypeGameToggle.TOGGLE_STATE_ENJOY
                     });
                 })
@@ -40,7 +40,7 @@
             } else {
                 Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
                 {
-                    text: "Неправильное название игры, читай правила, БЛЕАТЬ!",
+                    text: "Неправильное название игры!",
                     type: TypeGameToggle.TOGGLE_STATE_ENJOY
                 });
             }

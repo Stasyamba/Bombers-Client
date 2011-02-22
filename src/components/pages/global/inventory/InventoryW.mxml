@@ -177,7 +177,7 @@
         }
 
         private function onThreeSecsToStart(p1:*,p2:*):void {
-            Context.Model.dispatchCustomEvent(ContextEvent.IM_SERVERREQUEST, true);
+            this.closeWrapper()
         }
 
         private function switchMarketContent(e:ContextEvent):void {

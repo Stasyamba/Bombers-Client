@@ -5,7 +5,6 @@
 
 package engine.maps.mapBlocks {
 import engine.EngineContext
-import engine.explosionss.Explosion
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.builders.DynObjectBuilder
 import engine.maps.builders.MapBlockStateBuilder
@@ -15,6 +14,8 @@ import engine.maps.interfaces.IMapBlockState
 import engine.maps.mapObjects.DynObjectType
 import engine.maps.mapObjects.NullDynObject
 import engine.model.explosionss.ExplosionType
+
+import mx.controls.Alert
 
 import org.osflash.signals.Signal
 
@@ -43,9 +44,7 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
 
 
     public function canSetBomb():Boolean {
-        if (object.type == DynObjectType.NULL)
-            return state.canSetBomb();
-        return false;
+        return object.type == DynObjectType.NULL && state.canSetBomb();
     }
 
     public function canGoThrough():Boolean {
@@ -85,8 +84,8 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
 
         checkExplosionPrint(expl);
 
-        if(expl.type == ExplosionType.SMOKE){
-            EngineContext.smokeAdded.dispatch(x,y)
+        if (expl.type == ExplosionType.SMOKE) {
+            EngineContext.smokeAdded.dispatch(x, y)
             return
         }
 
@@ -144,6 +143,10 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
     }
 
     public function setObject(object:IDynObject):void {
+        if (object == null) {
+            Alert.show("NULL OBJECT")
+            return
+        }
         objectSet.dispatch(object);
         if (state.canShowObjects) {
             _object = object;

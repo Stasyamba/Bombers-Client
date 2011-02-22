@@ -14,7 +14,7 @@ import engine.bombers.skin.BomberSkin
 public class GameProfile {
 
     private var _nick:String;
-    public var experience:int;
+    private var _experience:int;
     public var energy:int;
     public var id:String;
     public var photoURL:String = "";
@@ -263,6 +263,15 @@ public class GameProfile {
                 arr.length--
             }
         }
+    }
+
+    public function get experience():int {
+        return _experience
+    }
+
+    public function set experience(value:int):void {
+        _experience = value
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_EXPERIENCE_CHANGED,value)
     }
 }
 }

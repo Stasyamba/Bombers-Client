@@ -17,6 +17,7 @@ import com.smartfoxserver.v2.requests.LeaveRoomRequest
 import com.smartfoxserver.v2.requests.LoginRequest
 import com.smartfoxserver.v2.requests.PublicMessageRequest
 
+import components.common.base.expirance.ExperianceObject
 import components.common.base.market.ItemMarketObject
 import components.common.bombers.BomberType
 import components.common.items.ItemType
@@ -458,7 +459,6 @@ public class GameServer extends SmartFox {
                     if (user.isItMe) {
                         updLobbyExperience(playerId, responseParams.getInt("Rank"), responseParams.getInt("Experience"))
                         Context.Model.currentSettings.gameProfile.experience = responseParams.getInt("Experience")
-                        Context.Model.dispatchCustomEvent(ContextEvent.GP_EXPERIENCE_CHANGED)
                         return
                     }
                 } else {
@@ -485,8 +485,7 @@ public class GameServer extends SmartFox {
                 var user:User = userManager.getUserByName(wId)
                 updLobbyExperience(user.playerId, 1, wExp)
                 if (user.isItMe) {
-                    Context.Model.currentSettings.gameProfile.experience = responseParams.getInt("Experience")
-                    Context.Model.dispatchCustomEvent(ContextEvent.GP_EXPERIENCE_CHANGED)
+                    Context.Model.currentSettings.gameProfile.experience = responseParams.getInt("game.gameEnded.WinnerExperience")
                 }
                 TweenMax.delayedCall(3.0, function ():void {
                     Context.gameModel.gameEnded.dispatch(wId, wExp)
@@ -495,8 +494,7 @@ public class GameServer extends SmartFox {
                 Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
                 break;
             case INT_GAME_PROFILE_LOADED:
-                var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
-                profileLoaded.dispatch(gp);
+                
                 //resourceCost
                 var plist:ISFSObject = responseParams.getSFSObject("Pricelist")
 
@@ -529,6 +527,15 @@ public class GameServer extends SmartFox {
                     prices[id] = imo
                 }
                 Context.Model.marketManager.setItemPrices(prices)
+                //levels
+                var levelsArr:ISFSArray = plist.getSFSArray("Levels")
+                for (var i:int = 0; i < levelsArr.size(); i++) {
+                    var exp:int = levelsArr.getInt(i);
+                    Context.Model.experianceManager.levelExperiencePair.push(new ExperianceObject(i+1,exp))
+                }
+				//gp
+				var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
+				profileLoaded.dispatch(gp);
                 break;
             case INT_BUY_RESOURCES_RESULT:
                 trace("resources bought");

@@ -1,23 +1,28 @@
 package components.common.base.expirance {
-	import flash.geom.Point;
-
 public class ExperienceManager {
     public function ExperienceManager() {
     }
 
-	private var levelExperiencePair: Array;// type = [ ExperianceObject , ... ]
-	
-    public function getLevel(experience:int): ExperianceObject 
-	{
-        var res:int = 1;
+    // type = [ ExperianceObject , ... ]
+    public var levelExperiencePair:Array = new Array();
 
-        return new ExperianceObject(1,1);
+    public function getLevel(experience:int):ExperianceObject {
+        for (var i:int = 0; i < levelExperiencePair.length; i++) {
+            var eo:ExperianceObject = levelExperiencePair[i];
+            if (experience < eo.experiance)
+                return levelExperiencePair[i - 1]
+        }
+        return levelExperiencePair[levelExperiencePair.length - 1]
     }
-	
-	public function getNextLevel(experience: int): ExperianceObject 
-	{
-		return new ExperianceObject(2,250);
-	}
-	
+
+    public function getNextLevel(experience:int):ExperianceObject {
+        for (var i:int = 0; i < levelExperiencePair.length; i++) {
+            var eo:ExperianceObject = levelExperiencePair[i];
+            if (experience < eo.experiance)
+                return levelExperiencePair[i]
+        }
+        return new ExperianceObject(-1,-1)
+    }
+
 }
 }

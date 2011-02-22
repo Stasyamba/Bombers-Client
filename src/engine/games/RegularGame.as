@@ -125,13 +125,15 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         _weaponsUsed[type.value] = w
     }
 
-    private function onWeaponActivated(playerId:int, x:int, y:int, type:WeaponType):void {
+    private function onWeaponActivated(playerId:int, x:int, y:int, wtype:WeaponType):void {
         var b:IBomber = getPlayer(playerId);
         if (playerManager.isItMe(b)) {
-            playerManager.me.activateWeapon(x, y, type);
+            playerManager.me.activateWeapon(x, y, wtype);
         } else {
-            activateWeapon(b, type, x, y)
+            activateWeapon(b, wtype, x, y)
         }
+        if(wtype.decreaseOnActivate)
+            playerManager.me.decWeapon(wtype)
     }
 
     private function activateWeapon(b:IBomber, type:WeaponType, x:int, y:int):void {

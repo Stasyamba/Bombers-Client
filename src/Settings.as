@@ -19,10 +19,13 @@ public class Settings {
     public var socialProfile:ISocialProfile;
     public var currentSocialWeb:int = SocialProfile.VKONTAKTE;
 
-    private var _requestToGames:Array = new Array(); // type = [RequestGameObject, ...]
-	
+
 	public var lotteryTodayPrice: ResourcePrice = new ResourcePrice(10,2,0,0);
 	public var lotteryTryToWinCount: int = 9;
+
+    private var _requestToGames:Array = new Array();
+    public var gameProfileLoaded:Boolean = false
+    // type = [RequestGameObject, ...]
 
     public function get requestToGames():Array {
         return _requestToGames;

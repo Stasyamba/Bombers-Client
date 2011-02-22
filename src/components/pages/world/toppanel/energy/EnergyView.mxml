@@ -18,8 +18,8 @@
             Context.Model.addCustomListener(ContextEvent.GP_ENERGY_IS_CHANGED, function (e:ContextEvent):void {
                 energyStringView = Context.Model.currentSettings.gameProfile.energy.toString();
             });
-
-            energyStringView = Context.Model.currentSettings.gameProfile.energy.toString();
+			if(Context.Model.currentSettings.gameProfile != null)
+            	energyStringView = Context.Model.currentSettings.gameProfile.energy.toString();
         }
         ]]>
 	</fx:Script>
