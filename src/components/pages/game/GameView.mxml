@@ -29,8 +29,10 @@
             Context.gameModel.gameReady.add(function ():void {
                 gameView = new GameFieldView(Context.game);
                 addElement(gameView);
+                parentApplication.stage.focus = gameView
             });
             Context.gameModel.leftGame.add(function():void {
+                endGame()
                 while (hasEventListener(Event.ENTER_FRAME))
                     unsubscribeEnterFrameEvent();
             })
@@ -52,7 +54,6 @@
                 endGame();
                 Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW)
             });
-            //initChat();
         }
 
         private function initSinglePlayer():void {

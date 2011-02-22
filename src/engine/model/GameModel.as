@@ -166,6 +166,7 @@ public class GameModel {
 
     private function onProfileLoaded(profile:GameProfile):void {
         Context.Model.currentSettings.gameProfile = profile
+        Context.Model.currentSettings.gameProfileLoaded = true;
         if (profile.photoURL == "") {
             Context.gameServer.sendSetPhotoRequest(Context.Model.currentSettings.socialProfile.photoURL)
             Context.Model.currentSettings.gameProfile.photoURL = Context.Model.currentSettings.socialProfile.photoURL

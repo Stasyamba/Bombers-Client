@@ -30,6 +30,7 @@
         }
 
         private function openResourceMarket():void {
+            close()
             Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_RESOURCE_MARKET, resourcePrice);
         }
         ]]>

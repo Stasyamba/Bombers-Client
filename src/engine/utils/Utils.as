@@ -23,7 +23,7 @@ public class Utils {
     }
 
     public static function checkNick(nick:String):Boolean {
-        return nick.length > 4 && !(nick.length > 12)
+        return nick.length >= 4 && !(nick.length > 12)
     }
     public static function isArrowKey(code:uint):Boolean {
         return code == Keyboard.LEFT || code == Keyboard.RIGHT || code == Keyboard.UP || code == Keyboard.DOWN;

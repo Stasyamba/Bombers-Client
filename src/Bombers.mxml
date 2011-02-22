@@ -154,7 +154,7 @@
 //                initApp(APP_STARTED_COMMON);
 //            }
 			
-            initApp(APP_STARTED_COMMON);
+            //initApp(APP_STARTED_COMMON);
         }
 
         private function onLocationChanged(e:Object):void {

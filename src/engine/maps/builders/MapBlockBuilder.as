@@ -7,6 +7,7 @@ package engine.maps.builders {
 import engine.maps.interfaces.IMapBlock
 import engine.maps.mapBlocks.MapBlock
 import engine.maps.mapBlocks.MapBlockType
+import engine.maps.mapBlocks.NullMapBlock
 
 public class MapBlockBuilder {
 
@@ -19,6 +20,8 @@ public class MapBlockBuilder {
     }
 
     public function make(x:int, y:int, type:MapBlockType):IMapBlock {
+        if(type == MapBlockType.NULL)
+            return NullMapBlock.getInstance()
         return new MapBlock(x, y, mapBlockStateBuilder.make(type), mapBlockStateBuilder, dynObjectBuilder);
     }
 }

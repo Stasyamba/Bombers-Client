@@ -15,31 +15,25 @@
         private var timeStringView:String = "0 : 00";
 
         private var time:int
-        private var timer:Timer= new Timer(1000)
+        private var timer:Timer = new Timer(1000)
 
         public function init():void {
             Context.Model.addCustomListener(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, function(e:ContextEvent):void {
                 if (e.data == ApplicationView.TAB_NAME_GAME) {
-                    Context.gameModel.gameStarted.add(function():void {
-                        time = 0
-                        timeStringView = "0 : 00"
-                        start()
-                    })
-                    Context.gameModel.gameEnded.add(function(p1:*, p2:*):void {
-                        stop()
-                    })
+                    everyGameTabOpenInit()
                 }
             })
-            timer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void{
+            timer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void {
                 time += 1
                 timeStringView = getStringTime()
             })
+            everyGameTabOpenInit()
         }
 
         private function getStringTime():String {
-            var mins:int = int(time/60)
-            var secs :int = time - int(time/60)
-            return mins + " : " + secs
+            var mins:int = int(time / 60)
+            var secs:int = time - int(time / 60)
+            return mins.toString() + " : " + ((secs<10)?"0" + secs.toString():secs.toString());
         }
 
         private function stop():void {
@@ -52,6 +46,17 @@
             time = 0
             timeStringView = "0 : 00"
             timer.start()
+        }
+
+        private function everyGameTabOpenInit():void {
+            Context.gameModel.gameStarted.add(function():void {
+                time = 0
+                timeStringView = "0 : 00"
+                start()
+            })
+            Context.gameModel.gameEnded.add(function(p1:*, p2:*):void {
+                stop()
+            })
         }
         ]]>
 	</fx:Script>

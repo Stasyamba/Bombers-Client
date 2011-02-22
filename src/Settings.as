@@ -18,7 +18,9 @@ public class Settings {
     public var socialProfile:ISocialProfile;
     public var currentSocialWeb:int = SocialProfile.VKONTAKTE;
 
-    private var _requestToGames:Array = new Array(); // type = [RequestGameObject, ...]
+    private var _requestToGames:Array = new Array();
+    public var gameProfileLoaded:Boolean = false
+    // type = [RequestGameObject, ...]
 
 
     public function get requestToGames():Array {

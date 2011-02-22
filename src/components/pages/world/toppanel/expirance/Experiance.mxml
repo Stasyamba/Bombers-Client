@@ -54,7 +54,8 @@
 
     <fx:Script>
 		<![CDATA[
-			import components.common.base.expirance.ExperianceObject;
+        import components.common.base.expirance.ExperianceObject
+
         [Bindable]
         private var levelStringView:String = "1";
 
@@ -75,13 +76,12 @@
             closeTimer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
             closeTimer.stop();
 
-			Context.Model.addCustomListener(ContextEvent.GP_EXPERIENCE_CHANGED, function (e: ContextEvent): void
-			{
-				setExpirance(int(e.data));	
-			});
-			
-			//setExpirance(100);
-            //levelStringView = Context.Model.experianceManager.getLevel(Context.Model.currentSettings.gameProfile.experience).level.toString();
+            Context.Model.addCustomListener(ContextEvent.GP_EXPERIENCE_CHANGED, function (e:ContextEvent):void {
+                setExpirance(int(e.data));
+            });
+
+            if(Context.Model.currentSettings.gameProfileLoaded)
+                setExpirance(Context.Model.currentSettings.gameProfile.experience);
         }
 
         private function timerCompleteHandler(e:TimerEvent):void {
@@ -138,24 +138,23 @@
 
         }
 
-        private function setExpirance(exp:int):void 
-		{
-			var curentLevelObject:ExperianceObject = Context.Model.experianceManager.getLevel(exp);
-			var nextLevelObject: ExperianceObject = Context.Model.experianceManager.getNextLevel(exp);
-			
-			var currentLevel: int = curentLevelObject.level;
-			if(currentLevel == 1)
-			{
-				expToolTipLabel.text = "Сражайтесь, достигайте новых побед, вздувайте друзей в увлекательных онлайн боях!";
-			}else
-			{
-				expToolTipLabel.text = "Максимальный опыт который вы сможете набрать в бете 100 опыта, ждите релиза игры!"
-			}
-			
-			levelStringView = currentLevel.toString();
+        private function setExpirance(exp:int):void {
+            var curentLevelObject:ExperianceObject = Context.Model.experianceManager.getLevel(exp);
+            var nextLevelObject:ExperianceObject = Context.Model.experianceManager.getNextLevel(exp);
 
-			var currentPercent: Number = exp/(nextLevelObject.experiance - curentLevelObject.experiance);
-			expiranceMaskRect.width = int((expiranceMaskRect.maxWidth - expiranceMaskRect.minWidth)*currentPercent);
+            var currentLevel:int = curentLevelObject.level;
+            if (currentLevel == 1) {
+                expToolTipLabel.text = "Сражайтесь, достигайте новых побед, вздувайте друзей в увлекательных онлайн боях!";
+            } else {
+                expToolTipLabel.text = "Максимальный опыт который вы сможете набрать в бете 100 опыта, ждите релиза игры!"
+            }
+
+            levelStringView = currentLevel.toString();
+
+            var currentPercent:Number = (exp - curentLevelObject.experiance) / (nextLevelObject.experiance - curentLevelObject.experiance);
+            expiranceMaskRect.width = int(expiranceMaskRect.maxWidth * currentPercent);
+
+            expValueLabel.text = exp.toString() + " / " + nextLevelObject.experiance.toString() + " опыта"
         }
         ]]>
 	</fx:Script>
@@ -264,7 +263,8 @@
                                  fontSize="24" fontFamily="mpbc"
                                  color="0xcfcfcf"
                                 />
-                        <s:Label text="50 / 200 опыта"
+                        <s:Label id="expValueLabel"
+                                 text="0 / 0 опыта"
                                  fontSize="24" fontFamily="mpbc"
                                  color="0xd57ceb"
                                 />
@@ -273,7 +273,7 @@
 
                     <s:VGroup gap="5" paddingTop="10">
                         <s:Label
-								id="expToolTipLabel"
+                                id="expToolTipLabel"
                                 text="Максимальный опыт который вы сможете набрать в бете 100 опыта, ждите релиза игры!"
                                 fontSize="18" fontFamily="mpbc"
                                 color="0xcfcfcf"

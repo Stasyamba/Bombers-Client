@@ -68,6 +68,8 @@
 
         private var timer:Timer = new Timer(3000, 1);
 
+        public var closeOnCreationComplete:Boolean
+
 
         public function close():void {
             Context.Model.dispatchCustomEvent(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY, true);
@@ -83,7 +85,8 @@
 
             Context.Model.windowsManager.closeAll(true);
             Context.Model.windowsManager.addWindow(this);
-
+            if(closeOnCreationComplete)
+                closeWrapper()
             apearingAnimation.play();
             timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
 

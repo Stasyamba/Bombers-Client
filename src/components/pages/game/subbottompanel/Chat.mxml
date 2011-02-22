@@ -51,6 +51,9 @@
                 }
             }
             printICame()
+            Context.gameModel.gameStarted.add(function():void {
+                //messageText.focusManager.deactivate()
+            })
             Context.gameModel.someoneJoinedToGame.add(function(lp:LobbyProfile):void {
                 if (lp != null)
                     printSomeoneCame(lp.nick)

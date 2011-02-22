@@ -51,7 +51,7 @@
                 Context.gameModel.createGameFailed.addOnce(function():void {
                     Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
                     {
-                        text: "Не удалось создать игру, блеать!",
+                        text: "Не удалось создать игру!",
                         type: TypeGameToggle.TOGGLE_STATE_CREATE
                     });
                 })
@@ -63,7 +63,7 @@
             else {
                 Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
                 {
-                    text: "Неправильное название игры, читай правила, БЛЕАТЬ!",
+                    text: "Неправильное название игры!",
                     type: TypeGameToggle.TOGGLE_STATE_CREATE
                 });
             }

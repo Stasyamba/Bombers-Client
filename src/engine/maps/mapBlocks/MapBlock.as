@@ -16,6 +16,8 @@ import engine.maps.mapObjects.DynObjectType
 import engine.maps.mapObjects.NullDynObject
 import engine.model.explosionss.ExplosionType
 
+import mx.controls.Alert
+
 import org.osflash.signals.Signal
 
 //builders are injected after creation
@@ -144,6 +146,10 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
     }
 
     public function setObject(object:IDynObject):void {
+        if(object == null){
+            Alert.show("NULL OBJECT")
+            return
+        }
         objectSet.dispatch(object);
         if (state.canShowObjects) {
             _object = object;
