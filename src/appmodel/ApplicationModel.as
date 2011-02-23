@@ -65,21 +65,22 @@ public class ApplicationModel extends VkontakteApplicationModel {
                 });
     }
 
-    public function wallSavePhotoID(wallIdP:String, photoIdP:String, postIdP:String, messageP:String):void {
-
-        new VyanaEvent(APIVkontakte.SAVE_WALL_POST,
-        {
-            wall_id: wallIdP,
-            photo_id: photoIdP,
-            post_id: postIdP,
-            message: messageP
-        }).dispatch(
-                function (result:*):void {
-                    for each (var o:* in result.response) {
-                        //mx.controls.Alert.show("responce:"+ObjectUtil.toString(result.response));
-                    }
-                });
-    }
+	public function wallSavePhotoID(wallIdP: String, photoIdP: String, postIdP: String, messageP: String):void
+	{	
+		
+		new VyanaEvent(APIVkontakte.SAVE_WALL_POST,
+			{
+				wall_id: wallIdP,
+				photo_id: photoIdP,
+				post_id: postIdP,
+				message: messageP
+			}).dispatch(
+				function (result:*): void {
+					for each (var o:* in result.response){
+						//mx.controls.Alert.show("responce:"+ObjectUtil.toString(result.response));
+					}
+				});	
+	}
 
     public function pushIntoArray(val:*, arr:Array, compareProperty:String = ""):Array {
         var newArray:Array = arr;
@@ -112,7 +113,7 @@ public class ApplicationModel extends VkontakteApplicationModel {
     public var currentSettings:Settings = new Settings();
 
     [Bindable]
-    public var trustContent:Boolean = false;
+    public var trustContent:Boolean = true;
 
 
     public var resourceViewManager:ResourceViewManager = new ResourceViewManager();

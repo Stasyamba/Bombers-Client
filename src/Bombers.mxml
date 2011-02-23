@@ -233,7 +233,7 @@
     <s:Group id="basePreloaderGroup" width="100%" height="100%"
              visible="false">
         <s:Rect width="100%" height="100%"
-                alpha="1"
+                alpha="0.7"
                 >
             <s:fill>
                 <s:SolidColor color="0x000000"/>

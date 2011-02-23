@@ -32,12 +32,12 @@ public class PostIDObject {
          }*/
     }
 
-    public function encode(photoURLP:String, nameP:String, sexP:String):String {
+    public function code(photoURLP:String, nameP:String, sexP:String):String {
         var result:String = "";
 
-        result += PostID.encode(photoURLP, PostID.TYPE_VKURL) + POSTID_DELIMETER_BASE;
-        result += PostID.encode(nameP, PostID.TYPE_RUSENGTEXT) + POSTID_DELIMETER_BASE;
-        result += PostID.encode(sexP, PostID.TYPE_SIMPLE) + POSTID_DELIMETER_BASE;
+        result += PostID.code(photoURLP, PostID.TYPE_VKURL) + POSTID_DELIMETER_BASE;
+        result += PostID.code(nameP, PostID.TYPE_RUSENGTEXT) + POSTID_DELIMETER_BASE;
+        result += PostID.code(sexP, PostID.TYPE_SIMPLE) + POSTID_DELIMETER_BASE;
 
         return result;
     }

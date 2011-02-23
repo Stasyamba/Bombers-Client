@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 click="tryToOpen();"
+		 width="65" height="65"
+		 mouseOver="setGlow(true);"
+		 mouseOut="setGlow(false);"
+		 >
+	
+	
+	<fx:Declarations>
+		
+		<s:Parallel id="showGlowA">
+			<s:Animate target="{blurFilterChest}"  duration="500">
+				<s:SimpleMotionPath property="alpha" valueFrom="0.0" valueTo="1.0" />
+			</s:Animate>	
+		</s:Parallel>
+		
+		<s:Parallel id="hideGlowA">
+			<s:Animate target="{blurFilterChest}"  duration="500">
+				<s:SimpleMotionPath property="alpha" valueFrom="1.0" valueTo="0.0" />
+			</s:Animate>	
+		</s:Parallel>
+		
+		<s:Parallel id="pulseA">
+			
+			<s:Sequence repeatCount="45555">
+				<s:Animate id="jumpUpA" target="{resourceGroupWrapper}" duration="300">
+					<s:SimpleMotionPath property="y" valueFrom="5" valueTo="-5"/>
+				</s:Animate>
+				
+				<s:Animate id="jumpDownA" target="{resourceGroupWrapper}" duration="300">
+					<s:SimpleMotionPath property="y" valueFrom="-5" valueTo="5"/>
+				</s:Animate>
+				
+			</s:Sequence>
+			
+		</s:Parallel>
+		
+		<s:Parallel id="fadeOutA">
+
+			<s:Animate target="{resourceGroupWrapperBlurFilter}" duration="600">
+				<s:SimpleMotionPath property="blurX" valueFrom="0" valueTo="20"/>
+			</s:Animate>
+			
+			<s:Animate target="{resourceGroupWrapperBlurFilter}" duration="600">
+				<s:SimpleMotionPath property="blurY" valueFrom="0" valueTo="20"/>
+			</s:Animate>
+			
+			<s:Animate target="{resourceGroupWrapper}" duration="600">
+				<s:SimpleMotionPath property="alpha" valueFrom="{resourceGroupWrapper.alpha}" valueTo="0"/>
+			</s:Animate>
+		</s:Parallel>
+		
+	</fx:Declarations>
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.resources.ResourceObject;
+			import components.common.resources.ResourceType;
+			
+			import mx.controls.Alert;
+			
+			private var isOpened:Boolean = false;
+			private var price: ResourceObject = null;
+			
+			[Bindable]
+			private var resourceImageScale: Number = 0.5;
+			
+			public function initContent(cho: ChestObject): void
+			{
+				isOpened = cho.isOpened;
+				price = cho.price;
+			}
+			
+			private function setGlow(visible: Boolean): void
+			{
+				if(!isOpened)
+				{
+					showGlowA.stop();
+					hideGlowA.stop();
+					
+					if(visible)
+					{
+						showGlowA.play();
+					}else
+					{
+						hideGlowA.play();
+					}
+				}
+			}
+			
+			private function tryToOpen(): void
+			{
+				//Alert.show("test");
+				if(Context.Model.currentSettings.lotteryTryToWinCount > 0)
+				{
+					if(!isOpened)
+					{
+						chestImage.visible = false;
+						Context.Model.currentSettings.lotteryTryToWinCount--;
+						Context.Model.dispatchCustomEvent(ContextEvent.L_TRY_COUNT_SET_CHANGED);
+						isOpened = true;
+						
+						if(price == null)
+						{
+							emptyImage.visible = true;
+						}else
+						{
+							
+							// init resource
+							resourceImage.source = Context.Model.resourceViewManager.getResource(price.type).bigImage;
+							resourceAmount.text = price.value.toString();
+							
+							switch(price.type)
+							{
+								case ResourceType.CRYSTALS:
+									resourceGroupInside.paddingTop = -9;
+									resourceImageScale = 0.4;
+									
+									resourceAmount.setStyle("color", 0xdd6fff);
+									blurFilterLabel.color = 0xdd6fff;
+									blurFilter.color = 0xdd6fff;
+									break;
+								case ResourceType.GOLD:
+									resourceImageScale = 0.5;
+									
+									resourceAmount.setStyle("color", 0xfff533);
+									blurFilterLabel.color = 0xc89510;
+									blurFilter.color = 0xfff900;
+									break;
+							}
+							
+							resourceGroup.visible = true;
+							pulseA.play();
+						}
+					}	
+				}else
+				{
+					// show need enegry and refresh all chests
+					Context.Model.dispatchCustomEvent(ContextEvent.L_SHOW_CHEST_BLOCK, true);
+				}
+			}
+			
+			private function getResource(): void
+			{
+				fadeOutA.play();
+			}
+			
+		]]>
+	</fx:Script>
+	<s:HGroup horizontalAlign="center" verticalAlign="middle">
+		<s:BitmapImage id="chestImage" source="@Embed(source='assets/windows/global/lottery/chest.png')"
+					   >
+			<s:filters>
+				<s:GlowFilter alpha="0" id="blurFilterChest" blurX="5" blurY="5" color="0xf5ca11" strength="5" />
+			</s:filters>
+		</s:BitmapImage>
+	</s:HGroup>
+	
+	<s:HGroup horizontalAlign="center" verticalAlign="middle">
+		<s:BitmapImage id="emptyImage" alpha="0.8" visible="false"  source="@Embed(source='assets/windows/global/lottery/empty.png')" />
+	</s:HGroup>
+	
+	<s:HGroup id="resourceGroupWrapper" horizontalAlign="center" verticalAlign="middle"
+			  width="100%" height="100%"
+			  >	
+		<s:filters>
+			<s:BlurFilter id="resourceGroupWrapperBlurFilter" blurX="0" blurY="0" />
+		</s:filters>
+		<s:Group id="resourceGroup" visible="false"
+				 width="100%" height="100%"
+				 >
+			<s:HGroup width="100%" height="100%" 
+					  id="resourceGroupInside"
+					  horizontalAlign="center" verticalAlign="middle"
+					  click="getResource();">
+				<s:BitmapImage id="resourceImage" source="@Embed(source='assets/windows/global/lottery/empty.png')"
+							   scaleX="{resourceImageScale}" scaleY="{resourceImageScale}" smooth="true"
+							   >
+					<s:filters>
+						<s:GlowFilter id="blurFilter" blurX="9" blurY="9" />
+					</s:filters>
+				</s:BitmapImage>
+			</s:HGroup>
+			<s:Label y="5" id="resourceAmount" fontFamily="mpbc" fontSize="17">
+				<s:filters>
+					<s:GlowFilter id="blurFilterLabel" blurX="9" blurY="9" />
+				</s:filters>
+			</s:Label>
+		</s:Group>
+	</s:HGroup>
+	
+</s:Group>
