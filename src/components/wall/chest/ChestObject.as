@@ -1,4 +1,4 @@
-package components.pages.global.lottery
+package components.wall.chest
 {
 	import components.common.resources.ResourceObject;
 

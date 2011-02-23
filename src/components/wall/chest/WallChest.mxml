@@ -3,25 +3,139 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:chest="components.wall.chest.*"
+		 width="100%" height="100%"
+		 creationComplete="init();" xmlns:buttons="skins.buttons.*" xmlns:flexcomponents="components.common.flexcomponents.*"
 		 >
+	<fx:Script>
+		<![CDATA[
+			import skins.buttons.Pattern3ButtonS;
+		]]>
+	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	
+	<fx:Script>
+		<![CDATA[
+			import flash.utils.getTimer;
+			import mx.utils.ObjectUtil;
+			import mx.controls.Alert;
+			import components.common.resources.ResourcePrice;
+			
+			[Bindable]
+			private var tryCount: int = 2;
+			
+			[Bindable]
+			private var labelVisble: Boolean = true;
+			[Bindable]
+			private var buttonPanel1Visible: Boolean = false;
+			[Bindable]
+			private var buttonPanel2Visible: Boolean = false;
+			
+			private var rp:ResourcePrice = null;
+			
+			public static const MUST_WIN:int = 0;
+			public static const MUST_LOOSE:int = 1;
+			public static const RANDOM:int = 2;
+			
+			public function initContent(rp:ResourcePrice): void
+			{
+				this.rp = rp;
+			}
+			
+			private function init(): void
+			{
+				Context.Model.addCustomListener(ContextEvent.WALL_TRY_COUNT_CHANGED, function (e: ContextEvent): void
+				{
+					buttonPanel1Visible = false;
+					buttonPanel2Visible = false;
+					labelVisble = false;
+					
+					tryCount = Context.Model.currentSettings.lotteryTryToWinCount;
+					if(tryCount == 0)
+					{
+						if(Context.Model.currentSettings.lotteryPresentFinded != null)
+						{
+							buttonPanel1Visible = true;
+						}else
+						{
+							buttonPanel2Visible = true;
+						}
+					}else
+					{
+						labelVisble = true;
+					}
+				});
+				
+				
+				Context.Model.addCustomListener(ContextEvent.WALL_FAST_LOGINED, function (e: ContextEvent): void
+				{
+					if(rp != null)
+					{
+						chests.initContent(rp, e.data);
+						Context.Model.currentSettings.lotteryTryToWinCount = tryCount;
+					}
+				});
+				
+				
+				
+				// get response from server
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
 	<s:VGroup width="100%" height="100%"
 			  horizontalAlign="center" verticalAlign="middle">
 		
-		<s:HGroup verticalAlign="middle">
-			<mx:Image source="http://www.vensella.ru/eg/wallFuryJoe.png"
-					  smoothBitmapContent="true" trustContent="{Context.Model.trustContent}"
-					  />
-			<s:Label text="Отвечай! в каком из сундуков спрятаны сокровища? Я ведь и укусить могу.." 
-					 color="0xffe7b3" fontFamily="mpbc" fontSize="30" 
-					 maxWidth="379"
-					 />
-		</s:HGroup>
+		<s:VGroup horizontalAlign="center" gap="10">
+			<s:HGroup verticalAlign="middle">
+				<mx:Image source="http://www.vensella.ru/eg/wallFuryJoe.png"
+						  smoothBitmapContent="true" trustContent="{Context.Model.trustContent}"
+						  />
+				<s:Label text="Отвечай! в каком из сундуков спрятаны сокровища? Я ведь и укусить могу.." 
+						 color="0xffe7b3" fontFamily="mpbc" fontSize="30" 
+						 maxWidth="379"
+						 />
+			</s:HGroup>
+			
+			<chest:Chests id="chests" />
+		</s:VGroup>
 		
-		<chest:Chests />
+		<s:Group>
+			
+			<s:HGroup width="100%" height="100%"
+					  horizontalAlign="center" verticalAlign="middle"
+					  visible="{labelVisble}"
+					  >
+				<s:Label id="tryCountLabel" text="Осталось попыток: {tryCount}"
+						 color="0xffe7b3" fontFamily="mpbc" fontSize="18" 
+						 maxWidth="379"
+						 />
+			</s:HGroup>
+			
+			<s:HGroup width="100%" height="100%"
+					  horizontalAlign="center" verticalAlign="middle"
+					  visible="{buttonPanel1Visible}"
+					  >
+				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+											  customLabel="Поделить приз"
+											  />
+			</s:HGroup>
+			
+			<s:HGroup width="100%" height="100%"
+					  horizontalAlign="center" verticalAlign="middle"
+					  visible="{buttonPanel2Visible}"
+					  >
+				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+											  customLabel="Всех порву!"
+											  />
+			</s:HGroup>
+			
+		</s:Group>
+		
+		
 	</s:VGroup>
 	
 	

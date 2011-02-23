@@ -3,7 +3,6 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 width="366" height="147"
-		 creationComplete="init();"
 		 >
 	
 	<fx:Declarations>
@@ -20,63 +19,96 @@
 			[Bindable]
 			private var chestsCollection:ArrayCollection = new ArrayCollection();
 			
-			private function init():void
+			public function initContent(rp: ResourcePrice, type: int):void
 			{
-				chestReset(null);
+				chestReset(rp, type);
 			}
 			
-			private function chestReset(e: ContextEvent): void
+			private function chestReset(rp: ResourcePrice, type: int): void
 			{
 				chestsCollection = new ArrayCollection();
-				var arr:Array = (new ResourcePrice(10,2,0,0)).getResourceObjectArr();//Context.Model.currentSettings.lotteryTodayPrice.getResourceObjectArr();
+				var arr:Array = rp.getResourceObjectArr();
 				
 				for(var i: int = 0; i<= 9; i++)
 				{
 					chestsCollection.addItem(new ChestObject(false, null));
 				}
 				
-				var workIndexes: Array = new Array();
-				
-				function checkInArray(index: int): Boolean
+				if(type != WallChest.MUST_LOOSE)
 				{
-					var res: Boolean = false;
-					for each(var index: int in workIndexes)
-					{
-						if(r == index)
-						{
-							res = true;
-							break;
-						}
-					}
+					var workIndexes: Array = new Array();
 					
-					return res;
-				}
-				
-				for each(var ro:ResourceObject in arr) 
-				{
-					if (ro.value > 0) 
+					function checkInArray(index: int): Boolean
 					{
-						var r: int = Math.round(Math.random()*10);
-						if(r == 10) r = 0;
-						
-						while(checkInArray(r))
+						var res: Boolean = false;
+						for each(var index: int in workIndexes)
 						{
-							r = Math.round(Math.random()*10);
-							if(r == 10) r = 0;
+							if(r == index)
+							{
+								res = true;
+								break;
+							}
 						}
 						
-						(chestsCollection[r] as ChestObject).price = ro.clone();
-						workIndexes.push(r);
+						return res;
 					}
-				}
 					
+					if(type == WallChest.RANDOM)
+					{
+						for each(var ro:ResourceObject in arr) 
+						{
+							if (ro.value > 0) 
+							{
+								var r: int = Math.round(Math.random()*10);
+								if(r == 10) r = 0;
+								
+								while(checkInArray(r))
+								{
+									r = Math.round(Math.random()*10);
+									if(r == 10) r = 0;
+								}
+								
+								(chestsCollection[r] as ChestObject).price = ro.clone();
+								workIndexes.push(r);
+							}
+						}
+					}else if(type == WallChest.MUST_WIN)
+					{
+						var ind: Array = [0,1];
+						r = Math.round(Math.random()*3);
+						if(r == 3) r = 0;
+						
+						var startIndex: int = Math.round(Math.random()*chestsCollection.length);
+						
+						for(i = startIndex; i<= startIndex+chestsCollection.length - 1 - ind[r]; i++) 
+						{
+							var realI: int;
+							
+							if(i >= startIndex+chestsCollection.length)
+							{
+								realI = i - (chestsCollection.length - 1);
+							}else
+							{
+								realI = i;
+							}
+							
+							var r1: int = Math.round(Math.random()*2);
+							if(r1 == 2) r1 = 0;
+							
+							(chestsCollection[i] as ChestObject).price = arr[r1].clone();
+						}
+						
+					}
+						
+				}
+				
 				chestsCollection.refresh();
 			}
 			
 		]]>
 	</fx:Script>
 	
-	<s:List itemRenderer="components.pages.global.lottery.ChestIR" dataProvider="{chestsCollection}"
+	<s:List itemRenderer="components.wall.chest.ChestIR" dataProvider="{chestsCollection}"
 			contentBackgroundAlpha="0" borderVisible="false"
 			width="390">
 		<s:layout>

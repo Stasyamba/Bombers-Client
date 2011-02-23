@@ -59,6 +59,7 @@
 	<fx:Script>
 		<![CDATA[
 			import components.common.resources.ResourceObject;
+			import components.common.resources.ResourcePrice;
 			import components.common.resources.ResourceType;
 			
 			import mx.controls.Alert;
@@ -101,7 +102,10 @@
 					{
 						chestImage.visible = false;
 						Context.Model.currentSettings.lotteryTryToWinCount--;
-						Context.Model.dispatchCustomEvent(ContextEvent.L_TRY_COUNT_SET_CHANGED);
+						
+						Context.Model.dispatchCustomEvent(ContextEvent.WALL_TRY_COUNT_CHANGED);
+						
+						//Context.Model.dispatchCustomEvent(ContextEvent.L_TRY_COUNT_SET_CHANGED);
 						isOpened = true;
 						
 						if(price == null)
@@ -109,6 +113,12 @@
 							emptyImage.visible = true;
 						}else
 						{
+							if(Context.Model.currentSettings.lotteryPresentFinded == null)
+							{
+								Context.Model.currentSettings.lotteryPresentFinded = new ResourcePrice(0,0,0,0);
+							}
+							
+							Context.Model.currentSettings.lotteryPresentFinded.setResourceValue(price.type, price.value);
 							
 							// init resource
 							resourceImage.source = Context.Model.resourceViewManager.getResource(price.type).bigImage;
@@ -140,13 +150,13 @@
 				}else
 				{
 					// show need enegry and refresh all chests
-					Context.Model.dispatchCustomEvent(ContextEvent.L_SHOW_CHEST_BLOCK, true);
+					//Context.Model.dispatchCustomEvent(ContextEvent.L_SHOW_CHEST_BLOCK, true);
 				}
 			}
 			
 			private function getResource(): void
 			{
-				fadeOutA.play();
+				//fadeOutA.play();
 			}
 			
 		]]>

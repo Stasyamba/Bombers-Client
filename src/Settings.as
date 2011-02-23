@@ -5,7 +5,9 @@ import components.common.profiles.SocialProfile;
 import components.common.resources.ResourcePrice;
 import components.common.utils.enviroment.vkontakte.ApiResult;
 import components.common.utils.enviroment.vkontakte.FlashVars;
+import components.wall.chest.WallChest;
 
+import engine.bombss.BombBase;
 import engine.games.GameType;
 import engine.profiles.GameProfile;
 
@@ -22,7 +24,9 @@ public class Settings {
 
 	public var lotteryTodayPrice: ResourcePrice = new ResourcePrice(10,2,0,0);
 	public var lotteryTryToWinCount: int = 9;
-
+	public var lotteryPresentFinded: ResourcePrice = null;
+	public var lotteryType: int = WallChest.RANDOM;
+	
     private var _requestToGames:Array = new Array();
     public var gameProfileLoaded:Boolean = false
     // type = [RequestGameObject, ...]

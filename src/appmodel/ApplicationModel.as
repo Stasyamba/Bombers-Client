@@ -1,20 +1,23 @@
 package appmodel {
-import api.vkontakte.constant.UserProfileField
-import api.vkontakte.model.VkontakteApplicationModel
+import api.vkontakte.constant.UserProfileField;
+import api.vkontakte.model.VkontakteApplicationModel;
 
-import components.common.base.expirance.ExperienceManager
-import components.common.base.market.MarketManager
-import components.common.base.window.WindowsManager
-import components.common.bombers.BombersManager
-import components.common.items.ItemsManager
-import components.common.items.categories.ItemsCategoriesManager
-import components.common.resources.ResourceViewManager
-import components.common.worlds.locations.LocationManager
-import components.common.worlds.locations.LocationViewManager
+import components.common.base.expirance.ExperienceManager;
+import components.common.base.market.MarketManager;
+import components.common.base.window.WindowsManager;
+import components.common.bombers.BombersManager;
+import components.common.items.ItemsManager;
+import components.common.items.categories.ItemsCategoriesManager;
+import components.common.resources.ResourceViewManager;
+import components.common.worlds.locations.LocationManager;
+import components.common.worlds.locations.LocationViewManager;
 
-import flash.events.EventDispatcher
+import flash.events.EventDispatcher;
 
-import org.vyana.control.VyanaEvent
+import mx.controls.Alert;
+import mx.utils.ObjectUtil;
+
+import org.vyana.control.VyanaEvent;
 
 public class ApplicationModel extends VkontakteApplicationModel {
 
@@ -77,9 +80,9 @@ public class ApplicationModel extends VkontakteApplicationModel {
 			}).dispatch(
 				function (result:*): void {
 					for each (var o:* in result.response){
-						//mx.controls.Alert.show("responce:"+ObjectUtil.toString(result.response));
+						mx.controls.Alert.show("responce:"+ObjectUtil.toString(result.response));
 					}
-				});	
+				});
 	}
 
     public function pushIntoArray(val:*, arr:Array, compareProperty:String = ""):Array {

@@ -12,11 +12,18 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import components.WallView;
 			import components.common.profiles.SocialProfile;
+			import components.common.resources.ResourceObject;
+			import components.wall.SendWallObject;
+			
+			import flash.sampler.NewObjectSample;
 			
 			import mx.collections.ArrayCollection;
 			import mx.controls.Alert;
 			import mx.utils.ObjectUtil;
+			
+			import spark.events.IndexChangeEvent;
 			
 			[Bindable]
 			private var friendsCollection: ArrayCollection = new ArrayCollection();
@@ -77,6 +84,24 @@
 				setPage(currentPage + sign);
 			}
 			
+			private function sendToWall(e: IndexChangeEvent): void
+			{
+				var postId: Array = new Array();
+				postId.push(WallView.POST_TYPE_HELP.toString());
+				
+				for each(var ro: ResourceObject in Context.Model.currentSettings.lotteryTodayPrice.getResourceObjectArr())
+				{
+					postId.push(ro.value.toString());
+				}
+				
+				Context.Model.dispatchCustomEvent(ContextEvent.VK_SEND_TO_WALL,
+					new SendWallObject(
+						friendsCollection[e.newIndex],
+						UnicodeToPostIdEncoder.encodeStringArray(postId),
+						"Привет! Поможешь угадать где лежит клад? Бабло попилим пополам.",
+						"72969483_226029834"));
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -85,8 +110,11 @@
 			  skinClass="skins.buttons.LeftArrowLottery"
 			  buttonMode="true" useHandCursor="true"
 			  />
-	<s:List dataProvider="{friendsCollection}" itemRenderer="components.pages.global.lottery.friends.FriendsIR"
+	
+	<s:List id="friendsList" 
+			dataProvider="{friendsCollection}" itemRenderer="components.pages.global.lottery.friends.FriendsIR"
 			borderVisible="false" contentBackgroundAlpha="0"
+			change="sendToWall(event);"
 			>
 		<s:layout>
 			<s:HorizontalLayout requestedColumnCount="9" />
