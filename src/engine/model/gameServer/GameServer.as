@@ -312,6 +312,12 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest("interface.setNick", params, null));
     }
 
+    public function wall_sendSubmitPrice():void{
+         var params:ISFSObject = new SFSObject();
+        params.putUtfString("PostCreatorId", mySelf.name);
+        send(new ExtensionRequest("bombersWall.submitPrize", params, null));
+    }
+
     public function ping(e:*):void {
         send(new ExtensionRequest(PING, null, null));
     }
