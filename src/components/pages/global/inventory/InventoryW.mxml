@@ -69,6 +69,17 @@
             Context.gameModel.threeSecondsToStart.remove(onThreeSecsToStart)
             Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
             Context.Model.dispatchCustomEvent(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY, true);
+
+            Context.Model.removeCustomEventListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, on_IM_NEED_TO_SHOW_BOMBER_CONTENT);
+            Context.Model.removeCustomEventListener(ContextEvent.IM_NEED_TO_SHOW_MARKET_CONTENT, on_IM_NEED_TO_SHOW_MARKET_CONTENT);
+            Context.Model.removeCustomEventListener(ContextEvent.IM_SERVERREQUEST, on_IM_SERVERREQUEST);
+            Context.Model.removeCustomEventListener(ContextEvent.IT_BUY_FAILED, on_IT_BUY_FAILED)
+            Context.Model.removeCustomEventListener(ContextEvent.IT_BUY_SUCCESS, on_IT_BUY_SUCCESS)
+            Context.Model.removeCustomEventListener(ContextEvent.IM_REMOVE_RIGHT_CONTENT_SUB_MENU, on_IM_REMOVE_RIGHT_CONTENT_SUB_MENU);
+            Context.Model.removeCustomEventListener(ContextEvent.IM_RIGHT_CONTENT_WARNING, on_IM_RIGHT_CONTENT_WARNING);
+            Context.Model.removeCustomEventListener(ContextEvent.IM_RIGHT_CONTENT_CONFIRM, on_IM_RIGHT_CONTENT_CONFIRM);
+            Context.Model.removeCustomEventListener(ContextEvent.IM_RIGHT_CONTENT_INFO, on_IM_RIGHT_CONTENT_INFO);
+
             Context.Model.windowsManager.deleteWindow(this);
             PopUpManager.removePopUp(this);
         }
@@ -81,92 +92,29 @@
             Context.Model.windowsManager.closeAll(true);
             Context.Model.windowsManager.addWindow(this);
 
-            if(isOpenedFromGamePage){
+            if (isOpenedFromGamePage) {
                 Context.gameModel.threeSecondsToStart.add(onThreeSecsToStart)
             }
             apearingAnimation.play();
 
-            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, function (e:ContextEvent):void {
-                if (!(rightContent is BomberContent)) {
-                    rightContent = new BomberContent();
-                    (rightContent as BomberContent).initContent();
+            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, on_IM_NEED_TO_SHOW_BOMBER_CONTENT);
 
-                    rightContentGroup.removeAllElements();
-                    rightContentGroup.addElement(rightContent);
-                }
-            });
+            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_MARKET_CONTENT, on_IM_NEED_TO_SHOW_MARKET_CONTENT);
 
-            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_MARKET_CONTENT, function (e:ContextEvent):void {
-                //(e.data as ItemCategory)
-                rightContent = new MarketContent();
-                (rightContent as MarketContent).initContent(e.data as MarketCategory);
+            Context.Model.addCustomListener(ContextEvent.IM_SERVERREQUEST, on_IM_SERVERREQUEST);
 
-                rightContentGroup.removeAllElements();
-                rightContentGroup.addElement(rightContent);
-            });
+            Context.Model.addCustomListener(ContextEvent.IT_BUY_FAILED, on_IT_BUY_FAILED)
 
-            Context.Model.addCustomListener(ContextEvent.IM_SERVERREQUEST, function (e:ContextEvent):void {
-                if (e.data != null) {
-                    preloaderVisible(e.data);
-                    topMenu.block(e.data as Boolean);
-                } else {
-                    Alert.show("Error with pass event data");
-                }
-            });
-
-            Context.Model.addCustomListener(ContextEvent.IT_BUY_FAILED, function (e:ContextEvent):void {
-                Alert.show("item buy failed")
-            })
-
-            Context.Model.addCustomListener(ContextEvent.IT_BUY_SUCCESS, function (e:ContextEvent):void {
-                var it:ItemType = e.data.it as ItemType
-                var count:int = int(e.data.count)
-                // Alert.show("item buy success: " + it.name + ", " + count)
-            })
+            Context.Model.addCustomListener(ContextEvent.IT_BUY_SUCCESS, on_IT_BUY_SUCCESS)
 
 
-            Context.Model.addCustomListener(ContextEvent.IM_REMOVE_RIGHT_CONTENT_SUB_MENU, function (e:ContextEvent):void {
-                subMenuContentGroup.removeAllElements();
-            });
+            Context.Model.addCustomListener(ContextEvent.IM_REMOVE_RIGHT_CONTENT_SUB_MENU, on_IM_REMOVE_RIGHT_CONTENT_SUB_MENU);
 
-            Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_WARNING, function (e:ContextEvent):void {
-                subMenuContentGroup.removeAllElements();
+            Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_WARNING, on_IM_RIGHT_CONTENT_WARNING);
 
-                var content:WarningContentSubMenu = new WarningContentSubMenu();
-                if (e.data != null) {
-                    content.initContent(e.data);
-                } else {
-                    Alert.show("Error with pass data");
-                }
+            Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_CONFIRM, on_IM_RIGHT_CONTENT_CONFIRM);
 
-                subMenuContentGroup.addElement(content);
-            });
-
-            Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_CONFIRM, function (e:ContextEvent):void {
-                subMenuContentGroup.removeAllElements();
-
-                var content:ConfirmContentSubMenu = new ConfirmContentSubMenu();
-                if (e.data != null) {
-                    content.initContent(e.data);
-                } else {
-                    Alert.show("Error with pass data look in InventoryW.mxml");
-                }
-
-                subMenuContentGroup.addElement(content);
-            });
-
-            Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_INFO, function (e:ContextEvent):void {
-                subMenuContentGroup.removeAllElements();
-
-                var content:ItemInfoContentSubMenu = new ItemInfoContentSubMenu();
-                if (e.data != null && e.data is ItemType) {
-                    content.initContent(e.data);
-                } else {
-                    Alert.show("Error with pass data look in InventoryW.mxml");
-                }
-
-                subMenuContentGroup.addElement(content);
-            });
+            Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_INFO, on_IM_RIGHT_CONTENT_INFO);
 
             Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT);
             Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_CHANGE_BOMBER_BUTTON_EQUIP_STATE, BomberEquipButton.STATE_ON);
@@ -176,7 +124,7 @@
 
         }
 
-        private function onThreeSecsToStart(p1:*,p2:*):void {
+        private function onThreeSecsToStart(p1:*, p2:*):void {
             this.closeWrapper()
         }
 
@@ -187,6 +135,88 @@
 
         private function preloaderVisible(visible:Boolean):void {
             serverRequestPreloaderGroup.visible = visible;
+        }
+
+        //handlers
+        private function on_IM_NEED_TO_SHOW_BOMBER_CONTENT(e:ContextEvent):void {
+            if (!(rightContent is BomberContent)) {
+                rightContent = new BomberContent();
+                (rightContent as BomberContent).initContent();
+
+                rightContentGroup.removeAllElements();
+                rightContentGroup.addElement(rightContent);
+            }
+        }
+
+        private function on_IM_NEED_TO_SHOW_MARKET_CONTENT(e:ContextEvent):void {
+            //(e.data as ItemCategory)
+            rightContent = new MarketContent();
+            (rightContent as MarketContent).initContent(e.data as MarketCategory);
+
+            rightContentGroup.removeAllElements();
+            rightContentGroup.addElement(rightContent);
+        }
+
+        private function on_IM_SERVERREQUEST(e:ContextEvent):void {
+            if (e.data != null) {
+                preloaderVisible(e.data);
+                topMenu.block(e.data as Boolean);
+            } else {
+                Alert.show("Error with pass event data");
+            }
+        }
+
+        private function on_IT_BUY_FAILED(e:ContextEvent):void {
+            Alert.show("item buy failed")
+        }
+
+        private function on_IT_BUY_SUCCESS(e:ContextEvent):void {
+            var it:ItemType = e.data.it as ItemType
+            var count:int = int(e.data.count)
+            // Alert.show("item buy success: " + it.name + ", " + count)
+        }
+
+        private function on_IM_REMOVE_RIGHT_CONTENT_SUB_MENU(e:ContextEvent):void {
+            subMenuContentGroup.removeAllElements();
+        }
+
+        private function on_IM_RIGHT_CONTENT_WARNING(e:ContextEvent):void {
+            subMenuContentGroup.removeAllElements();
+
+            var content:WarningContentSubMenu = new WarningContentSubMenu();
+            if (e.data != null) {
+                content.initContent(e.data);
+            } else {
+                Alert.show("Error with pass data");
+            }
+
+            subMenuContentGroup.addElement(content);
+        }
+
+        private function on_IM_RIGHT_CONTENT_CONFIRM(e:ContextEvent):void {
+            subMenuContentGroup.removeAllElements();
+
+            var content:ConfirmContentSubMenu = new ConfirmContentSubMenu();
+            if (e.data != null) {
+                content.initContent(e.data);
+            } else {
+                Alert.show("Error with pass data look in InventoryW.mxml");
+            }
+
+            subMenuContentGroup.addElement(content);
+        }
+
+        private function on_IM_RIGHT_CONTENT_INFO(e:ContextEvent):void {
+            subMenuContentGroup.removeAllElements();
+
+            var content:ItemInfoContentSubMenu = new ItemInfoContentSubMenu();
+            if (e.data != null && e.data is ItemType) {
+                content.initContent(e.data);
+            } else {
+                Alert.show("Error with pass data look in InventoryW.mxml");
+            }
+
+            subMenuContentGroup.addElement(content);
         }
         ]]>
 	</fx:Script>
