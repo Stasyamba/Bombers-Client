@@ -73,21 +73,21 @@
 
     <fx:Script>
 		<![CDATA[
-			import api.vkontakte.VkontakteGlobals;
-			
-			import appmodel.ApplicationModel;
-			
-			import components.ApplicationView;
-			import components.WallView;
-			import components.common.utils.enviroment.vkontakte.ApiResult;
-			import components.common.utils.enviroment.vkontakte.FlashVars;
-			
-			import mx.controls.Alert;
-			import mx.core.IVisualElement;
+		import api.vkontakte.VkontakteGlobals;
+		
+		import appmodel.ApplicationModel;
+		
+		import components.ApplicationView;
+		import components.WallView;
+		import components.common.utils.enviroment.vkontakte.ApiResult;
+		import components.common.utils.enviroment.vkontakte.FlashVars;
+		
+		import mx.controls.Alert;
+		import mx.core.IVisualElement;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
-
+		public static const WALL_LOTTERY_EMULATION: int = 2;
 
         private var mainContentGroup:IVisualElement;
 
@@ -99,9 +99,9 @@
 
                 basePreloaderGroup.visible = true;
 
-                VkontakteGlobals.wrapper.addEventListener("onSettingsChanged", onSettingsChanged);
-                VkontakteGlobals.wrapper.addEventListener("onApplicationAdded", onApplicationAdded);
-                VkontakteGlobals.wrapper.addEventListener("onLocationChanged", onLocationChanged);
+                //VkontakteGlobals.wrapper.addEventListener("onSettingsChanged", onSettingsChanged);
+                //VkontakteGlobals.wrapper.addEventListener("onApplicationAdded", onApplicationAdded);
+                //VkontakteGlobals.wrapper.addEventListener("onLocationChanged", onLocationChanged);
 
                 Context.Model.viewer.id = VkontakteGlobals.wrapper.application.parameters.viewer_id;
 
@@ -133,29 +133,38 @@
             } else {
                 // local testing
 
-                Context.Model.viewer.id = "72969483";
-				Context.Model.currentSettings.apiResult = new ApiResult("", true);
-
-                initApp(APP_STARTED_COMMON);
+               
             }
         }
 
+		private function localEmulation(): void
+		{
+			Context.Model.viewer.id = "72969483";
+			Context.Model.currentSettings.apiResult = new ApiResult("", true);
+			
+			initApp(APP_STARTED_COMMON);
+			
+			chooseModeGroup.visible = false;
+		}
+			
+		private function wallEmultation(): void	
+		{
+			Context.Model.viewer.id = "72969483";
+			Context.Model.currentSettings.apiResult = new ApiResult("", true);
+			
+			Context.Model.currentSettings.flashVars.postId = "x31ox31x30ox32ox30ox30";
+			Context.Model.currentSettings.flashVars.userId = "72969483";
+			
+			initApp(WALL_LOTTERY_EMULATION);
+			
+			chooseModeGroup.visible = false;
+		}
+			
         private function onSettingsChanged(e:Object):void {
             navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
             // may be starting initiated proccess with standert functions
         }
 
-        private function onApplicationAdded(e:Object):void {
-//            var permissions:Number = Context.Model.currentSettings.apiResult.settingsResponde;
-//
-//            if (!Context.isSettingsIncludeArr(permissions, [1,2,4])) {
-//                VkontakteGlobals.wrapper.external.showSettingsBox(7);
-//            } else {
-//                initApp(APP_STARTED_COMMON);
-//            }
-			
-            //initApp(APP_STARTED_COMMON);
-        }
 
         private function onLocationChanged(e:Object):void {
             //mx.controls.Alert.show("Hello! Location chaged!");
@@ -167,9 +176,21 @@
 
 
             switch (type) {
+				
+				case WALL_LOTTERY_EMULATION:
+					
+					basePreloaderGroup.visible = false;
+					
+					mainContentGroup = new WallView();
+					mainApplicationGroup.addElement(mainContentGroup);
+					
+					break;
+				
                 case APP_STARTED_FROM_WALL:
-
-                    basePreloaderGroup.visible = false;
+		
+					//mx.controls.Alert.show(Context.Model.viewer.id);
+					chooseModeGroup.visible = false;
+					basePreloaderGroup.visible = false;
 
                     mainContentGroup = new WallView();
                     mainApplicationGroup.addElement(mainContentGroup);
@@ -221,14 +242,23 @@
         }
         ]]>
 	</fx:Script>
-
+	
+	
+	
     <s:BorderContainer
             id="mainApplicationGroup"
             width="100%" height="100%"
             backgroundColor="0xffffff"
             borderVisible="false"
             />
-
+	
+	<s:HGroup id="chooseModeGroup" width="100%" height="100%">
+		<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+			<s:Button label="Local emulation" click="localEmulation();" />
+			<s:Button label="Wall emulation" click="wallEmultation();" />
+		</s:HGroup>
+	</s:HGroup>
+	
     <s:Group id="basePreloaderGroup" width="100%" height="100%"
              visible="false">
         <s:Rect width="100%" height="100%"

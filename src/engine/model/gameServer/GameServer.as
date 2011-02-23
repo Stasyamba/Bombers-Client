@@ -629,7 +629,7 @@ public class GameServer extends SmartFox {
             //WALL
             case "bombersWall.isRegisteredLoaded":
                 var flag:Boolean = responseParams.getBool("isRegistered")
-				mx.controls.Alert.show("Login success -> "+flag.toString());
+				//mx.controls.Alert.show("Login success -> "+flag.toString());
                 Context.Model.dispatchCustomEvent(ContextEvent.WALL_FAST_LOGINED, flag ? WallChest.MUST_LOOSE : WallChest.MUST_WIN);
 				break;
         }

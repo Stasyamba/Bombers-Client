@@ -89,7 +89,8 @@
 					//Alert.show("viewer: "+Context.Model.viewer.id);
 					
                     Context.gameServer.login(Context.Model.viewer.id, Context.Model.viewer.id)
-                })
+                });
+					
                 Context.gameServer.connectWall();
 
 			}
