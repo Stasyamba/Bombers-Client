@@ -19,7 +19,7 @@ public class PostID {
     public static const ID_DELIMETER:String = "huyhuyhuy";
 
 
-    public static function encode(source:String, type:int):String {
+    public static function code(source:String, type:int):String {
         var res:String = "";
 
         source = source.toLowerCase();

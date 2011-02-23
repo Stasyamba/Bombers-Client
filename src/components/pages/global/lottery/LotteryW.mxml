@@ -122,7 +122,7 @@
 			
 			<s:VGroup horizontalAlign="center" paddingTop="20">
 				<s:VGroup horizontalAlign="center" gap="30">
-					<s:VGroup gap="0" horizontalAlign="center">
+					<s:VGroup gap="5" horizontalAlign="center">
 						<s:Label text="Испытай удачу на прочность!"
 								 fontFamily="mpbc" fontSize="22" color="0xb6e1f2"
 								 />
@@ -169,7 +169,7 @@
 				</s:HGroup>
 				
 				<s:VGroup horizontalAlign="center" width="400" paddingTop="20" gap="15">
-					<s:VGroup gap="0" horizontalAlign="center">
+					<s:VGroup gap="5" horizontalAlign="center">
 						<s:Label text="Попроси друзей о помощи," fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />
 						<s:Label text="если друг угадает сундук, то вы оба получите приз! " fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />
 						<s:Label text="Больше друзей, больше призов!" fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />	

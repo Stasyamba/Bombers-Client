@@ -12,12 +12,12 @@
     <fx:Script>
 		<![CDATA[
         import components.wall.PostIDObject
-        import components.wall.WallEnjoyTheGame
+        import components.wall.enjoy.WallEnjoyTheGame
 
         import mx.core.IVisualElement
 
-        public static const POST_TYPE_REQUEST_TO_ENJOY_THE_GAME:int = 0;
-        public static const POST_TYPE_IAM_A_WINNER:int = 1;
+        public static const POST_TYPE_REQUEST_TO_ENJOY_THE_GAME: int = 0;
+        public static const POST_TYPE_HELP: int = 1;
 
         public var postIDString:String;
         public var postIDObj:PostIDObject = new PostIDObject();
@@ -34,7 +34,7 @@
                     content = new WallEnjoyTheGame();
 
                     break;
-                case POST_TYPE_IAM_A_WINNER:
+                case POST_TYPE_HELP:
 
                     //content =  Я тебя сделал!!!
 
