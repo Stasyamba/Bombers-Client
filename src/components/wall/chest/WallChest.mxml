@@ -4,7 +4,8 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" 
 		 xmlns:chest="components.wall.chest.*"
 		 width="100%" height="100%"
-		 creationComplete="init();" xmlns:buttons="skins.buttons.*" xmlns:flexcomponents="components.common.flexcomponents.*"
+		 creationComplete="init();" 
+		 xmlns:buttons="skins.buttons.*" xmlns:flexcomponents="components.common.flexcomponents.*"
 		 >
 	<fx:Script>
 		<![CDATA[
@@ -38,6 +39,8 @@
 			public static const MUST_LOOSE:int = 1;
 			public static const RANDOM:int = 2;
 			
+			//private var userId: String = "";
+			
 			public function initContent(rp:ResourcePrice): void
 			{
 				this.rp = rp;
@@ -70,6 +73,8 @@
 				
 				Context.Model.addCustomListener(ContextEvent.WALL_FAST_LOGINED, function (e: ContextEvent): void
 				{
+					mx.controls.Alert.show("test "+e.data.toString());
+					
 					if(rp != null)
 					{
 						chests.initContent(rp, e.data);
@@ -81,9 +86,11 @@
 				
 				// get response from server
                 Context.gameServer.connected.addOnce(function():void{
-                    Context.gameServer.login(Context.Model.currentSettings.socialProfile.id, Context.Model.currentSettings.socialProfile.id)
+					//Alert.show("viewer: "+Context.Model.viewer.id);
+					
+                    Context.gameServer.login(Context.Model.viewer.id, Context.Model.viewer.id)
                 })
-                Context.gameServer.connectWall()
+                Context.gameServer.connectWall();
 
 			}
 			
