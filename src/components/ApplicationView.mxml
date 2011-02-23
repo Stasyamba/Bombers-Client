@@ -33,6 +33,7 @@
 			import components.pages.global.resourcemarket.ResourceMarketW;
 			import components.pages.global.tutorial.TutorialPreviewW;
 			import components.wall.PostID;
+			import components.wall.SendWallObject;
 			
 			import mx.controls.Alert;
 			import mx.managers.PopUpManager;
@@ -155,6 +156,14 @@
                 openEnergyMarket();
             });
 
+			Context.Model.addCustomListener(ContextEvent.VK_SEND_TO_WALL, function (e: ContextEvent): void
+			{
+				if(e.data is SendWallObject)
+				{
+					sendToWall(e.data);
+				}
+			});
+			
             /*disconnected*/
 
             Context.gameServer.disconnected.add(onDisconnected)
@@ -168,17 +177,13 @@
 
         }
 
-		private function sendToWall(user: ISocialProfile, postId:String, message: String, imageId: String): void
+		private function sendToWall(swo: SendWallObject): void
 		{
-			if(user != null)
+			if(swo != null && swo.up != null)
 			{
-				//var postId: String = PostID.encode(postObj["effectId"], postObj["transformMatrix"]);
 				//var imageId: String = "72969483_185548303";
-				//var message: String = "";
-				
-				//mx.controls.Alert.show(postId);
-				
-				Context.Model.wallSavePhotoID(user.id, imageId, postId, message);
+				mx.controls.Alert.show(swo.toString());
+				Context.Model.wallSavePhotoID(swo.up.id, swo.imageId, swo.postId, swo.message);
 			}
 		}	
 			

@@ -137,6 +137,16 @@ public class ContextEvent extends Event {
 	public static const L_RESET_CHESTS:String = "LResetChests";
 	public static const L_TRY_COUNT_SET_CHANGED:String = "LTryCountSetChanged";
 
+	
+	/** vk events **/
+	public static const VK_SEND_TO_WALL:String = "VKSendToWall";
+	// pass: SendWallObject
+ 	
+	/** wall events **/
+	public static const WALL_TRY_COUNT_CHANGED: String = "WALLTryCountChanged";
+	public static const WALL_FAST_LOGINED: String = "WALLFastLogined";
+	// pass: int -> lottery type (const in WallChest.mxml)
+	
     public var data:*;
 
 

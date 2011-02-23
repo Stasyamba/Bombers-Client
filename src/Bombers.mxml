@@ -73,16 +73,17 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals;
-        
-        import appmodel.ApplicationModel;
-        
-        import components.ApplicationView;
-        import components.WallView;
-        import components.common.utils.enviroment.vkontakte.ApiResult;
-        import components.common.utils.enviroment.vkontakte.FlashVars;
-        
-        import mx.core.IVisualElement;
+			import api.vkontakte.VkontakteGlobals;
+			
+			import appmodel.ApplicationModel;
+			
+			import components.ApplicationView;
+			import components.WallView;
+			import components.common.utils.enviroment.vkontakte.ApiResult;
+			import components.common.utils.enviroment.vkontakte.FlashVars;
+			
+			import mx.controls.Alert;
+			import mx.core.IVisualElement;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
@@ -117,10 +118,8 @@
                     initApp(APP_STARTED_FROM_WALL);
                 } else {
 
-                    //mx.controls.Alert.show(VkontakteGlobals.wrapper.application.parameters.api_result.toString());
                     Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
 
-                    //mx.controls.Alert.show(Context.Model.currentSettings.apiResult.toString());
                     initApp(APP_STARTED_COMMON);
 
 

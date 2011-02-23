@@ -52,7 +52,8 @@
 	
 	<s:Group>
 		<s:BorderContainer id="imageMask" backgroundColor="0x000000" width="51" height="51" />
-		<mx:Image id="userImage" mask="{imageMask}" source="{data.photoURL}" trustContent="{Context.Model.trustContent}"
+		<mx:Image id="userImage" mask="{imageMask}" source="{data.photoURL}" 
+				  trustContent="{Context.Model.trustContent}"
 				  complete="fadeAnimation.play();"
 				  alpha="0"
 				  />

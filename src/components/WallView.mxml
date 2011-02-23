@@ -11,39 +11,46 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.wall.PostIDObject
-        import components.wall.enjoy.WallEnjoyTheGame
-
-        import mx.core.IVisualElement
+		import components.common.resources.ResourcePrice;
+		import components.wall.PostIDObject;
+		import components.wall.chest.WallChest;
+		import components.wall.enjoy.WallEnjoyTheGame;
+		
+		import mx.controls.Alert;
+		import mx.core.IVisualElement;
+		import mx.utils.ObjectUtil;
 
         public static const POST_TYPE_REQUEST_TO_ENJOY_THE_GAME: int = 0;
         public static const POST_TYPE_HELP: int = 1;
 
-        public var postIDString:String;
-        public var postIDObj:PostIDObject = new PostIDObject();
-
         private function init():void {
-            var content:IVisualElement = null;
-
-            postIDString = Context.Model.currentSettings.flashVars.postId;
-            postIDObj.decode(postIDString);
-
-            switch (postIDObj.type) {
-                case POST_TYPE_REQUEST_TO_ENJOY_THE_GAME:
-
-                    content = new WallEnjoyTheGame();
-
-                    break;
-                case POST_TYPE_HELP:
-
-                    //content =  Я тебя сделал!!!
-
-                    break;
-                default:
-                    break;
-            }
-
-            mainWallContainer.addElement(content);
+			
+           var content:IVisualElement = null;
+           var encoded:Array = UnicodeToPostIdEncoder.decodeStringArray(Context.Model.currentSettings.flashVars.postId);
+			
+		   //Alert.show(ObjectUtil.toString({postIdArr: encoded}));
+		   var postingType:int = encoded[0];
+		   
+		   switch (postingType) 
+			{
+		        case POST_TYPE_REQUEST_TO_ENJOY_THE_GAME:
+		
+		            content = new WallEnjoyTheGame();
+		
+		            break;
+		        case POST_TYPE_HELP:
+					
+					//mx.controls.Alert.show("type help");
+		            
+					content = new WallChest();
+					(content as WallChest).initContent(new ResourcePrice(encoded[1],encoded[2],encoded[3],encoded[4]));
+		
+		            break;
+		        default:
+		            break;
+		    }
+		
+		    mainWallContainer.addElement(content);
         }
         ]]>
 	</fx:Script>
@@ -51,7 +58,8 @@
     <s:BorderContainer
             id="mainWallContainer"
             width="607" height="412"
-            backgroundImage=""
+            backgroundImage="@Embed(source='assets/windows/global/lottery/patternBG.jpg')"
+			backgroundImageFillMode="repeat"
             borderVisible="false"
             >
 
