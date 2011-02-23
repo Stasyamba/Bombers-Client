@@ -16,6 +16,10 @@
 		<![CDATA[
         [Bindable]
         public var isOpenedFromGamePage:Boolean = false;
+
+        public function destroy():void{
+           slots.destroy()
+        }
         ]]>
 	</fx:Script>
 
@@ -25,7 +29,7 @@
              maxWidth="243"
             />
 
-    <slots:Slots/>
+    <slots:Slots id="slots"/>
     <left:BomberEquipButton changeButtonVisible="{!isOpenedFromGamePage}"/>
 
 

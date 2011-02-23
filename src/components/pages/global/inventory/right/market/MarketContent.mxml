@@ -87,6 +87,10 @@
         private function pageChanged(e:IndexChangeEvent):void {
             setPage(e.newIndex);
         }
+
+        public function destroy():void {
+            
+        }
         ]]>
 	</fx:Script>
 

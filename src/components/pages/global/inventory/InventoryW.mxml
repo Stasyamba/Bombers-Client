@@ -80,6 +80,15 @@
             Context.Model.removeCustomEventListener(ContextEvent.IM_RIGHT_CONTENT_CONFIRM, on_IM_RIGHT_CONTENT_CONFIRM);
             Context.Model.removeCustomEventListener(ContextEvent.IM_RIGHT_CONTENT_INFO, on_IM_RIGHT_CONTENT_INFO);
 
+            pack.destroy()
+
+            if(rightContent != null){
+                if(rightContent is BomberContent){
+                    (rightContent as BomberContent).destroy()
+                }else if (rightContent is MarketContent){
+                    (rightContent as MarketContent).destroy()
+                }
+            }
             Context.Model.windowsManager.deleteWindow(this);
             PopUpManager.removePopUp(this);
         }
@@ -98,22 +107,13 @@
             apearingAnimation.play();
 
             Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, on_IM_NEED_TO_SHOW_BOMBER_CONTENT);
-
             Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_MARKET_CONTENT, on_IM_NEED_TO_SHOW_MARKET_CONTENT);
-
             Context.Model.addCustomListener(ContextEvent.IM_SERVERREQUEST, on_IM_SERVERREQUEST);
-
             Context.Model.addCustomListener(ContextEvent.IT_BUY_FAILED, on_IT_BUY_FAILED)
-
             Context.Model.addCustomListener(ContextEvent.IT_BUY_SUCCESS, on_IT_BUY_SUCCESS)
-
-
             Context.Model.addCustomListener(ContextEvent.IM_REMOVE_RIGHT_CONTENT_SUB_MENU, on_IM_REMOVE_RIGHT_CONTENT_SUB_MENU);
-
             Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_WARNING, on_IM_RIGHT_CONTENT_WARNING);
-
             Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_CONFIRM, on_IM_RIGHT_CONTENT_CONFIRM);
-
             Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_INFO, on_IM_RIGHT_CONTENT_INFO);
 
             Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT);
@@ -271,7 +271,7 @@
               paddingLeft="20" paddingTop="20"
               gap="30">
 
-        <left:Pack isOpenedFromGamePage="{isOpenedFromGamePage}"/>
+        <left:Pack id="pack" isOpenedFromGamePage="{isOpenedFromGamePage}"/>
 
 
         <s:HGroup gap="0">

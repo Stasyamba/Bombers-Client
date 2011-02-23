@@ -18,8 +18,6 @@ import engine.maps.OverMapView
 import engine.maps.bigObjects.view.BigObjectsView
 import engine.maps.mapBlocks.view.MapBlocksView
 
-import flash.display.Bitmap
-import flash.display.BitmapData
 import flash.display.Sprite
 import flash.events.Event
 
@@ -102,8 +100,10 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
         EngineContext.smokeAdded.add(onSmokeAdded)
     }
 
-    private function onSmokeAdded(x:int,y:int):void {
-        var sp:SmokeSprite = new SmokeSprite(x*Consts.BLOCK_SIZE,y*Consts.BLOCK_SIZE)
+    private function onSmokeAdded(x:int, y:int):void {
+        var sp:SmokeSprite = new SmokeSprite(x * Consts.BLOCK_SIZE, y * Consts.BLOCK_SIZE)
+        sp.x = x + Consts.BLOCK_SIZE_2 - Consts.SMOKE_WIDTH / 4;
+        sp.y = y + Consts.BLOCK_SIZE_2 - Consts.SMOKE_HEIGHT / 4
         highestView.addChild(sp)
     }
 

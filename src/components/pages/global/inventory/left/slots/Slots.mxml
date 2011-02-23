@@ -25,9 +25,12 @@
         private function init():void {
             initContent();
 
-            Context.Model.addCustomListener(ContextEvent.GP_GOTITEMS_IS_CHANGED, function(e:ContextEvent):void {
-                initContent();
-            });
+            Context.Model.addCustomListener(ContextEvent.GP_GOTITEMS_IS_CHANGED, on_GP_GOTITEMS_IS_CHANGED);
+        }
+
+        function on_GP_GOTITEMS_IS_CHANGED(e:ContextEvent):void {
+            trace("init content SLOTS !!!")
+            initContent();
         }
 
         private function initContent():void {
@@ -70,6 +73,10 @@
                 initContent();
             }
         }
+
+        public function destroy():void {
+            Context.Model.removeCustomEventListener(ContextEvent.GP_GOTITEMS_IS_CHANGED, on_GP_GOTITEMS_IS_CHANGED);
+        }
         ]]>
 	</fx:Script>
 
@@ -96,8 +103,8 @@
 
             <s:HGroup id="bottomPanel" height="100%"
                       horizontalAlign="center" verticalAlign="middle"
-					  paddingTop="-6" paddingLeft="6">
-				<slots:PackTypeToggleButton IMPackTypeToggleChanged="switchSlotState(event.data);" />
+                      paddingTop="-6" paddingLeft="6">
+                <slots:PackTypeToggleButton IMPackTypeToggleChanged="switchSlotState(event.data);"/>
                 <!--<s:Button label="Квесты" click="switchSlotState(QUEST_ITEMS_STATE);"/>
                 <s:Button label="Оружие" click="switchSlotState(OTHER_ITEMS_STATE);"/>-->
             </s:HGroup>

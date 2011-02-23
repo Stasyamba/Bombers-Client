@@ -101,6 +101,7 @@ public class GameProfile {
      * @private
      */
     public function set selectedWeaponLeftHand(value:ItemProfileObject):void {
+        trace("LHW SEEEEEETTT!!!!!")
         var finded:Boolean = false;
         var tmpArr:Array = new Array();
 

@@ -33,17 +33,23 @@
         private function init():void {
             // register handlers on profile changing
 
-            Context.Model.addCustomListener(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED, function(e:ContextEvent):void {
-                initContent();
-            });
+            Context.Model.addCustomListener(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED, on_GP_CURRENT_LEFT_WEAPON_IS_CHANGED);
 
-            Context.Model.addCustomListener(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED, function(e:ContextEvent):void {
-                initAurs();
-            });
+            Context.Model.addCustomListener(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED, on_GP_AURS_TURNED_ON_IS_CHANGED);
 
-            Context.Model.addCustomListener(ContextEvent.GP_CURRENT_BOMBER_CHANGED, function(e:ContextEvent):void {
-                initContent();
-            });
+            Context.Model.addCustomListener(ContextEvent.GP_CURRENT_BOMBER_CHANGED, on_GP_CURRENT_BOMBER_CHANGED);
+        }
+
+        private function on_GP_CURRENT_LEFT_WEAPON_IS_CHANGED(e:ContextEvent):void {
+            initContent();
+        }
+
+        private function on_GP_AURS_TURNED_ON_IS_CHANGED(e:ContextEvent):void {
+            initAurs();
+        }
+
+        private function on_GP_CURRENT_BOMBER_CHANGED(e:ContextEvent):void {
+            initContent();
         }
 
         public function initContent():void {
@@ -77,6 +83,14 @@
             }
 
             aursCollection.refresh();
+        }
+
+        public function destroy():void{
+            Context.Model.removeCustomEventListener(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED, on_GP_CURRENT_LEFT_WEAPON_IS_CHANGED);
+
+            Context.Model.removeCustomEventListener(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED, on_GP_AURS_TURNED_ON_IS_CHANGED);
+
+            Context.Model.removeCustomEventListener(ContextEvent.GP_CURRENT_BOMBER_CHANGED, on_GP_CURRENT_BOMBER_CHANGED);
         }
         ]]>
 	</fx:Script>

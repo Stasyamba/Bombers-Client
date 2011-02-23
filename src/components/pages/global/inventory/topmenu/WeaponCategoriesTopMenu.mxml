@@ -26,9 +26,11 @@
         private var isBlocked:Boolean = false;
 
         private function init():void {
-            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, function (e:ContextEvent):void {
-                turnOffAllTabs();
-            });
+            Context.Model.addCustomListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, on_IM_NEED_TO_SHOW_BOMBER_CONTENT);
+        }
+
+        private function on_IM_NEED_TO_SHOW_BOMBER_CONTENT(e:ContextEvent):void {
+            turnOffAllTabs();
         }
 
         private function turnOffAllTabs():void {
@@ -76,6 +78,11 @@
         public function block(block:Boolean):void {
             isBlocked = block;
         }
+
+        public function destroy():void {
+            Context.Model.removeCustomEventListener(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT, on_IM_NEED_TO_SHOW_BOMBER_CONTENT);
+        }
+
         ]]>
 	</fx:Script>
     <s:Group>

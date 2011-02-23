@@ -275,9 +275,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
                 }
             }
         }
-        Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
-
         EngineContext.currentWeaponChanged.dispatch()
     }
 
