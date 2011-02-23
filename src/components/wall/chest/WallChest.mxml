@@ -80,6 +80,11 @@
 				
 				
 				// get response from server
+                Context.gameServer.connected.addOnce(function():void{
+                    Context.gameServer.login(Context.Model.currentSettings.socialProfile.id, Context.Model.currentSettings.socialProfile.id)
+                })
+                Context.gameServer.connectWall()
+
 			}
 			
 		]]>

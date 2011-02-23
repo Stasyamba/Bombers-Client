@@ -24,6 +24,7 @@ import components.common.bombers.BomberType
 import components.common.items.ItemObject
 import components.common.items.ItemType
 import components.common.resources.ResourcePrice
+import components.wall.chest.WallChest
 
 import engine.EngineContext
 import engine.maps.interfaces.IDynObject
@@ -143,6 +144,14 @@ public class GameServer extends SmartFox {
         port = 9933;
         zone = 'bombers';
         defaultRoom = 'defRoom';
+    }
+
+    public function connectWall():void {
+        ip = 'cs1.vensella.ru';
+        port = 9933;
+        zone = 'bombersWall';
+        defaultRoom = 'wallRoom';
+        connect(ip, port)
     }
 
     public function connectDefault():void {
@@ -613,6 +622,12 @@ public class GameServer extends SmartFox {
                 if (lp != null)
                     lp.isReady = ready;
                 Context.gameModel.playerReadyChanged.dispatch();
+                break;
+
+            //WALL
+            case "bombersWall.isRegisteredLoaded":
+                var flag:Boolean = responseParams.getBool("isRegistered")
+                Context.Model.dispatchCustomEvent(ContextEvent.WALL_FAST_LOGINED, flag ? WallChest.MUST_LOOSE : WallChest.MUST_WIN)
         }
     }
 
