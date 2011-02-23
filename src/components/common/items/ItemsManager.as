@@ -1,5 +1,4 @@
 package components.common.items {
-import components.common.base.access.rules.levelrule.AccessLevelRule
 import components.common.base.server.ImagesPrefixes
 
 public class ItemsManager {
@@ -35,7 +34,7 @@ public class ItemsManager {
 
         items.push(new ItemObject(
                 ItemType.QUEST_ITEM_CANARY,
-                [new AccessLevelRule(1)],
+                [],
 
                 new ItemViewObject(
                         ItemType.QUEST_ITEM_CANARY,
@@ -124,6 +123,18 @@ public class ItemsManager {
                 ));
 
         items.push(new ItemObject(
+                ItemType.X_RAY_BOMB,
+                [],
+
+                new ItemViewObject(
+                        ItemType.X_RAY_BOMB,
+                        ImagesPrefixes.WEAPON_PREFIX + "xrayBomb.png",
+                        "Бомба рентген",
+                        "Уничтожает только коробки в которымх могут находиться бонусы, не трогая при этом бомбастеров"
+                        )
+                ));
+
+        items.push(new ItemObject(
                 ItemType.MINA_BOMB,
                 [],
 
@@ -134,6 +145,19 @@ public class ItemsManager {
                         "Вызрывается только после касания! Почувствуй себя стратегом, ставь ловушки, блокируй ходы соперников!"
                         )
                 ));
+
+        items.push(new ItemObject(
+                ItemType.BOX_BOMB,
+                [],
+
+                new ItemViewObject(
+                        ItemType.BOX_BOMB,
+                        ImagesPrefixes.WEAPON_PREFIX + "boxBomb.png",
+                        "Разбрасыватель",
+                        "Когда вы спасаетесь от врагов, нет ничего лучше чем заградить им стенами! Почувствуй себя архитектором карты, мечи коробки!"
+                        )
+                ));
+
 
         items.push(new ItemObject(
                 ItemType.DINAMIT_BOMB,
