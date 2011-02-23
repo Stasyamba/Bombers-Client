@@ -23,7 +23,7 @@ public class Settings {
 
 
 	public var lotteryTodayPrice: ResourcePrice = new ResourcePrice(10,2,0,0);
-	public var lotteryTryToWinCount: int = 9;
+	public var lotteryTryToWinCount: int = 2;
 	public var lotteryPresentFinded: ResourcePrice = null;
 	public var lotteryType: int = WallChest.RANDOM;
 	
@@ -62,7 +62,7 @@ public class Settings {
         }
 
         if (isFinded) {
-            _requestToGames = tmp;
+            _requestToGames = tmp.concat();
         }
 
         _requestToGames.push(rgo);
@@ -89,7 +89,7 @@ public class Settings {
         }
 
         if (isFinded) {
-            _requestToGames = tmp;
+            _requestToGames = tmp.concat();
         } else {
             index = -1;
         }
@@ -100,7 +100,7 @@ public class Settings {
 
     // immitation
     public function fillRequestsTest():void {
-        var profile:GameProfile = new GameProfile();
+        /*var profile:GameProfile = new GameProfile();
         profile.id = "0";
         profile.photoURL = "http://cs11249.vkontakte.ru/u19180/e_d754d9b9.jpg";
         var rgo:RequestGameObject = new RequestGameObject(GameType.REGULAR, profile);
@@ -118,7 +118,7 @@ public class Settings {
 
         addRequest(rgo);
         addRequest(rgo1);
-        addRequest(rgo2);
+        addRequest(rgo2);*/
     }
 
     public function Settings() {

@@ -121,7 +121,7 @@
 
                     switch (gt) {
                         case GameType.REGULAR:
-                            content = new GameWithAllContent();
+                            content = new CommonGameContent();
                             break;
                     }
 

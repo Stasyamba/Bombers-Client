@@ -1,5 +1,6 @@
 package components.common.profiles {
 
+[Bindable]
 public class VkontakteProfile implements ISocialProfile {
     public static const BOY:int = 2;
     public static const GIRL:int = 1;

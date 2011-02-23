@@ -15,7 +15,12 @@ public class RequestGameObject {
     public var room:*;
 
 
-    public function RequestGameObject(gameTypeP:GameType, senderUserProfileP:GameProfile, enegryBetP:int = 0) {
+    public function RequestGameObject(gameNameP: String, gamePassP: String, 
+									  gameTypeP:GameType, senderUserProfileP:GameProfile, enegryBetP:int = 0) {
+		
+		gameName = gameNameP;
+		gamePass = gamePassP;
+		
         gameType = gameTypeP;
         senderUserProfile = senderUserProfileP;
         energyBet = enegryBetP;

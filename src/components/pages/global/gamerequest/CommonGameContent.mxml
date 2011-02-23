@@ -15,11 +15,14 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.game.requesttogame.RequestGameObject
-
-        import engine.games.GameType
-
-        import mx.controls.Alert
+			import components.ApplicationView;
+			import components.common.bombers.BomberType;
+			import components.common.game.requesttogame.RequestGameObject;
+			
+			import engine.games.GameType;
+			import engine.utils.greensock.TweenMax;
+			
+			import mx.controls.Alert;
 
         private var requestGameObject:RequestGameObject;
 
@@ -31,7 +34,24 @@
 
         public function initContent(rgo:RequestGameObject):void {
             requestGameObject = rgo;
-            userImage.source = rgo.senderUserProfile.photoURL;
+			if(rgo.senderUserProfile != null)
+			{
+            	userImage.source = rgo.senderUserProfile.photoURL;
+			}else
+			{
+				userImage.source = Context.Model.bomberManager.getBomber(BomberType.FURY_JOE).viewObject.bigImageURL;
+			}
+			
+			Context.gameModel.fastJoinFailed.addOnce(function():void {
+				warningVisible = true;
+				connectionVisible = false;
+			});
+			
+			Context.gameModel.someoneJoinedToGame.addOnce(function(p1:*):void {
+				deleteRequest();
+				Context.Model.windowsManager.closeAll(true);
+				Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+			});
         }
 
         public function getGameType():GameType {
@@ -41,6 +61,13 @@
         private function connectToGame():void {
             warningVisible = false;
             connectionVisible = true;
+			
+			Context.gameModel.joinConcreteGame(requestGameObject.gameName, requestGameObject.gamePass);
+			
+			/* TweenMax.delayedCall(1500, function(): void
+			{
+				
+			}); */
         }
 
         private function deleteRequest():void {
@@ -127,7 +154,7 @@
                                               customLabel="Ух жаль"
                                               fontSize="25"
                                               fontSizeOver="25"
-                                              click="connectToGame();"
+                                              click="deleteRequest();"
                                               scale="0.9"
                         />
             </s:HGroup>

@@ -3,12 +3,73 @@
          xmlns:s="library://ns.adobe.com/flex/spark"
          xmlns:mx="library://ns.adobe.com/flex/mx"
 		 width="100%" height="100%"
-		 horizontalAlign="center" verticalAlign="middle"
+		 horizontalAlign="center" verticalAlign="middle" xmlns:flexcomponents="components.common.flexcomponents.*"
 		 >
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
 	
-	<s:Label text="Присоединяйся!" />
+	<fx:Script>
+		<![CDATA[
+			import api.vkontakte.VkontakteGlobals;
+			
+			import appmodel.ApplicationModel;
+			
+			import flash.net.navigateToURL;
+			import flash.sampler.NewObjectSample;
+			
+			import mx.controls.Alert;
+			import mx.core.Application;
+			
+			private var nameGame: String;
+			private var passGame: String;
+			
+			public function initContent(nameP: String, passP: String): void
+			{
+				this.nameGame = nameP;
+				this.passGame = passP;
+			}
+			
+			private function getFight(): void
+			{
+				//Alert.show(nameGame+" pass "+passGame);
+				var link: String = ApplicationModel.APPLICATION_LINK+"#"+nameGame+"-"+passGame;
+				
+				VkontakteGlobals.wrapper.external.navigateToURL(new URLRequest(link));
+				//navigateToURL(new URLRequest(link), "_top");
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:VGroup width="100%" height="100%"
+			  horizontalAlign="center" verticalAlign="middle">
+		
+		
+			<mx:Image source="http://www.vensella.ru/eg/getFight.png"
+					  smoothBitmapContent="true" trustContent="{Context.Model.trustContent}"
+					  />
+
+			<s:HGroup width="100%" height="100%"
+				  horizontalAlign="center" verticalAlign="middle"
+				  >
+				<s:Label text="Сразимся прямо сейчас?" fontFamily="mpbc" fontSize="48" color="0xf7f9fa" />
+			</s:HGroup>
+		
+		
+			<s:HGroup width="100%" height="100%"
+					  horizontalAlign="center" verticalAlign="middle"
+					  >
+				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+											  customLabel="Ну держись!"
+											  fontSize="24"
+											  fontSizeOver="24"
+											  click="getFight();"
+											  />
+			</s:HGroup>
+		
+		
+	</s:VGroup>
+	
 	
 </s:HGroup>

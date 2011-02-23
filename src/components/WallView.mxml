@@ -36,7 +36,8 @@
 		        case POST_TYPE_REQUEST_TO_ENJOY_THE_GAME:
 		
 		            content = new WallEnjoyTheGame();
-		
+					(content as WallEnjoyTheGame).initContent(encoded[1], encoded[2]);
+					
 		            break;
 		        case POST_TYPE_HELP:
 					

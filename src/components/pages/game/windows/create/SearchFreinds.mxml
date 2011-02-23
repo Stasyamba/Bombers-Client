@@ -3,23 +3,88 @@
           xmlns:s="library://ns.adobe.com/flex/spark"
           xmlns:mx="library://ns.adobe.com/flex/mx"
           horizontalAlign="center"
+		  creationComplete="init();"
           gap="20">
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
 
-    <s:TextInput textAlign="center" fontFamily="mpr" color="0xffffff"
+	<fx:Script>
+		<![CDATA[
+			import components.WallView;
+			import components.common.profiles.ISocialProfile;
+			import components.common.profiles.SocialProfile;
+			import components.wall.SendWallObject;
+			
+			import mx.collections.ArrayCollection;
+			
+			import spark.events.IndexChangeEvent;
+			
+			[Bindable]
+			private var friendsCollection: ArrayCollection = new ArrayCollection();
+			
+			private function init(): void
+			{
+				var notAppFriends: Array = Context.Model.currentSettings.socialProfile.getFriends(SocialProfile.TYPE_ALL);
+				
+				for each(var fr: ISocialProfile in notAppFriends)
+				{
+					friendsCollection.addItem(fr);
+				}
+				
+				friendsCollection.refresh();
+			}
+			
+			private function wallPost(e: IndexChangeEvent): void
+			{
+				var paramsArr: Array = [WallView.POST_TYPE_REQUEST_TO_ENJOY_THE_GAME];
+				
+				paramsArr.push(Context.gameModel.gameName);
+				paramsArr.push(Context.gameModel.gamePass);
+				
+				var postId: String = UnicodeToPostIdEncoder.encodeStringArray(paramsArr);
+				
+				var swo: SendWallObject = new SendWallObject(
+					friendsCollection[e.newIndex],
+					postId,
+					"Запрос на присоединение к игре",
+					"72969483_226405645");
+					
+				
+				Context.Model.dispatchCustomEvent(ContextEvent.VK_SEND_TO_WALL, swo);
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+    <!--<s:TextInput textAlign="center" fontFamily="mpr" color="0xffffff"
                  text="Начните вводить имя друга"
                  contentBackgroundAlpha="0.1" contentBackgroundColor="0xffffff"
                  width="181"
-            />
+            	 />-->
 
-    <s:Rect width="215" height="174"
-            radiusX="18" radiusY="18"
-            alpha="0.1">
-        <s:fill>
-            <s:SolidColor color="0xffffff"/>
-        </s:fill>
-    </s:Rect>
+	<s:Group>
+		<s:Rect width="215" height="174"
+				radiusX="18" radiusY="18"
+				alpha="0.1">
+			<s:fill>
+				<s:SolidColor color="0xffffff"/>
+			</s:fill>
+		</s:Rect>
 
+		<s:VGroup width="100%" height="100%" 
+				  horizontalAlign="center" verticalAlign="middle"
+				  >
+			<s:List dataProvider="{friendsCollection}" itemRenderer="components.pages.game.windows.create.FriendsIR"
+					contentBackgroundAlpha="0" borderVisible="false"
+					change="wallPost(event);"
+					>
+				<s:layout>
+					<s:VerticalLayout requestedRowCount="8" />
+				</s:layout>
+			</s:List>
+		</s:VGroup>
+	</s:Group>
+   
 </s:VGroup>

@@ -1,5 +1,6 @@
 package components.common.profiles {
 
+[Bindable]
 public interface ISocialProfile {
 
     function get id():String;
@@ -26,6 +27,12 @@ public interface ISocialProfile {
 
 	//function setFriend(id: String): void;
 	
+	/**
+	 * 
+	 * @param type = const in SocialProfile
+	 * @return 
+	 * 
+	 */
 	function getFriends(type: int): Array; // type = [ISocialProfile, ... ] (const in SocialProfile)
 	
 	function updateFriends(): void;

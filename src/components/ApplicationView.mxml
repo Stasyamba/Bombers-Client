@@ -35,6 +35,8 @@
 			import components.wall.PostID;
 			import components.wall.SendWallObject;
 			
+			import engine.games.GameType;
+			
 			import mx.controls.Alert;
 			import mx.managers.PopUpManager;
 
@@ -122,15 +124,6 @@
                 }
             });
 
-
-            if ((parentApplication as Bombers).isWrapperExists) {
-
-                var currentLocation:String = VkontakteGlobals.wrapper.external.getLocation();
-                if (currentLocation != "") {
-                    //Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_TAB, getTabIndexByLocation(currentLocation));
-                }
-            }
-
             /* requests */
 
             Context.Model.addCustomListener(ContextEvent.OE_REQUEST_COLLECTION_IS_CHANGED, function (e:ContextEvent):void {
@@ -164,6 +157,23 @@
 				}
 			});
 			
+			if ((parentApplication as Bombers).isWrapperExists) 
+			{	
+				var currentLocation: String = VkontakteGlobals.wrapper.external.getLocation();
+				if(currentLocation != "")
+				{
+					var arr: Array = currentLocation.split("-");
+					
+					if(arr.length == 2)
+					{
+						var newRequest: RequestGameObject = new RequestGameObject(arr[0],arr[1],GameType.REGULAR, null);
+						Context.Model.currentSettings.addRequest(newRequest);
+					
+						openRequestGameW();
+					}
+				}
+			}
+			
             /*disconnected*/
 
             Context.gameServer.disconnected.add(onDisconnected)
@@ -173,7 +183,7 @@
 			
 			
 			/// immitation
-			showLottery();
+			//showLottery();
 
         }
 
@@ -181,8 +191,6 @@
 		{
 			if(swo != null && swo.up != null)
 			{
-				//var imageId: String = "72969483_185548303";
-				mx.controls.Alert.show(swo.toString());
 				Context.Model.wallSavePhotoID(swo.up.id, swo.imageId, swo.postId, swo.message);
 			}
 		}	

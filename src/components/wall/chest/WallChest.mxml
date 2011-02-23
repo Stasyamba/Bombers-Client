@@ -18,6 +18,10 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import api.vkontakte.VkontakteGlobals;
+			import appmodel.ApplicationModel;
+			import flash.net.navigateToURL;
+			import engine.utils.greensock.TweenMax;
 			import flash.utils.getTimer;
 			import mx.utils.ObjectUtil;
 			import mx.controls.Alert;
@@ -73,8 +77,6 @@
 				
 				Context.Model.addCustomListener(ContextEvent.WALL_FAST_LOGINED, function (e: ContextEvent): void
 				{
-					mx.controls.Alert.show("test "+e.data.toString());
-					
 					if(rp != null)
 					{
 						chests.initContent(rp, e.data);
@@ -83,16 +85,27 @@
 				});
 				
 				
-				
 				// get response from server
                 Context.gameServer.connected.addOnce(function():void{
-					//Alert.show("viewer: "+Context.Model.viewer.id);
-					
                     Context.gameServer.login(Context.Model.viewer.id, Context.Model.viewer.id)
                 });
 					
                 Context.gameServer.connectWall();
 
+			}
+			
+			private function getPresent(): void
+			{
+				Context.gameServer.wall_sendSubmitPrice();
+				TweenMax.delayedCall(1500, function(): void
+				{
+					VkontakteGlobals.wrapper.external.navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
+				});
+			}
+			
+			private function navigateToGame(): void
+			{
+				VkontakteGlobals.wrapper.external.navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
 			}
 			
 		]]>
@@ -134,6 +147,7 @@
 					  >
 				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
 											  customLabel="Поделить приз"
+											  click="getPresent();"
 											  />
 			</s:HGroup>
 			
@@ -143,6 +157,7 @@
 					  >
 				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
 											  customLabel="Всех порву!"
+											  click="navigateToGame();"
 											  />
 			</s:HGroup>
 			

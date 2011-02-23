@@ -22,7 +22,7 @@ import org.vyana.control.VyanaEvent;
 public class ApplicationModel extends VkontakteApplicationModel {
 
     public static const APPLICATION_ID:String = '2141693';
-    public static const APPLICATION_LINK:String = "http://www.vkontakte.ru/app2141693";
+    public static const APPLICATION_LINK:String = "http://vkontakte.ru/app2141693";
     public static const APPLICATION_SECRET:String = 'tMj1GkYhnX';
     public static const APPLICATION_AUTHOR_ID:String = '72969483';
 
@@ -80,7 +80,7 @@ public class ApplicationModel extends VkontakteApplicationModel {
 			}).dispatch(
 				function (result:*): void {
 					for each (var o:* in result.response){
-						mx.controls.Alert.show("responce:"+ObjectUtil.toString(result.response));
+						//mx.controls.Alert.show("responce:"+ObjectUtil.toString(result.response));
 					}
 				});
 	}
@@ -116,7 +116,7 @@ public class ApplicationModel extends VkontakteApplicationModel {
     public var currentSettings:Settings = new Settings();
 
     [Bindable]
-    public var trustContent:Boolean = false;
+    public var trustContent:Boolean = true;
 
 
     public var resourceViewManager:ResourceViewManager = new ResourceViewManager();

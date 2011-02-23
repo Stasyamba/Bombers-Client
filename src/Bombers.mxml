@@ -132,7 +132,7 @@
                 }
             } else {
                 // local testing
-
+				Context.Model.trustContent = false;
                
             }
         }
@@ -174,6 +174,7 @@
 
         private function initApp(type:int):void {
 
+			chooseModeGroup.visible = false;
 
             switch (type) {
 				
@@ -189,7 +190,7 @@
                 case APP_STARTED_FROM_WALL:
 		
 					//mx.controls.Alert.show(Context.Model.viewer.id);
-					chooseModeGroup.visible = false;
+					
 					basePreloaderGroup.visible = false;
 
                     mainContentGroup = new WallView();
@@ -201,7 +202,7 @@
                     break;
 
                 case APP_STARTED_COMMON:
-
+				
                     mainContentGroup = new ApplicationView();
                     mainApplicationGroup.addElement(mainContentGroup);
 
