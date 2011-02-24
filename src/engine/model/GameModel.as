@@ -202,6 +202,7 @@ public class GameModel {
         EngineContext.clear()
 
         fastJoinFailed.removeAll()
+        createGameFailed.removeAll()
         someoneJoinedToGame.removeAll()
         someoneLeftGame.removeAll()
         leftGame.removeAll()

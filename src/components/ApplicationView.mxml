@@ -152,10 +152,10 @@
                 }
             });
 
-            Context.gameServer.profileLoaded.addOnce(function():void {
-                if ((parentApplication as Bombers).isWrapperExists) {
-                    var currentLocation:String = VkontakteGlobals.wrapper.external.getLocation();
-                    if (currentLocation != "") {
+            if ((parentApplication as Bombers).isWrapperExists) {
+                var currentLocation:String = VkontakteGlobals.wrapper.external.getLocation();
+                if (currentLocation != "") {
+                    Context.gameServer.profileLoaded.addOnce(function(p1:*):void {
                         var arr:Array = currentLocation.split("-");
 
                         if (arr.length == 2) {
@@ -164,9 +164,9 @@
 
                             openRequestGameW();
                         }
-                    }
+                    })
                 }
-            })
+            }
 
             /*disconnected*/
 
