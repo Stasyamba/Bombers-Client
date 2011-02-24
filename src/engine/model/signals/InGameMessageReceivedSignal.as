@@ -4,8 +4,6 @@
  */
 
 package engine.model.signals {
-import com.smartfoxserver.v2.entities.User
-
 import engine.profiles.LobbyProfile
 
 import org.osflash.signals.Signal

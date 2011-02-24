@@ -50,7 +50,7 @@ public class SPDynObjectManager extends DynObjectManager {
             if (!object.wasTriedToBeTaken) {
                 trace("player tried to take")
                 object.tryToTake();
-                EngineContext.objectActivated.dispatch(playerManager.myId, object.block.x, object.block.y, object.type);
+                EngineContext.objectActivated.dispatch(playerManager.mySlot, object.block.x, object.block.y, object.type);
             }
         }
         _enemiesManager.forEachAliveEnemy(function todo(enemy:IEnemyBomber, id:int) {

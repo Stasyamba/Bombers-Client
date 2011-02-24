@@ -20,7 +20,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
 
 
     public function EnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, color:PlayerColor) {
-        super(game, playerProfile.playerId, playerProfile.bomberType, userName, color, BomberSkin.fromBomberType(playerProfile.bomberType));
+        super(game, playerProfile.slot, playerProfile.bomberType, userName, color, BomberSkin.fromBomberType(playerProfile.bomberType));
 
         for (var i:int = 0; i < playerProfile.auras.length; i++) {
             var object:Object = playerProfile.auras[i];
@@ -33,19 +33,19 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     }
 
     private function onDied(id:int):void {
-        if (id == playerId)
+        if (id == slot)
             kill();
     }
 
     protected function onDamaged(id:int, health_left:int):void {
-        if (playerId == id) {
+        if (slot == id) {
             life = health_left;
             makeImmortalFor(immortalTime);
         }
     }
 
     protected function directionChanged(id:int, x:Number, y:Number, dir:Direction):void {
-        if (id != playerId)
+        if (id != slot)
             return;
 
         _coords.elemX = int(x / Consts.BLOCK_SIZE);
@@ -77,7 +77,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
                 _coords.stepDown(moveAmount);
                 break;
         }
-        EngineContext.enemySmoothMovePerformed.dispatch(playerId, _coords.getRealX(), _coords.getRealY());
+        EngineContext.enemySmoothMovePerformed.dispatch(slot, _coords.getRealX(), _coords.getRealY());
     }
 
     public override function move(elapsedMilliSecs:int):void {

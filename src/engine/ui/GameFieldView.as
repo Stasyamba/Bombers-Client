@@ -77,7 +77,7 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
         mapBlocksView = new MapBlocksView(game.mapManager.map)
         contentUI.addChild(mapBlocksView);
 
-        game.enemiesManager.forEachAliveEnemy(function todo(item:IEnemyBomber, playerId:int):void {
+        game.enemiesManager.forEachAliveEnemy(function todo(item:IEnemyBomber, slot:int):void {
             var enemyView:EnemyView = new EnemyView(item);
             enemiesViews.addItem(enemyView);
             contentUI.addChild(enemyView);

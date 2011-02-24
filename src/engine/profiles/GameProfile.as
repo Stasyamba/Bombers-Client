@@ -181,8 +181,8 @@ public class GameProfile {
         }
     }
 
-    public function getSkin(playerId:int):BomberSkin {
-        if (playerId % 2 != 0)
+    public function getSkin(slot:int):BomberSkin {
+        if (slot % 2 != 0)
             return Context.imageService.getBomberSkin("fury")
         return Context.imageService.getBomberSkin("robot")
     }

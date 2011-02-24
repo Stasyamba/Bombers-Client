@@ -4,7 +4,6 @@
  */
 
 package engine.model.signals.manage {
-import com.smartfoxserver.v2.entities.User
 
 import engine.profiles.LobbyProfile
 

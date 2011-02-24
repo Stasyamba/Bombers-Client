@@ -14,9 +14,9 @@ public interface IEnemiesManager {
 
     function addEnemy(enemy:IEnemyBomber):void;
 
-    function getEnemyById(playerId:int):IEnemyBomber;
+    function getEnemyBySlot(slot:int):IEnemyBomber;
 
-    function hasEnemy(playerId:int):Boolean;
+    function hasEnemy(slot:int):Boolean;
 
     function get enemiesCount():int;
 

@@ -38,8 +38,8 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     protected var _currentWeapon:IWeapon
     protected var _weapons:Array = new Array()
 
-    public function PlayerBomber(game:IGame, playerId:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder) {
-        super(game, playerId, gameProfile.currentBomberType, gameProfile.nick, color, BomberSkin.fromBomberType(gameProfile.currentBomberType));
+    public function PlayerBomber(game:IGame, slot:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder) {
+        super(game, slot, gameProfile.currentBomberType, gameProfile.nick, color, BomberSkin.fromBomberType(gameProfile.currentBomberType));
         _weaponBuilder = weaponBuilder
         this._gameProfile = gameProfile
         for (var i:int = 0; i < _gameProfile.gotItems.length; i++) {
@@ -180,7 +180,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         trace(">>> " + _map.getBlock(coords.elemX, coords.elemY).canSetBomb() + " " + bombCount)
         if (_map.getBlock(coords.elemX, coords.elemY).canSetBomb() && bombCount > 0 && !isDead) {
             trace("tried to set when left " + bombCount)
-            EngineContext.triedToActivateWeapon.dispatch(playerId, coords.elemX, coords.elemY, WeaponType.byValue(bombType.value));
+            EngineContext.triedToActivateWeapon.dispatch(slot, coords.elemX, coords.elemY, WeaponType.byValue(bombType.value));
         }
     }
 
@@ -208,7 +208,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         if (isDead) return;
         if (currentWeapon is IActivatableWeapon) {
             if (IActivatableWeapon(currentWeapon).canActivate(_coords.elemX, _coords.elemY, this))
-                EngineContext.triedToActivateWeapon.dispatch(playerId, _coords.elemX, _coords.elemY, currentWeapon.type);
+                EngineContext.triedToActivateWeapon.dispatch(slot, _coords.elemX, _coords.elemY, currentWeapon.type);
         }
 
     }

@@ -49,8 +49,8 @@ public class PlayerManagerBase {
         return _me;
     }
 
-    public function get myId():int {
-        return _me.playerId;
+    public function get mySlot():int {
+        return _me.slot;
     }
 
     public function checkPlayerMetObject(object:IDynObject):Boolean {

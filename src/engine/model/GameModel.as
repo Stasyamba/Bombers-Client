@@ -4,8 +4,6 @@
  */
 
 package engine.model {
-import com.smartfoxserver.v2.entities.User
-
 import engine.EngineContext
 import engine.games.GameBuilder
 import engine.games.GameType
@@ -27,7 +25,6 @@ import engine.profiles.LobbyProfile
 import engine.profiles.PlayerGameProfile
 import engine.utils.greensock.TweenMax
 
-import org.osflash.signals.Signal
 import org.osflash.signals.Signal
 
 public class GameModel {
@@ -216,7 +213,7 @@ public class GameModel {
     }
 
     private function onSomeoneLeftGame(lp:LobbyProfile):void {
-        lobbyProfiles[lp.playerId] = null
+        lobbyProfiles[lp.slot] = null
     }
 
     private function onThreeSecondsToStart(data:Array, mapId:int):void {
@@ -225,7 +222,7 @@ public class GameModel {
         this.playerGameProfiles = new Array()
         for (var i:int = 0; i < data.length; i++) {
             var playerGP:PlayerGameProfile = data[i];
-            this.playerGameProfiles[playerGP.playerId] = playerGP
+            this.playerGameProfiles[playerGP.slot] = playerGP
         }
         Context.game = gameBuilder.makeRegular(mapId, playerGameProfiles);
         if (Context.game.ready) {
@@ -257,11 +254,25 @@ public class GameModel {
         Context.game = null;
     }
 
+    public function getLobbyProfileById(id:String):LobbyProfile {
+        for each (var lp:LobbyProfile in lobbyProfiles) {
+            if (lp != null && lp.id == id)
+                return lp
+        }
+        return null
+    }
+
+    public function myLobbyProfile():LobbyProfile {
+        return getLobbyProfileById(Context.Model.currentSettings.gameProfile.id)
+    }
     // getters & setters
     public function get gameType():GameType {
         return _gameType;
     }
 
 
+    public function isMySlot(slot:int):Boolean {
+        return lobbyProfiles[slot].id == Context.Model.currentSettings.gameProfile.id
+    }
 }
 }

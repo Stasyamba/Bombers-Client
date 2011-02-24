@@ -15,7 +15,7 @@ import org.osflash.signals.Signal
 public interface IBomber {
     function get gameSkin():IGameSkin;
 
-    function get playerId():int;
+    function get slot():int;
 
     function get userName():String;
 

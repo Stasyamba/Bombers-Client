@@ -30,7 +30,7 @@ public class BoxBombWeapon extends ActivatableWeaponBase implements IActivatable
 
     public function activate(x:uint, y:uint, by:IBomber):void {
         _charges--;
-        EngineContext.triedToActivateWeapon.dispatch(by.playerId, x, y, BombType.BOX)
+        EngineContext.triedToActivateWeapon.dispatch(by.slot, x, y, BombType.BOX)
     }
 
     public override function get type():WeaponType {

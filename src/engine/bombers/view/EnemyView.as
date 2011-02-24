@@ -18,17 +18,17 @@ public class EnemyView extends BomberViewBase implements IDestroyable {
         EngineContext.enemyDied.add(onEnemyDied);
     }
 
-    private function inputDirectionChanged(id:int, x:Number, y:Number, dir:Direction):void {
-        if (id == bomber.playerId && !bomber.isDead) {
+    private function inputDirectionChanged(slot:int, x:Number, y:Number, dir:Direction):void {
+        if (slot == bomber.slot && !bomber.isDead) {
             this.x = x;
             this.y = y;
             draw();
         }
     }
 
-    private function updateCoords(id:int, x:int, y:int):void {
+    private function updateCoords(slot:int, x:int, y:int):void {
 
-        if (id == bomber.playerId && !bomber.isDead) {
+        if (slot == bomber.slot && !bomber.isDead) {
             this.x = x;
             this.y = y;
         }
@@ -44,8 +44,8 @@ public class EnemyView extends BomberViewBase implements IDestroyable {
         EngineContext.enemyDied.remove(onEnemyDied);
     }
 
-    protected function onEnemyDied(id:int):void {
-        if (id == _bomber.playerId) {
+    protected function onEnemyDied(slot:int):void {
+        if (slot == _bomber.slot) {
             onDied();
             destroy();
         }

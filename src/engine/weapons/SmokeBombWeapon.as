@@ -28,7 +28,7 @@ public class SmokeBombWeapon extends ActivatableWeaponBase implements IActivatab
     public function activate(x:uint, y:uint, by:IBomber):void {
         if (!canActivate(x, y, by)) return;
         _charges--;
-        EngineContext.triedToActivateWeapon.dispatch(by.playerId, x, y, BombType.SMOKE)
+        EngineContext.triedToActivateWeapon.dispatch(by.slot, x, y, BombType.SMOKE)
     }
 
     override public function get type():WeaponType {

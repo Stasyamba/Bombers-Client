@@ -14,30 +14,30 @@ public class EnemiesManagerBase {
     private var _enemiesCount:int = 0;
 
     public function addEnemy(enemy:IEnemyBomber):void {
-        enemies[enemy.playerId] = enemy;
+        enemies[enemy.slot] = enemy;
         _enemiesCount++;
     }
 
-    public function removeEnemyById(playerId:int):void {
-        enemies[playerId] = null;
+    public function removeEnemyBySlot(slot:int):void {
+        enemies[slot] = null;
         _enemiesCount--;
     }
 
-    public function getEnemyById(playerId:int):IEnemyBomber {
-        return enemies[playerId];
+    public function getEnemyBySlot(slot:int):IEnemyBomber {
+        return enemies[slot];
     }
 
     public function get enemiesCount():int {
         return _enemiesCount;
     }
 
-    public function hasEnemy(playerId:int):Boolean {
-        return !(enemies[playerId] == null);
+    public function hasEnemy(slot:int):Boolean {
+        return !(enemies[slot] == null);
     }
 
 
     public function forEachAliveEnemy(todo:Function):void {
-        for (var i:int = 1; i < enemies.length; i++) {
+        for (var i:int = 0; i < enemies.length; i++) {
             var enemy:IEnemyBomber = enemies[i];
             if (enemy != null && !enemy.isDead)
                 todo(enemy, i);
@@ -45,7 +45,7 @@ public class EnemiesManagerBase {
     }
 
     public function moveEnemies(elapsedMilliSecs:int):void {
-        forEachAliveEnemy(function (enemy:IEnemyBomber, playerId:int):void {
+        forEachAliveEnemy(function (enemy:IEnemyBomber, slot:int):void {
             enemy.move(elapsedMilliSecs);
         })
     }

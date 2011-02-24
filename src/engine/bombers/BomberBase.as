@@ -33,7 +33,7 @@ public class BomberBase implements IBomber {
     protected var _gameSkin:IGameSkin;
     protected var _color:PlayerColor;
 
-    protected var _playerId:int;
+    protected var _slot:int;
     protected var _userName:String;
 
     protected var _bomberType:BomberType;
@@ -55,9 +55,9 @@ public class BomberBase implements IBomber {
 
     private var _lifeChanged:Signal = new Signal();
 
-    public function BomberBase(game:IGame, playerId:int, bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin) {
+    public function BomberBase(game:IGame, slot:int, bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin) {
         this.game = game;
-        _playerId = playerId;
+        _slot = slot;
         _gameSkin = new GameSkin(skin, color);
         _color = color;
         _userName = userName;
@@ -94,8 +94,8 @@ public class BomberBase implements IBomber {
         return _userName;
     }
 
-    public function get playerId():int {
-        return _playerId;
+    public function get slot():int {
+        return _slot;
     }
 
     public function get life():int {

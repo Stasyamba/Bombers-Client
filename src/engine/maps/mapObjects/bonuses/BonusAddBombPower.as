@@ -20,7 +20,7 @@ public class BonusAddBombPower extends BonusBase implements ICollectableDynObjec
     public override function activateOn(player:IBomber):void {
         super.activateOn(player)
         player.incBombPower();
-        trace("player " + player.playerId + " collected bonus power , power = " + player.bombPower);
+        trace("player " + player.slot + " collected bonus power , power = " + player.bombPower);
     }
 
     public function get type():IDynObjectType {

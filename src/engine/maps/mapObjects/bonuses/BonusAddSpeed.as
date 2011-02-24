@@ -20,7 +20,7 @@ public class BonusAddSpeed extends BonusBase implements ICollectableDynObject {
     public override function activateOn(player:IBomber):void {
         super.activateOn(player)
         player.incSpeed();
-        trace("player " + player.playerId + " collected bonus speed , speed = " + player.speed);
+        trace("player " + player.slot + " collected bonus speed , speed = " + player.speed);
     }
 
     public function get type():IDynObjectType {

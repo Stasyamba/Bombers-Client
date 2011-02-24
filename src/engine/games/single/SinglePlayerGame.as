@@ -73,8 +73,8 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
             EngineContext.frameEntered.add(explosionsManager.checkExplosions);
             EngineContext.frameEntered.add(dynObjectManager.checkObjectsActivated);
 
-            EngineContext.triedToActivateWeapon.add(function (playerId:int, x:int, y:int, type:WeaponType):void {
-                EngineContext.weaponActivated.dispatch(playerId, x, y, type);
+            EngineContext.triedToActivateWeapon.add(function (slot:int, x:int, y:int, type:WeaponType):void {
+                EngineContext.weaponActivated.dispatch(slot, x, y, type);
             });
             EngineContext.weaponActivated.add(onWeaponUsed);
 
@@ -118,8 +118,8 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
     }
 
 
-    private function onWeaponUsed(playerId:int, x:int, y:int, type:WeaponType):void {
-        var b:IBomber = getPlayer(playerId);
+    private function onWeaponUsed(slot:int, x:int, y:int, type:WeaponType):void {
+        var b:IBomber = getPlayer(slot);
         //todo: govnocode!!!
         var bomber:IPlayerBomber = b as IPlayerBomber
         bomber.activateWeapon(x, y, type);
@@ -160,8 +160,8 @@ public class SinglePlayerGame extends GameBase implements ISinglePlayerGame {
     private function onMapLoaded(xml:XML):void {
         mapManager.make(xml);
         playerManager.me.putOnMap(mapManager.map, mapManager.map.spawns[0].x, mapManager.map.spawns[0].y);
-        enemiesManager.forEachAliveEnemy(function(enemy:IEnemyBomber, playerId:int):void {
-            enemy.putOnMap(mapManager.map, mapManager.map.spawns[playerId - 1].x, mapManager.map.spawns[playerId - 1].y)
+        enemiesManager.forEachAliveEnemy(function(enemy:IEnemyBomber, slot:int):void {
+            enemy.putOnMap(mapManager.map, mapManager.map.spawns[slot].x, mapManager.map.spawns[slot].y)
         })
         mapManager.map.blockDestroyed.add(function(x:int, y:int, type:MapBlockType):void {
             gameStats.destroyedBlocks.addItem({type:type,x:x,y:y});

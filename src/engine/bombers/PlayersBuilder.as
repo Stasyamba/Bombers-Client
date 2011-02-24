@@ -22,7 +22,7 @@ public class PlayersBuilder {
     public function makePlayer(game:IGame, gameProfile:GameProfile, playerProfile:PlayerGameProfile, color:PlayerColor):IPlayerBomber {
         var inputDirection:InputDirection = new InputDirection();
 
-        return new PlayerBomber(game, playerProfile.playerId, gameProfile, color, inputDirection, weaponBuilder)
+        return new PlayerBomber(game, playerProfile.slot, gameProfile, color, inputDirection, weaponBuilder)
     }
 
     public function makeEnemy(game:IGame, lobbyProfile:LobbyProfile, playerProfile:PlayerGameProfile, color:PlayerColor):IEnemyBomber {

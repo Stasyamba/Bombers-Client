@@ -67,10 +67,10 @@ public class GameBase {
         return _explosionsManager;
     }
 
-    public function getPlayer(playerId:int):IBomber {
-        if (playerId == playerManager.myId)
+    public function getPlayer(slot:int):IBomber {
+        if (slot == playerManager.mySlot)
             return playerManager.me;
-        return enemiesManager.getEnemyById(playerId);
+        return enemiesManager.getEnemyBySlot(slot);
     }
 
     //----------------Handlers---------------

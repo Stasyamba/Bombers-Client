@@ -28,7 +28,7 @@ public class BotEnemyBomber extends EnemyBomber implements IEnemyBomber {
         if (willGetToBlockCenter(willCover)) {
             var d:Direction = walkingStrategy.getDirection(_direction, _coords);
             if (d != _direction)
-                EngineContext.enemyInputDirectionChanged.dispatch(playerId, _coords.getRealX(), _coords.getRealY(), d);
+                EngineContext.enemyInputDirectionChanged.dispatch(slot, _coords.getRealX(), _coords.getRealY(), d);
         }
         super.move(elapsedMilliSecs);
     }
@@ -49,9 +49,9 @@ public class BotEnemyBomber extends EnemyBomber implements IEnemyBomber {
 
     override public function explode(expl:IExplosion):void {
         super.explode(expl);
-        EngineContext.enemyDamaged.dispatch(playerId, _life - expl.damage >= 0 ? _life - expl.damage : 0)
+        EngineContext.enemyDamaged.dispatch(slot, _life - expl.damage >= 0 ? _life - expl.damage : 0)
         if (isDead) {
-            EngineContext.enemyDied.dispatch(playerId);
+            EngineContext.enemyDied.dispatch(slot);
         }
     }
 }

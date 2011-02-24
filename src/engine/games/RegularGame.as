@@ -103,8 +103,8 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         EngineContext.frameEntered.remove(dynObjectManager.checkObjectsActivated);
     }
 
-    private function onWeaponDeactivated(playerId:int, type:WeaponType):void {
-        var b:IBomber = getPlayer(playerId);
+    private function onWeaponDeactivated(slot:int, type:WeaponType):void {
+        var b:IBomber = getPlayer(slot);
         if (playerManager.isItMe(b)) {
             playerManager.me.deactivateWeapon(type);
         } else {
@@ -125,8 +125,8 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         _weaponsUsed[type.value] = w
     }
 
-    private function onWeaponActivated(playerId:int, x:int, y:int, wtype:WeaponType):void {
-        var b:IBomber = getPlayer(playerId);
+    private function onWeaponActivated(slot:int, x:int, y:int, wtype:WeaponType):void {
+        var b:IBomber = getPlayer(slot);
         if (playerManager.isItMe(b)) {
             playerManager.me.activateWeapon(x, y, wtype);
         } else {
@@ -149,23 +149,23 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         _weaponsUsed[type.value] = w
     }
 
-    private function onTryToActivateWeapon(playerId:int, x:int, y:int, type:WeaponType):void {
+    private function onTryToActivateWeapon(slot:int, x:int, y:int, type:WeaponType):void {
         Context.gameServer.sendActivateWeapon(x, y, type)
     }
 
     public function addPlayer(profile:PlayerGameProfile, color:PlayerColor):void {
-        if (profile.playerId == Context.gameServer.myPlayerId) {
+        if (profile.slot == Context.gameModel.myLobbyProfile().slot) {
             var player:IPlayerBomber = playersBuilder.makePlayer(this, Context.Model.currentSettings.gameProfile, profile, color);
             playerManager.setPlayer(player);
         } else {
-            var enemy:IEnemyBomber = playersBuilder.makeEnemy(this, Context.gameModel.lobbyProfiles[profile.playerId], profile, color);
+            var enemy:IEnemyBomber = playersBuilder.makeEnemy(this, Context.gameModel.lobbyProfiles[profile.slot], profile, color);
             enemiesManager.addEnemy(enemy);
         }
     }
 
 
-    public function hasPlayer(playerId:int):Boolean {
-        return playerManager.myId == playerId || enemiesManager.hasEnemy(playerId);
+    public function hasPlayer(slot:int):Boolean {
+        return playerManager.mySlot == slot || enemiesManager.hasEnemy(slot);
     }
 
     public function applyMap(mapId:String, playerProfiles:Array):void {
@@ -182,7 +182,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
     private function onMapLoaded(xml:XML, playerProfiles:Array):void {
         mapManager.make(xml);
         for each (var item:PlayerGameProfile in playerProfiles) {
-            var bomber:IBomber = getPlayer(item.playerId);
+            var bomber:IBomber = getPlayer(item.slot);
             if (bomber != null)
                 bomber.putOnMap(mapManager.map, item.x, item.y);
         }
@@ -218,9 +218,9 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         Context.gameServer.sendActivateDynamicObject(object);
     }
 
-    private function onObjectAdded(playerId:int, x:int, y:int, objType:IDynObjectType):void {
+    private function onObjectAdded(slot:int, x:int, y:int, objType:IDynObjectType):void {
         var b:IMapBlock = mapManager.map.getBlock(x, y);
-        var player:IBomber = getPlayer(playerId)
+        var player:IBomber = getPlayer(slot)
 
         var object:IDynObject = dynObjectBuilder.make(objType, b, player);
         b.setObject(object);

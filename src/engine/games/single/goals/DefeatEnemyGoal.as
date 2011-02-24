@@ -14,7 +14,7 @@ public class DefeatEnemyGoal implements IGoal {
 
     public function checkAll(game:ISinglePlayerGame):Boolean {
         var aliveFlag:Boolean = false;
-        game.enemiesManager.forEachAliveEnemy(function todo(enemy:IEnemyBomber, playerId:int):void {
+        game.enemiesManager.forEachAliveEnemy(function todo(enemy:IEnemyBomber, slot:int):void {
             aliveFlag = true;
         })
         return !aliveFlag;
@@ -22,8 +22,8 @@ public class DefeatEnemyGoal implements IGoal {
 
     private function checkOne(game:ISinglePlayerGame):Boolean {
         var aliveFlag:Boolean = false;
-        game.enemiesManager.forEachAliveEnemy(function todo(enemy:IEnemyBomber, playerId:int):void {
-            if (playerId == _id)
+        game.enemiesManager.forEachAliveEnemy(function todo(enemy:IEnemyBomber, slot:int):void {
+            if (slot == _id)
                 aliveFlag = true;
         })
         return !aliveFlag;

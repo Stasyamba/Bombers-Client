@@ -22,7 +22,7 @@ public class AtomBombWeapon extends ActivatableWeaponBase implements IActivatabl
     public function activate(x:uint, y:uint, by:IBomber):void {
         if (!canActivate(x, y, by)) return;
         _charges--;
-        EngineContext.triedToActivateWeapon.dispatch(by.playerId, x, y, BombType.ATOM)
+        EngineContext.triedToActivateWeapon.dispatch(by.slot, x, y, BombType.ATOM)
     }
 
     public function canActivate(x:uint, y:uint, by:IBomber):Boolean {

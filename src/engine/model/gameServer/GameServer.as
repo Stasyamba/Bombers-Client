@@ -7,7 +7,6 @@ package engine.model.gameServer {
 import com.smartfoxserver.v2.SmartFox
 import com.smartfoxserver.v2.core.SFSEvent
 import com.smartfoxserver.v2.entities.Room
-import com.smartfoxserver.v2.entities.User
 import com.smartfoxserver.v2.entities.data.ISFSArray
 import com.smartfoxserver.v2.entities.data.ISFSObject
 import com.smartfoxserver.v2.entities.data.SFSObject
@@ -135,10 +134,6 @@ public class GameServer extends SmartFox {
         return gameRoom != null && room.id == gameRoom.id
     }
 
-    private function isUserInCurrentGame(user:User):Boolean {
-        return gameRoom != null && user.isPlayerInRoom(gameRoom);
-    }
-
     public function useDefaultLocalServerConfig():void {
         ip = 'cs1.vensella.ru';
         port = 9933;
@@ -219,7 +214,7 @@ public class GameServer extends SmartFox {
     public function sendPlayerDirectionChanged(x:Number, y:Number, dir:Direction, viewDirectionChanged:Boolean):void {
 
         var params:ISFSObject = new SFSObject();
-        params.putInt("userId", mySelf.id)
+        params.putInt("slot", Context.gameModel.myLobbyProfile().slot)
         params.putDouble("x", x);
         params.putDouble("y", y);
         params.putInt("dir", dir.value);
@@ -376,15 +371,15 @@ public class GameServer extends SmartFox {
         if (!IsRoomCurrentGame(room)) {
             return
         }
-        var lp:LobbyProfile = Context.gameModel.lobbyProfiles[event.params.user.playerId]
+        var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(event.params.user.name)
         Context.gameModel.someoneLeftGame.dispatch(lp);
     }
 
     private function onPublicMessageRecieved(event:SFSEvent):void {
         if (event.params.room == gameRoom) {
             if (Context.gameModel.lobbyProfiles != null)
-                if (Context.gameModel.lobbyProfiles[event.params.sender.playerId] != null)
-                    inGameMessageReceived.dispatch(Context.gameModel.lobbyProfiles[event.params.sender.playerId], event.params.message);
+                if (Context.gameModel.getLobbyProfileById(event.params.sender.name) != null)
+                    inGameMessageReceived.dispatch(Context.gameModel.getLobbyProfileById(event.params.sender.name), event.params.message);
         }
     }
 
@@ -393,11 +388,11 @@ public class GameServer extends SmartFox {
         switch (event.params.cmd) {
             case INPUT_DIRECTION_CHANGED:
                 //special case, message is broadcasted
-                var user:User = userManager.getUserById(responseParams.getInt("userId"));
-                if (user.isItMe)
-                    return;
+                var slot:int = responseParams.getInt("slot");
+                if (Context.gameModel.isMySlot(slot))
+                    return
                 EngineContext.enemyInputDirectionChanged.dispatch(
-                        user.playerId,
+                        slot,
                         responseParams.getDouble("x"),
                         responseParams.getDouble("y"),
                         Direction.byValue(responseParams.getInt("dir")));
@@ -411,7 +406,7 @@ public class GameServer extends SmartFox {
                     var x:int = obj.getInt("StartX")
                     var y:int = obj.getInt("StartY")
                     var name:String = obj.getUtfString("UserId")
-                    var user:User = userManager.getUserByName(name)
+                    var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)
                     var auras:Array = new Array()
                     var bType:BomberType = BomberType.byValue(obj.getInt("BomberId"))
                     var a1:WeaponType = WeaponType.byValue(obj.getInt("AuraOne"))
@@ -423,7 +418,7 @@ public class GameServer extends SmartFox {
                         auras.push(a2)
                     if (a3 != WeaponType.NULL)
                         auras.push(a3)
-                    playerGameData.push(new PlayerGameProfile(user.playerId, bType, x, y, auras))
+                    playerGameData.push(new PlayerGameProfile(lp.slot, bType, x, y, auras))
                 }
                 var mapId:int = responseParams.getInt("game.lobby.3SecondsToStart.fields.MapId");
                 Context.gameModel.threeSecondsToStart.dispatch(playerGameData, mapId);
@@ -432,49 +427,52 @@ public class GameServer extends SmartFox {
                 Context.gameModel.gameStarted.dispatch();
                 break;
             case DYNAMIC_OBJECT_ADDED:
+                slot = -1
                 var ot:IDynObjectType = DynObjectType.byValue(responseParams.getInt("game.DOAdd.f.type"))
-                user = userManager.getUserByName(responseParams.getUtfString("game.DOAdd.f.userId"));
+                name = responseParams.getUtfString("game.DOAdd.f.userId")
+                if (name != null && name != "")
+                    slot = Context.gameModel.getLobbyProfileById(name).slot
                 EngineContext.objectAdded.dispatch(
-                        user == null ? -1 : user.playerId,
+                        slot,
                         responseParams.getInt("game.DOAdd.f.x"),
                         responseParams.getInt("game.DOAdd.f.y"),
                         ot)
                 break
             case DYNAMIC_OBJECT_ACTIVATED:
-                user = userManager.getUserByName(responseParams.getUtfString("game.DOAct.f.userId"));
+                slot = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("game.DOAct.f.userId")).slot
                 var ot:IDynObjectType = DynObjectType.byValue(responseParams.getInt("game.DOAct.f.type"))
                 EngineContext.objectActivated.dispatch(
-                        user.playerId,
+                        slot,
                         responseParams.getInt("game.DOAct.f.x"),
                         responseParams.getInt("game.DOAct.f.y"),
                         ot)
                 break;
             case WEAPON_ACTIVATED:
-                user = userManager.getUserByName(responseParams.getUtfString("game.WA.f.userId"));
+                slot = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("game.WA.f.userId")).slot
                 var wt:WeaponType = WeaponType.byValue(responseParams.getInt("game.WA.f.type"))
                 var x:int = responseParams.getInt("game.WA.f.x")
                 var y:int = responseParams.getInt("game.WA.f.y")
-                EngineContext.weaponActivated.dispatch(user.playerId, x, y, wt)
+                EngineContext.weaponActivated.dispatch(slot, x, y, wt)
                 break;
             case WEAPON_DEACTIVATED:
-                user = userManager.getUserByName(responseParams.getUtfString("game.WDA.f.userId"));
+                slot = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("game.WDA.f.userId")).slot
                 var wt:WeaponType = WeaponType.byValue(responseParams.getInt("game.WDA.f.type"))
-                EngineContext.weaponDeactivated.dispatch(user.playerId, wt)
+                EngineContext.weaponDeactivated.dispatch(slot, wt)
                 break;
             case PLAYER_DAMAGED:
-                user = userManager.getUserByName(responseParams.getUtfString("UserId"));
-                if (user.isItMe)
+                slot = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("UserId")).slot
+                if (Context.gameModel.isMySlot(slot))
                     return;
-                EngineContext.enemyDamaged.dispatch(user.playerId, responseParams.getInt("HealthLeft"));
+                EngineContext.enemyDamaged.dispatch(slot, responseParams.getInt("HealthLeft"));
                 trace("damaged enemy " + responseParams.getInt("HealthLeft"))
                 break;
             case PLAYER_DIED:
-                var playerId:int
-                user = userManager.getUserByName(responseParams.getUtfString("UserId"));
-                if (user != null) {
-                    playerId = user.playerId
-                    if (user.isItMe) {
-                        updLobbyExperience(playerId, responseParams.getInt("Rank"), responseParams.getInt("Experience"))
+                var slot:int
+                var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("UserId"));
+                if (lp != null) {
+                    slot = lp.slot
+                    if (Context.gameModel.isMySlot(slot)) {
+                        updLobbyExperience(slot, responseParams.getInt("Rank"), responseParams.getInt("Experience"))
                         Context.Model.currentSettings.gameProfile.experience = responseParams.getInt("Experience")
                         return
                     }
@@ -482,26 +480,28 @@ public class GameServer extends SmartFox {
                     for each (var lobbyProfile:LobbyProfile in Context.gameModel.lastGameLobbyProfiles) {
                         if (lobbyProfile != null) {
                             if (lobbyProfile.id == responseParams.getUtfString("UserId")) {
-                                playerId = lobbyProfile.playerId
+                                slot = lobbyProfile.slot
                                 break
                             }
                         }
                     }
                 }
-                updLobbyExperience(playerId, responseParams.getInt("Rank"), responseParams.getInt("Experience"))
-                EngineContext.enemyDied.dispatch(playerId);
+                updLobbyExperience(slot, responseParams.getInt("Rank"), responseParams.getInt("Experience"))
+                EngineContext.enemyDied.dispatch(slot);
                 break;
-            case DEATH_WALL_APPEARED:
+            case
+            DEATH_WALL_APPEARED:
                 EngineContext.deathWallAppeared.dispatch(
                         responseParams.getInt("x"),
                         responseParams.getInt("y"))
                 break;
-            case GAME_ENDED:
+            case
+            GAME_ENDED:
                 var wId:String = responseParams.getUtfString("game.gameEnded.WinnerId")
                 var wExp:int = responseParams.getInt("game.gameEnded.WinnerExperience")
-                var user:User = userManager.getUserByName(wId)
-                updLobbyExperience(user.playerId, 1, wExp)
-                if (user.isItMe) {
+                slot = Context.gameModel.getLobbyProfileById(wId).slot
+                updLobbyExperience(slot, 1, wExp)
+                if (Context.gameModel.isMySlot(slot)) {
                     Context.Model.currentSettings.gameProfile.experience = responseParams.getInt("game.gameEnded.WinnerExperience")
                 }
                 TweenMax.delayedCall(3.0, function ():void {
@@ -510,7 +510,8 @@ public class GameServer extends SmartFox {
                 var arr:ISFSArray = responseParams.getSFSArray("profiles");
                 Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
                 break;
-            case INT_GAME_PROFILE_LOADED:
+            case
+            INT_GAME_PROFILE_LOADED:
 
                 //resourceCost
                 var plist:ISFSObject = responseParams.getSFSObject("Pricelist")
@@ -558,7 +559,8 @@ public class GameServer extends SmartFox {
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
                 profileLoaded.dispatch(gp);
                 break;
-            case INT_BUY_RESOURCES_RESULT:
+            case
+            INT_BUY_RESOURCES_RESULT:
                 trace("resources bought");
                 var status:Boolean = responseParams.getBool("interface.buyResources.result.fields.status")
                 if (!status) {
@@ -581,7 +583,8 @@ public class GameServer extends SmartFox {
                     }
                 }
                 break;
-            case INT_BUY_ITEM_RESULT:
+            case
+            INT_BUY_ITEM_RESULT:
                 trace("item bought");
                 status = responseParams.getBool("interface.buyItem.result.fields.status")
                 if (!status) {
@@ -602,36 +605,39 @@ public class GameServer extends SmartFox {
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.IM_ITEMBUY_SUCCESS, iType)
                 break;
-            case INT_GAME_NAME_RESULT:
+            case
+            INT_GAME_NAME_RESULT:
                 newGameNameObtained.dispatch(responseParams.getUtfString("interface.gameManager.findGameName.result.fields.gameName"))
                 break;
-            case INT_FAST_JOIN_RESULT:
+            case
+            INT_FAST_JOIN_RESULT:
                 Context.gameModel.fastJoinFailed.dispatch()
                 break;
-            case INT_CREATE_GAME_RESULT:
+            case
+            INT_CREATE_GAME_RESULT:
                 Context.gameModel.createGameFailed.dispatch()
                 break;
-            case LOBBY_PROFILES:
+            case
+            LOBBY_PROFILES:
                 var arr:ISFSArray = responseParams.getSFSArray("profiles");
                 var newLPs:Array = getLobbyProfilesFromSFSArray(arr)
                 var lp:LobbyProfile = getNewLobbyProfile(newLPs)
                 Context.gameModel.lobbyProfiles = newLPs
                 Context.gameModel.someoneJoinedToGame.dispatch(lp);
                 break;
-            case LOBBY_READY:
+            case
+            LOBBY_READY:
                 var ready:Boolean = responseParams.getBool("IsReady")
                 var name:String = responseParams.getUtfString("Id");
-                var user:User = userManager.getUserByName(name)
-                if (user == null || user.playerId <= 0)
-                    return
-                var lp:LobbyProfile = Context.gameModel.lobbyProfiles[user.playerId]
+                var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)
                 if (lp != null)
                     lp.isReady = ready;
                 Context.gameModel.playerReadyChanged.dispatch();
                 break;
 
             //WALL
-            case "bombersWall.isRegisteredLoaded":
+            case
+            "bombersWall.isRegisteredLoaded":
                 var flag:Boolean = responseParams.getBool("isRegistered")
                 //mx.controls.Alert.show("Login success -> "+flag.toString());
                 Context.Model.dispatchCustomEvent(ContextEvent.WALL_FAST_LOGINED, flag ? WallChest.MUST_LOOSE : WallChest.MUST_WIN);
@@ -642,7 +648,7 @@ public class GameServer extends SmartFox {
     private function getNewLobbyProfile(newLPs:Array):LobbyProfile {
         if (Context.gameModel.lobbyProfiles == null)
             return null
-        for (var i:int = 1; i < newLPs.length; i++) {
+        for (var i:int = 0; i < newLPs.length; i++) {
             var lpOld:LobbyProfile = Context.gameModel.lobbyProfiles[i];
             var lpNew:LobbyProfile = newLPs[i];
             if (lpOld == null && lpNew != null)
@@ -656,22 +662,18 @@ public class GameServer extends SmartFox {
         for (var i:int = 0; i < arr.size(); i++) {
             var item:ISFSObject = arr.getSFSObject(i);
             var id:String = item.getUtfString("Id");
-            var user:User = userManager.getUserByName(id)
             var exp:int = item.getInt("Experience");
             var nick:String = item.getUtfString("Nick");
             var photo:String = item.getUtfString("Photo");
             var ready:Boolean = item.getBool("IsReady");
-            resultArray[user.playerId] = new LobbyProfile(id, nick, photo, exp, user.playerId, ready)
+            var slot:int = item.getInt("Slot");
+            resultArray[slot] = new LobbyProfile(id, nick, photo, exp, slot, ready)
         }
         return resultArray
     }
 
-    public function get myPlayerId():int {
-        return mySelf.playerId;
-    }
-
-    private function updLobbyExperience(playerId:int, place:int, exp:int):void {
-        var lp:LobbyProfile = (Context.gameModel.lastGameLobbyProfiles[playerId] as LobbyProfile)
+    private function updLobbyExperience(slot:int, place:int, exp:int):void {
+        var lp:LobbyProfile = (Context.gameModel.lastGameLobbyProfiles[slot] as LobbyProfile)
         lp.place = place
         lp.expEarned = exp - lp.experience
         lp.experience = exp

@@ -76,7 +76,7 @@
         }
 
         private function onReadyButtonClick():void {
-            var amIReady:Boolean = (Context.gameModel.lobbyProfiles[Context.gameServer.myPlayerId] as LobbyProfile).isReady
+            var amIReady:Boolean = Context.gameModel.myLobbyProfile().isReady
             trace(amIReady)
             if (amIReady) {
                 readyButton.fontSize = readyButton.fontSizeOver = 25

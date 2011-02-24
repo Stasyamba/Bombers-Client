@@ -12,7 +12,7 @@ import engine.maps.interfaces.IDynObject
 public interface IPlayerManager {
     function get me():IPlayerBomber;
 
-    function get myId():int;
+    function get mySlot():int;
 
     function setPlayer(player:IPlayerBomber):void;
 

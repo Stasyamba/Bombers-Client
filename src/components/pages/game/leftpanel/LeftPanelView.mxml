@@ -12,12 +12,13 @@
 
     <fx:Script>
 		<![CDATA[
-        import com.smartfoxserver.v2.entities.User
-
         import components.ApplicationView
 
         import engine.games.GameType
         import engine.profiles.LobbyProfile
+
+        import mx.controls.Alert
+        import mx.utils.ObjectUtil
 
         private var players:Array = new Array();
 
@@ -30,37 +31,37 @@
             onTabChanged()
         }
 
-        private function getPlayerSlot(playerId:int):PlayerSlot {
-            switch (playerId) {
+        private function getPlayerSlot(slot:int):PlayerSlot {
+            switch (slot) {
+                case 0:return player0
                 case 1:return player1
                 case 2:return player2
                 case 3:return player3
-                case 4:return player4
             }
             return null
         }
 
-        private function deletePlayer(playerId:int):void {
+        private function deletePlayer(slot:int):void {
             var el:PlayerSlot;
-            el = getPlayerSlot(playerId);
+            el = getPlayerSlot(slot);
             if (el != null)
                 el.removePlayer();
         }
 
-        private function addPlayer(newProfile:LobbyProfile, playerId:int):void {
+        private function addPlayer(newProfile:LobbyProfile, slot:int):void {
             if (newProfile == null)
                 return;
 
             var el:PlayerSlot;
-            el = getPlayerSlot(playerId);
+            el = getPlayerSlot(slot);
             if (el != null)
                 el.setPlayer(newProfile);
         }
 
 
-        private function setReady(isReady:Boolean, playerId:int):void {
+        private function setReady(isReady:Boolean, slot:int):void {
             var el:PlayerSlot;
-            el = getPlayerSlot(playerId);
+            el = getPlayerSlot(slot);
             if (el != null)
                 el.isReady = isReady;
         }
@@ -84,13 +85,13 @@
         }
 
         private function onThreeSecondsToStart(p1:*, p2:*):void {
-            for (var j:int = 1; j < 5; j++) {
+            for (var j:int = 0; j < Context.gameModel.lobbyProfiles.length; j++) {
                 setReady(false, j)
             }
         }
 
         private function onLeftGame():void {
-            for (var j:int = 1; j < 5; j++) {
+            for (var j:int = 0; j < 4; j++) {
                 setReady(false, j)
                 deletePlayer(j)
             }
@@ -108,27 +109,29 @@
         }
 
         private function onSomeoneLeftGame(lp:LobbyProfile):void {
-			if(lp != null){
-            	setReady(false, lp.playerId)
-            	deletePlayer(lp.playerId)
-			}
+            if (lp != null) {
+                setReady(false, lp.slot)
+                deletePlayer(lp.slot)
+            }
         }
 
         private function onSomeoneJoinedToGame(p1:*):void {
-            for (var j:int = 1; j < 5; j++) {
+            for (var j:int = 0; j < 4; j++) {
                 deletePlayer(j)
             }
             for each (var prof:LobbyProfile in Context.gameModel.lobbyProfiles) {
                 if (prof != null)
-                    addPlayer(prof, prof.playerId)
+                    addPlayer(prof, prof.slot)
             }
             onReadyChanged()
         }
 
         private function onReadyChanged():void {
-            for (var i:int = 1; i < 5; i++) {
+            for (var i:int = 0; i < 4; i++) {
                 var lp:LobbyProfile = Context.gameModel.lobbyProfiles[i] as LobbyProfile
                 if (lp != null) {
+                    if (!getPlayerSlot(i).hasAnyPlayer())
+                        addPlayer(lp, i)
                     setReady(lp.isReady, i);
                 } else {
                     deletePlayer(i)
@@ -156,10 +159,10 @@
               id="playersGroup"
             >
 
+        <leftpanel:PlayerSlot id="player0"/>
         <leftpanel:PlayerSlot id="player1"/>
         <leftpanel:PlayerSlot id="player2"/>
         <leftpanel:PlayerSlot id="player3"/>
-        <leftpanel:PlayerSlot id="player4"/>
 
     </s:VGroup>
 

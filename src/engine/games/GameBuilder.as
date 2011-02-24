@@ -14,15 +14,15 @@ public class GameBuilder {
     public function GameBuilder() {
     }
 
-    private function getColor(playerId:int):PlayerColor {
-        switch (playerId) {
-            case 4:
-                return PlayerColor.BLUE;
+    private function getColor(slot:int):PlayerColor {
+        switch (slot) {
             case 3:
+                return PlayerColor.BLUE;
+            case 2:
                 return PlayerColor.ORANGE;
             case 1:
                 return PlayerColor.PINK;
-            case 2:
+            case 0:
                 return PlayerColor.RED;
 
         }
@@ -32,7 +32,7 @@ public class GameBuilder {
     public function makeRegular(mapId:int, playerProfiles:Array):IGame {
         var game:RegularGame = new RegularGame();
         for each (var prof:PlayerGameProfile in playerProfiles) {
-            game.addPlayer(prof, getColor(prof.playerId))
+            game.addPlayer(prof, getColor(prof.slot))
         }
         game.applyMap(String(mapId), playerProfiles)
         return game;
