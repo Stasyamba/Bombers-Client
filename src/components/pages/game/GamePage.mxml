@@ -10,7 +10,7 @@
                     xmlns:game="components.pages.game.*"
                     xmlns:subbottompanel="components.pages.game.subbottompanel.*"
                     width="100%" height="100%"
-        >
+        			>
 
     <fx:Declarations>
     </fx:Declarations>
