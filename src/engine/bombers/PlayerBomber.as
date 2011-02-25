@@ -220,6 +220,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     public function activateWeapon(x:int, y:int, type:WeaponType):void {
         if (_weapons[type.value] is IActivatableWeapon) {
             (_weapons[type.value] as IActivatableWeapon).activate(x, y, this);
+            EngineContext.weaponUnitSpent.dispatch(type)
         }
     }
 
@@ -259,41 +260,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         }
     }
 
-    public function increaseWeaponIndex():void {
-        var gp:GameProfile = Context.Model.currentSettings.gameProfile
-        if (gp.selectedWeaponLeftHand == null) {
-            var newW:ItemProfileObject = getNextWeapon(-1)
-            if (newW != null)
-                gp.selectedWeaponLeftHand = newW
-        } else {
-            for (var i:int = 0; i < gp.gotItems.length; i++) {
-                var obj:ItemProfileObject = gp.gotItems[i];
-                if (obj.itemType == gp.selectedWeaponLeftHand.itemType) {
-                    var newW:ItemProfileObject = getNextWeapon(i)
-                    gp.selectedWeaponLeftHand = newW
-                    break
-                }
-            }
-        }
-        Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_UPDATE_GAME_WEAPONS);
-        EngineContext.currentWeaponChanged.dispatch()
-    }
 
-    private function getNextWeapon(from:int):ItemProfileObject {
-        var gp:GameProfile = Context.Model.currentSettings.gameProfile;
-        for (var i:int = from + 1; i < gp.gotItems.length; i++) {
-            var obj:ItemProfileObject = gp.gotItems[i];
-            if (obj != null && Context.Model.itemsCategoryManager.getItemCategory(obj.itemType) == ItemCategory.WEAPON) {
-                return obj
-            }
-        }
-        for (var i:int = 0; i <= from; i++) {
-            var obj:ItemProfileObject = gp.gotItems[i];
-            if (obj != null && Context.Model.itemsCategoryManager.getItemCategory(obj.itemType) == ItemCategory.WEAPON) {
-                return obj
-            }
-        }
-        return null
-    }
+
 }
 }

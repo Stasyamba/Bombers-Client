@@ -22,6 +22,7 @@ public class DynamiteWeapon extends ActivatableWeaponBase implements IActivatabl
     public function activate(x:uint, y:uint, by:IBomber):void {
         if (!canActivate(x, y, by)) return;
         _charges--;
+        trace("WWWWWW minus charges " + type.key + ", now " + _charges)
         EngineContext.triedToActivateWeapon.dispatch(by.slot, x, y, BombType.DYNAMITE)
     }
 

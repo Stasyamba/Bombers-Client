@@ -85,8 +85,7 @@
                 if (Context.game != null)
                     Context.game.playerManager.me.tryActivateWeapon();
             } else if (event.keyCode == 90) {   //z
-                if (Context.game != null)
-                    Context.game.playerManager.me.increaseWeaponIndex();
+                Context.gameModel.increaseWeaponIndex()
             }
         }
 

@@ -132,8 +132,6 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         } else {
             activateWeapon(b, wtype, x, y)
         }
-        if(wtype.decreaseOnActivate)
-            playerManager.me.decWeapon(wtype)
     }
 
     private function activateWeapon(b:IBomber, type:WeaponType, x:int, y:int):void {

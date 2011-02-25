@@ -51,7 +51,7 @@ public class BombView extends DestroyableSprite implements IDrawable {
 
     public override function draw():void {
         graphics.clear();
-        if (block.object.type == DynObjectType.NULL) {
+        if (block.object.type == DynObjectType.NULL || !(block.object.type is BombType)) {
             if (pulsing) stopPulsing();
             return;
         }
@@ -75,7 +75,7 @@ public class BombView extends DestroyableSprite implements IDrawable {
     private function onPulse(elapsedMilliSecs:int):void {
         var offset:Number;
         var scale:Number;
-        if (block.object.type == DynObjectType.NULL)
+        if (block.object.type == DynObjectType.NULL || !(block.object.type is BombType))
             return
         if ((block.object as ITimeActivatableDynObject).timeToActivate < TIME_TO_BOOM_WHEN_TO_FASTEN_PULSE) {
             offset = BombPulseSynchronizer.fastOffset;

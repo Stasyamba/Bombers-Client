@@ -19,6 +19,7 @@ public class ActivatableWeaponBase {
 
     public function decCharges():void {
         _charges--
+        trace("minus charges " + type.key + ", now " + _charges)
         EngineContext.weaponUnitSpent.dispatch(type)
     }
 

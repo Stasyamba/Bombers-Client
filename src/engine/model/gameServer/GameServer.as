@@ -603,6 +603,7 @@ public class GameServer extends SmartFox {
                 Context.Model.dispatchCustomEvent(ContextEvent.IT_BUY_SUCCESS, {it:iType,count:count})
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
+                Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.IM_ITEMBUY_SUCCESS, iType)
                 break;
             case
