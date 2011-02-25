@@ -22,13 +22,13 @@ public class SmokeBombWeapon extends ActivatableWeaponBase implements IActivatab
     public function canActivate(x:uint, y:uint, by:IBomber):Boolean {
          if (!mapManager.canUseMap)
             return false;
-        return _charges > 0 && mapManager.map.getBlock(x, y).canSetBomb();
+        return _charges > 0;
     }
 
     public function activate(x:uint, y:uint, by:IBomber):void {
         if (!canActivate(x, y, by)) return;
         _charges--;
-        EngineContext.triedToActivateWeapon.dispatch(by.slot, x, y, BombType.SMOKE)
+        EngineContext.smokeAdded.dispatch(x,y)
     }
 
     override public function get type():WeaponType {
