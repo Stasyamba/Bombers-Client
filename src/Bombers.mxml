@@ -112,14 +112,20 @@
                 Context.Model.currentSettings.flashVars.scaleMode = VkontakteGlobals.wrapper.application.scaleMode;
                 Context.Model.currentSettings.flashVars.postId = VkontakteGlobals.wrapper.application.parameters.post_id;
                 Context.Model.currentSettings.flashVars.userId = VkontakteGlobals.wrapper.application.parameters.user_id;
-                Context.Model.currentSettings.flashVars.userId = VkontakteGlobals.wrapper.application.parameters.auth_key;
+                //Context.Model.currentSettings.flashVars.userId = VkontakteGlobals.wrapper.application.parameters.auth_key;
 
                 if (Context.Model.currentSettings.flashVars.referrer == FlashVars.WALL_VIEW_INLINE) {
                     initApp(APP_STARTED_FROM_WALL);
                 } else {
 
                     Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
-
+					Context.Model.currentSettings.votes = Context.Model.currentSettings.apiResult.votes;
+					//mx.controls.Alert.show(Context.Model.currentSettings.votes.toString());
+					
+					//var s: String = VkontakteGlobals.wrapper.application.parameters.api_result;
+					//s = s.slice(0, 100);
+					//mx.controls.Alert.show(s);
+					
                     initApp(APP_STARTED_COMMON);
 
 

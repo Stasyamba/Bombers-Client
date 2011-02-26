@@ -46,56 +46,81 @@
 			import components.common.utils.adjustcolor.ColorMatrix;
 			import components.common.bombers.BomberType
 				
-				import mx.managers.PopUpManager
+			import mx.managers.PopUpManager
+			
+			[Bindable]
+			private var tryCountStringView: String;
+			
+			public function close():void {
+				Context.Model.removeCustomEventListener(ContextEvent.L_SHOW_CHEST_BLOCK, showChestBlock);
+				Context.Model.removeCustomEventListener(ContextEvent.L_SHOW_CHEST_BLOCK, changeTryCount);
+				Context.Model.removeCustomEventListener(ContextEvent.L_RESET_CHESTS, resetChestHandler);
 				
-				[Bindable]
-				private var tryCountStringView: String;
+				chests.removeAllListeners();
 				
-				public function close():void {
-					Context.Model.removeCustomEventListener(ContextEvent.L_SHOW_CHEST_BLOCK, showChestBlock);
-					Context.Model.removeCustomEventListener(ContextEvent.L_SHOW_CHEST_BLOCK, changeTryCount);
-					
-					Context.Model.windowsManager.deleteWindow(this);
-					PopUpManager.removePopUp(this);
-				}
+				Context.Model.windowsManager.deleteWindow(this);
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function closeWrapper():void {
+				disapearingAnimation.play();
+			}
+			
+			private function panelCreationComplete():void {
+				Context.Model.windowsManager.closeAll(true);
+				Context.Model.windowsManager.addWindow(this);
 				
-				public function closeWrapper():void {
-					disapearingAnimation.play();
-				}
+				Context.Model.addCustomListener(ContextEvent.L_SHOW_CHEST_BLOCK, showChestBlock);
+				Context.Model.addCustomListener(ContextEvent.L_TRY_COUNT_SET_CHANGED, changeTryCount);
+				Context.Model.addCustomListener(ContextEvent.L_RESET_CHESTS, resetChestHandler);
+				apearingAnimation.play();
 				
-				private function panelCreationComplete():void {
-					Context.Model.windowsManager.closeAll(true);
-					Context.Model.windowsManager.addWindow(this);
-					
-					Context.Model.addCustomListener(ContextEvent.L_SHOW_CHEST_BLOCK, showChestBlock);
-					Context.Model.addCustomListener(ContextEvent.L_TRY_COUNT_SET_CHANGED, changeTryCount);
-					apearingAnimation.play();
-					
-					var matrix:Matrix = leftStarsImage.transform.matrix;
-					matrix.a = -1;
-					matrix.tx = leftStarsImage.width + leftStarsImage.x;
-					leftStarsImage.transform.matrix = matrix;
-					
-					
-					var cm: ColorMatrix = new ColorMatrix();
-					var cmo: ColorMatrixObject = new ColorMatrixObject(200,0.8);
-					cm.applyColorMatrixObject(cmo);
-					
-					closeButton.filters = [cm.filter];
-					
-					tryCountStringView = Context.Model.currentSettings.lotteryTryToWinCount.toString();
-				}
+				var matrix:Matrix = leftStarsImage.transform.matrix;
+				matrix.a = -1;
+				matrix.tx = leftStarsImage.width + leftStarsImage.x;
+				leftStarsImage.transform.matrix = matrix;
 				
-				private function changeTryCount(e: ContextEvent): void
+				
+				var cm: ColorMatrix = new ColorMatrix();
+				var cmo: ColorMatrixObject = new ColorMatrixObject(200,0.8);
+				cm.applyColorMatrixObject(cmo);
+				
+				closeButton.filters = [cm.filter];
+				
+				tryCountStringView = Context.Model.currentSettings.lotteryTryToWinCount.toString();
+				
+				if(Context.Model.currentSettings.lotteryTryToWinCount <= 0)
 				{
-					tryCountStringView = Context.Model.currentSettings.lotteryTryToWinCount.toString();
+					Context.Model.dispatchCustomEvent(ContextEvent.L_SHOW_CHEST_BLOCK, true);
 				}
-				
-				private function showChestBlock(e: ContextEvent): void
+			}
+			
+			private function resetChestHandler(e: ContextEvent): void
+			{
+				tryCountStringView = Context.Model.currentSettings.lotteryTryToWinCount.toString();
+			}
+			
+			private function changeTryCount(e: ContextEvent): void
+			{
+				tryCountStringView = Context.Model.currentSettings.lotteryTryToWinCount.toString();
+			}
+			
+			private function showChestBlock(e: ContextEvent): void
+			{
+				blockChestsGroup.visible = Boolean(e.data);
+				tryCountGroup.visible = !blockChestsGroup.visible;
+			}
+		
+			private function tryOrBuy():void
+			{
+				if(Context.Model.currentSettings.gameProfile.energy < 2)
 				{
-					blockChestsGroup.visible = Boolean(e.data);
-					tryCountGroup.visible = !blockChestsGroup.visible;
-				}
+					Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_ENERGY_MARKET);
+				}else
+				{
+					Context.gameServer.buyLuck();
+				}	
+			}
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -133,7 +158,7 @@
 					
 					<s:Group>
 						
-						<lottery:Chests />
+						<lottery:Chests id="chests" />
 						
 						<s:Group id="blockChestsGroup" visible="false">
 							<s:Rect height="147" width="387" radiusX="15" radiusY="15" alpha="0.9">
@@ -157,6 +182,7 @@
 															  customLabel="Пробовать"
 															  fontSize="22"
 															  fontSizeOver="22"
+															  click="tryOrBuy();"
 															  />
 							</s:VGroup>
 						</s:Group>

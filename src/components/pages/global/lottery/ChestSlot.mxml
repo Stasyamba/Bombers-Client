@@ -2,12 +2,12 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 click="tryToOpen();"
 		 width="65" height="65"
 		 mouseOver="setGlow(true);"
 		 mouseOut="setGlow(false);"
 		 >
 	
+	<!--  click="tryToOpen();" -->
 	
 	<fx:Declarations>
 		
@@ -73,6 +73,45 @@
 			{
 				isOpened = cho.isOpened;
 				price = cho.price;
+				
+				if(isOpened)
+				{
+					chestImage.visible = false;
+					
+					if(price == null)
+					{
+						emptyImage.visible = true;
+					}else
+					{
+						
+						// init resource
+						resourceImage.source = Context.Model.resourceViewManager.getResource(price.type).bigImage;
+						resourceAmount.text = price.value.toString();
+						
+						switch(price.type)
+						{
+							case ResourceType.CRYSTALS:
+								resourceGroupInside.paddingTop = -9;
+								resourceImageScale = 0.4;
+								
+								resourceAmount.setStyle("color", 0xdd6fff);
+								blurFilterLabel.color = 0xdd6fff;
+								blurFilter.color = 0xdd6fff;
+								break;
+							case ResourceType.GOLD:
+								resourceImageScale = 0.5;
+								
+								resourceAmount.setStyle("color", 0xfff533);
+								blurFilterLabel.color = 0xc89510;
+								blurFilter.color = 0xfff900;
+								break;
+						}
+						
+						resourceGroup.visible = true;
+						pulseA.play();
+					}
+				}	
+				
 			}
 			
 			private function setGlow(visible: Boolean): void
@@ -146,7 +185,7 @@
 			
 			private function getResource(): void
 			{
-				fadeOutA.play();
+				//fadeOutA.play();
 			}
 			
 		]]>

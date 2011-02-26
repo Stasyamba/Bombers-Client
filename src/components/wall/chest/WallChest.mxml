@@ -44,10 +44,12 @@
 			public static const RANDOM:int = 2;
 			
 			//private var userId: String = "";
+			private var posterId: String;
 			
-			public function initContent(rp:ResourcePrice): void
+			public function initContent(posterIdP: String): void
 			{
-				this.rp = rp;
+				//this.rp = rp;
+				posterId = posterIdP;
 			}
 			
 			private function init(): void
@@ -77,11 +79,12 @@
 				
 				Context.Model.addCustomListener(ContextEvent.WALL_FAST_LOGINED, function (e: ContextEvent): void
 				{
-					if(rp != null)
-					{
-						chests.initContent(rp, e.data);
-						Context.Model.currentSettings.lotteryTryToWinCount = tryCount;
-					}
+					//mx.controls.Alert.show((e.data as Boolean).toString());
+					
+					var typeLottery:int = e.data as int;
+					
+					chests.initContent(rp, typeLottery);
+					Context.Model.currentSettings.lotteryTryToWinCount = tryCount;
 				});
 				
 				
@@ -96,8 +99,14 @@
 			
 			private function getPresent(): void
 			{
-				Context.gameServer.wall_sendSubmitPrice();
-				TweenMax.delayedCall(1500, function(): void
+				getPrizeButton.enabled = false;
+				
+				if(Context.Model.viewer.id == Context.Model.currentSettings.flashVars.userId)
+				{
+					Context.gameServer.wall_sendSubmitPrice(posterId);
+				}
+				
+				TweenMax.delayedCall(1.5, function(): void
 				{
 					VkontakteGlobals.wrapper.external.navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
 				});
@@ -145,7 +154,8 @@
 					  horizontalAlign="center" verticalAlign="middle"
 					  visible="{buttonPanel1Visible}"
 					  >
-				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+				<flexcomponents:PatternButton id="getPrizeButton"
+											  skinClass="skins.buttons.Pattern3ButtonS"
 											  customLabel="Поделить приз"
 											  click="getPresent();"
 											  />

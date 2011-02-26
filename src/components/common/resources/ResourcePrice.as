@@ -118,6 +118,20 @@ public class ResourcePrice {
         return res;
     }
 
+	public function isEqual(rp: ResourcePrice): Boolean
+	{
+		var res:Boolean = false;
+		if (
+			this.gold.value == rp.gold.value &&
+			this.crystals.value == rp.crystals.value &&
+			this.adamant.value == rp.adamant.value &&
+			this.antimatter.value == rp.antimatter.value) {
+			res = true;
+		}
+		
+		return res;
+	}
+	
     public function cloneFrom(rp:ResourcePrice):void {
 
         this._gold.cloneFrom(rp.getResource(ResourceType.GOLD));

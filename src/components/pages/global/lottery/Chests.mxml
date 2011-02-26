@@ -15,15 +15,52 @@
 			import components.common.resources.ResourceObject;
 			
 			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
+			import mx.utils.ObjectUtil;
+			
+			import spark.events.IndexChangeEvent;
 			
 			[Bindable]
 			private var chestsCollection:ArrayCollection = new ArrayCollection();
+			private var checkingChestIndex: int = -1;
+			
+			public function removeAllListeners(): void
+			{
+				Context.Model.removeCustomEventListener(ContextEvent.L_RESET_CHESTS, chestReset);
+				Context.Model.removeCustomEventListener(ContextEvent.L_CHEST_IS_CHECKED, chestIsChecked);
+			}
 			
 			private function init():void
 			{
 				Context.Model.addCustomListener(ContextEvent.L_RESET_CHESTS, chestReset);
 				
 				chestReset(null);
+				
+				Context.Model.addCustomListener(ContextEvent.L_CHEST_IS_CHECKED, chestIsChecked);
+			}
+			
+			private function chestIsChecked(e: ContextEvent): void
+			{
+				//mx.controls.Alert.show(ObjectUtil.toString({data: e.data}));
+				
+				if(checkingChestIndex != -1)
+				{
+					if(e.data == null)
+					{
+						(chestsCollection[checkingChestIndex] as ChestObject).isOpened = true;
+					}else if(e.data is ResourceObject)
+					{
+						(chestsCollection[checkingChestIndex] as ChestObject).price = e.data;
+						(chestsCollection[checkingChestIndex] as ChestObject).isOpened = true;
+					}
+				}
+				
+				Context.Model.currentSettings.lotteryTryToWinCount --;
+				Context.Model.dispatchCustomEvent(ContextEvent.L_TRY_COUNT_SET_CHANGED);
+				
+				chestsList.enabled = true;
+				checkingChestIndex = -1
+				chestsCollection.refresh();
 			}
 			
 			private function chestReset(e: ContextEvent): void
@@ -36,7 +73,7 @@
 					chestsCollection.addItem(new ChestObject(false, null));
 				}
 				
-				var workIndexes: Array = new Array();
+				/* var workIndexes: Array = new Array();
 				
 				function checkInArray(index: int): Boolean
 				{
@@ -70,16 +107,31 @@
 						workIndexes.push(r);
 					}
 				}
-					
+					 */
 				chestsCollection.refresh();
+			}
+			
+			private function tryToOpen(e:IndexChangeEvent):void
+			{
+				if(Context.Model.currentSettings.lotteryTryToWinCount > 0)
+				{
+					Context.gameServer.tryLottery();
+					checkingChestIndex = e.newIndex;
+					chestsList.enabled = false;
+				}else
+				{
+					Context.Model.dispatchCustomEvent(ContextEvent.L_SHOW_CHEST_BLOCK, true);
+				}
 			}
 			
 		]]>
 	</fx:Script>
 	
-	<s:List itemRenderer="components.pages.global.lottery.ChestIR" dataProvider="{chestsCollection}"
+	<s:List id="chestsList" itemRenderer="components.pages.global.lottery.ChestIR" dataProvider="{chestsCollection}"
 			contentBackgroundAlpha="0" borderVisible="false"
-			width="390">
+			change="tryToOpen(event);"
+			width="390"
+			>
 		<s:layout>
 			<s:TileLayout columnAlign="justifyUsingWidth" requestedRowCount="2" requestedColumnCount="5" />
 		</s:layout>

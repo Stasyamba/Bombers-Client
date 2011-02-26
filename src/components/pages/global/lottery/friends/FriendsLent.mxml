@@ -88,7 +88,8 @@
 			{
 				var postId: Array = new Array();
 				postId.push(WallView.POST_TYPE_HELP.toString());
-				
+				postId.push(Context.Model.currentSettings.gameProfile.id);
+					
 				for each(var ro: ResourceObject in Context.Model.currentSettings.lotteryTodayPrice.getResourceObjectArr())
 				{
 					postId.push(ro.value.toString());

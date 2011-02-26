@@ -83,13 +83,15 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.game.requesttogame.RequestGameObject
-        import components.common.utils.adjustcolor.Color
-        import components.common.utils.adjustcolor.ColorMatrix
-        import components.common.utils.adjustcolor.ColorMatrixObject
-
-        import mx.controls.Alert
-        import mx.managers.PopUpManager
+			import api.vkontakte.VkontakteGlobals;
+			
+			import components.common.game.requesttogame.RequestGameObject;
+			import components.common.utils.adjustcolor.Color;
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+			
+			import mx.controls.Alert;
+			import mx.managers.PopUpManager;
 
         private var requestsAll:Array = new Array();
         [Bindable]
@@ -99,7 +101,16 @@
 
         private var preloaderTimer:Timer
 
+		private var delayEnegryBought: int = 0;	
+		private var delayVotesBought: int = 0;	
+				
         public function close():void {
+			
+			if((parentApplication as Bombers).isWrapperExists)
+			{
+				VkontakteGlobals.wrapper.removeEventListener("onBalanceChanged", onBalanceChanged);
+			}
+			
             Context.Model.windowsManager.deleteWindow(this);
             PopUpManager.removePopUp(this);
         }
@@ -118,7 +129,7 @@
         }
 
         private function panelCreationComplete():void {
-            Context.Model.windowsManager.closeAll(true);
+            //Context.Model.windowsManager.closeAll(true);
             Context.Model.windowsManager.addWindow(this);
 
             apearingAnimation.play();
@@ -134,9 +145,20 @@
             lightBorderContainer.filters = [cm1.filter];
             darkBorderContainer.filters = [cm.filter];
 
-
+			if((parentApplication as Bombers).isWrapperExists)
+			{
+				VkontakteGlobals.wrapper.addEventListener("onBalanceChanged", onBalanceChanged);
+			}
+			
+			Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CLOSE_RESOURCE_MARKET);
         }
 
+		private function onBalanceChanged(e: Object): void	
+		{
+			Context.Model.currentSettings.votes = e.balance;
+			buyEnergy(delayEnegryBought);
+		}
+			
         private function changeGlowState(visible:Boolean):void {
             pulseA.stop();
 
@@ -154,32 +176,66 @@
             preloaderContainer.visible = visible;
         }
 
-        private function buyEnergy(count:int):void {
-            preloaderVisible(true);
-            preloaderTimer = new Timer(1000)
-            preloaderTimer.start()
-            Context.Model.addCustomListener(ContextEvent.EN_BUY_SUCCESS, onBuySuccess)
-            Context.Model.addCustomListener(ContextEvent.RS_BUY_FAILED, onBuyFailed)
-            Context.gameServer.sendBuyEnergyRequest(count)
+        private function buyEnergy(count:int):void 
+		{
+			var diff: int = 0;
+			
+			switch(count)
+			{
+				case 3:
+					diff = 200 - Context.Model.currentSettings.votes;
+					delayVotesBought = 200;
+					break;
+				case 8:
+					diff = 400 - Context.Model.currentSettings.votes;
+					delayVotesBought = 400;
+					break;
+			}
+			
+			if(diff > 0)
+			{
+				// need votes on apps bill
+				if((parentApplication as Bombers).isWrapperExists)
+				{
+					VkontakteGlobals.wrapper.external.showPaymentBox(diff/100);
+					delayEnegryBought = count;
+				}
+			}else
+			{
+				preloaderVisible(true);
+				
+				preloaderTimer = new Timer(1000);
+				preloaderTimer.start();
+				
+				Context.Model.addCustomListener(ContextEvent.EN_BUY_SUCCESS, onBuySuccess);
+				Context.Model.addCustomListener(ContextEvent.RS_BUY_FAILED, onBuyFailed);
+				Context.gameServer.sendBuyEnergyRequest(count);
+			}
+			
+           
         }
 
         private function onBuyFailed(e:*):void {
-            Alert.show("Buy failed")
-            finishRequest()
+            //Alert.show("Buy failed")
+            finishRequest();
         }
 
         private function onBuySuccess(e:*):void {
             //Alert.show("Buy success")
-            finishRequest()
+			Context.Model.currentSettings.votes -= delayVotesBought;
+            finishRequest();
         }
 
         private function finishRequest():void {
-            Context.Model.removeCustomEventListener(ContextEvent.EN_BUY_SUCCESS, onBuySuccess)
-            Context.Model.removeCustomEventListener(ContextEvent.RS_BUY_FAILED, onBuyFailed)
-            preloaderTimer.addEventListener(TimerEvent.TIMER, function(e:*):void {
-                preloaderTimer.stop()
-                preloaderVisible(false)
-                Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED)
+			
+            Context.Model.removeCustomEventListener(ContextEvent.EN_BUY_SUCCESS, onBuySuccess);
+            Context.Model.removeCustomEventListener(ContextEvent.RS_BUY_FAILED, onBuyFailed);
+			
+            preloaderTimer.addEventListener(TimerEvent.TIMER, function(e:*):void 
+			{
+                preloaderTimer.stop();
+                preloaderVisible(false);
+                Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED);
             })
         }
         ]]>

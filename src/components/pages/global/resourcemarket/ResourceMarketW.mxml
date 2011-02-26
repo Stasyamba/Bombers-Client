@@ -49,6 +49,9 @@
 
     <fx:Script>
 		<![CDATA[
+			import mx.controls.Alert;
+		
+		import api.vkontakte.VkontakteGlobals;
         import components.common.resources.ResourcePrice
         import components.common.resources.ResourceType
         import components.common.resources.resourcemarket.ResourcePriceToolTip
@@ -57,17 +60,26 @@
 
         [Bindable]
         public var rp:ResourcePrice = new ResourcePrice(0, 0, 0, 0);
-
+		public var votePrice: int = 0;
+			
         [Bindable]
         public var costText:String = "";
         [Bindable]
         public var describeCostText:String = "";
-
-
-        private function close():void {
+			
+		public var isBoughtInProgress: Boolean = false;	
+			
+        private function close():void 
+		{
+			if((parentApplication as Bombers).isWrapperExists)
+			{
+				VkontakteGlobals.wrapper.removeEventListener("onBalanceChanged", onBalanceChanged);
+			}
+			
             Context.Model.removeCustomEventListener(ContextEvent.RS_BUY_SUCCESS, buySuccess);
             Context.Model.removeCustomEventListener(ContextEvent.RS_BUY_FAILED, buyFail);
-
+			Context.Model.removeCustomEventListener(ContextEvent.NEED_TO_CLOSE_RESOURCE_MARKET, closeHandler);
+			
             PopUpManager.removePopUp(this);
         }
 
@@ -78,35 +90,70 @@
         private function panelCreationComplete():void {
             apearingAnimation.play();
 
+			votePrice = Context.resourceMarket.getVoicePrice(rp);			
+			
             Context.Model.addCustomListener(ContextEvent.RS_BUY_SUCCESS, buySuccess);
             Context.Model.addCustomListener(ContextEvent.RS_BUY_FAILED, buyFail);
+			
+			Context.Model.addCustomListener(ContextEvent.NEED_TO_CLOSE_RESOURCE_MARKET, closeHandler);
+			
+			if((parentApplication as Bombers).isWrapperExists)
+			{
+				VkontakteGlobals.wrapper.addEventListener("onBalanceChanged", onBalanceChanged);
+			}
         }
 
-
-        private function buySuccess(e:ContextEvent):void {
-            buyProgressVisible(false);
-            close();
-
-            //Alert.show("buy success");
+		private function closeHandler(e: ContextEvent): void	
+		{
+			close();
+		}
+			
+		private function onBalanceChanged(e: Object): void	
+		{
+			Context.Model.currentSettings.votes = e.balance;
+			//mx.controls.Alert.show("votes: "+Context.Model.currentSettings.votes.toString());
+			
+			buyResources();
+		}	
+			
+        private function buySuccess(e:ContextEvent):void 
+		{
+			//mx.controls.Alert.show("buy success with votePrice: "+votePrice.toString());
+			//mx.controls.Alert.show("votes befor diff: "+Context.Model.currentSettings.votes.toString());
+			
+			
+			Context.Model.currentSettings.votes -= votePrice*100;
+			slidersGroup.enabled = true;
+			isBoughtInProgress = false;
+			
+			buyProgressVisible(false);
+            closeWrapper();
         }
 
         private function buyFail(e:ContextEvent):void {
             buyProgressVisible(false, true);
+			slidersGroup.enabled = true;
+			isBoughtInProgress = false;
+			
             //Alert.show("Не удалось купить ресурс");
         }
 
         private function resourceValueChanged(e:ContextEvent):void {
-            rp.setResourceValue(e.data.resourceType, e.data.value);
-
-            var price:Number = Context.resourceMarket.getVoicePrice(rp);
-            costText = ResourcePriceToolTip.getToolTipCost(price);
-
-            var describeCostTextNew:String = ResourcePriceToolTip.getToolTipDescibe(price);
-            if (describeCostTextNew != describeCostText) {
-                describeCostText = describeCostTextNew;
-                describeCostLabelApearingAnimation.play();
-            }
-
+			if(!isBoughtInProgress)
+			{
+	            rp.setResourceValue(e.data.resourceType, e.data.value);
+	
+				votePrice = Context.resourceMarket.getVoicePrice(rp);
+	            costText = ResourcePriceToolTip.getToolTipCost(votePrice);
+	
+	            var describeCostTextNew:String = ResourcePriceToolTip.getToolTipDescibe(votePrice);
+				
+	            if (describeCostTextNew != describeCostText) 
+				{
+	                describeCostText = describeCostTextNew;
+	                describeCostLabelApearingAnimation.play();
+	            }
+			}
         }
 
         private function buyProgressVisible(visible:Boolean, failedLabelVisible:Boolean = false):void {
@@ -115,11 +162,27 @@
             failedBuyLabel.visible = failedLabelVisible;
         }
 
-        public function test():void {
-            //Alert.show(rp.toString());
-            buyProgressVisible(true);
-            Context.gameServer.sendBuyResourcesRequest(rp);
+        public function buyResources():void 
+		{
+			if((parentApplication as Bombers).isWrapperExists)
+			{
+				var diff:int = votePrice*100 - Context.Model.currentSettings.votes;
+				
+				if(diff > 0)
+				{
+					VkontakteGlobals.wrapper.external.showPaymentBox(diff/100);
+				}else
+				{
+					isBoughtInProgress = true;
+					slidersGroup.enabled = false;
+					buyProgressVisible(true);
+					votePrice = Context.resourceMarket.getVoicePrice(rp);
+					Context.gameServer.sendBuyResourcesRequest(rp);
+				}
+			}
         }
+			
+			
         ]]>
 	</fx:Script>
     <s:layout>
@@ -175,6 +238,7 @@
         <s:VGroup width="100%" height="200">
             <s:VGroup width="100%" height="200"
                       horizontalAlign="center" verticalAlign="middle"
+					  id="slidersGroup"
                     >
                 <resourcemarket:ResourceScrollerTemplate resourceType="{ResourceType.GOLD}" value="@{rp.gold.value}"
                                                          resourceValueChanged="resourceValueChanged(event);"
@@ -222,10 +286,11 @@
                                                       fontSize="24" fontSizeOver="24"
                                                       colorMatrixObject="{new ColorMatrixObject(0, 0.6)}"
                                                       visible="true"
-                                                      click="test();"
+                                                      click="buyResources();"
                                 />
                         <s:Label id="failedBuyLabel" visible="false"
-                                 text="Покупка не удалась, читер поганый"
+                                 text="Покупка не удалась по космическим причинам"
+								 maxWidth="150"
                                  color="0xffffff" fontFamily="mpbc" fontSize="14"
                                 />
                     </s:VGroup>

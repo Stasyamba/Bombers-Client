@@ -26,6 +26,9 @@ public class Settings {
 	public var lotteryTryToWinCount: int = 2;
 	public var lotteryPresentFinded: ResourcePrice = null;
 	public var lotteryType: int = WallChest.RANDOM;
+	public var lottryResourcePrize:ResourcePrice = null;
+	
+	public var votes: int = 0;
 	
     private var _requestToGames:Array = new Array();
     public var gameProfileLoaded:Boolean = false
