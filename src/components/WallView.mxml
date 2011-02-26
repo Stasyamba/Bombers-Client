@@ -44,8 +44,10 @@
 					//mx.controls.Alert.show("type help");
 		            
 					content = new WallChest();
-					(content as WallChest).initContent(new ResourcePrice(encoded[1],encoded[2],encoded[3],encoded[4]));
-		
+					//(content as WallChest).initContent(new ResourcePrice(encoded[1],encoded[2],encoded[3],encoded[4]));
+					
+					(content as WallChest).initContent(encoded[1]);
+					
 		            break;
 		        default:
 		            break;

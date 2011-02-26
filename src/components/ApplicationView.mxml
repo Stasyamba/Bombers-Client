@@ -19,28 +19,32 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals
-
-        import components.common.game.requesttogame.RequestGameObject
-        import components.common.profiles.VkontakteProfile
-        import components.common.resources.ResourcePrice
-        import components.pages.global.energymarket.EnergyMarketW
-        import components.pages.global.gamerequest.ConnectToGameW
-        import components.pages.global.inventory.InventoryW
-        import components.pages.global.lottery.LotteryW
-        import components.pages.global.resourcemarket.ResourceMarketW
-        import components.pages.global.tutorial.TutorialPreviewW
-        import components.wall.SendWallObject
-
-        import engine.games.GameType
-
-        import mx.controls.Alert
-        import mx.managers.PopUpManager
+			import api.vkontakte.VkontakteGlobals;
+			
+			import components.common.game.requesttogame.RequestGameObject;
+			import components.common.profiles.VkontakteProfile;
+			import components.common.resources.ResourcePrice;
+			import components.pages.global.energymarket.EnergyMarketW;
+			import components.pages.global.gamerequest.ConnectToGameW;
+			import components.pages.global.inventory.InventoryW;
+			import components.pages.global.lottery.LotteryW;
+			import components.pages.global.resourcemarket.ResourceMarketW;
+			import components.pages.global.tutorial.TutorialPreviewW;
+			import components.wall.SendWallObject;
+			
+			import engine.games.GameType;
+			
+			import mx.controls.Alert;
+			import mx.core.IVisualElement;
+			import mx.managers.PopUpManager;
+			import mx.managers.PopUpManagerChildList;
 
         public static const TAB_NAME_WORLD:String = "WorldPage";
         public static const TAB_NAME_GAME:String = "GamePage";
-        public static const TAB_NAME_INVENORY:String = "InventoryPage"
-
+        public static const TAB_NAME_INVENORY:String = "InventoryPage";	
+		
+		public var activeWindow: IVisualElement = null;	
+			
         public static function getTabIndexByName(name:String):int {
             var res:int = 0;
             switch (name) {
@@ -114,6 +118,8 @@
 
 
             });
+			
+			
 
             Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, function (e:ContextEvent):void {
                 if (e.data is Boolean) {
@@ -168,6 +174,13 @@
                 }
             }
 
+			Context.Model.addCustomListener(ContextEvent.L_NEED_TO_SHOW_LOTTERY, function(e: ContextEvent): void
+			{
+				showLottery();
+			});
+			
+			
+			
             /*disconnected*/
 
             Context.gameServer.disconnected.add(onDisconnected)
@@ -176,13 +189,16 @@
             idGroup.visible = !(parentApplication as Bombers).isWrapperExists;
 
 
+			
+			
             /// immitation
             //showLottery();
-
+			
         }
 
         private function sendToWall(swo:SendWallObject):void {
             if (swo != null && swo.up != null) {
+				//mx.controls.Alert.show("postID: "+swo.postId);
                 Context.Model.wallSavePhotoID(swo.up.id, swo.imageId, swo.postId, swo.message);
             }
         }
@@ -233,7 +249,7 @@
         }
 
         private function openResourceMarket(rp:ResourcePrice):void {
-            var rmw:ResourceMarketW = new ResourceMarketW();
+            var rmw: ResourceMarketW = new ResourceMarketW();
             rmw.rp.cloneFrom(rp);
             rmw.x = 50;
             rmw.y = 50;

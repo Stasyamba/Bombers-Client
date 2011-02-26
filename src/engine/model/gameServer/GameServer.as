@@ -4,46 +4,50 @@
  */
 
 package engine.model.gameServer {
-import com.smartfoxserver.v2.SmartFox
-import com.smartfoxserver.v2.core.SFSEvent
-import com.smartfoxserver.v2.entities.Room
-import com.smartfoxserver.v2.entities.data.ISFSArray
-import com.smartfoxserver.v2.entities.data.ISFSObject
-import com.smartfoxserver.v2.entities.data.SFSObject
-import com.smartfoxserver.v2.requests.ExtensionRequest
-import com.smartfoxserver.v2.requests.JoinRoomRequest
-import com.smartfoxserver.v2.requests.LeaveRoomRequest
-import com.smartfoxserver.v2.requests.LoginRequest
-import com.smartfoxserver.v2.requests.PublicMessageRequest
+import com.smartfoxserver.v2.SmartFox;
+import com.smartfoxserver.v2.core.SFSEvent;
+import com.smartfoxserver.v2.entities.Room;
+import com.smartfoxserver.v2.entities.data.ISFSArray;
+import com.smartfoxserver.v2.entities.data.ISFSObject;
+import com.smartfoxserver.v2.entities.data.SFSObject;
+import com.smartfoxserver.v2.requests.ExtensionRequest;
+import com.smartfoxserver.v2.requests.JoinRoomRequest;
+import com.smartfoxserver.v2.requests.LeaveRoomRequest;
+import com.smartfoxserver.v2.requests.LoginRequest;
+import com.smartfoxserver.v2.requests.PublicMessageRequest;
 
-import components.common.base.access.rules.levelrule.AccessLevelRule
-import components.common.base.expirance.ExperianceObject
-import components.common.base.market.ItemMarketObject
-import components.common.bombers.BomberType
-import components.common.items.ItemObject
-import components.common.items.ItemType
-import components.common.resources.ResourcePrice
-import components.wall.chest.WallChest
+import components.common.base.access.rules.levelrule.AccessLevelRule;
+import components.common.base.expirance.ExperianceObject;
+import components.common.base.market.ItemMarketObject;
+import components.common.bombers.BomberType;
+import components.common.items.ItemObject;
+import components.common.items.ItemType;
+import components.common.resources.ResourceObject;
+import components.common.resources.ResourcePrice;
+import components.wall.chest.WallChest;
 
-import engine.EngineContext
-import engine.maps.interfaces.IDynObject
-import engine.maps.interfaces.IDynObjectType
-import engine.maps.mapObjects.DynObjectType
-import engine.model.signals.InGameMessageReceivedSignal
-import engine.model.signals.ProfileLoadedSignal
-import engine.model.signals.manage.GameServerConnectedSignal
-import engine.model.signals.manage.LoggedInSignal
-import engine.profiles.GameProfile
-import engine.profiles.LobbyProfile
-import engine.profiles.PlayerGameProfile
-import engine.utils.Direction
-import engine.utils.greensock.TweenMax
-import engine.weapons.WeaponType
+import engine.EngineContext;
+import engine.maps.interfaces.IDynObject;
+import engine.maps.interfaces.IDynObjectType;
+import engine.maps.mapObjects.DynObjectType;
+import engine.model.signals.InGameMessageReceivedSignal;
+import engine.model.signals.ProfileLoadedSignal;
+import engine.model.signals.manage.GameServerConnectedSignal;
+import engine.model.signals.manage.LoggedInSignal;
+import engine.profiles.GameProfile;
+import engine.profiles.LobbyProfile;
+import engine.profiles.PlayerGameProfile;
+import engine.utils.Direction;
+import engine.utils.greensock.TweenMax;
+import engine.weapons.WeaponType;
 
-import flash.events.TimerEvent
-import flash.utils.Timer
+import flash.events.TimerEvent;
+import flash.utils.Timer;
 
-import org.osflash.signals.Signal
+import mx.controls.Alert;
+
+import org.osflash.signals.Signal;
+import org.osmf.media.IMediaTrait;
 
 public class GameServer extends SmartFox {
 
@@ -83,6 +87,11 @@ public class GameServer extends SmartFox {
     private static const INT_FAST_JOIN_RESULT:String = "interface.gameManager.fastJoin.result"
     private static const INT_CREATE_GAME:String = "interface.gameManager.createGame"
     private static const INT_CREATE_GAME_RESULT:String = "interface.gameManager.createGame.result"
+	private static const INT_TRY_LUCK:String = "interface.tryLuck"
+	private static const INT_TRY_LUCK_RESULT:String = "interface.tryLuck.result"
+	private static const INT_BUY_LUCK:String = "interface.buyLuck"
+	private static const INT_BUY_LUCK_RESULT:String = "interface.buyLuck.result"
+	
     private static const LOBBY_PROFILES:String = "game.lobby.playersProfiles"
     private static const LOBBY_READY:String = "game.lobby.readyChanged"
 
@@ -305,9 +314,10 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest("interface.setNick", params, null));
     }
 
-    public function wall_sendSubmitPrice():void {
-        var params:ISFSObject = new SFSObject();
-        params.putUtfString("PostCreatorId", mySelf.name);
+    public function wall_sendSubmitPrice(posterId: String):void {
+		var params:ISFSObject = new SFSObject();
+        params.putUtfString("PostCreatorId", posterId);
+		
         send(new ExtensionRequest("bombersWall.submitPrize", params, null));
     }
 
@@ -320,6 +330,19 @@ public class GameServer extends SmartFox {
         tenSecondsTimer.start()
     }
 
+	public function tryLottery():void
+	{
+		send(new ExtensionRequest(INT_TRY_LUCK, null, null));
+	}
+	
+	public function buyLuck():void
+	{
+		var params:ISFSObject = new SFSObject();
+		params.putInt("interface.buyLuck.fields.luck", 3);
+		
+		send(new ExtensionRequest(INT_BUY_LUCK, params, null));
+	}
+	
     //----------------------Handlers---------------------------
 
     private function onConnected(event:SFSEvent):void {
@@ -558,6 +581,22 @@ public class GameServer extends SmartFox {
                 //gp
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
                 profileLoaded.dispatch(gp);
+				
+				// lottery
+				Context.Model.currentSettings.lottryResourcePrize = new ResourcePrice(
+					responseParams.getInt("GoldPrize"),
+					responseParams.getInt("CrystalPrize"),
+					responseParams.getInt("AdamantiumPrize"),
+					responseParams.getInt("AntimatterPrize")
+				);
+				
+				Context.Model.currentSettings.lotteryTryToWinCount = responseParams.getInt("LuckCount");
+				
+				if(Context.Model.currentSettings.lotteryTryToWinCount>0)
+				{
+					Context.Model.dispatchCustomEvent(ContextEvent.L_NEED_TO_SHOW_LOTTERY);
+				}
+				
                 break;
             case
             INT_BUY_RESOURCES_RESULT:
@@ -639,10 +678,56 @@ public class GameServer extends SmartFox {
             //WALL
             case
             "bombersWall.isRegisteredLoaded":
-                var flag:Boolean = responseParams.getBool("isRegistered")
+                var flag:Boolean = responseParams.getBool("IsRegistered")
                 //mx.controls.Alert.show("Login success -> "+flag.toString());
-                Context.Model.dispatchCustomEvent(ContextEvent.WALL_FAST_LOGINED, flag ? WallChest.MUST_LOOSE : WallChest.MUST_WIN);
+                
+				Context.Model.dispatchCustomEvent(ContextEvent.WALL_FAST_LOGINED, flag ? WallChest.MUST_LOOSE : WallChest.MUST_WIN);
                 break;
+			
+			case 
+			INT_TRY_LUCK_RESULT:
+			
+			
+			var newResources: ResourcePrice = new ResourcePrice(
+				responseParams.getInt("Gold"),
+				responseParams.getInt("Crystal"),
+				responseParams.getInt("Adamantium"),
+				responseParams.getInt("Antimatter")
+			);
+			
+			//mx.controls.Alert.show(newResources.toString());
+
+			var diff: ResourcePrice = newResources.getDifference(Context.Model.currentSettings.gameProfile.resources);
+			var arrRes: Array = diff.getResourceObjectArr();
+			var resourceObject:ResourceObject = null;
+			
+			for each(var ro:ResourceObject in arrRes)
+			{
+				if(ro.value != 0)
+				{
+					resourceObject = ro;
+					break;
+				}
+			}
+			
+			Context.Model.currentSettings.gameProfile.resources = newResources.clone();
+			
+			Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED);
+			Context.Model.dispatchCustomEvent(ContextEvent.L_CHEST_IS_CHECKED, resourceObject);
+			
+			
+			break;
+			
+			case 
+			INT_BUY_LUCK_RESULT:
+			Context.Model.currentSettings.gameProfile.energy = responseParams.getInt("Energy");
+			Context.Model.currentSettings.lotteryTryToWinCount = responseParams.getInt("LuckCount");
+			
+			Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED);
+			Context.Model.dispatchCustomEvent(ContextEvent.L_RESET_CHESTS);
+			Context.Model.dispatchCustomEvent(ContextEvent.L_SHOW_CHEST_BLOCK, false);
+			
+			break;
         }
     }
 

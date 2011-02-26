@@ -21,13 +21,15 @@
 			
 			public function initContent(rp: ResourcePrice, type: int):void
 			{
-				chestReset(rp, type);
+				chestReset(type);
 			}
 			
-			private function chestReset(rp: ResourcePrice, type: int): void
+			private function chestReset(type: int): void
 			{
 				chestsCollection = new ArrayCollection();
-				var arr:Array = rp.getResourceObjectArr();
+				var rpNew = new ResourcePrice(Math.round(Math.random()*10)+1,Math.round(Math.random()*5)+1,0,0);
+				
+				var arr:Array = rpNew.getResourceObjectArr();
 				
 				for(var i: int = 0; i<= 9; i++)
 				{
@@ -74,30 +76,13 @@
 						}
 					}else if(type == WallChest.MUST_WIN)
 					{
-						var ind: Array = [0,1];
-						r = Math.round(Math.random()*3);
-						if(r == 3) r = 0;
-						
-						var startIndex: int = Math.round(Math.random()*(chestsCollection.length - 1));
-						
-						for(i = startIndex; i<= startIndex+chestsCollection.length - 1 - ind[r]; i++) 
-						{
-							var realI: int;
-							
-							if(i >= startIndex+chestsCollection.length)
-							{
-								realI = i - chestsCollection.length ;
-							}else
-							{
-								realI = i;
-							}
-							
+						for(i = 0; i<= chestsCollection.length - 1; i++) 
+						{	
 							var r1: int = Math.round(Math.random()*2);
 							if(r1 == 2) r1 = 0;
 							
-							(chestsCollection[realI] as ChestObject).price = arr[r1].clone();
+							(chestsCollection[i] as ChestObject).price = arr[r1].clone();
 						}
-						
 					}
 						
 				}

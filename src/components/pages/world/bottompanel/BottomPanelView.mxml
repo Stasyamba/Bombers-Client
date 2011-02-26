@@ -129,6 +129,12 @@
 
             }
         }
+			
+		private function openLottery(): void	
+		{
+			Context.Model.dispatchCustomEvent(ContextEvent.L_NEED_TO_SHOW_LOTTERY);
+		}
+			
         ]]>
 	</fx:Script>
 
@@ -157,6 +163,7 @@
                 >
             <bottompanel:RequestGameButton id="requestButton" click="openRequests();"/>
         </s:HGroup>
+		<s:Button label="Lottery test" click="openLottery();" />
         <bottompanel:MarketButton id="inventoryMarketButton" click="bottomMenuButtonClickHandler(OPEN_MARKET_TYPE);"/>
         <bottompanel:KillFriendsButton id="killFriendsButton"
                                        click="bottomMenuButtonClickHandler(OPEN_FRIENDS_GAME_TYPE);"/>

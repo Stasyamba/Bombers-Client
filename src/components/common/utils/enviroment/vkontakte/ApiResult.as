@@ -3,11 +3,15 @@ import api.vkontakte.util.json.JSON;
 
 import components.common.profiles.VkontakteProfile;
 
+import mx.controls.Alert;
+import mx.utils.ObjectUtil;
+
 public class ApiResult {
 
     public var settingsResponde:Number;
     public var friends: Array = new Array();
     public var appFriends: Array = new Array();
+	public var votes: int = 0;
 	
     public function ApiResult(apiResult:String, immitation:Boolean = false) {
         encode(apiResult, immitation);
@@ -24,6 +28,9 @@ public class ApiResult {
             obj = JSON.decode(apiResult)['response'];
             settingsResponde = obj["settings"];
 
+			votes = obj["votes"] as int;
+			//mx.controls.Alert.show(ObjectUtil.toString({votes: obj["balance"]}));
+			
             var fr:* = obj["friends"];
 
             if (fr is Array) {

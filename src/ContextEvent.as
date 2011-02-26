@@ -35,7 +35,8 @@ public class ContextEvent extends Event {
     /***** resource market events *****/
     public static const NEED_TO_OPEN_RESOURCE_MARKET:String = "NeedToOpenMarket";
     // pass: ResourcePrice -> set by default in market
-
+	public static const NEED_TO_CLOSE_RESOURCE_MARKET:String = "NeedToCloseMarket";
+	
     public static const RESOURCE_VALUE_CHANGED:String = "ResourceValueChanged";
     // pass: {resourceType: ResourceType, value: int} -> resource that was changed
 
@@ -133,10 +134,12 @@ public class ContextEvent extends Event {
 	
 	/** lottery events **/
 	public static const L_SHOW_CHEST_BLOCK:String = "LShowChestBlock";
+	public static const L_NEED_TO_SHOW_LOTTERY:String = "LNeedToShowLottery";
 	// pass: Boolean -> show or hide chest block
 	public static const L_RESET_CHESTS:String = "LResetChests";
 	public static const L_TRY_COUNT_SET_CHANGED:String = "LTryCountSetChanged";
-
+	public static const L_CHEST_IS_CHECKED:String = "LChestIsChecked";
+	// pass: ResourceObject -> if empty = null
 	
 	/** vk events **/
 	public static const VK_SEND_TO_WALL:String = "VKSendToWall";
@@ -145,7 +148,7 @@ public class ContextEvent extends Event {
 	/** wall events **/
 	public static const WALL_TRY_COUNT_CHANGED: String = "WALLTryCountChanged";
 	public static const WALL_FAST_LOGINED: String = "WALLFastLogined";
-	// pass: int -> lottery type (const in WallChest.mxml)
+	// pass: boolean -> lottery type (const in WallChest.mxml)
 	
     public var data:*;
 
