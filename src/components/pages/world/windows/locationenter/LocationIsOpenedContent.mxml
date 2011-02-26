@@ -5,10 +5,6 @@
          xmlns:flexcomponents="components.common.flexcomponents.*"
          width="100%" height="100%"
         >
-    <fx:Script>
-		<![CDATA[
-        ]]>
-	</fx:Script>
     <fx:Declarations>
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
@@ -18,20 +14,22 @@
         import components.ApplicationView
         import components.common.utils.adjustcolor.ColorMatrixObject
         import components.common.worlds.locations.LocationType
+        import components.pages.world.windows.friendsgame.TypeGameToggle
+        import components.pages.world.windows.randomgame.CreatingRandomGameW
 
         import mx.core.BitmapAsset
+        import mx.managers.PopUpManager
 
         import spark.primitives.BitmapImage
 
-		
-		
-		[Bindable]
-		private var betaGroupVisible:Boolean = false;
+        public var ww:CreatingRandomGameW
+
+        [Bindable]
+        private var betaGroupVisible:Boolean = false;
         [Bindable]
         private var warningGroupVisible:Boolean = false;
 
-				
-				
+
         [Embed(source="assets/pageworld/worlds/locationenter/energyLightings.png")]
         public var lightingsImage:Class;
 
@@ -60,27 +58,80 @@
 
         private function singleGameButton_clickHandler(event:MouseEvent):void {
             /* if (Context.Model.currentSettings.gameProfile.energy > enegryRequired) {
-                if (locationType == LocationType.WORLD1_GRASSFIELDS) {
-                    Context.Model.windowsManager.closeAll(false);
-                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
-                    Context.gameModel.readyToCreateGame.addOnce(function ():void {
-                        Context.gameModel.createSinglePlayerGame("test");
-                    })
-                }
-            } else {
-                setWarningGroupVisible(true);
-            } */
-			
-			setBetaGroupVisible(true);
+             if (locationType == LocationType.WORLD1_GRASSFIELDS) {
+             Context.Model.windowsManager.closeAll(false);
+             Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+             Context.gameModel.readyToCreateGame.addOnce(function ():void {
+             Context.gameModel.createSinglePlayerGame("test");
+             })
+             }
+             } else {
+             setWarningGroupVisible(true);
+             } */
+
+            setBetaGroupVisible(true);
         }
 
         private function setWarningGroupVisible(visible:Boolean):void {
             warningGroupVisible = visible;
         }
-		
-		private function setBetaGroupVisible(visible:Boolean):void {
-			betaGroupVisible = visible;
-		}
+
+        private function setBetaGroupVisible(visible:Boolean):void {
+            betaGroupVisible = visible;
+        }
+
+        private function fastJoin():void {
+            Context.gameModel.fastJoin(locationType.value)
+            showRandomGameCreating();
+            Context.gameModel.someoneJoinedToGame.addOnce(function (p1:*):void {
+                closeRandomGameCreating();
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+            });
+            Context.gameModel.fastJoinFailed.addOnce(function ():void {
+                closeRandomGameCreating();
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
+                {
+                    text: "Не удалось присоединиться к игре!",
+                    type: TypeGameToggle.TOGGLE_STATE_CREATE
+                });
+            })
+        }
+
+        public function showRandomGameCreating():void {
+            showWarningWrapper(
+                    CreatingRandomGameW.PRELOADER_TYPE,
+                    "Ищем вам подходящую игру",
+                    "Я деловой человек, и не буду больше ждать ответа от сервера, какая бы классная ни была эта игра!"
+                    );
+        }
+
+        public function showWarningWrapper(type:int, message:String, closeMessage:String):void {
+            ww = new CreatingRandomGameW();
+            ww.x = 150;
+            ww.y = 163;
+
+            switch (type) {
+                case CreatingRandomGameW.PRELOADER_TYPE:
+                    ww.isPreloader = true;
+                    break;
+                case CreatingRandomGameW.WARNING_TYPE:
+                    ww.isPreloader = false;
+                    break;
+            }
+
+            ww.warningText = message;
+            ww.closeText = closeMessage;
+
+            PopUpManager.addPopUp(ww, parentApplication as Bombers, false);
+        }
+
+        private function closeRandomGameCreating():void {
+            if (ww) {
+                ww.closeOnCreationComplete = true
+                ww.closeWrapper()
+                ww = null
+            }
+        }
         ]]>
 	</fx:Script>
     <s:VGroup horizontalAlign="center" verticalAlign="middle"
@@ -93,6 +144,7 @@
                                           skinClass="skins.buttons.Pattern3ButtonS"
                                           fontSize="24"
                                           fontSizeOver="24"
+                                          click="fastJoin()"
                     />
 
             <flexcomponents:PatternButton id="singleGameButton"
@@ -146,36 +198,36 @@
         </s:VGroup>
     </s:Group>
 
-	<s:Group width="100%" height="100%"
-			 y="2"
-			 id="betaGroup"
-			 visible="{betaGroupVisible}"
-			 >
-		<s:Rect width="100%" height="100%">
-			<s:fill>
-				<s:SolidColor color="0x000000" alpha="0.9"/>
-			</s:fill>
-		</s:Rect>
-		
-		<s:VGroup width="100%" height="100%"
-				  horizontalAlign="center" verticalAlign="middle"
-				  gap="20"
-				  >
-			<s:Label
-				text="В заданиях вы можете добвать ресурсы за энергию! Но пока что у нас бета, и мы придумываем вам интересные задания."
-				maxWidth="400"
-				textAlign="center"
-				fontFamily="mpbc" fontSize="24" color="0xffe61c"
-				/>
-			<s:HGroup>
-				<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
-											  customLabel="Буду ждать"
-											  fontSize="22" fontSizeOver="22"
-											  click="setBetaGroupVisible(false);"
-											  />
-			</s:HGroup>
-			
-		</s:VGroup>
-	</s:Group>
-	
+    <s:Group width="100%" height="100%"
+             y="2"
+             id="betaGroup"
+             visible="{betaGroupVisible}"
+            >
+        <s:Rect width="100%" height="100%">
+            <s:fill>
+                <s:SolidColor color="0x000000" alpha="0.9"/>
+            </s:fill>
+        </s:Rect>
+
+        <s:VGroup width="100%" height="100%"
+                  horizontalAlign="center" verticalAlign="middle"
+                  gap="20"
+                >
+            <s:Label
+                    text="В заданиях вы можете добвать ресурсы за энергию! Но пока что у нас бета, и мы придумываем вам интересные задания."
+                    maxWidth="400"
+                    textAlign="center"
+                    fontFamily="mpbc" fontSize="24" color="0xffe61c"
+                    />
+            <s:HGroup>
+                <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+                                              customLabel="Буду ждать"
+                                              fontSize="22" fontSizeOver="22"
+                                              click="setBetaGroupVisible(false);"
+                        />
+            </s:HGroup>
+
+        </s:VGroup>
+    </s:Group>
+
 </s:Group>
