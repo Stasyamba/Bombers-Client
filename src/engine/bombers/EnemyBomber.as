@@ -47,7 +47,8 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     protected function directionChanged(id:int, x:Number, y:Number, dir:Direction):void {
         if (id != slot)
             return;
-
+        if(!Context.gameModel.isPlayingNow)
+            return
         _coords.elemX = int(x / Consts.BLOCK_SIZE);
         _coords.xDef = x % Consts.BLOCK_SIZE;
 
@@ -59,7 +60,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     }
 
     public function performSmoothMotion(moveAmount:Number):void {
-        if (_coords == null)
+        if (!Context.gameModel.isPlayingNow)
             return
         switch (_direction) {
             case Direction.NONE:

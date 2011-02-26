@@ -76,13 +76,13 @@
 
         private function keyDown(event:KeyboardEvent):void {
             if (Utils.isArrowKey(event.keyCode)) {
-                if (Context.game != null)
+                if (Context.gameModel.isPlayingNow)
                     Context.game.playerManager.me.addDirection(Utils.arrowKeyCodeToDirection(event.keyCode))
             } else if (event.keyCode == Keyboard.SPACE) {
-                if (Context.game != null)
+                if (Context.gameModel.isPlayingNow != null)
                     Context.game.playerManager.me.setBomb(BombType.REGULAR);
             } else if (event.keyCode == 88) {   //x
-                if (Context.game != null)
+                if (Context.gameModel.isPlayingNow != null)
                     Context.game.playerManager.me.tryActivateWeapon();
             } else if (event.keyCode == 90) {   //z
                 Context.gameModel.increaseWeaponIndex()

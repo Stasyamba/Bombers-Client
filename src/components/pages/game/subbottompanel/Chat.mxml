@@ -19,6 +19,8 @@
 
         import engine.profiles.LobbyProfile
 
+        import engine.utils.greensock.TweenMax
+
         import mx.core.ScrollPolicy
 
         //private var chatText: String = "";
@@ -64,18 +66,22 @@
 
         public function printMessage(from:String, text:String):void {
             chatTextArea.htmlText += "<font size='14' face='mps'><i> " + from + "</i></font>" + ": <font size='14'>" + text + "</font>\n";
+            updateScrollPosition()
         }
 
         public function printICame():void {
             chatTextArea.htmlText += "<font size='18' face='mps'><i>" + "Вы зашли в игру </i></font>\n";
+            updateScrollPosition()
         }
 
         public function printSomeoneCame(name:String):void {
             chatTextArea.htmlText += "<font size='18' face='mps'><i>" + name + "</i></font>" + "<font size='18'><i> зашел(ла) в игру </i></font>\n";
+            updateScrollPosition()
         }
 
         public function printSomeoneLeft(name:String):void {
             chatTextArea.htmlText += "<font size='18' face='mps'><i>" + name + "<i></font>" + "<font size='18'> в страхе выбежал(а) из комнаты </font>\n";
+            updateScrollPosition()
         }
 
         private function onSend(event:MouseEvent):void {
@@ -84,9 +90,15 @@
                 Context.gameServer.sendInGameMessage(messageText.text)
                 messageText.setFocus();
                 messageText.text = "";
-
-                chatTextArea.verticalScrollPosition = chatTextArea.maxVerticalScrollPosition;
+                updateScrollPosition()
+                //chatTextArea.verticalScrollPosition = chatTextArea.maxVerticalScrollPosition;
             }
+        }
+
+        private function updateScrollPosition():void {
+            TweenMax.delayedCall(0.1,function():void{
+                chatTextArea.verticalScrollPosition = chatTextArea.maxVerticalScrollPosition;
+            })
         }
         ]]>
 	</fx:Script>
@@ -112,3 +124,4 @@
     </s:HGroup>
 
 </s:VGroup>
+

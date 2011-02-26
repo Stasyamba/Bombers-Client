@@ -24,34 +24,34 @@
                 }
             })
             timer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void {
-                time += 1
-                timeStringView = getStringTime()
+                if (time > 0) {
+                    time -= 1
+                    timeStringView = getStringTime()
+                }
             })
             everyGameTabOpenInit()
         }
 
         private function getStringTime():String {
             var mins:int = int(time / 60)
-            var secs:int = time - 60*(int(time / 60))
-            return mins.toString() + " : " + ((secs<10)?"0" + secs.toString():secs.toString());
+            var secs:int = time - 60 * (int(time / 60))
+            return mins.toString() + " : " + ((secs < 10) ? "0" + secs.toString() : secs.toString());
         }
 
         private function stop():void {
             timer.stop()
             time = 0
-            timeStringView = "0 : 00"
+            timeStringView = getStringTime()
         }
 
         private function start():void {
-            time = 0
-            timeStringView = "0 : 00"
+            time = 90
+            timeStringView = getStringTime()
             timer.start()
         }
 
         private function everyGameTabOpenInit():void {
             Context.gameModel.gameStarted.add(function():void {
-                time = 0
-                timeStringView = "0 : 00"
                 start()
             })
             Context.gameModel.gameEnded.add(function(p1:*, p2:*):void {
