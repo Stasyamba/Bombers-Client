@@ -11,6 +11,7 @@ public class VkontakteProfile implements ISocialProfile {
     private var _id:String = "";
 
     private var _photoURL:String = "";
+	private var _photoSmallURL:String = "";
     public var photoMediumSrc:String = "";
     public var photoBigSrc:String = "";
 
@@ -29,6 +30,16 @@ public class VkontakteProfile implements ISocialProfile {
 	
 	/* works only for own profile */
 	
+	public function get photoSmallURL():String
+	{
+		return _photoSmallURL;
+	}
+
+	public function set photoSmallURL(value:String):void
+	{
+		_photoSmallURL = value;
+	}
+
 	public function getFriends(type: int): Array
 	{
 		var res:Array = new Array();
@@ -76,26 +87,9 @@ public class VkontakteProfile implements ISocialProfile {
 		return res;
 	}
 	
-	/*public function setFriend(id: String, ): void
-	{
-		if(Context.Model.currentSettings.socialProfile.id == this._id)
-		{
-			for(var vp: VkontakteProfile in Context.Model.currentSettings.apiResult)	
-			{
-				if(vp.id == id)
-				{
-					vp = 
-				}
-			}
-		}
-	}*/
-	
 	public function updateFriends(): void
 	{
-		if(Context.Model.currentSettings.socialProfile.id == this._id)
-		{
-			// dispatch some event
-		}
+		// dispatch some event
 	}
 	
     public function VkontakteProfile(id:String) {
@@ -106,6 +100,7 @@ public class VkontakteProfile implements ISocialProfile {
         this._id = profile.id;
         this._name = profile.name;
         this._photoURL = profile.photoURL;
+		this._photoSmallURL = profile.photoSmallURL;
         this._surname = profile.surname;
         this._profileLink = profile.profileLink;
     }

@@ -39,16 +39,38 @@
 		
 		
 		<s:Parallel  id="overA">
-			<s:Animate target="{userImage}"  duration="200">
-				<s:SimpleMotionPath property="scaleY" valueFrom="1.0" valueTo="1.2" />
-			</s:Animate>
-		</s:Parallel>
+			<s:Sequence>
+				<!--<s:Animate target="{userImage}"  duration="50">
+					<s:SimpleMotionPath property="alpha" valueFrom="1.0" valueTo="0.7" />
+				</s:Animate>-->
+				
+				<s:Parallel>
+					<!--<s:Animate target="{userImage}"  duration="100">
+						<s:SimpleMotionPath property="alpha" valueFrom="0.7" valueTo="1.0" />
+					</s:Animate>-->
+					<s:Animate target="{userImageGlowFilter}"  duration="200">
+						<s:SimpleMotionPath property="alpha" valueFrom="0.0" valueTo="1.0" />
+					</s:Animate>
+				</s:Parallel>
+				
+			</s:Sequence>
 			
-		<s:Parallel  id="outA">
+		</s:Parallel>
+		
+		<s:Parallel id="outA" effectStart="{overA.stop();}">
+			<s:Animate target="{userImageGlowFilter}"  duration="200">
+				<s:SimpleMotionPath property="alpha" valueFrom="1.0" valueTo="0.0" />
+			</s:Animate>
+			<!--<s:Animate target="{userImage}"  duration="200">
+				<s:SimpleMotionPath property="alpha" valueFrom="0.7" valueTo="1.0" />
+			</s:Animate>-->
+		</s:Parallel>
+		
+	<!--	<s:Parallel  id="outA">
 			<s:Animate target="{userImage}"  duration="200">
 				<s:SimpleMotionPath property="scaleY" valueFrom="1.2" valueTo="1.0" />
 			</s:Animate>
-		</s:Parallel>
+		</s:Parallel>-->
 		
 		
 	</fx:Declarations>
@@ -67,12 +89,19 @@
 	
 	<s:Group>
 		<s:BorderContainer id="imageMask" backgroundColor="0x000000" width="51" height="51" />
-		<mx:Image id="userImage" mask="{imageMask}" source="{data.photoSmallURL}" 
-				  trustContent="{Context.Model.trustContent}"
-				  complete="fadeAnimation.play();"
-				  alpha="0"
-				  />
-
+		<s:Group>
+			<s:filters>
+				<s:GlowFilter id="userImageGlowFilter" alpha="0" blurX="3" blurY="3" color="0xfffb2c" />
+			</s:filters> 
+			
+			<mx:Image id="userImage" mask="{imageMask}" source="{data.photoSmallURL}" 
+					  trustContent="{Context.Model.trustContent}"
+					  complete="fadeAnimation.play();"
+					  alpha="0"
+					  />
+		</s:Group>
+		
+		
 		<s:filters>
 			<s:BlurFilter id="blurFilter" blurX="5" blurY="5" />
 		</s:filters>

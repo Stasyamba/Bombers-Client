@@ -18,6 +18,10 @@ public interface ISocialProfile {
     function get photoURL():String;
 
     function set photoURL(value:String):void;
+	
+	function get photoSmallURL():String;
+	
+	function set photoSmallURL(value:String):void;
 
     function get profileLink():String;
 
