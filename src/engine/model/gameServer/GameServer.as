@@ -583,7 +583,7 @@ public class GameServer extends SmartFox {
                 profileLoaded.dispatch(gp);
 				
 				// lottery
-				Context.Model.currentSettings.lottryResourcePrize = new ResourcePrice(
+				Context.Model.currentSettings.lotteryResourcePrize = new ResourcePrice(
 					responseParams.getInt("GoldPrize"),
 					responseParams.getInt("CrystalPrize"),
 					responseParams.getInt("AdamantiumPrize"),

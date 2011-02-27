@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
-		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 creationComplete="init();"
-		 verticalAlign="middle"
-		 >
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx"
+		  creationComplete="init();"
+		  verticalAlign="middle"
+		  gap="10"
+		  >
 	
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
@@ -15,6 +16,9 @@
 			import components.WallView;
 			import components.common.profiles.SocialProfile;
 			import components.common.resources.ResourceObject;
+			import components.common.utils.adjustcolor.Color;
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
 			import components.wall.SendWallObject;
 			
 			import flash.sampler.NewObjectSample;
@@ -30,16 +34,22 @@
 			private var allFriends:Array = new Array();
 			private var currentPage: int = 0;
 			
-			public static const FRIENDS_PER_PAGE:int = 9;
+			public static const FRIENDS_PER_PAGE:int = 12;
 			
 			
 			private function init(): void
 			{
 				allFriends = Context.Model.currentSettings.socialProfile.getFriends(SocialProfile.TYPE_NOT_APP_FRIENDS).concat();
-				//Alert.show(ObjectUtil.toString({t: allFriends}));
 				setPage(currentPage);
+				
+				var cm:ColorMatrix = new ColorMatrix();
+				var cmo:ColorMatrixObject = new ColorMatrixObject(0, 2, null, 0, new Color(20, 20, 20));
+				cm.applyColorMatrixObject(cmo);
+				
+				backPageButton.filters = [cm.filter];
+				forwardPageButton.filters = [cm.filter];
 			}
-					
+			
 			
 			/* pages */
 			
@@ -89,7 +99,7 @@
 				var postId: Array = new Array();
 				postId.push(WallView.POST_TYPE_HELP.toString());
 				postId.push(Context.Model.currentSettings.gameProfile.id);
-					
+				
 				for each(var ro: ResourceObject in Context.Model.currentSettings.lotteryTodayPrice.getResourceObjectArr())
 				{
 					postId.push(ro.value.toString());
@@ -106,26 +116,26 @@
 		]]>
 	</fx:Script>
 	
-
+	
 	<s:Button label="back" id="backPageButton" click="setNextPage(-1);"
 			  skinClass="skins.buttons.LeftArrowLottery"
 			  buttonMode="true" useHandCursor="true"
 			  />
 	
 	<s:List id="friendsList" 
-			dataProvider="{friendsCollection}" itemRenderer="components.pages.global.lottery.friends.FriendsIR"
+			dataProvider="{friendsCollection}" itemRenderer="components.pages.global.takeloot.FriendsIR"
 			borderVisible="false" contentBackgroundAlpha="0"
 			change="sendToWall(event);"
 			>
 		<s:layout>
-			<s:HorizontalLayout requestedColumnCount="9" />
+			<s:TileLayout requestedColumnCount="6" requestedRowCount="2" />
 		</s:layout>
 	</s:List>
 	<s:Button label="forward" id="forwardPageButton" click="setNextPage(1);"
 			  skinClass="skins.buttons.RightArrowLottery"
 			  buttonMode="true" useHandCursor="true"
 			  />
-
-
+	
+	
 	
 </s:HGroup>

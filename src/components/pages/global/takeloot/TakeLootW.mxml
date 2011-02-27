@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:mx1="library://ns.adobe.com/flex/halo"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 creationComplete="panelCreationComplete();"
+		 borderVisible="false"
+		 dropShadowVisible="false"
+		 skinClass="skins.common.EmptyPopUpS"
+		 xmlns:flexcomponents="components.common.flexcomponents.*"
+		 xmlns:create="components.pages.game.windows.create.*"
+		 xmlns:preloaders="components.common.utils.preloaders.*" xmlns:takeloot="components.pages.global.takeloot.*"  
+		 >
+	<fx:Script>
+		<![CDATA[
+			import skins.buttons.Pattern3ButtonS;
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+		<s:Animate id="disapearingAnimation" target="{this}" duration="300"
+				   effectEnd="{close();}">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="1"
+								valueTo="0"
+								/>
+		</s:Animate>
+		
+		<s:Animate id="apearingAnimation" target="{this}" duration="1200">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="0" valueTo="1"
+								/>
+		</s:Animate>
+		
+	</fx:Declarations>
+
+	<fx:Script>
+		<![CDATA[
+			import components.common.game.requesttogame.IRequestContent
+			import components.common.game.requesttogame.RequestGameObject
+			import components.common.utils.adjustcolor.Color
+			import components.common.utils.adjustcolor.ColorMatrix
+			import components.common.utils.adjustcolor.ColorMatrixObject
+			
+			import engine.games.GameType
+			
+			import mx.core.IVisualElement
+			import mx.managers.PopUpManager
+
+			
+			public function close():void {
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function closeWrapper():void {
+				disapearingAnimation.play();
+			}
+			
+			
+			private function panelCreationComplete():void 
+			{	
+				apearingAnimation.play();
+				
+				var cm:ColorMatrix = new ColorMatrix();
+				var cmo:ColorMatrixObject = new ColorMatrixObject(0, 0, null, 0, new Color(-15, -15, -15));
+				cm.applyColorMatrixObject(cmo);
+				
+				darkBorderContainer.filters = [cm.filter];
+				
+				antimatterLabel.text = Context.Model.currentSettings.lotteryResourcePrize.antimatter.value.toString();
+				adamantLabel.text = Context.Model.currentSettings.lotteryResourcePrize.adamant.value.toString();
+				crystalLabel.text = Context.Model.currentSettings.lotteryResourcePrize.crystals.value.toString();
+				goldLabel.text = Context.Model.currentSettings.lotteryResourcePrize.gold.value.toString();
+			}
+				
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	
+	<s:BorderContainer id="darkBorderContainer"
+					   backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
+					   backgroundImageFillMode="repeat"
+					   width="507" height="490"
+					   borderVisible="false"
+					   />
+	
+	
+	<s:VGroup width="507" height="490"
+			  horizontalAlign="center" verticalAlign="top"
+			  gap="25"
+			  paddingTop="20"
+			  >
+		<s:Label text="Ваши друзья принесли вам сегодня:" color="0xc1bfbf"
+				 fontFamily="mpbc" fontSize="24"
+				 />
+		<s:HGroup gap="20">
+			
+			<s:Group width="100">
+				<s:Label id="antimatterLabel" x="70" text="+10" color="0x47b6e6" fontSize="30" fontFamily="mpbc" >
+					<s:filters>
+						<s:GlowFilter blurX="3" blurY="3" color="0x47b6e6" alpha="0.8" />
+					</s:filters>
+				</s:Label>
+				<s:VGroup horizontalAlign="center">
+					<s:BitmapImage source="@Embed(source='assets/windows/global/takeloot/antimatter.png')" />
+					<s:Label text="Антиматерия" fontFamily="mpbc" fontSize="18" color="0x7badc3" />
+				</s:VGroup>
+			</s:Group>
+			
+			<s:Group width="100">
+				<s:Label id="adamantLabel" x="70" text="0" color="0xffffff" fontSize="30" fontFamily="mpbc" >
+					<s:filters>
+						<s:GlowFilter blurX="3" blurY="3" color="0xffffff" alpha="0.8" />
+					</s:filters>
+				</s:Label>
+				<s:VGroup horizontalAlign="center">
+					<s:BitmapImage source="@Embed(source='assets/windows/global/takeloot/adamant.png')" />
+					<s:Label text="Адамантий" fontFamily="mpbc" fontSize="18" color="0xbbbbbb" />
+				</s:VGroup>
+			</s:Group>
+			
+			<s:Group width="100">
+				<s:Label id="crystalLabel" x="70" text="0" color="0xdf6df7" fontSize="30" fontFamily="mpbc" >
+					<s:filters>
+						<s:GlowFilter blurX="3" blurY="3" color="0xdf6df7" alpha="0.8" />
+					</s:filters>
+				</s:Label>
+				<s:VGroup horizontalAlign="center">
+					<s:BitmapImage source="@Embed(source='assets/windows/global/takeloot/crystals.png')" />
+					<s:Label text="Кристаллы" fontFamily="mpbc" fontSize="18" color="0xdbaee6" />
+				</s:VGroup>
+			</s:Group>
+			
+			<s:Group width="100">
+				<s:Label id="goldLabel" x="70" text="0" color="0xfff533" fontSize="30" fontFamily="mpbc" >
+					<s:filters>
+						<s:GlowFilter blurX="3" blurY="3" color="0xfff533" alpha="0.8" />
+					</s:filters>
+				</s:Label>
+				<s:VGroup horizontalAlign="center">
+					<s:BitmapImage source="@Embed(source='assets/windows/global/takeloot/gold.png')" />
+					<s:Label text="Золото" fontFamily="mpbc" fontSize="18" color="0xffe800" />
+				</s:VGroup>
+			</s:Group>
+		</s:HGroup>
+		
+		<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+									  customLabel="Забрать"
+									  fontSize="24"
+									  fontSizeOver="24"
+									  />
+		
+		<s:Label text="{'Хотите еще добычи?\n Все просто,просите друзей о помощи, и если они победят в лотерее,\nвы разделите с ними выигрыш\nпросто нажмите на друга'}"
+				 fontFamily="mpr" fontSize="14"
+				 color="0xc1bfbf"
+				 textAlign="center"
+				 />
+		
+		<takeloot:FriendsLent />
+		
+	</s:VGroup>
+	
+	<flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS"
+								x="480" y="-5"
+								click="closeWrapper();"
+								/>
+	
+	<s:controlBarContent/>
+</s:Panel>

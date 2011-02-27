@@ -13,7 +13,8 @@ public class ContextEvent extends Event {
     public static const NEED_TO_SHOW_ERROR:String = "NeedToShowError";
     public static const NEED_TO_SHOW_DISCONNECTED_WINDOW:String = "NeedToShowDisconnectedWindow"
     public static const NEED_TO_SHOW_CANT_CONNECT_WINDOW:String = "NeedToShowCantConnectWindow"
-
+	public static const NEED_TO_OPEN_TAKE_LOOT_WINDOW: String = "NeedToOpenTakeLootWindow";
+		
     /***** worlds and locations *****/
     public static const NEED_TO_CHANGE_WORLD:String = "NeedToChangeWorld";
     public static const NEED_TO_CHANGE_LOCATION:String = "NeedToChangeLocation";

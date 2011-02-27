@@ -43,8 +43,8 @@ public class ApiResult {
                     up.sex = f["sex"];
                     up.surname = f["last_name"];
 					up.photoURL = f["photo_medium"];
+                    up.photoSmallURL = f["photo"];
 					
-                    //up.photoURL = f["photo"]
                     //up.photoBigSrc = f["photo_big"];
                     up.isFriend = true;
 
