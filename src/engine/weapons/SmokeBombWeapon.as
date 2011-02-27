@@ -36,6 +36,7 @@ public class SmokeBombWeapon extends ActivatableWeaponBase implements IActivatab
     }
 
     public function activateStatic(b:IBomber, x:int, y:int):void {
+        EngineContext.smokeAdded.dispatch(x,y)
     }
 }
 }
