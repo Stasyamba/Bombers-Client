@@ -142,6 +142,9 @@ public class ContextEvent extends Event {
 	public static const L_CHEST_IS_CHECKED:String = "LChestIsChecked";
 	// pass: ResourceObject -> if empty = null
 	
+	/** take loot events **/
+	public static const TL_RESET_PRIZE:String = "TLResetPrize";
+	
 	/** vk events **/
 	public static const VK_SEND_TO_WALL:String = "VKSendToWall";
 	// pass: SendWallObject

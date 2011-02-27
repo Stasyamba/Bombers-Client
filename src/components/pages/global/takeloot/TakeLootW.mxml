@@ -50,6 +50,7 @@
 
 			
 			public function close():void {
+				Context.Model.removeCustomEventListener(ContextEvent.TL_RESET_PRIZE, resetPrize);
 				PopUpManager.removePopUp(this);
 			}
 			
@@ -78,8 +79,30 @@
 				if(crystalLabel.text != "0") crystalLabel.text = "+"+crystalLabel.text;
 				if(goldLabel.text != "0") goldLabel.text = "+"+goldLabel.text;
 				
+				Context.Model.addCustomListener(ContextEvent.TL_RESET_PRIZE, resetPrize);
+				
 			}
 				
+			private function resetPrize(e: ContextEvent): void
+			{
+				antimatterLabel.text = "0";
+				adamantLabel.text = "0";
+				crystalLabel.text = "0";
+				goldLabel.text = "0";
+			}
+			
+			private function takeLoot(): void
+			{
+				if(
+					antimatterLabel.text != "0" || 
+					adamantLabel.text != "0" 	||
+					crystalLabel.text != "0" 	||
+					goldLabel.text != "0"
+					)
+				{
+					Context.gameServer.takePrize();
+				}
+			}
 		]]>
 	</fx:Script>
 	<s:layout>
@@ -158,6 +181,7 @@
 									  customLabel="Забрать"
 									  fontSize="24"
 									  fontSizeOver="24"
+									  click="takeLoot();"
 									  />
 		
 		<s:Label text="{'Хотите еще добычи?\n Все просто,просите друзей о помощи, и если они победят в лотерее,\nвы разделите с ними выигрыш.\nПросто нажмите на друга:'}"

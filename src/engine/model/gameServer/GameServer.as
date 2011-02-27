@@ -91,7 +91,9 @@ public class GameServer extends SmartFox {
 	private static const INT_TRY_LUCK_RESULT:String = "interface.tryLuck.result"
 	private static const INT_BUY_LUCK:String = "interface.buyLuck"
 	private static const INT_BUY_LUCK_RESULT:String = "interface.buyLuck.result"
-	
+	private static const INT_TAKE_PRIZE:String = "interface.takePrize"
+	private static const INT_TAKE_PRIZE_RESULT:String = "interface.takePrize.result"
+		
     private static const LOBBY_PROFILES:String = "game.lobby.playersProfiles"
     private static const LOBBY_READY:String = "game.lobby.readyChanged"
 
@@ -341,6 +343,11 @@ public class GameServer extends SmartFox {
 		params.putInt("interface.buyLuck.fields.luck", 3);
 		
 		send(new ExtensionRequest(INT_BUY_LUCK, params, null));
+	}
+	
+	public function takePrize():void
+	{
+		send(new ExtensionRequest(INT_TAKE_PRIZE, null, null));
 	}
 	
     //----------------------Handlers---------------------------
@@ -726,6 +733,22 @@ public class GameServer extends SmartFox {
 			Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED);
 			Context.Model.dispatchCustomEvent(ContextEvent.L_RESET_CHESTS);
 			Context.Model.dispatchCustomEvent(ContextEvent.L_SHOW_CHEST_BLOCK, false);
+			
+			break;
+			
+			case 
+			INT_TAKE_PRIZE_RESULT:
+			
+			var newResources: ResourcePrice = new ResourcePrice(
+				responseParams.getInt("Gold"),
+				responseParams.getInt("Crystal"),
+				responseParams.getInt("Adamantium"),
+				responseParams.getInt("Antimatter")
+			);
+			
+			Context.Model.currentSettings.gameProfile.resources = newResources.clone();
+			Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED);
+			Context.Model.dispatchCustomEvent(ContextEvent.TL_RESET_PRIZE);
 			
 			break;
         }

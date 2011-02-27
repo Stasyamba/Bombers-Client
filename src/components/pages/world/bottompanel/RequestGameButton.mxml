@@ -123,12 +123,12 @@
         </s:HGroup>
 
 
-        <s:HGroup height="100%"
+        <!--<s:HGroup height="100%"
                   verticalAlign="middle"
                   visible="false"
                 >
             <s:Label text="Предложения" fontSize="16" color="0x42d037" fontFamily="mpbc"/>
-        </s:HGroup>
+        </s:HGroup>-->
     </s:HGroup>
 
 

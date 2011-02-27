@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- http://blog.flexexamples.com/2009/07/28/displaying-icons-in-a-spark-buttonbar-control-in-flex-4/ -->
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009"
+			 xmlns:s="library://ns.adobe.com/flex/spark"
+			 xmlns:mx="library://ns.adobe.com/flex/mx"
+			 creationComplete="init();"
+			 >
+	
+	<!-- states -->
+	<s:states>
+		<s:State name="up"/>
+		<s:State name="over"/>
+		<s:State name="down"/>
+		<s:State name="disabled"/>
+	</s:states>
+	
+	<!-- host component -->
+	<fx:Metadata>
+		<![CDATA[
+		[HostComponent("spark.components.Button")]
+		]]>
+	</fx:Metadata>
+	
+	<s:transitions>
+		
+		<s:Transition toState="over">
+			<s:Parallel>
+				<s:Fade target="{buttonImageGlowFilter}" alphaFrom="0" alphaTo="1" duration="300"/>
+				<s:Fade target="{buttonImageShadowFilter}" alphaFrom="0.5" alphaTo="0.0" duration="100"/>
+				<s:Animate target="{imagesGroup}" duration="100">
+					<s:SimpleMotionPath property="y" valueFrom="{imagesGroup.y}" valueTo="-10" />
+				</s:Animate>
+			</s:Parallel>
+			
+		</s:Transition>
+		
+		
+		<s:Transition toState="up">
+			<s:Parallel>
+				<s:Fade target="{buttonImageGlowFilter}" alphaFrom="1" alphaTo="0" duration="300"/>
+				<s:Fade target="{buttonImageShadowFilter}" alphaFrom="0" alphaTo="0.5" duration="100"/>
+				<s:Animate target="{imagesGroup}" duration="300">
+					<s:SimpleMotionPath property="y" valueFrom="{imagesGroup.y}" valueTo="0" />
+				</s:Animate>
+			</s:Parallel>
+			
+		</s:Transition>
+		
+	</s:transitions>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.flexcomponents.CloseButton
+				import components.common.utils.adjustcolor.ColorMatrix
+				
+				/* Define the skin elements that should not be colorized.
+				For toggle button, the graphics are colorized but the label is not. */
+				static private const exclusions:Array = [];
+			
+			override public function get colorizeExclusions():Array {
+				return exclusions;
+			}
+			
+			// may be need color matrix filter
+			
+			private function init():void {
+				
+				
+				/* 
+				var cm:ColorMatrix = new ColorMatrix();
+				cm.adjustHue(hostComponent.hueShift);
+				cm.adjustSaturation(hostComponent.saturationShift);
+				imagesGroup.filters = [cm.filter];
+				 */
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<s:Group id="imagesGroup">
+		<s:BitmapImage id="buttonImage"
+					   source="@Embed(source='assets/windows/global/lottery/button1.png')"
+					   smooth="true"
+					   scaleX="0.7" scaleY="0.7"
+					  >
+			<s:filters>
+				<s:DropShadowFilter id="buttonImageShadowFilter" blurX="3" blurY="3" color="0x000000" alpha="0.5" />
+				<s:GlowFilter id="buttonImageGlowFilter" blurX="10" blurY="10" color="0xfca918" alpha="0"
+							  strength="3"
+							  />
+			</s:filters>
+		</s:BitmapImage>
+	</s:Group>
+	
+	<s:Label id="labelDisplay"
+			 visible="false"
+			 />
+	
+	
+</s:SparkSkin>
