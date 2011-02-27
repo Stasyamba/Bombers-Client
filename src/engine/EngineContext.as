@@ -139,7 +139,7 @@ public class EngineContext {
         return instance._explosionsRemoved;
     }
 
-     public static function get smokeAdded():SmokeAddedSignal {
+    public static function get smokeAdded():SmokeAddedSignal {
         return _instance._smokeAdded
     }
 
@@ -206,6 +206,7 @@ public class EngineContext {
         explosionGroupAdded.removeAll()
         explosionsUpdated.removeAll()
         explosionsRemoved.removeAll()
+        smokeAdded.removeAll()
         //---dynObjects
         objectAdded.removeAll()
         triedToActivateObject.removeAll()

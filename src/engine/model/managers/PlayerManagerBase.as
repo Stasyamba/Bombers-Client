@@ -23,8 +23,6 @@ public class PlayerManagerBase {
     }
 
     public function movePlayer(elapsedMilliSecs:int):void {
-        if (me.isDead)
-            return;
         me.move(elapsedMilliSecs);
     }
 

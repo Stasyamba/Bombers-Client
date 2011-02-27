@@ -271,13 +271,13 @@ public class MapCoords implements IMapCoords {
         if (yDef > 0) //down
         {
             bThrough = map.getNeighbour(elemX, elemY, Direction.DOWN);
-            if(bThrough == NullMapBlock.getInstance())
+            if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX - 1, elemY + 1);
             return bThrough.canGoThrough() && bTarget.canGoThrough();
         } else {  //up
             bThrough = map.getNeighbour(elemX, elemY, Direction.UP);
-            if(bThrough == NullMapBlock.getInstance())
+            if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX - 1, elemY - 1);
             return bThrough.canGoThrough() && bTarget.canGoThrough();
@@ -295,13 +295,13 @@ public class MapCoords implements IMapCoords {
         if (yDef > 0) //down
         {
             bThrough = map.getNeighbour(elemX, elemY, Direction.DOWN);
-            if(bThrough == NullMapBlock.getInstance())
+            if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX + 1, elemY + 1);
             return bThrough.canGoThrough() && bTarget.canGoThrough();
         } else {  //up
             bThrough = map.getNeighbour(elemX, elemY, Direction.UP);
-            if(bThrough == NullMapBlock.getInstance())
+            if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX + 1, elemY - 1);
             return bThrough.canGoThrough() && bTarget.canGoThrough();
@@ -319,13 +319,13 @@ public class MapCoords implements IMapCoords {
         if (xDef > 0) //right
         {
             bThrough = map.getNeighbour(elemX, elemY, Direction.RIGHT);
-            if(bThrough == NullMapBlock.getInstance())
+            if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX + 1, elemY - 1);
             return bThrough.canGoThrough() && bTarget.canGoThrough();
         } else {  //left
             bThrough = map.getNeighbour(elemX, elemY, Direction.LEFT);
-            if(bThrough == NullMapBlock.getInstance())
+            if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX - 1, elemY - 1);
             return bThrough.canGoThrough() && bTarget.canGoThrough();
@@ -343,20 +343,26 @@ public class MapCoords implements IMapCoords {
         if (xDef > 0) //right
         {
             bThrough = map.getNeighbour(elemX, elemY, Direction.RIGHT);
-            if(bThrough == NullMapBlock.getInstance())
+            if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX + 1, elemY + 1);
             return bThrough.canGoThrough() && bTarget.canGoThrough();
         } else {  //left
             bThrough = map.getNeighbour(elemX, elemY, Direction.LEFT);
-            if(bThrough == NullMapBlock.getInstance())
+            if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX - 1, elemY + 1);
             return bThrough.canGoThrough() && bTarget.canGoThrough();
         }
     }
 
-    public function stepLeft(moveAmount:Number):void {
+    public function stepLeft(moveAmount:Number, spectatorMode:Boolean = false):void {
+        if (spectatorMode) {
+            if (elemX > 0)
+                xDef -= moveAmount
+            else if (xDef > 0)
+                xDef = xDef - moveAmount > 0 ? xDef - moveAmount : 0
+        }
         horDefFunc = null;
         var remains:Number = removeRightDeflection(moveAmount);
         if (canMoveLeft()) {
@@ -372,7 +378,13 @@ public class MapCoords implements IMapCoords {
         }
     }
 
-    public function stepRight(moveAmount:Number):void {
+    public function stepRight(moveAmount:Number, spectatorMode:Boolean = false):void {
+        if (spectatorMode) {
+            if (elemX < map.width - 1)
+                xDef += moveAmount
+            else if (xDef < 0)
+                xDef = xDef + moveAmount < 0 ? xDef + moveAmount : 0
+        }
         horDefFunc = null;
         var remains:Number = removeLeftDeflection(moveAmount);
         if (canMoveRight()) {
@@ -388,7 +400,13 @@ public class MapCoords implements IMapCoords {
         }
     }
 
-    public function stepUp(moveAmount:Number):void {
+    public function stepUp(moveAmount:Number, spectatorMode:Boolean = false):void {
+        if (spectatorMode) {
+            if (elemY > 0)
+                yDef -= moveAmount
+            else if (yDef > 0)
+                yDef = yDef - moveAmount > 0 ? yDef - moveAmount : 0
+        }
         vertDefFunc = null;
         var remains:Number = removeDownDeflection(moveAmount);
         if (canMoveUp()) {
@@ -404,7 +422,13 @@ public class MapCoords implements IMapCoords {
         }
     }
 
-    public function stepDown(moveAmount:Number):void {
+    public function stepDown(moveAmount:Number, spectatorMode:Boolean = false):void {
+        if (spectatorMode) {
+            if (elemY < map.height - 1)
+                yDef += moveAmount
+            else if (yDef < 0)
+                yDef = yDef + moveAmount < 0 ? yDef + moveAmount : 0
+        }
         vertDefFunc = null;
         var remains:Number = removeUpDeflection(moveAmount);
         if (canMoveDown()) {

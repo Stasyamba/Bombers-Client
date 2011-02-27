@@ -4,6 +4,8 @@
  */
 
 package engine.imagesService {
+import components.common.worlds.locations.LocationType
+
 import engine.bombers.skin.BomberSkin
 import engine.bombss.BombType
 import engine.data.Consts
@@ -24,10 +26,20 @@ import engine.model.explosionss.ExplosionType
 import engine.playerColors.PlayerColor
 
 import flash.display.BitmapData
+import flash.display.Loader
+import flash.events.Event
 import flash.geom.Point
 import flash.geom.Rectangle
+import flash.net.URLRequest
+
+import org.osflash.signals.Signal
 
 public class ImageService {
+
+    private var l:Loader
+    private var _locationBackgrounds:Array = new Array()
+
+    private var _backgroundLoaded:Signal = new Signal(Object)
 
     public function ImageService() {
     }
@@ -107,7 +119,29 @@ public class ImageService {
     }
 
     public function getSmoke():BitmapData {
-         return Explosions["SMOKE1"]
+        return Explosions["SMOKE1"]
     }
+
+    public function get backgroundLoaded():Signal {
+        return _backgroundLoaded
+    }
+
+    public function loadMapBackground(locationType:LocationType):void {
+        if (_locationBackgrounds[locationType.value] != null)
+            _backgroundLoaded.dispatch(_locationBackgrounds[locationType.value])
+        else {
+            l = new Loader()
+            var u_completeHandler : Function = function(event:Event):void {
+                l.contentLoaderInfo.removeEventListener(Event.COMPLETE, u_completeHandler);
+                backgroundLoaded.dispatch(l)
+            }
+            l.contentLoaderInfo.addEventListener(Event.COMPLETE, u_completeHandler);
+            l.load(new URLRequest("http://www.vensella.ru/eg/mapBGGrass.jpg"))
+            backgroundLoaded.addOnce(function(obj:*):void {
+                _locationBackgrounds[locationType.value] = obj
+            })
+        }
+    }
+
 }
 }

@@ -37,6 +37,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     protected var _weaponBuilder:WeaponBuilder;
     protected var _currentWeapon:IWeapon
     protected var _weapons:Array = new Array()
+    private var _spectatorMode:Boolean = false
 
     public function PlayerBomber(game:IGame, slot:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder) {
         super(game, slot, gameProfile.currentBomberType, gameProfile.nick, color, BomberSkin.fromBomberType(gameProfile.currentBomberType));
@@ -54,6 +55,9 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
         EngineContext.currentWeaponChanged.add(onCurrentWeaponChanged)
         EngineContext.weaponUnitSpent.add(onWeaponUnitSpent)
+        EngineContext.playerDied.addOnce(function():void{
+            _spectatorMode = true;
+        })
     }
 
     private function onWeaponUnitSpent(type:WeaponType):void {
@@ -86,19 +90,19 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
         switch (_direction.direction) {
             case Direction.LEFT:
-                _coords.stepLeft(moveAmount);
+                _coords.stepLeft(moveAmount,_spectatorMode);
                 checkViewHorDirectionChanged(x);
                 break;
             case Direction.RIGHT:
-                _coords.stepRight(moveAmount);
+                _coords.stepRight(moveAmount,_spectatorMode);
                 checkViewHorDirectionChanged(x);
                 break;
             case Direction.UP:
-                _coords.stepUp(moveAmount);
+                _coords.stepUp(moveAmount,_spectatorMode);
                 checkViewVertDirectionChanged(x);
                 break;
             case Direction.DOWN:
-                _coords.stepDown(moveAmount);
+                _coords.stepDown(moveAmount,_spectatorMode);
                 checkViewVertDirectionChanged(x);
                 break;
         }
@@ -185,7 +189,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     public override function explode(expl:IExplosion):void {
-        if(expl.damage <= 0) //smoke explosion
+        if (expl.damage <= 0) //smoke explosion
             return
         life -= expl.damage;
         if (life < 0) life = 0;
@@ -259,7 +263,6 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
             (_weapons[wt.value] as IActivatableWeapon).decCharges()
         }
     }
-
 
 
 }

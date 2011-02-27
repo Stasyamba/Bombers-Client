@@ -94,9 +94,6 @@ public class PlayerView extends BomberViewBase implements IDestroyable {
     }
 
     public function destroy():void {
-        EngineContext.playerCoordinatesChanged.removeAll();
-        EngineContext.playerInputDirectionChanged.removeAll();
-        EngineContext.playerDied.removeAll();
     }
 }
 }

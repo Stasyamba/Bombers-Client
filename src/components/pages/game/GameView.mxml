@@ -10,6 +10,8 @@
     <fx:Script><![CDATA[
         import components.ApplicationView
 
+        import components.common.worlds.locations.LocationType
+
         import engine.EngineContext
         import engine.ui.GameFieldView
 
@@ -20,8 +22,13 @@
         //temporary ui elements
 
         public function init():void {
+            //todo: location code
+            Context.imageService.backgroundLoaded.addOnce(onBackgroundLoaded)
+            Context.imageService.loadMapBackground(LocationType.WORLD1_GRASSFIELDS)
+        }
 
-
+        private function onBackgroundLoaded(data:*):void {
+            bg.addChild(data as Loader)
         }
 
         public function everyGameTabOpeningInit():void {
@@ -107,6 +114,5 @@
                        backgroundImage="@Embed(source='/assets/pagegame/grassPattern.jpg')"
                        backgroundImageFillMode="repeat"
                        borderVisible="false"/>
-	<mx:Image source="http://www.vensella.ru/eg/mapBGGrass.jpg" />
-
+    <s:SpriteVisualElement id="bg"/>
 </s:Group>

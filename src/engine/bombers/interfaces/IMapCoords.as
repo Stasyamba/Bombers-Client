@@ -24,13 +24,13 @@ public interface IMapCoords {
 
     function set yDef(value:Number):void;
 
-    function stepLeft(moveAmount:Number):void;
+    function stepLeft(moveAmount:Number,spectatorMode:Boolean = false):void;
 
-    function stepRight(moveAmount:Number):void;
+    function stepRight(moveAmount:Number,spectatorMode:Boolean = false):void;
 
-    function stepUp(moveAmount:Number):void;
+    function stepUp(moveAmount:Number,spectatorMode:Boolean = false):void;
 
-    function stepDown(moveAmount:Number):void;
+    function stepDown(moveAmount:Number,spectatorMode:Boolean = false):void;
 
     function getRealX():Number;
 
