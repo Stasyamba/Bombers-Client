@@ -51,7 +51,7 @@
                         slotGroup.addElement(slot);
 
                     } else {
-                        Alert.show("Немогу распознать предмет ищи в game.bottompanel.WeaponsIR.mxml");
+                        Alert.show("Не могу распознать предмет ищи в game.bottompanel.WeaponsIR.mxml");
                     }
 
                 } else {

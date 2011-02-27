@@ -47,6 +47,7 @@
         }
 
         private function initChat():void {
+            clear()
             for each (var lp:LobbyProfile in Context.gameModel.lobbyProfiles) {
                 if (lp.id != Context.gameServer.mySelf.name) {
                     printSomeoneCame(lp.nick)
@@ -62,6 +63,11 @@
                     printSomeoneLeft(lp.nick)
             })
 
+        }
+
+        private function clear():void {
+            chatTextArea.htmlText = "";
+            updateScrollPosition()
         }
 
         public function printMessage(from:String, text:String):void {

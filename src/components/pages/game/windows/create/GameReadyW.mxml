@@ -115,7 +115,7 @@
                           gap="0"
                           paddingTop="25"
                         >
-                    <s:Label text="Вы присоединились к игре, жмите на кнопку как будете готовы."
+                    <s:Label text="Вы присоединились к игре! Жмите на кнопку, как будете готовы."
                              fontSize="16" fontFamily="mpbc"
                              color="0xfcb29c"
                              maxWidth="417"

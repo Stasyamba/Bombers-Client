@@ -75,7 +75,7 @@
               horizontalAlign="center"
               gap="20">
 
-        <s:Label text="Создать игру, и пригласить туда друзей."
+        <s:Label text="Создать игру и пригласить туда друзей."
                  fontSize="18" fontFamily="mpbc"
                  color="0xffffff"
                 />
@@ -162,7 +162,7 @@
                     <s:Label color="0x62b535"
                              fontFamily="mpbc" fontSize="15"
                              width="250"
-                             text="Если не поставить пароль, к игре сможет присоединиться кто-попало!"
+                             text="Если не поставить пароль, к игре сможет присоединиться кто попало!"
                             />
                 </s:HGroup>
 

@@ -175,7 +175,7 @@
                           paddingLeft="29"
                         >
 
-                    <flexcomponents:TextButton text="Сменить" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                    <flexcomponents:TextButton text="Снять" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
                                                textFontSize="16"
                                                click="deleteWeapon();"
                             />

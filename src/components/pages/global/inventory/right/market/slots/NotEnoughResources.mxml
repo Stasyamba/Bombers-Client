@@ -47,7 +47,7 @@
                  fontSize="32" fontFamily="mpbc"
                  color="0xffffff"
                 />
-        <s:Label text="Вам не хватает ресурсов чтобы купить этот предмет. Вы можете докупить их прямо отсюда."
+        <s:Label text="Вам не хватает ресурсов, чтобы купить этот предмет. Вы можете докупить их прямо отсюда."
                  fontSize="13" fontFamily="mpr"
                  color="0xffffff"
                  maxWidth="300"
