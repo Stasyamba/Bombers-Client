@@ -72,6 +72,12 @@
 				adamantLabel.text = Context.Model.currentSettings.lotteryResourcePrize.adamant.value.toString();
 				crystalLabel.text = Context.Model.currentSettings.lotteryResourcePrize.crystals.value.toString();
 				goldLabel.text = Context.Model.currentSettings.lotteryResourcePrize.gold.value.toString();
+				
+				if(antimatterLabel.text != "0") antimatterLabel.text = "+"+antimatterLabel.text;
+				if(adamantLabel.text != "0") adamantLabel.text = "+"+adamantLabel.text;
+				if(crystalLabel.text != "0") crystalLabel.text = "+"+crystalLabel.text;
+				if(goldLabel.text != "0") goldLabel.text = "+"+goldLabel.text;
+				
 			}
 				
 		]]>
@@ -124,7 +130,7 @@
 			</s:Group>
 			
 			<s:Group width="100">
-				<s:Label id="crystalLabel" x="70" text="0" color="0xdf6df7" fontSize="30" fontFamily="mpbc" >
+				<s:Label id="crystalLabel" x="60" text="0" color="0xdf6df7" fontSize="30" fontFamily="mpbc" >
 					<s:filters>
 						<s:GlowFilter blurX="3" blurY="3" color="0xdf6df7" alpha="0.8" />
 					</s:filters>
@@ -136,7 +142,7 @@
 			</s:Group>
 			
 			<s:Group width="100">
-				<s:Label id="goldLabel" x="70" text="0" color="0xfff533" fontSize="30" fontFamily="mpbc" >
+				<s:Label id="goldLabel" x="60" text="0" color="0xfff533" fontSize="30" fontFamily="mpbc" >
 					<s:filters>
 						<s:GlowFilter blurX="3" blurY="3" color="0xfff533" alpha="0.8" />
 					</s:filters>
