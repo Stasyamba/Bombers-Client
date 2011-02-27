@@ -143,13 +143,13 @@
             <s:HGroup visible="{!(!warningVisible || !!connectionVisible)}"
                       width="363" horizontalAlign="center"
                       x="8">
-                <s:Label text="А игра то уже закончилась или в ней уже нету места "
+                <s:Label text="А игра то уже закончилась, или в ней уже нет свободных мест "
                          fontFamily="mpr" fontSize="14" color="0xffffff"
                          textAlign="right"
                          maxWidth="211"
                         />
                 <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
-                                              customLabel="Ух жаль"
+                                              customLabel="Ух, жаль"
                                               fontSize="25"
                                               fontSizeOver="25"
                                               click="deleteRequest();"

@@ -28,7 +28,7 @@ public class ItemsManager {
                         ItemType.QUEST_ITEM_SNOWBOOTS,
                         ImagesPrefixes.QUEST_PREFIX + "snowBoots.png",
                         "Снегоступы",
-                        "Снегоступы необходимы чтобы сражаться на гоных локациях"
+                        "Снегоступы необходимы, чтобы сражаться на гоных локациях"
                         )
                 ));
 
@@ -40,7 +40,7 @@ public class ItemsManager {
                         ItemType.QUEST_ITEM_CANARY,
                         ImagesPrefixes.QUEST_PREFIX + "canary.png",
                         "Разнюхивательная канарейка",
-                        "Не заменима в шахтах для того чтобы не потеряться"
+                        "Незаменима в шахтах для того, чтобы не потеряться"
                         )
                 ));
 
@@ -54,7 +54,7 @@ public class ItemsManager {
                         ItemType.AURA_FIRE,
                         ImagesPrefixes.AURS_PREFIX + "fireAura.png",
                         "Аура огня",
-                        "Аура позволяет не теряя здоровья проходить по огненным элементам карты.",
+                        "Аура позволяет, не теряя здоровья, проходить по огненным элементам карты.",
                         ImagesPrefixes.AURS_PREFIX + "fireAuraAnotherImage.png"
                         )
                 ));
@@ -70,7 +70,7 @@ public class ItemsManager {
 				ItemType.HEALTH_PACK_POISON,
 				ImagesPrefixes.WEAPON_PREFIX + "healthPackPoison.png",
 				"Зелье здоровья",
-				"Приятное на вкус, бодрящее зелье. Хороший бой и 1 единица здоровья вам гарантированны."
+				"Приятное на вкус, бодрящее зелье. Хороший бой и 1 единица здоровья вам гарантированы."
 			)
 		));
 		
@@ -105,7 +105,7 @@ public class ItemsManager {
                 new ItemViewObject(
                         ItemType.HAMELEON_POISON,
                         ImagesPrefixes.WEAPON_PREFIX + "hamelionPoison.png",
-                        "Зелье хамелиона (увеличенное)",
+                        "Зелье хамелеона",
                         "На 30 секунд ваш бомбастер сольется с картой и станет практически незаметным для ваших врагов!"
                         )
                 ));
@@ -130,7 +130,7 @@ public class ItemsManager {
                         ItemType.X_RAY_BOMB,
                         ImagesPrefixes.WEAPON_PREFIX + "xrayBomb.png",
                         "Бомба рентген",
-                        "Уничтожает только коробки в которымх могут находиться бонусы, не трогая при этом бомбастеров"
+                        "Уничтожает только коробки, в которымх могут находиться бонусы, не трогая при этом бомбастеров"
                         )
                 ));
 
@@ -142,7 +142,7 @@ public class ItemsManager {
                         ItemType.MINA_BOMB,
                         ImagesPrefixes.WEAPON_PREFIX + "minaBomb.png",
                         "Мина",
-                        "Вызрывается только после касания! Почувствуй себя стратегом, ставь ловушки, блокируй ходы соперников!"
+                        "Вызрывается только после касания! Почувствуй себя стратегом, ставь ловушки и блокируй ходы соперников!"
                         )
                 ));
 
@@ -154,7 +154,7 @@ public class ItemsManager {
                         ItemType.BOX_BOMB,
                         ImagesPrefixes.WEAPON_PREFIX + "boxBomb.png",
                         "Разбрасыватель",
-                        "Когда вы спасаетесь от врагов, нет ничего лучше чем заградить им стенами! Почувствуй себя архитектором карты, мечи коробки!"
+                        "Когда вы спасаетесь от врагов, нет ничего лучше чем заградить их путь стенами! Почувствуй себя архитектором карты, мечи коробки!"
                         )
                 ));
 
@@ -167,7 +167,7 @@ public class ItemsManager {
                         ItemType.DINAMIT_BOMB,
                         ImagesPrefixes.WEAPON_PREFIX + "dinamitBomb.png",
                         "Динамит",
-                        "Мощная бомба которая снимает сразу 2 жизни. Подорви салаг."
+                        "Мощная бомба, которая снимает сразу 2 жизни. Подорви салаг."
                         )
                 ));
 

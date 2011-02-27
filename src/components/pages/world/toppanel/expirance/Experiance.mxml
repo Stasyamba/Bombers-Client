@@ -274,7 +274,7 @@
                     <s:VGroup gap="5" paddingTop="10">
                         <s:Label
                                 id="expToolTipLabel"
-                                text="Максимальный опыт который вы сможете набрать в бете 100 опыта, ждите релиза игры!"
+                                text="Максимальный опыт, который вы сможете набрать в бете – 3000 опыта. Ждите релиза игры!"
                                 fontSize="18" fontFamily="mpbc"
                                 color="0xcfcfcf"
                                 maxWidth="300"

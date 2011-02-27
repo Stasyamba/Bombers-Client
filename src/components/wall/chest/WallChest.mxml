@@ -129,7 +129,7 @@
 				<mx:Image source="http://www.vensella.ru/eg/wallFuryJoe.png"
 						  smoothBitmapContent="true" trustContent="{Context.Model.trustContent}"
 						  />
-				<s:Label text="Отвечай! в каком из сундуков спрятаны сокровища? Я ведь и укусить могу.." 
+				<s:Label text="Отвечай! В каком из сундуков спрятаны сокровища? Я ведь и укусить могу.."
 						 color="0xffe7b3" fontFamily="mpbc" fontSize="30" 
 						 maxWidth="379"
 						 />

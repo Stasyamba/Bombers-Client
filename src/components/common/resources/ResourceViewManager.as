@@ -42,7 +42,7 @@ public class ResourceViewManager {
         resources.push(new ResourceViewObject(
                 ResourceType.GOLD,
                 "Золото",
-                "Золото, дорагоценный метал, встречащийся на всех картах. Требуется для изоготовления практически любого оружия.",
+                "Золото – драгоценный метал, встречащийся на всех картах. Требуется для изоготовления практически любого оружия.",
                 0xffd307,
                 getImage(ResourceType.GOLD, IMAGE_TYPE_SMALL),
                 getImage(ResourceType.GOLD, IMAGE_TYPE_BIG)
@@ -51,7 +51,7 @@ public class ResourceViewManager {
         resources.push(new ResourceViewObject(
                 ResourceType.CRYSTALS,
                 "Кристаллы",
-                "Кристалы редкая драгоценная порода камней. Добываются не на всех локациях. Требуются для изготовления оружия посерьезнее.",
+                "Кристалы – редкая драгоценная порода камней. Добываются не на всех локациях. Требуются для изготовления оружия посерьезнее.",
                 0xa70ec2,
                 getImage(ResourceType.CRYSTALS, IMAGE_TYPE_SMALL),
                 getImage(ResourceType.CRYSTALS, IMAGE_TYPE_BIG)
@@ -70,7 +70,7 @@ public class ResourceViewManager {
         resources.push(new ResourceViewObject(
                 ResourceType.ANTIMATTER,
                 "Антиматерия",
-                "Самый редкий ресурс в игре. Добывается только в космических глубинах. С помощью него вы сможете создать мощнейшие оружия во вселенной.",
+                "Самый редкий ресурс в игре. Добывается только в космических глубинах. С помощью него вы сможете создать мощнейшие виды оружия во вселенной.",
                 0x6bd6ee,
                 getImage(ResourceType.ANTIMATTER, IMAGE_TYPE_SMALL),
                 getImage(ResourceType.ANTIMATTER, IMAGE_TYPE_BIG)

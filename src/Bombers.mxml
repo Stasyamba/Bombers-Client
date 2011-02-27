@@ -224,7 +224,7 @@
 
                     Context.gameServer.loginError.addOnce(function():void{
                         basePreloaderGroup.visible = false
-                        disconnectedText.text = "Не удалось войти на сервер.\nСкорее всего у вас просто\nоткрыто еще одно окно\nБомбастеров"
+                        disconnectedText.text = "Не удалось войти на сервер.\nСкорее всего, у вас просто\nоткрыто еще одно окно\nБомбастеров"
                         disconnectedWindow.visible = true;
                     })
 

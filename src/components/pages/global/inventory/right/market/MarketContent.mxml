@@ -107,7 +107,7 @@
             <s:HGroup width="100%" height="100%"
                       verticalAlign="middle" horizontalAlign="center"
                       visible="{emptyContentGroupVisible}">
-                <s:Label text="Закрыт на бета тестированние" color="0xffffff"
+                <s:Label text="Закрыт на бета-тестированние" color="0xffffff"
                          fontFamily="mpbc" fontSize="30"/>
             </s:HGroup>
 

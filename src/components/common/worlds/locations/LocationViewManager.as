@@ -10,7 +10,7 @@ public class LocationViewManager {
         locations.push(new LocationViewObject(
                 LocationType.WORLD1_GRASSFIELDS,
                 "Минные поля",
-                "Опасное место для начинающего бомбера. На этих полях пройдут ваши первые сражения, в которых вы докажете всем свое превосходство.",
+                "Опасное место для начинающего бомбастера. На этих полях пройдут ваши первые сражения, в которых вы докажете всем свое превосходство.",
                 "http://www.vensella.ru/sd/grassFieldLocationEnterBG.png",
                 "http://www.vensella.ru/eg/previewAbove/grassAbove.png",
                 "http://www.vensella.ru/sd/previews/grassfieldsPreview.jpg",
@@ -23,7 +23,7 @@ public class LocationViewManager {
         locations.push(new LocationViewObject(
                 LocationType.WORLD1_MINE,
                 "Шахты",
-                "Если у вас клаустрафобия не стоит даже близко соваться в темные шахтах полные отчаиных бойцов-психопатов внутри!",
+                "Если у вас клаустрофобия, не стоит даже близко подходить! Темные шахты полны отчаяных бойцов-психопатов!",
                 "http://www.vensella.ru/sd/previews/enter/mine.jpg",
                 "",
                 "http://www.vensella.ru/sd/previews/minePreview.jpg",
@@ -36,7 +36,7 @@ public class LocationViewManager {
         locations.push(new LocationViewObject(
                 LocationType.WORLD1_CASTLE,
                 "Подземелья замка",
-                "Каждый день в подземельях этого замка проходят ожесточенные бои, где сотни воинов выяснют кто из них достоин звания короля!",
+                "Каждый день в подземельях этого замка проходят ожесточенные бои. Здесь сотни воинов выяснют, кто из них достоин звания короля!",
                 "http://www.vensella.ru/sd/previews/enter/castle.jpg",
                 "",
                 "http://www.vensella.ru/sd/previews/castlePreview.jpg",
@@ -49,7 +49,7 @@ public class LocationViewManager {
         locations.push(new LocationViewObject(
                 LocationType.WORLD1_SNOWPEAK,
                 "Горный хребет",
-                "Сражения здесь проходят даже в неистовые снежные бури, только очень суровые бомберы вступают на эту землю!",
+                "Сражения здесь проходят даже в неистовые снежные бури, только очень суровые бомбастеры вступают на эту землю!",
                 "http://www.vensella.ru/sd/previews/enter/snow.jpg",
                 "",
                 "http://www.vensella.ru/sd/previews/snowpeakPreview.jpg",
@@ -62,7 +62,7 @@ public class LocationViewManager {
         locations.push(new LocationViewObject(
                 LocationType.WORLD1_SATTELITE,
                 "Затерянный спутник",
-                "Спутник который ушел с орбиты 20 лет назад, и вот он снова здесь. На его борту вас ждет шокирующая правда о бесконечном космосе и его обитателях.",
+                "Спутник, который ушел с орбиты 20 лет назад, снова здесь. На его борту вас ждет шокирующая правда о бесконечном космосе и его обитателях.",
                 "",
                 "",
                 "http://www.vensella.ru/sd/previews/sattelitePreview.jpg"
@@ -85,7 +85,7 @@ public class LocationViewManager {
         locations.push(new LocationViewObject(
                 LocationType.WORLD1_ROCKET,
                 "Космодром",
-                "Место отправки опытных бомберов в космические глубины. В предверии взлета можно сразиться с достойными сопрениками!",
+                "Место отправки опытных бомбастеров в космические глубины. В преддверии взлета можно сразиться с достойными сопрениками!",
                 "http://www.vensella.ru/sd/previews/enter/rocket.jpg",
                 "",
                 "http://www.vensella.ru/sd/previews/rocketPreview.jpg")

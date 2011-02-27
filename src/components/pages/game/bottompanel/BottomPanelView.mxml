@@ -38,11 +38,15 @@
 
             updateWeapons();
             updateFromBomberType();
+            if (Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand == null)
+                Context.gameModel.increaseWeaponIndex()
             Context.gameModel.gameEnded.add(onGameEnded);
             Context.Model.addCustomListener(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, function(e:ContextEvent):void {
                 if (e.data == ApplicationView.TAB_NAME_GAME) {
                     Context.gameModel.gameEnded.add(onGameEnded);
                     updateFromBomberType()
+                    if (Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand == null)
+                        Context.gameModel.increaseWeaponIndex()
                 }
             })
         }
