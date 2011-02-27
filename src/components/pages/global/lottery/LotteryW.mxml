@@ -198,7 +198,7 @@
 					<s:VGroup gap="5" horizontalAlign="center">
 						<s:Label text="Попроси друзей о помощи," fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />
 						<s:Label text="если друг угадает сундук, то вы оба получите приз! " fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />
-						<s:Label text="Больше друзей, больше призов!" fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />	
+						<s:Label text="Больше друзей - больше призов!" fontFamily="mpbc" fontSize="22" color="0xb6e1f2" />
 					</s:VGroup>
 					
 					<friends:FriendsLent />
