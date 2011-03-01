@@ -16,13 +16,13 @@ public class LocationManager {
 
         locations.push(new LocationObject(
                 LocationType.WORLD1_CASTLE,
-                [new AccessLevelRule(2)]
+                [new AccessLevelRule(4)]
                 ));
 
 
         locations.push(new LocationObject(
                 LocationType.WORLD1_SNOWPEAK,
-                [new AccessLevelRule(4),
+                [new AccessLevelRule(5),
                     new AccessItemRule([ItemType.QUEST_ITEM_SNOWBOOTS], false)]
                 ));
 
@@ -40,7 +40,7 @@ public class LocationManager {
 
         locations.push(new LocationObject(
                 LocationType.WORLD1_SEA,
-                [new AccessLevelRule(3)]
+                [new AccessLevelRule(4)]
                 ));
 
 

@@ -49,7 +49,7 @@ public class ItemsCategoriesManager {
     }
 
     public function getItemMarketCategory(itemType:ItemType):MarketCategory {
-        var res:MarketCategory = MarketCategory.VARIOUS;
+        var res:MarketCategory = null;// = MarketCategory.VARIOUS;
 
         switch (itemType) {
             case ItemType.AURA_FIRE:
@@ -59,11 +59,9 @@ public class ItemsCategoriesManager {
                 break;
 
             case ItemType.NUCLEAR_BOMB:
-            case ItemType.X_RAY_BOMB:
             case ItemType.HAMELEON_POISON:
             case ItemType.MINA_BOMB:
             case ItemType.DINAMIT_BOMB:
-            case ItemType.BOX_BOMB:
 			case ItemType.HEALTH_PACK_ADVANCED_POISON:
 			case ItemType.HEALTH_PACK_POISON:
 			case ItemType.SMOKE_BOMB:
@@ -71,6 +69,9 @@ public class ItemsCategoriesManager {
                 break;
         }
 
+		//case ItemType.X_RAY_BOMB:
+		//case ItemType.BOX_BOMB:
+		
         return res;
     }
 

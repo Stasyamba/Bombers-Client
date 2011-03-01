@@ -90,7 +90,7 @@
 				
 				// get response from server
                 Context.gameServer.connected.addOnce(function():void{
-                    Context.gameServer.login(Context.Model.viewer.id, Context.Model.viewer.id)
+                    Context.gameServer.login(Context.Model.viewer.id, Context.Model.currentSettings.flashVars.auth_key);//Context.Model.viewer.id)
                 });
 					
                 Context.gameServer.connectWall();

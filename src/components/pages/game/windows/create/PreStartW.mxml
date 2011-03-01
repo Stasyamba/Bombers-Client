@@ -90,6 +90,7 @@
 
         public function close():void {
             PopUpManager.removePopUp(this);
+			Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SET_GAME_FOCUS);
         }
 
         public function closeWrapper():void {

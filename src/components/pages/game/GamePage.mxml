@@ -17,18 +17,23 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.ApplicationView
-        import components.pages.game.windows.common.PackIsPlayingW
-        import components.pages.game.windows.common.QuitTheGameW
-        import components.pages.game.windows.create.GameCreatedW
-        import components.pages.game.windows.create.GameReadyW
-        import components.pages.game.windows.create.PreStartW
-        import components.pages.game.windows.results.ResultsW
-
-        import engine.bombss.BombType
-        import engine.utils.Utils
-
-        import mx.managers.PopUpManager
+			import api.vkontakte.VkontakteGlobals;
+			
+			import components.ApplicationView;
+			import components.pages.game.windows.common.PackIsPlayingW;
+			import components.pages.game.windows.common.QuitTheGameW;
+			import components.pages.game.windows.create.GameCreatedW;
+			import components.pages.game.windows.create.GameReadyW;
+			import components.pages.game.windows.create.PreStartW;
+			import components.pages.game.windows.results.ResultsW;
+			
+			import engine.bombss.BombType;
+			import engine.utils.Utils;
+			
+			import mx.controls.Alert;
+			import mx.managers.FocusManager;
+			import mx.managers.IFocusManagerComponent;
+			import mx.managers.PopUpManager;
 
         private var now:int,then:int;
         private var readyWindow:GameReadyW = null;
@@ -38,6 +43,8 @@
 
             Context.Model.addCustomListener(ContextEvent.MAIN_TAB_CHANGED, function (e:ContextEvent):void {
                 if (e.data == ApplicationView.TAB_NAME_GAME) {
+					focusGroup.visible = false;
+					
                     gameView.everyGameTabOpeningInit();
                     //listener'll be removed in gameModel
                     Context.gameModel.threeSecondsToStart.add(function(t1:*, t2:*):void {
@@ -67,11 +74,31 @@
             });
 
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW, function (e:ContextEvent):void {
-                openThreeSecondsToStart();
+				focusGroup.visible = false;
+				openThreeSecondsToStart();
             });
-
+			
+			
+			Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SET_GAME_FOCUS, function (e: ContextEvent): void
+			{
+				//mx.controls.Alert.show("GOT!");
+				//mx.controls.Alert.show("Sprite:"+focusManager.focusPane.toString());
+				//mx.controls.Alert.show("Sprite parent: "+focusManager.focusPane.parent.toString());
+				//this.dispatchEvent(new Event(MouseEvent.CLICK));
+				//gameView.dispatchEvent(new Event(MouseEvent.CLICK));
+				//gameView.setFocus();
+				
+				//stage.focus = stage;
+				
+				focusGroup.visible = true;
+				
+			});
+			
+			// work
             stage.addEventListener(KeyboardEvent.KEY_DOWN, keyDown);
             stage.addEventListener(KeyboardEvent.KEY_UP, keyUp);
+			
+			
         }
 
         private function keyDown(event:KeyboardEvent):void {
@@ -171,8 +198,29 @@
     </s:Rect>
 
     <game:GameView id="gameView" y="{topPanel.height + 2}" x="{leftPanel.width}"/>
-
-    <toppanel:TopPanelView id="topPanel" y="0"/>
+	
+	<s:Group y="{topPanel.height + 7}" x="{leftPanel.width + 5}" 
+			 id="focusGroup" click="{focusGroup.visible = false;}"
+			 visible="false"
+			 buttonMode="true" useHandCursor="true"
+			 >
+		<s:Rect width="671" height="430"
+				radiusX="30" radiusY="30"
+				alpha="0.8"
+				>
+			<s:fill>
+				<s:SolidColor color="0x000000" />
+			</s:fill>
+		</s:Rect>	
+		
+		<s:HGroup width="671" height="430"
+				  horizontalAlign="center" verticalAlign="middle">
+			<s:Label text="Кликни сюда" fontFamily="mpbc" fontSize="80" color="0xffffff" />
+		</s:HGroup>
+		
+	</s:Group>
+    
+	<toppanel:TopPanelView id="topPanel" y="0"/>
 
     <!--<subbottompanel:SubBottomPanelView id="subBottomPanel" y="526"/>-->
     <subbottompanel:SubBottomPanelView y="526"/>

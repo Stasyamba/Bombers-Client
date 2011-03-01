@@ -15,6 +15,7 @@ public class ContextEvent extends Event {
     public static const NEED_TO_SHOW_CANT_CONNECT_WINDOW:String = "NeedToShowCantConnectWindow"
 	public static const NEED_TO_OPEN_TAKE_LOOT_WINDOW: String = "NeedToOpenTakeLootWindow";
 		
+	
     /***** worlds and locations *****/
     public static const NEED_TO_CHANGE_WORLD:String = "NeedToChangeWorld";
     public static const NEED_TO_CHANGE_LOCATION:String = "NeedToChangeLocation";
@@ -104,7 +105,16 @@ public class ContextEvent extends Event {
 
     public static const GPAGE_MY_PARAMETERS_IS_CHANGED:String = "GPAGEMyParametersIsChanged";
     public static const GPAGE_UPDATE_GAME_WEAPONS:String = "GPAGEUpdateGameWeapons";
-    /***** buy events: resources(RS), energy(EN), items(IT) *****/
+	public static const GPAGE_NEED_TO_SET_GAME_FOCUS:String = "GPAGENeedToSetGameFocus";
+	
+	
+	
+	
+	
+	/***** buy events: resources(RS), energy(EN), items(IT) *****/
+	
+	
+	
     public static const RS_BUY_FAILED:String = "RSBuyFailed"
     public static const RS_BUY_SUCCESS:String = "RSBuySuccess"
     //pass: ResourcePrice -> how much bought each resource

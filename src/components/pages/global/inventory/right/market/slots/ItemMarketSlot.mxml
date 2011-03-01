@@ -194,7 +194,8 @@
 
             <s:HGroup id="itemPricePanelGroup"
                       verticalAlign="middle"
-                      gap="20">
+                      gap="20"
+					  width="119">
                 <s:Label text="Цена: " color="0xf5d6b4" fontSize="18" fontFamily="mpbc"/>
                 <slots:PriceView id="itemPricePanel"/>
             </s:HGroup>

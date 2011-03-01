@@ -143,10 +143,10 @@
             var nextLevelObject:ExperianceObject = Context.Model.experianceManager.getNextLevel(exp);
 
             var currentLevel:int = curentLevelObject.level;
-            if (currentLevel == 1) {
+            if (exp < 300) {
                 expToolTipLabel.text = "Сражайтесь, достигайте новых побед, вздувайте друзей в увлекательных онлайн боях!";
             } else {
-                expToolTipLabel.text = "Максимальный опыт который вы сможете набрать в бете 100 опыта, ждите релиза игры!"
+                expToolTipLabel.text = "Максимальный опыт который вы сможете набрать в бете 300 опыта, ждите релиза игры!";
             }
 
             levelStringView = currentLevel.toString();

@@ -84,7 +84,7 @@ public class GameModel {
     }
 
     private function onGameServerConnected():void {
-        Context.gameServer.login(Context.Model.currentSettings.socialProfile.id, Context.Model.currentSettings.socialProfile.id)
+        Context.gameServer.login(Context.Model.currentSettings.socialProfile.id, Context.Model.currentSettings.flashVars.auth_key);//Context.Model.currentSettings.socialProfile.id)
         Context.gameServer.disconnected.removeAll()
         Context.gameServer.disconnected.addOnce(onServerDisconnected)
     }
