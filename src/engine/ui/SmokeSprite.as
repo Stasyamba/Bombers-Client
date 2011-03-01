@@ -18,15 +18,17 @@ public class SmokeSprite extends Sprite {
         super()
         _baseX = baseX
         _baseY = baseY
+    }
+
+    public function start():void {
         var bm:BitmapData = Context.imageService.getSmoke()
         graphics.beginBitmapFill(bm)
         graphics.drawRect(0,0,Consts.SMOKE_WIDTH,Consts.SMOKE_HEIGHT)
         graphics.endFill()
         TweenMax.fromTo(this,5,
-        {alpha:1,scaleX:0.5,scaleY:0.5,x:baseX + Consts.BLOCK_SIZE_2 - Consts.SMOKE_WIDTH/4,y:baseY + Consts.BLOCK_SIZE_2  - Consts.SMOKE_HEIGHT/4},
-        {alpha:1,scaleX:1,scaleY:1,x:baseX + Consts.BLOCK_SIZE_2  - Consts.SMOKE_WIDTH/2,y:baseY + Consts.BLOCK_SIZE_2  - Consts.SMOKE_HEIGHT/2,onComplete:defaultState})
+        {alpha:1,scaleX:0.5,scaleY:0.5,x:_baseX + Consts.BLOCK_SIZE_2 - Consts.SMOKE_WIDTH/4,y:_baseY + Consts.BLOCK_SIZE_2  - Consts.SMOKE_HEIGHT/4},
+        {alpha:1,scaleX:1,scaleY:1,x:_baseX + Consts.BLOCK_SIZE_2  - Consts.SMOKE_WIDTH/2,y:_baseY + Consts.BLOCK_SIZE_2  - Consts.SMOKE_HEIGHT/2,onComplete:defaultState})
     }
-
     private function defaultState():void {
          TweenMax.to(this,20,
         {alpha:1,scaleX:1.5,scaleY:1.5,x:_baseX + Consts.BLOCK_SIZE_2  - 1.5*Consts.SMOKE_WIDTH/2,y:_baseY + Consts.BLOCK_SIZE_2  - 1.5*Consts.SMOKE_HEIGHT/2,onComplete:finish})

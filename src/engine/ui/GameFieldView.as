@@ -105,6 +105,7 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
         sp.x = x + Consts.BLOCK_SIZE_2 - Consts.SMOKE_WIDTH / 4;
         sp.y = y + Consts.BLOCK_SIZE_2 - Consts.SMOKE_HEIGHT / 4
         highestView.addChild(sp)
+        sp.start()
     }
 
     private function mapWidth():Number {
