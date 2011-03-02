@@ -20,7 +20,7 @@
 
         import engine.utils.Utils
 
-        private var passwordBases:Array = ["abra","fuuu","abcd","cadabra","sparta","bomber","sport","dance","pass","word"]
+        private var passwordBases:Array = ["obama","fuuu","lsd","cadabra","sparta","bomber","baby","sexypass","superpass","banana"];
 
         private function generatingGameName(visible:Boolean):void {
             gameNameTextInput.isWarning = visible;

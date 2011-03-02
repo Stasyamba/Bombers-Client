@@ -75,6 +75,7 @@
 
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW, function (e:ContextEvent):void {
 				focusGroup.visible = false;
+				
 				openThreeSecondsToStart();
             });
 			
