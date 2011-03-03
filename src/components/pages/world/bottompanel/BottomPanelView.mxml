@@ -11,6 +11,7 @@
     <fx:Script>
 		<![CDATA[
 			import components.ApplicationView;
+			import components.pages.game.windows.create.GameCreatedW;
 			import components.pages.world.windows.friendsgame.GameWithFriendsW;
 			import components.pages.world.windows.friendsgame.TypeGameToggle;
 			import components.pages.world.windows.randomgame.CreatingRandomGameW;
@@ -35,12 +36,14 @@
                     break;
 
                 case OPEN_RANDOM_GAME_TYPE:
-                    Context.gameModel.fastJoin()
+                    Context.gameModel.fastJoin();
                     showRandomGameCreating();
+					
                     Context.gameModel.someoneJoinedToGame.addOnce(function (p1:*):void {
                         closeRandomGameCreating();
                         Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
                     });
+					
                     Context.gameModel.fastJoinFailed.addOnce(function ():void {
                         closeRandomGameCreating();
                         Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
@@ -48,7 +51,8 @@
                             text: "Не удалось присоединиться к игре!",
                             type: TypeGameToggle.TOGGLE_STATE_CREATE
                         });
-                    })
+                    });
+					
                     break;
                 case OPEN_FRIENDS_GAME_TYPE:
                     showFriendsPopUp();
@@ -110,6 +114,11 @@
                 ww = null
             }
         }
+			
+		private function enforceGameCreating(): void
+		{
+			Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_GAME_CREATING_WINDOW);
+		}
 
         private function init():void {
             if (!Context.Model.hasCustomListener(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY)) {
@@ -193,7 +202,9 @@
 		
 		<bottompanel:MarketButton id="inventoryMarketButton" click="bottomMenuButtonClickHandler(OPEN_MARKET_TYPE);"/>
         <bottompanel:KillFriendsButton id="killFriendsButton"
-                                       click="bottomMenuButtonClickHandler(OPEN_FRIENDS_GAME_TYPE);"/>
+									   click="enforceGameCreating();"
+									   />
+                                       <!--click="bottomMenuButtonClickHandler(OPEN_FRIENDS_GAME_TYPE);"/>-->
         <bottompanel:RandomGameButton id="randomGameButton"
                                       click="bottomMenuButtonClickHandler(OPEN_RANDOM_GAME_TYPE);"/>
 

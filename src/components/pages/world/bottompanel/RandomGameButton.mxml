@@ -2,7 +2,7 @@
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
          xmlns:s="library://ns.adobe.com/flex/spark"
          xmlns:mx="library://ns.adobe.com/flex/mx"
-         height="47" width="150"
+         height="47" width="130"
          mouseOver="mouseOverHandler();"
          mouseOut="mouseOutHandler();"
          creationComplete="init();"
@@ -102,7 +102,7 @@
         <s:BitmapImage y="{startYBombPosition}" id="iconLabel"
                        source="@Embed(source='assets/pageworld/bottompanel/buttons/randomGameIcon.png')"/>
 
-        <s:Label text="Случайная игра"
+        <s:Label text="Играть"
                  id="textLabelBlur"
                  alpha="0"
                  x="{iconLabel.width + 5}" y="{iconLabel.height/2-textLabel.height/2 + 3}"
@@ -111,7 +111,7 @@
                 <s:BlurFilter blurX="15" blurY="15"/>
             </s:filters>
         </s:Label>
-        <s:Label text="Случайная игра"
+        <s:Label text="Играть"
                  id="textLabel"
                  x="{iconLabel.width + 5}" y="{iconLabel.height/2-textLabel.height/2 + 3}"
                  fontSize="16" color="0xffde00" fontFamily="mpbc"/>

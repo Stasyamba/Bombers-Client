@@ -75,6 +75,18 @@ public class ItemsManager {
 		));
 		
 		items.push(new ItemObject(
+			ItemType.NUCLEAR_BOMB,
+			[],
+			
+			new ItemViewObject(
+				ItemType.NUCLEAR_BOMB,
+				ImagesPrefixes.WEAPON_PREFIX + "nuclearBomb.png",
+				"Ядерная бомба",
+				"Мощнейшая бомба, которая способна сокрушить на карте буквально все. Взрывная волна держится дольше обычного."
+			)
+		));
+		
+		items.push(new ItemObject(
 			ItemType.HEALTH_PACK_ADVANCED_POISON,
 			[],
 			
@@ -110,17 +122,6 @@ public class ItemsManager {
                         )
                 ));
 
-        items.push(new ItemObject(
-                ItemType.NUCLEAR_BOMB,
-                [],
-
-                new ItemViewObject(
-                        ItemType.NUCLEAR_BOMB,
-                        ImagesPrefixes.WEAPON_PREFIX + "nuclearBomb.png",
-                        "Ядерная бомба",
-                        "Мощнейшая бомба, которая способна сокрушить на карте буквально все. Взрывная волна держится дольше обычного."
-                        )
-                ));
 
         items.push(new ItemObject(
                 ItemType.X_RAY_BOMB,

@@ -17,6 +17,8 @@
 			import components.wall.SendWallObject;
 			
 			import mx.collections.ArrayCollection;
+			import mx.collections.Sort;
+			import mx.collections.SortField;
 			
 			import spark.events.IndexChangeEvent;
 			
@@ -25,14 +27,44 @@
 			
 			private function init(): void
 			{
+				
 				var notAppFriends: Array = Context.Model.currentSettings.socialProfile.getFriends(SocialProfile.TYPE_ALL);
+				
+				var arrOnline: ArrayCollection = new ArrayCollection();
+				var arrNotOnline: ArrayCollection = new ArrayCollection();
 				
 				for each(var fr: ISocialProfile in notAppFriends)
 				{
-					friendsCollection.addItem(fr);
+					//friendsCollection.addItem(fr);
+					if(fr.isUserOnline)
+					{
+						arrOnline.addItem(fr);
+					}else
+					{
+						arrNotOnline.addItem(fr);
+					}
 				}
 				
+				
+				// sort by online and alphabet
+				
+				var dataSortField:SortField = new SortField("name");
+				dataSortField.numeric = false;
+				
+				var nameDataSort:Sort = new Sort();
+				nameDataSort.fields = [dataSortField];
+				 
+				arrOnline.sort = nameDataSort;
+				arrNotOnline.sort = nameDataSort;
+				
+				arrOnline.refresh();
+				arrNotOnline.refresh();
+				
+				friendsCollection = new ArrayCollection(arrOnline.source.concat(arrNotOnline.source));
 				friendsCollection.refresh();
+				
+				friendsCollection.filterFunction = findPartNameFunc;
+				
 			}
 			
 			private function wallPost(e: IndexChangeEvent): void
@@ -55,14 +87,73 @@
 				
 			}
 			
+			
+			/* text filters */
+			
+			public function filterFunc():void 
+			{
+				 if(friendTextInput.text != "")
+				{	
+					friendsCollection.filterFunction = findPartNameFunc;
+					
+				} 
+				friendsCollection.refresh(); 
+			}
+			
+			public function convertFromTranslit(inputString:String):String 
+			{	
+				var ru2en:Object= {
+					ru_str : "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя",
+					en_str : ['A','B','V','G','D','E','JO','ZH','Z','I','J','K','L','M','N','O','P','R','S','T',
+						'U','F','H','TS','CH','SH','SHH',String.fromCharCode(35),'Y',String.fromCharCode(39),'YE','YU',
+						'YA','a','b','v','g','d','e','jo','zh','z','i','j','k','l','m','n','o','p','r','s','t','u','f',
+						'h','ts','ch','sh','shh',String.fromCharCode(35),'y',String.fromCharCode(39),'ye','yu','ya']
+				};
+				var tmp_str:Array;
+				
+				for (var i:Number = 3; i > 0; i--) {
+					for (var key:String in ru2en.en_str) {
+						if (ru2en.en_str[key].length == i) {
+							inputString = inputString.replace(new RegExp(ru2en.en_str[key], "g"), ru2en.ru_str.charAt(key));
+						}
+					}
+				}
+				
+				return inputString;
+			}
+			
+			public function findPartNameFunc(item:Object):Boolean {
+				if(friendTextInput.text == "")
+				{
+					return true;
+				}
+				
+				var textInputValue: String = friendTextInput.text.toLocaleLowerCase();
+				var phrases: Array = textInputValue.split(" ");
+				
+				for(var i: int = 0; i<= phrases.length - 1; i++)
+				{
+					textInputValue = phrases[i];
+					
+					if(item.name.toLowerCase().search(textInputValue) == -1 && convertFromTranslit(item.name.toLowerCase()).search(textInputValue) == -1 && item.surname.toLowerCase().search(textInputValue) == -1 && convertFromTranslit(item.surname.toLowerCase()).search(textInputValue) == -1)
+						return false;
+				}
+				
+				
+				return true;
+			}
+			
 		]]>
 	</fx:Script>
 	
-    <!--<s:TextInput textAlign="center" fontFamily="mpr" color="0xffffff"
+    <s:TextInput id="friendTextInput" 
+				 textAlign="center" fontFamily="mpr" color="0xffffff"
                  text="Начните вводить имя друга"
                  contentBackgroundAlpha="0.1" contentBackgroundColor="0xffffff"
                  width="181"
-            	 />-->
+				 click="{friendTextInput.text = '';}"
+				 change="friendsCollection.refresh();"
+            	 />
 
 	<s:Group>
 		<s:Rect width="215" height="174"

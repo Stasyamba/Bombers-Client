@@ -33,7 +33,12 @@
 
         private function showInventoryW():void {
             hidePopUp();
-            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, true);
+			
+			if (Context.gameModel.isPlayingNow)
+				Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_IS_PLAYING_PACK_WINDOW)
+			else {
+				Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, true);
+			}
         }
 
         private function changeTheGame():void {
@@ -43,6 +48,7 @@
 
         private function quitTheGame():void {
             hidePopUp();
+			Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_QUIT_THE_GAME_WINDOW);
         }
         ]]>
 	</fx:Script>
@@ -54,30 +60,26 @@
                  mouseOut="{ isMouseOnPopUp = false; checkPopUp(); }"
                  alpha="1"
                 >
-            <s:Group y="-98" x="-32">
+            <s:Group y="-78" x="-32">
 
-                <s:Rect width="100" height="100"
+                <s:Rect width="100" height="80"
                         radiusX="15" radiusY="15"
                         alpha="0.8"
                         id="subMenuBG"
                         >
                     <s:fill>
-                        <s:SolidColor color="0x000000"/>
+                        <s:SolidColor color="0xff6000"/>
                     </s:fill>
                 </s:Rect>
 
-                <s:VGroup width="100" height="100"
+                <s:VGroup width="100" height="80"
                           horizontalAlign="center" verticalAlign="middle"
                         >
 
                     <flexcomponents:TextButton text="Инвентарь" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
                                                textFontSize="16"
                                                click="showInventoryW();"/>
-                    <flexcomponents:TextButton text="Сменить игру" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
-                                               textFontSize="16"
-                                               click="changeTheGame();"
-                            />
-                    <flexcomponents:TextButton text="Покинуть игру" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
+                    <flexcomponents:TextButton text="Покинуть" fontColorUp="0xf5d6b4" fontColorOver="0xfcab4f"
                                                textFontSize="16"
                                                click="quitTheGame();"
                             />

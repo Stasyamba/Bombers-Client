@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Panel xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:mx1="library://ns.adobe.com/flex/halo"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 creationComplete="panelCreationComplete();"
+		 borderVisible="false"
+		 dropShadowVisible="false"
+		 skinClass="skins.common.EmptyPopUpS"
+		 xmlns:healingcore="components.healingcore.*"
+		 xmlns:gamewithfriends="windows.gamescreen.gamewithfriends.*"
+		 xmlns:common="common.*"
+		 xmlns:friendsgame="components.pages.world.windows.friendsgame.*"
+		 xmlns:flexcomponents="components.common.flexcomponents.*"
+		 xmlns:preloaders="components.common.utils.preloaders.*"
+		 implements="components.common.base.window.IWindow"
+		 >
+	
+	<fx:Declarations>
+		
+		
+		<s:Animate id="disapearingAnimation" target="{this}" duration="300"
+				   effectEnd="{close();}">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="1"
+								valueTo="0"
+								/>
+		</s:Animate>
+		
+		<s:Animate id="apearingAnimation" target="{this}" duration="1200">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="0" valueTo="1"
+								/>
+		</s:Animate>
+		
+		<s:Parallel id="showCloseButtonGroupAnimation">
+			<s:Animate target="{closeButtonGroup}" duration="2000"
+					   effectStart="{closeButtonGroup.visible = true;}">
+				<s:SimpleMotionPath property="alpha"
+									valueFrom="0" valueTo="1"
+									/>
+			</s:Animate>
+			
+			<s:Animate target="{preloaderContent}" duration="1000">
+				<s:SimpleMotionPath property="paddingTop"
+									valueFrom="0" valueTo="30"
+									/>
+			</s:Animate>
+		</s:Parallel>
+		
+		
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.ApplicationView;
+			import components.common.worlds.locations.LocationType;
+			
+			import engine.utils.greensock.TweenMax;
+			
+			import mx.managers.PopUpManager;
+				
+				public static const PRELOADER_TYPE:int = 0;
+			public static const WARNING_TYPE:int = 1;
+			
+			[Bindable]
+			public var warningText:String = "";
+			[Bindable]
+			public var closeText:String = "Возможно сервер уснул, попробуйте чуть позже. Или он просто долго думает, можете чуть-чуть подождать.";
+			
+			private var timer:Timer = new Timer(4000, 1);
+			
+			public var closeOnCreationComplete:Boolean;
+			
+			/* password and game name */
+			
+			private var gamePass: String;
+			private var gameName: String;
+			
+			private var passwordBases:Array = ["obama","fuuu","lsd","cadabra","sparta","bomber","baby","sexypass","superpass","banana"];
+			
+			private function generatingGamePass(): String
+			{
+				var str:String = passwordBases[int(Math.random() * passwordBases.length)]
+				return str + String(int(Math.random() * 100));
+			}
+			
+			private function generatingGameName():void {
+				Context.gameServer.newGameNameObtained.addOnce(onNewGameNameObtained);
+				Context.gameServer.newGameNameRequest();
+			}
+			
+			private function onNewGameNameObtained(name:String):void {
+				
+				Context.gameModel.tryCreateRegularGame(name, gamePass, LocationType.WORLD1_GRASSFIELDS.value)
+			}
+			
+			/* --- end --- */
+			
+			
+			public function close():void {
+				Context.Model.dispatchCustomEvent(ContextEvent.CHANGE_BOTTOM_PANEL_BUTTONS_ACTIVITY, true);
+				Context.Model.windowsManager.deleteWindow(this);
+				PopUpManager.removePopUp(this);
+			}
+			
+			public function closeWrapper():void {
+				disapearingAnimation.play();
+			}
+			
+			private function panelCreationComplete():void {
+				
+				Context.Model.windowsManager.closeAll(true);
+				Context.Model.windowsManager.addWindow(this);
+				if(closeOnCreationComplete)
+				{
+					closeWrapper();
+				}
+				apearingAnimation.play();
+				timer.addEventListener(TimerEvent.TIMER_COMPLETE, timerCompleteHandler);
+			
+				preloaderContent.paddingTop = 0;
+				closeButtonGroup.visible = false;
+				closeButtonGroup.alpha = 0;
+				timer.start();
+				
+				/* register handlers */
+				
+				Context.gameModel.createGameFailed.addOnce(function():void {
+					closeText = "По каким то причинам не удалось создать игру";
+					showCloseButtonGroupAnimation.play();
+				});
+				
+				Context.gameModel.someoneJoinedToGame.addOnce(function (p1:*):void {
+					Context.Model.windowsManager.closeAll(true);
+					Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+				});
+				
+				/* send nessesory requests */
+				gamePass = generatingGamePass();
+				TweenMax.delayedCall(3, function ():void
+				{
+					generatingGameName();
+				});
+				
+			}
+			
+			private function timerCompleteHandler(e:TimerEvent):void {
+				if(!showCloseButtonGroupAnimation.isPlaying)
+				{
+					showCloseButtonGroupAnimation.play();
+					
+					timer.reset();
+					timer.stop();
+				}
+			}
+			
+			private function cancelConnecting():void {
+				closeWrapper();
+				Context.gameModel.cancelConnectingToGame();
+			}
+		]]>
+	</fx:Script>
+	<s:layout>
+		<s:BasicLayout/>
+	</s:layout>
+	
+	
+	<s:Rect alpha="0.84" width="557" height="147"
+			radiusX="30" radiusY="30">
+		<s:fill>
+			<s:SolidColor color="0x000000"/>
+		</s:fill>
+	</s:Rect>
+	
+	<s:HGroup x="16" y="16" verticalAlign="middle"
+			  id="closeButtonGroup">
+		
+		<flexcomponents:CloseButton
+			skinClass="skins.buttons.CloseButtonOriginS"
+			scale="0.8"
+			click="cancelConnecting();"
+			/>
+		<s:Label text="{closeText}" 
+				 maxWidth="405" fontSize="14"
+				 fontFamily="mpr" color="0xe4e4e4"
+				 />
+		
+	</s:HGroup>
+	
+	<s:VGroup width="557" height="147"
+			  paddingTop="0"
+			  id="preloaderContent" visible="true"
+			  horizontalAlign="center" verticalAlign="middle">
+		
+		<s:HGroup verticalAlign="middle">
+			<preloaders:Spinner tickColor="0xe4e4e4" tickWidth="7" size="50"/>
+			<s:Label text="Создаю игру с друзьями" color="0xe4e4e4" fontSize="30"
+					 maxWidth="521" fontFamily="mpbc" textAlign="center"
+					 />
+		</s:HGroup>
+		
+	</s:VGroup>
+	
+	
+	<s:controlBarContent/>
+</s:Panel>

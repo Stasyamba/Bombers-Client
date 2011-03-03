@@ -75,7 +75,7 @@
 
             Context.gameModel.leftGame.add(onLeftGame)
             Context.gameModel.readyToPlayAgain.add(onReadyToPlayAgain)
-            onConnectedToGame()
+            onConnectedToGame();
         }
 
         private function onReadyToPlayAgain():void {

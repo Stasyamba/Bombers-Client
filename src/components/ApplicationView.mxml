@@ -24,6 +24,7 @@
 			import components.common.game.requesttogame.RequestGameObject;
 			import components.common.profiles.VkontakteProfile;
 			import components.common.resources.ResourcePrice;
+			import components.pages.game.windows.create.GameCreatedW;
 			import components.pages.global.energymarket.EnergyMarketW;
 			import components.pages.global.gamerequest.ConnectToGameW;
 			import components.pages.global.inventory.InventoryW;
@@ -31,6 +32,7 @@
 			import components.pages.global.resourcemarket.ResourceMarketW;
 			import components.pages.global.takeloot.TakeLootW;
 			import components.pages.global.tutorial.TutorialPreviewW;
+			import components.pages.world.windows.creategame.CreateGameW;
 			import components.wall.SendWallObject;
 			
 			import engine.games.GameType;
@@ -160,21 +162,8 @@
 					}
 				});
 				
-				if ((parentApplication as Bombers).isWrapperExists) {
-					var currentLocation:String = VkontakteGlobals.wrapper.external.getLocation();
-					if (currentLocation != "") {
-						Context.gameServer.profileLoaded.addOnce(function(p1:*):void {
-							var arr:Array = currentLocation.split("-");
-							
-							if (arr.length == 2) {
-								var newRequest:RequestGameObject = new RequestGameObject(arr[0], arr[1], GameType.REGULAR, null);
-								Context.Model.currentSettings.addRequest(newRequest);
-								
-								openRequestGameW();
-							}
-						})
-					}
-				}
+				
+				
 				
 				Context.Model.addCustomListener(ContextEvent.L_NEED_TO_SHOW_LOTTERY, function(e: ContextEvent): void
 				{
@@ -186,6 +175,11 @@
 					showLoot();
 				});
 				
+				Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_GAME_CREATING_WINDOW, function (e: ContextEvent):void
+				{
+					showGameCreating();
+				});
+				
 				
 				/*disconnected*/
 				
@@ -195,12 +189,65 @@
 				idGroup.visible = !(parentApplication as Bombers).isWrapperExists;
 				
 				
+				if ((parentApplication as Bombers).isWrapperExists) {
+					var currentLocation:String = ""+VkontakteGlobals.wrapper.external.getLocation();
+					if (currentLocation != "") 
+					{
+						Context.gameServer.profileLoaded.addOnce(function(p1:*):void 
+						{
+							var arr:Array = currentLocation.split("-");
+							
+							//mx.controls.Alert.show("Я почти внутри, ептааа!");
+							
+							if (arr.length == 2) {
+								/* var newRequest:RequestGameObject = new RequestGameObject(, GameType.REGULAR, null);
+								Context.Model.currentSettings.addRequest(newRequest);
+								
+								openRequestGameW(); */
+								//mx.controls.Alert.show("Я внутри, ептааа!");
+								
+								Context.gameModel.fastJoinFailed.addOnce(joinTheGameFailed);
+								Context.gameModel.someoneJoinedToGame.addOnce(joinTheGame);
+								
+								Context.gameModel.joinConcreteGame(arr[0], arr[1]);
+							}else
+							{
+								if(Context.Model.currentSettings.lotteryTryToWinCount > 0)
+								{
+									showLottery();
+								}
+							}
+						});
+					}
+				}
 				
 				
 				/// immitation
 				//showLottery();
 				//showLoot();
 				
+			}
+			
+			private function joinTheGameFailed():void
+			{
+				Context.gameModel.someoneJoinedToGame.remove(joinTheGame);
+				mx.controls.Alert.show("Нет такой игры");
+			}
+			
+			private function joinTheGame(p1:*):void
+			{
+				Context.gameModel.fastJoinFailed.remove(joinTheGameFailed);
+				Context.Model.windowsManager.closeAll(true);
+				Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+			}
+			
+			private function showGameCreating():void
+			{
+				var gw: CreateGameW = new CreateGameW();
+				gw.x = 150;
+				gw.y = 163;
+				
+				PopUpManager.addPopUp(gw, parentApplication as Bombers, false);
 			}
 			
 			private function sendToWall(swo:SendWallObject):void {

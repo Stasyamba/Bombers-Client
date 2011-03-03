@@ -118,18 +118,17 @@
                                                     propertyType="{BomberBasePropertyTemplate.TYPE_HEALTH}" count="0"/>
         </s:HGroup>
 
-        <s:HGroup verticalAlign="middle">
+        <!--<s:HGroup verticalAlign="middle">
             <s:Button skinClass="skins.buttons.PackButtonS" buttonMode="true" useHandCursor="true"
                       click="openInventoryW();"
                     />
-            <!--<s:Button skinClass="skins.buttons.RefreshButtonS" />-->
             <flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonOriginS" scale="0.5"
                                         click="quitTheGame();"/>
-        </s:HGroup>
+        </s:HGroup>-->
 
-        <!--
-              <bottompanel:MenuView />
-          -->
+        
+       <bottompanel:Menu />
+          
 
         <bottompanel:Time/>
 

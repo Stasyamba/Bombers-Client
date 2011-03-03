@@ -599,10 +599,11 @@ public class GameServer extends SmartFox {
 				
 				Context.Model.currentSettings.lotteryTryToWinCount = responseParams.getInt("LuckCount");
 				
-				if(Context.Model.currentSettings.lotteryTryToWinCount>0)
+				Context.Model.dispatchCustomEvent(ContextEvent.L_TRY_TO_SHOW_LOTTERY);
+				/*if(Context.Model.currentSettings.lotteryTryToWinCount>0)
 				{
 					Context.Model.dispatchCustomEvent(ContextEvent.L_NEED_TO_SHOW_LOTTERY);
-				}
+				}*/
 				
                 break;
             case

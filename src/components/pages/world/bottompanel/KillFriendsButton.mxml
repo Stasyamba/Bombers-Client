@@ -96,7 +96,7 @@
         <s:BitmapImage y="{startYBombPosition}" id="iconLabel"
                        source="@Embed(source='assets/pageworld/bottompanel/buttons/friendsIcon.png')"/>
 
-        <s:Label text="Вздуть друзей"
+        <s:Label text="Создать игру"
                  id="textLabelBlur"
                  alpha="0"
                  x="{iconLabel.width + 5}" y="{iconLabel.height/2-textLabel.height/2 + 3}"
@@ -105,7 +105,7 @@
                 <s:BlurFilter blurX="15" blurY="15"/>
             </s:filters>
         </s:Label>
-        <s:Label text="Вздуть друзей"
+        <s:Label text="Создать игру"
                  id="textLabel"
                  x="{iconLabel.width + 5}" y="{iconLabel.height/2-textLabel.height/2 + 3}"
                  fontSize="16" color="0xffde00" fontFamily="mpbc"/>

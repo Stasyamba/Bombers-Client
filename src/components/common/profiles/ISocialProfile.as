@@ -26,7 +26,11 @@ public interface ISocialProfile {
     function get profileLink():String;
 
     function set profileLink(value:String):void;
-
+	
+	function set isUserOnline(value: Boolean): void;
+	
+	function get isUserOnline(): Boolean;
+	
     function clone(profile:ISocialProfile):void;
 
 	//function setFriend(id: String): void;

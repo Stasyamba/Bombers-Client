@@ -100,16 +100,14 @@
                     break;
 				
             }
-			
-//            for each(var i:ItemProfileObject in gameResults.getItems()) {
-
-//            }
         }
 
-        private function onClose():void {
-            closeWrapper()
-            Context.gameModel.readyToPlayAgain.dispatch()
+        private function onClose():void 
+		{
+            closeWrapper();
+            Context.gameModel.readyToPlayAgain.dispatch();
         }
+		
         ]]>
 	</fx:Script>
     <s:layout>

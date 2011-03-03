@@ -73,21 +73,21 @@
 
     <fx:Script>
 		<![CDATA[
-			import api.vkontakte.VkontakteGlobals;
-			
-			import appmodel.ApplicationModel;
-			
-			import components.ApplicationView;
-			import components.WallView;
-			import components.common.profiles.VkontakteProfile;
-			import components.common.utils.enviroment.vkontakte.ApiResult;
-			import components.common.utils.enviroment.vkontakte.FlashVars;
-			
-			import engine.utils.greensock.TweenMax;
-			
-			import mx.controls.Alert;
-			import mx.core.IVisualElement;
-			import mx.utils.ObjectUtil;
+		import api.vkontakte.VkontakteGlobals;
+		
+		import appmodel.ApplicationModel;
+		
+		import components.ApplicationView;
+		import components.WallView;
+		import components.common.profiles.VkontakteProfile;
+		import components.common.utils.enviroment.vkontakte.ApiResult;
+		import components.common.utils.enviroment.vkontakte.FlashVars;
+		
+		import engine.utils.greensock.TweenMax;
+		
+		import mx.controls.Alert;
+		import mx.core.IVisualElement;
+		import mx.utils.ObjectUtil;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;

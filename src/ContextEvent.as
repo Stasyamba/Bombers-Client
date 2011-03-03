@@ -13,8 +13,10 @@ public class ContextEvent extends Event {
     public static const NEED_TO_SHOW_ERROR:String = "NeedToShowError";
     public static const NEED_TO_SHOW_DISCONNECTED_WINDOW:String = "NeedToShowDisconnectedWindow"
     public static const NEED_TO_SHOW_CANT_CONNECT_WINDOW:String = "NeedToShowCantConnectWindow"
-	public static const NEED_TO_OPEN_TAKE_LOOT_WINDOW: String = "NeedToOpenTakeLootWindow";
-		
+	public static const NEED_TO_OPEN_TAKE_LOOT_WINDOW: String = "NeedToOpenTakeLootWindow";	
+	public static const NEED_TO_OPEN_GAME_CREATING_WINDOW: String = "NeedToOpenGameCreatingWindow";
+	
+	
 	
     /***** worlds and locations *****/
     public static const NEED_TO_CHANGE_WORLD:String = "NeedToChangeWorld";
@@ -146,6 +148,7 @@ public class ContextEvent extends Event {
 	/** lottery events **/
 	public static const L_SHOW_CHEST_BLOCK:String = "LShowChestBlock";
 	public static const L_NEED_TO_SHOW_LOTTERY:String = "LNeedToShowLottery";
+	public static const L_TRY_TO_SHOW_LOTTERY:String = "LTryToShowLottery";
 	// pass: Boolean -> show or hide chest block
 	public static const L_RESET_CHESTS:String = "LResetChests";
 	public static const L_TRY_COUNT_SET_CHANGED:String = "LTryCountSetChanged";
