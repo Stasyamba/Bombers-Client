@@ -132,8 +132,8 @@
                     Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
 					Context.Model.currentSettings.votes = Context.Model.currentSettings.apiResult.votes;
 					
-                    initApp(APP_STARTED_COMMON);
-					//initApp(APP_STARTED_DEVELOPMENT);
+                    //initApp(APP_STARTED_COMMON);
+					initApp(APP_STARTED_DEVELOPMENT);
           
                 }
             } else {

@@ -8,7 +8,7 @@
          dropShadowVisible="false"
          skinClass="skins.common.EmptyPopUpS"
          xmlns:flexcomponents="components.common.flexcomponents.*"
-         xmlns:create="components.pages.game.windows.create.*"
+         xmlns:create="components.pages.game.windows.create.*" xmlns:slots="components.pages.global.inventory.right.market.slots.*"
         >
     <fx:Declarations>
 
@@ -30,13 +30,16 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.utils.adjustcolor.Color
-        import components.common.utils.adjustcolor.ColorMatrix
-        import components.common.utils.adjustcolor.ColorMatrixObject
-
-        import engine.profiles.LobbyProfile
-
-        import mx.managers.PopUpManager
+			import components.common.items.ItemObject;
+			import components.common.utils.adjustcolor.Color;
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+			
+			import engine.profiles.LobbyProfile;
+			import engine.utils.greensock.TweenMax;
+			
+			import mx.core.IFlexDisplayObject;
+			import mx.managers.PopUpManager;
 
         public function close():void {
             PopUpManager.removePopUp(this);
@@ -60,6 +63,17 @@
             lightBorderContainer.filters = [cm1.filter];
             darkBorderContainer.filters = [cm.filter];
 
+			// fill item offer 
+			
+			var items: Array = Context.Model.itemsManager.getItems();
+			var r: int = Math.round(Math.random()*(items.length));
+			if(r == items.length)
+			{
+				r = items.length - 1;
+			}
+			
+			itemOffers.initContent((items[r] as ItemObject).type);
+			
             // fill the results
 
             resultsVGroup.removeAllElements();
@@ -97,15 +111,19 @@
                     }
                 }
                 if (!found)
+				{
                     break;
-				
+				}
             }
+			
+			
         }
 
         private function onClose():void 
 		{
             closeWrapper();
-            Context.gameModel.readyToPlayAgain.dispatch();
+		
+            //Context.gameModel.readyToPlayAgain.dispatch();
         }
 		
         ]]>
@@ -117,33 +135,47 @@
     <s:BorderContainer id="lightBorderContainer"
                        backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
                        backgroundImageFillMode="repeat"
-                       width="335" height="280"
+					   width="496" height="396"
                        borderVisible="false"
             />
 
     <s:BorderContainer id="darkBorderContainer"
                        backgroundImage="@Embed(source='assets/windows/global/inventory/patternBG.jpg')"
                        backgroundImageFillMode="repeat"
-                       width="319" height="264"
+					   width="480" height="380"
                        borderVisible="false"
                        x="8" y="8"
             />
 
-    <s:VGroup width="319" height="264"
+    <s:VGroup width="480" height="380"
               x="8" y="8"
               horizontalAlign="center"
               verticalAlign="middle"
+			  gap="50"
             >
-        <s:Label text="Результаты:" fontFamily="mpbc" fontSize="24" color="0xffffff"/>
-        <s:VGroup id="resultsVGroup" horizontalAlign="left"/>
-       <!-- <s:Label text="Собрали: " fontFamily="mpbc" fontSize="24" color="0xffffff"/>
-        <s:HGroup id="collectItemsHGroup"/>-->
+		
+		<s:VGroup width="100%" horizontalAlign="center">
+	        <s:Label text="Результаты:" fontFamily="mpbc" fontSize="24" color="0xffffff"/>
+	        <s:VGroup id="resultsVGroup" horizontalAlign="left"/>
+		</s:VGroup>
+		
+		<s:VGroup width="100%" horizontalAlign="center">
+			<s:Label text="Может попробуем это?" fontFamily="mpbc" fontSize="24" color="0xffffff"/>
+			<s:HGroup width="100%" horizontalAlign="center">
+				<slots:ItemMarketSlot id="itemOffers">
+					<slots:filters>
+						<s:DropShadowFilter blurX="10" blurY="10" color="0x000000" alpha="0.5"/>
+					</slots:filters>
+				</slots:ItemMarketSlot>
+			</s:HGroup>
+		</s:VGroup>
+		
 		
     </s:VGroup>
 
     <flexcomponents:CloseButton skinClass="skins.buttons.CloseButtonBlackS"
-                                x="290" y="10"
-                                click="onClose()"
+                                x="439" y="13"
+                                click="onClose();"
             />
 
     <s:controlBarContent/>

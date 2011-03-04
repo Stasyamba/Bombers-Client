@@ -70,7 +70,8 @@
             });
 
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW, function (e:ContextEvent):void {
-                showResultsWindow();
+				Context.gameModel.readyToPlayAgain.dispatch();
+				showResultsWindow();
             });
 
             Context.Model.addCustomListener(ContextEvent.GPAGE_NEED_TO_SHOW_THREESEC_WINDOW, function (e:ContextEvent):void {
@@ -136,14 +137,13 @@
         }
 
         private function showReadyWindow():void {
-            //if(readyWindow == null)
-            //{
+            
             readyWindow = new GameReadyW();
             readyWindow.x = 215;
             readyWindow.y = 66;
 
             PopUpManager.addPopUp(readyWindow, this, false);
-            //}
+			
         }
 
         private function showCreatedGameWindow():void {
@@ -156,8 +156,8 @@
 
         private function showResultsWindow():void {
             var rw:ResultsW = new ResultsW();
-            rw.x = 265;
-            rw.y = 86;
+            rw.x = 200;
+            rw.y = 62;
 
             PopUpManager.addPopUp(rw, this, false);
         }
