@@ -11,5 +11,19 @@ public class SocialProfile {
 	
     public function SocialProfile() {
     }
+	
+	public static function getSocialProfileLink(id: String, type:int):String
+	{
+		var res: String = "";
+		
+		switch(type)
+		{
+			case VKONTAKTE:
+				res = "http://vkontakte.ru/id"+id;
+				break;
+		}
+		
+		return res;
+	}
 }
 }

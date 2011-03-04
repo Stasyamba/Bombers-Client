@@ -3,7 +3,10 @@
          xmlns:s="library://ns.adobe.com/flex/spark"
          xmlns:mx="library://ns.adobe.com/flex/mx"
          creationComplete="init();"
-         width="61" height="80">
+         width="61" height="80"
+		 click="goToSocialProfile();"
+		 useHandCursor="true" buttonMode="true"
+		 >
 
 
     <fx:Declarations>
@@ -71,10 +74,13 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.utils.adjustcolor.ColorMatrix
-        import components.common.utils.adjustcolor.ColorMatrixObject
-
-        import engine.profiles.LobbyProfile
+			import components.common.profiles.SocialProfile;
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+			
+			import engine.profiles.LobbyProfile;
+			
+			import flash.net.navigateToURL;
 
         private var _profile:LobbyProfile;
 
@@ -153,6 +159,16 @@
 
             colorMatrixFilter.matrix = cm.matrix;
         }
+			
+		private function goToSocialProfile():void
+		{
+			if(_profile != null)
+			{
+				var link: String = SocialProfile.getSocialProfileLink(_profile.id, Context.Model.currentSettings.currentSocialWeb);
+				navigateToURL(new URLRequest(link));
+			}
+		}
+			
         ]]>
 	</fx:Script>
 
