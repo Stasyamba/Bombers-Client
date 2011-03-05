@@ -644,14 +644,18 @@ public class GameServer extends SmartFox {
                         responseParams.getInt("interface.buyItem.result.fields.resourceType1"),
                         responseParams.getInt("interface.buyItem.result.fields.resourceType2"),
                         responseParams.getInt("interface.buyItem.result.fields.resourceType3"))
+				
                 Context.Model.currentSettings.gameProfile.addItem(iType, count)
                 Context.Model.currentSettings.gameProfile.resources.setFrom(rp)
+				
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.IT_BUY_SUCCESS, {it:iType,count:count})
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.IM_ITEMBUY_SUCCESS, iType)
+				
+				Context.Model.dispatchCustomEvent(ContextEvent.RGAME_NEED_TO_SET_WEAPON_TO_HAND, iType);
                 break;
             case
             INT_GAME_NAME_RESULT:

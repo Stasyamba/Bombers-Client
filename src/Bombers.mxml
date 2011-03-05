@@ -132,8 +132,8 @@
                     Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
 					Context.Model.currentSettings.votes = Context.Model.currentSettings.apiResult.votes;
 					
-                    initApp(APP_STARTED_COMMON);
-					//initApp(APP_STARTED_DEVELOPMENT);
+                    //initApp(APP_STARTED_COMMON);
+					initApp(APP_STARTED_DEVELOPMENT);
           
                 }
             } else {
@@ -261,8 +261,8 @@
 			mainApplicationGroup.addElement(mainContentGroup);
 
 			
-			Context.Model.currentSettings.socialProfile = new VkontakteProfile(id.toString());
-			Context.Model.currentSettings.flashVars.auth_key = id.toString();
+			Context.Model.currentSettings.socialProfile = new VkontakteProfile("test"+id.toString());
+			Context.Model.currentSettings.flashVars.auth_key = "test"+id.toString();
 			developmentGroup.visible = false;
 			
 			Context.gameModel.init();

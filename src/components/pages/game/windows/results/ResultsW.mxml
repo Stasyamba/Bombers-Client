@@ -31,6 +31,9 @@
     <fx:Script>
 		<![CDATA[
 			import components.common.items.ItemObject;
+			import components.common.items.ItemProfileObject;
+			import components.common.items.ItemType;
+			import components.common.items.categories.ItemCategory;
 			import components.common.utils.adjustcolor.Color;
 			import components.common.utils.adjustcolor.ColorMatrix;
 			import components.common.utils.adjustcolor.ColorMatrixObject;
@@ -43,15 +46,63 @@
 
         public function close():void {
             PopUpManager.removePopUp(this);
+			
+			Context.Model.removeCustomEventListener(ContextEvent.RGAME_NEED_TO_SET_WEAPON_TO_HAND, setWeaponToHand);
         }
 
         public function closeWrapper():void {
             disapearingAnimation.play();
         }
 
+		private function setWeaponToHand(e: ContextEvent): void	
+		{
+			if(e.data is ItemType)
+			{
+				var itemProfileObject: ItemProfileObject = Context.Model.currentSettings.gameProfile.getItemProfileObject(e.data as ItemType);
+				
+				if(itemProfileObject != null && Context.Model.itemsCategoryManager.getItemCategory(itemProfileObject.itemType) == ItemCategory.WEAPON)
+				{
+					Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand = null;
+					Context.Model.currentSettings.gameProfile.selectedWeaponLeftHand = itemProfileObject;
+				}
+				
+				Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED);
+			}
+		}
+			
         private function panelCreationComplete():void {
             apearingAnimation.play();
 
+			// fill item offer 
+			
+			var items: Array = Context.Model.itemsManager.getItems();
+			var allowedItems: Array = new Array();
+			for each(var i: ItemObject in items)
+			{
+				if(Context.Model.itemsCategoryManager.getItemCategory(i.type) != ItemCategory.QUEST_ITEM
+					&& Context.Model.itemsCategoryManager.getItemCategory(i.type) != ItemCategory.AURA
+				)
+				{
+					allowedItems.push(i);
+				}
+			}
+			
+			
+			var r: int = Math.round(Math.random()*(allowedItems.length));
+			if(r == allowedItems.length)
+			{
+				r = allowedItems.length - 1;
+			}
+			
+			itemOffers.initContent((allowedItems[r] as ItemObject).type);
+			
+			//
+			
+			if(!Context.Model.hasCustomListener(ContextEvent.RGAME_NEED_TO_SET_WEAPON_TO_HAND))
+			{
+				Context.Model.addCustomListener(ContextEvent.RGAME_NEED_TO_SET_WEAPON_TO_HAND, setWeaponToHand);
+			}
+			
             var cm:ColorMatrix = new ColorMatrix();
             var cmo:ColorMatrixObject = new ColorMatrixObject(0, 0, null, 0, new Color(-20, -20, -20));
             cm.applyColorMatrixObject(cmo);
@@ -63,16 +114,6 @@
             lightBorderContainer.filters = [cm1.filter];
             darkBorderContainer.filters = [cm.filter];
 
-			// fill item offer 
-			
-			var items: Array = Context.Model.itemsManager.getItems();
-			var r: int = Math.round(Math.random()*(items.length));
-			if(r == items.length)
-			{
-				r = items.length - 1;
-			}
-			
-			itemOffers.initContent((items[r] as ItemObject).type);
 			
             // fill the results
 

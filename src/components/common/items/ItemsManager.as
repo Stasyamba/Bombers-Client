@@ -28,7 +28,7 @@ public class ItemsManager {
                         ItemType.QUEST_ITEM_SNOWBOOTS,
                         ImagesPrefixes.QUEST_PREFIX + "snowBoots.png",
                         "Снегоступы",
-                        "Снегоступы необходимы, чтобы сражаться на гоных локациях"
+                        "Снегоступы необходимы, чтобы сражаться на горных локациях"
                         )
                 ));
 
@@ -123,7 +123,7 @@ public class ItemsManager {
                 ));
 
 
-        items.push(new ItemObject(
+       /* items.push(new ItemObject(
                 ItemType.X_RAY_BOMB,
                 [],
 
@@ -133,7 +133,7 @@ public class ItemsManager {
                         "Бомба рентген",
                         "Уничтожает только коробки, в которымх могут находиться бонусы, не трогая при этом бомбастеров"
                         )
-                ));
+                ));*/
 
         items.push(new ItemObject(
                 ItemType.MINA_BOMB,
@@ -147,7 +147,7 @@ public class ItemsManager {
                         )
                 ));
 
-        items.push(new ItemObject(
+       /* items.push(new ItemObject(
                 ItemType.BOX_BOMB,
                 [],
 
@@ -157,7 +157,7 @@ public class ItemsManager {
                         "Разбрасыватель",
                         "Когда вы спасаетесь от врагов, нет ничего лучше чем заградить их путь стенами! Почувствуй себя архитектором карты, мечи коробки!"
                         )
-                ));
+                ));*/
 
 
         items.push(new ItemObject(

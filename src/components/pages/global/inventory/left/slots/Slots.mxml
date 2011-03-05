@@ -28,7 +28,7 @@
             Context.Model.addCustomListener(ContextEvent.GP_GOTITEMS_IS_CHANGED, on_GP_GOTITEMS_IS_CHANGED);
         }
 
-        function on_GP_GOTITEMS_IS_CHANGED(e:ContextEvent):void {
+        private function on_GP_GOTITEMS_IS_CHANGED(e:ContextEvent):void {
             trace("init content SLOTS !!!")
             initContent();
         }

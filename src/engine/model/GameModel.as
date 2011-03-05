@@ -168,10 +168,21 @@ public class GameModel {
     private function onProfileLoaded(profile:GameProfile):void {
         Context.Model.currentSettings.gameProfile = profile
         Context.Model.currentSettings.gameProfileLoaded = true;
+		
         if (profile.photoURL == "") {
-            Context.gameServer.sendSetPhotoRequest(Context.Model.currentSettings.socialProfile.photoURL)
+			if(
+			profile.id != "test1" &&
+			profile.id != "test2" &&
+			profile.id != "test3" &&
+			profile.id != "test4" && 
+			profile.id != "test5" )
+			{
+            	Context.gameServer.sendSetPhotoRequest(Context.Model.currentSettings.socialProfile.photoURL)
+			}
+			
             Context.Model.currentSettings.gameProfile.photoURL = Context.Model.currentSettings.socialProfile.photoURL
         }
+		
         Context.Model.dispatchCustomEvent(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED)

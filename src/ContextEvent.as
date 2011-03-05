@@ -109,8 +109,9 @@ public class ContextEvent extends Event {
     public static const GPAGE_UPDATE_GAME_WEAPONS:String = "GPAGEUpdateGameWeapons";
 	public static const GPAGE_NEED_TO_SET_GAME_FOCUS:String = "GPAGENeedToSetGameFocus";
 	
-	
-	
+	/** result game window events **/
+	public static const RGAME_NEED_TO_SET_WEAPON_TO_HAND:String = "RGAMENeedToSetWeaponToHand";
+	// pass: ItemType
 	
 	
 	/***** buy events: resources(RS), energy(EN), items(IT) *****/

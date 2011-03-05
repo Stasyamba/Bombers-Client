@@ -338,8 +338,8 @@
 			
 			// immitation
 			private function setId(id:int):void {
-				Context.Model.currentSettings.socialProfile = new VkontakteProfile(id.toString());
-				Context.Model.currentSettings.flashVars.auth_key = id.toString();
+				Context.Model.currentSettings.socialProfile = new VkontakteProfile("test"+id.toString());
+				Context.Model.currentSettings.flashVars.auth_key = "test"+id.toString();
 				idGroup.visible = false;
 				Context.gameModel.init();
 			}
