@@ -8,7 +8,7 @@ public class ItemType {
     public static const BASE_BOMB:ItemType = new ItemType(0, "BASE_BOMB");
 
     public static const HAMELEON_POISON:ItemType = new ItemType(21, "HAMELEON_POISON");
-    public static const X_RAY_BOMB:ItemType = new ItemType(-1, "X_RAY_BOMB");
+    
     public static const MINA_BOMB:ItemType = new ItemType(41, "MINA_BOMB");
     public static const BOX_BOMB:ItemType = new ItemType(02, "BOX_BOMB")
     public static const DINAMIT_BOMB:ItemType = new ItemType(03, "DINAMIT_BOMB");
@@ -18,6 +18,26 @@ public class ItemType {
 	public static const HEALTH_PACK_POISON:ItemType = new ItemType(22, "HEALTH_PACK_POISON");
 	public static const HEALTH_PACK_ADVANCED_POISON:ItemType = new ItemType(23, "HEALTH_PACK_ADVANCED_POISON");
 
+	/* parts */
+	
+	/* набор - теплая ночь */
+	public static const AURA_WARM_NIGHT:ItemType = new ItemType(99, "AURA_WARM_NIGHT");
+	
+	public static const PART_BOOTS:ItemType = new ItemType(100, "PART_BOOTS");
+	public static const PART_GLOVES:ItemType = new ItemType(101, "PART_GLOVES");
+	public static const PART_CAP:ItemType = new ItemType(102, "PART_CAP");
+ 	public static const PART_MAGIC_SNOW:ItemType = new ItemType(103, "PART_MAGIC_SNOW");
+	
+	/* набор - бомба ренген */
+	public static const X_RAY_BOMB:ItemType = new ItemType(-1, "X_RAY_BOMB");
+	
+	public static const PART_BLACK_PAPER:ItemType = new ItemType(104, "PART_BLACK_PAPER");
+	public static const PART_ULTRA_RAY:ItemType = new ItemType(105, "PART_ULTRA_RAY");
+	public static const PART_GENERATOR:ItemType = new ItemType(106, "PART_GENERATOR");
+	
+	
+	
+	
 	
     private var _value:int;
     private var _name:String;

@@ -21,6 +21,7 @@ import components.common.base.expirance.ExperianceObject;
 import components.common.base.market.ItemMarketObject;
 import components.common.bombers.BomberType;
 import components.common.items.ItemObject;
+import components.common.items.ItemProfileObject;
 import components.common.items.ItemType;
 import components.common.resources.ResourceObject;
 import components.common.resources.ResourcePrice;
@@ -600,10 +601,14 @@ public class GameServer extends SmartFox {
 				Context.Model.currentSettings.lotteryTryToWinCount = responseParams.getInt("LuckCount");
 				
 				Context.Model.dispatchCustomEvent(ContextEvent.L_TRY_TO_SHOW_LOTTERY);
-				/*if(Context.Model.currentSettings.lotteryTryToWinCount>0)
-				{
-					Context.Model.dispatchCustomEvent(ContextEvent.L_NEED_TO_SHOW_LOTTERY);
-				}*/
+				
+				// immitation
+				Context.Model.currentSettings.gameProfile.gotItems.push(new ItemProfileObject(ItemType.PART_BOOTS, 1));
+				Context.Model.currentSettings.gameProfile.packItems.push(new ItemProfileObject(ItemType.PART_BOOTS, 1));
+				
+				Context.Model.currentSettings.gameProfile.gotItems.push(new ItemProfileObject(ItemType.PART_MAGIC_SNOW, 1));
+				Context.Model.currentSettings.gameProfile.packItems.push(new ItemProfileObject(ItemType.PART_MAGIC_SNOW, 1));
+				
 				
                 break;
             case

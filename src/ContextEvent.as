@@ -86,6 +86,8 @@ public class ContextEvent extends Event {
 
     public static const IM_RIGHT_CONTENT_INFO:String = "IMRightContentInfo";
     // pass: ItemType
+	public static const IM_RIGHT_SHOW_COLLECTION:String = "IMRightShowCollection";
+	// pass: ItemColelctionType
 
     public static const IM_REMOVE_RIGHT_CONTENT_SUB_MENU:String = "IMRemoveRightContentSubMenu";
     public static const IM_REMOVE_ITEM_RULES_DENIED_CONTENT:String = "IMRemoveNotEnoughtMoneyContent";

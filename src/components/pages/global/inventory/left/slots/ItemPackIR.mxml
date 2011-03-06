@@ -61,7 +61,7 @@
                     case ItemCategory.WEAPON:
 
                         var ws:WeaponSlot = new WeaponSlot();
-                        ws.initContent(data as ItemProfileObject); //itemObject.viewObject, data.itemCount);
+                        ws.initContent(data as ItemProfileObject);
                         slot = ws;
                         slotGroup.paddingLeft = 5;
                         break;
@@ -73,8 +73,15 @@
                         slot = qis;
                         slotGroup.paddingLeft = 0;
                         break;
-
-                        break;
+						
+					case ItemCategory.PART:
+						
+						var nccis: NotCompoundCollectionItemSlot = new NotCompoundCollectionItemSlot();
+						nccis.initContent(data as ItemProfileObject);
+						slot = nccis;
+						slotGroup.paddingLeft = 0;
+						
+						break;
 
                     default:
                         break;

@@ -10,7 +10,14 @@ public class ItemViewObject {
 
     public var favIconImageURL:String;
 
-    public function ItemViewObject(typeP:ItemType, smallImageURLP:String, nameP:String, descriptionP:String, anotherImageURLP:String = "", favIconImageURLP:String = "") {
+    public function ItemViewObject(
+		typeP:ItemType, 
+		smallImageURLP:String, 
+		nameP:String, 
+		descriptionP:String, 
+		anotherImageURLP:String = "", 
+		favIconImageURLP:String = "") 
+	{
         _type = typeP;
 
         name = nameP;

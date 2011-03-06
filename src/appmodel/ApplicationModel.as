@@ -8,6 +8,7 @@ import components.common.base.window.WindowsManager;
 import components.common.bombers.BombersManager;
 import components.common.items.ItemsManager;
 import components.common.items.categories.ItemsCategoriesManager;
+import components.common.items.collections.ItemCollectionManager;
 import components.common.resources.ResourceViewManager;
 import components.common.worlds.locations.LocationManager;
 import components.common.worlds.locations.LocationViewManager;
@@ -21,15 +22,15 @@ import org.vyana.control.VyanaEvent;
 
 public class ApplicationModel extends VkontakteApplicationModel {
 
-    /*public static const APPLICATION_ID:String = '2141693';
+    public static const APPLICATION_ID:String = '2141693';
     public static const APPLICATION_LINK:String = "http://vkontakte.ru/app2141693";
     public static const APPLICATION_SECRET:String = 'tMj1GkYhnX';
-    public static const APPLICATION_AUTHOR_ID:String = '72969483';*/
+    public static const APPLICATION_AUTHOR_ID:String = '72969483';
 
-	public static const APPLICATION_ID:String = '2206924';
+	/*public static const APPLICATION_ID:String = '2206924';
 	public static const APPLICATION_LINK:String = "http://vkontakte.ru/app2206924";
 	public static const APPLICATION_SECRET:String = 'oRbzpoRx7n';
-	public static const APPLICATION_AUTHOR_ID:String = '72969483';
+	public static const APPLICATION_AUTHOR_ID:String = '72969483';*/
 	
     function ApplicationModel() {
         super(APPLICATION_ID, APPLICATION_SECRET, APPLICATION_AUTHOR_ID);
@@ -133,7 +134,8 @@ public class ApplicationModel extends VkontakteApplicationModel {
     public var itemsCategoryManager:ItemsCategoriesManager = new ItemsCategoriesManager();
     public var bomberManager:BombersManager = new BombersManager();
     public var marketManager:MarketManager = new MarketManager();
-
+	public var itemCollectionsManager: ItemCollectionManager = new ItemCollectionManager();
+	
     public var disp:EventDispatcher;
 
     public function hasCustomListener(event:String):Boolean {

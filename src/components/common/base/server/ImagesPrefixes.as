@@ -8,6 +8,9 @@ public class ImagesPrefixes {
     public static const QUEST_PREFIX:String = "http://www.vensella.ru/eg/items/quest/";
 
     public static const BOMBERS_PREFIX:String = "http://www.vensella.ru/eg/bombers/";
+	
+	public static const PARTS_PREFIX:String = "http://www.vensella.ru/eg/items/collections/";
+	public static const ITEM_COLLECTIONS:String = "http://www.vensella.ru/eg/items/collections/";
 
 
     public function ImagesPrefixes() {

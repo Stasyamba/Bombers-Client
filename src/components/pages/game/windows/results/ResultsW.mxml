@@ -79,9 +79,7 @@
 			var allowedItems: Array = new Array();
 			for each(var i: ItemObject in items)
 			{
-				if(Context.Model.itemsCategoryManager.getItemCategory(i.type) != ItemCategory.QUEST_ITEM
-					&& Context.Model.itemsCategoryManager.getItemCategory(i.type) != ItemCategory.AURA
-				)
+				if(Context.Model.itemsCategoryManager.getItemCategory(i.type) == ItemCategory.WEAPON)
 				{
 					allowedItems.push(i);
 				}

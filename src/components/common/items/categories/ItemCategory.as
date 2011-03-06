@@ -5,6 +5,9 @@ public class ItemCategory {
     public static const METAMORPH:ItemCategory = new ItemCategory(2, "METAMORPH");
     public static const QUEST_ITEM:ItemCategory = new ItemCategory(3, "QUEST_ITEM");
 
+	public static const PART: ItemCategory = new ItemCategory(4, "PART");
+	
+	
     private var _value:int;
     private var _name:String;
 

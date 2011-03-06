@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 >
+	
+	<!-- mouseOver="{strokeColor.color = 0xe2e2e2;}"
+	mouseOut="{strokeColor.color = 0xd0d0d0;}"-->
+	
+	<fx:Declarations>
+		<s:Animate id="apearingA" target="{this}" duration="600"
+				   effectStart="{this.alpha = 0;}"
+				   >
+			<s:SimpleMotionPath property="alpha" valueFrom="{this.alpha}" valueTo="1.0"/>
+		</s:Animate>
+		
+		<s:Animate id="disapearingA" target="{this}" duration="600"
+				   >
+			<s:SimpleMotionPath property="alpha" valueFrom="{this.alpha}" valueTo="0.0"/>
+		</s:Animate>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.items.ItemObject;
+			import components.common.items.ItemProfileObject;
+			import components.common.items.ItemType;
+			import components.common.items.ItemViewObject;
+			import components.common.items.collections.ItemCollectionObject;
+			import components.common.items.collections.ItemCollectionType;
+			import components.common.utils.adjustcolor.ColorMatrix;
+				
+			private var itemProfileObject:ItemProfileObject = null;
+			private var collectionType: ItemCollectionType = null;
+			
+			
+			public function initContent(itemProfileObjectP:ItemProfileObject):void {
+				itemProfileObject = itemProfileObjectP;
+				
+				var collection: ItemCollectionObject = Context.Model.itemCollectionsManager.getCollection(itemProfileObject.itemType);
+				collectionPreviewImage.source = collection.previewURL;
+				collectionType = collection.type;
+				
+				var cm: ColorMatrix = new ColorMatrix();
+				//cm.desaturate();
+				
+				collectionPreviewImageGroup.filters = [cm.filter];
+				
+				// check for items of collections in gotItems
+				
+				var gotItemsCollection: int = 0;
+				
+				for each(var ic: ItemType in collection.itemParts)
+				{
+					if(Context.Model.currentSettings.gameProfile.getItemProfileObject(ic) != null)
+					{
+						gotItemsCollection++;
+					}
+				}
+				
+				if(gotItemsCollection == collection.itemParts.length)
+				{
+					// got al items
+				}else
+				{
+					countLabel.text = gotItemsCollection.toString()+" / "+collection.itemParts.length.toString();
+				}
+				
+				apearingA.play();
+			}
+			
+			public function itemInfo():void {
+				 Context.Model.dispatchCustomEvent(ContextEvent.IM_RIGHT_SHOW_COLLECTION, collectionType);
+				 
+			}
+		]]>
+	</fx:Script>
+	
+	
+	<!--<s:Rect width="43" height="43" alpha="0.5">
+		<s:fill>
+			<s:SolidColor color="0x000000"/>
+		</s:fill>
+		<s:stroke>
+			<s:SolidColorStroke id="strokeColor" color="0xd0d0d0" weight="1"/>
+		</s:stroke>
+	</s:Rect>-->
+	
+	<s:BitmapImage x="6" y="4" source="@Embed(source='assets/windows/global/inventory/collectionSlotBG.png')" />
+	
+	
+	<s:HGroup width="48" height="48"
+			  horizontalAlign="center" verticalAlign="middle"
+			  id="collectionPreviewImageGroup"
+			  x="4" y="2"
+			  >
+		<mx:Image id="collectionPreviewImage"
+				  smoothBitmapContent="true"
+				  scaleX="0.9" scaleY="0.9"
+				  trustContent="{Context.Model.trustContent}"
+				  click="itemInfo();"
+				  alpha="0.8"
+				  />
+	</s:HGroup>
+	
+	<!--<s:Group alpha="0.6"
+			 x="{43 - bgCountRect.width/2}" y="0"
+			 >
+		<s:Rect id="bgCountRect"
+				width="{countLabel.width + 4}" height="15"
+				radiusX="2" radiusY="2"
+				>
+			<s:fill>
+				<s:SolidColor color="0x000000"/>
+			</s:fill>
+		</s:Rect>
+		
+		<s:Label id="countLabel"
+				 x="2" y="2"
+				 color="0xffffff" fontFamily="mpr" fontSize="15"
+				 />
+		
+	</s:Group>-->
+	
+	<s:Group alpha="1"
+			 x="33" y="0"
+			 >
+		
+		<s:Label id="countLabel"
+				 x="2" y="2"
+				 color="0xdfbc78" fontFamily="mpbc" fontSize="16"
+				 />
+		
+	</s:Group>
+	
+</s:Group>

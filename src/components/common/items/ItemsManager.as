@@ -171,7 +171,62 @@ public class ItemsManager {
                         "Мощная бомба, которая снимает сразу 2 жизни. Подорви салаг."
                         )
                 ));
+		
+		
+		/* Parts */
+		
+		/* Набор - теплая ночь */
+		
+		items.push(new ItemObject(
+			ItemType.PART_MAGIC_SNOW,
+			[],
+			
+			new ItemViewObject(
+				ItemType.PART_MAGIC_SNOW,
+				ImagesPrefixes.PARTS_PREFIX + "partMagicSnow.png",
+				"Магическая снежинка",
+				"Магическая снежинка"
+			)
+		));
+		
+		items.push(new ItemObject(
+			ItemType.PART_BOOTS,
+			[],
+			
+			new ItemViewObject(
+				ItemType.PART_BOOTS,
+				ImagesPrefixes.PARTS_PREFIX + "partBoots.png",
+				"Шерстяные ботинки из вьючного мулла",
+				"Шерстяные ботинки из вьючного мулла"
+			)
+		));
+		
+		items.push(new ItemObject(
+			ItemType.PART_GLOVES,
+			[],
+			
+			new ItemViewObject(
+				ItemType.PART_GLOVES,
+				ImagesPrefixes.PARTS_PREFIX + "partGloves.png",
+				"Теплые врежки из сибирского верблюда",
+				"Теплые врежки из сибирского верблюда"
+			)
+		));
+		
+		
+		items.push(new ItemObject(
+			ItemType.PART_CAP,
+			[],
+			
+			new ItemViewObject(
+				ItemType.PART_CAP,
+				ImagesPrefixes.PARTS_PREFIX + "partCap.png",
+				"Шапка из шерсти молодого Чубаки",
+				"Шапка из шерсти молодого Чубаки"
+			)
+		));
 
+		
 
     }
 

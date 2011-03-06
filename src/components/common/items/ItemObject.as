@@ -1,12 +1,13 @@
 package components.common.items {
-import components.common.base.access.rules.AccessRuleObject
-import components.common.base.access.rules.IAccessRule
+import components.common.base.access.rules.AccessRuleObject;
+import components.common.base.access.rules.IAccessRule;
+import components.common.items.collections.ItemCollectionType;
 
 public class ItemObject {
     private var _type:ItemType;
     private var _rulesList:Array;
     private var _viewObject:ItemViewObject;
-
+	
     public function ItemObject(typeP:ItemType, accessRulesP:Array, viewObject:ItemViewObject) {
         _type = typeP;
 
@@ -17,6 +18,8 @@ public class ItemObject {
         }
 
         _viewObject = viewObject;
+		
+		
     }
 
     public function get viewObject():ItemViewObject {

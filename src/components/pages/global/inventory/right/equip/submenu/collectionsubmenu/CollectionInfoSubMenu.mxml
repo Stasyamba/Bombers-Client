@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:flexcomponents="components.common.flexcomponents.*"
+		 creationComplete="init();" 
+		 xmlns:slots="components.pages.global.inventory.right.market.slots.*"
+		 >
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.items.ItemType;
+			import components.common.items.collections.ItemCollectionObject;
+			import components.common.items.collections.ItemCollectionType;
+			import components.common.utils.adjustcolor.Color;
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+			
+			import skins.buttons.CloseButtonOriginS;
+			import skins.buttons.Pattern3ButtonS;
+		
+			[Bindable]
+			private var collectionName: String = "";
+			
+			[Bindable]
+			private var collectionDescription: String = "";
+			
+			
+			[Bindable]
+			private var itemDescription: String = "";
+			private var collection:ItemCollectionObject = null;
+			
+			
+			public function initContent(itemCollectionTypeP: ItemCollectionType):void {
+				
+				var cm1:ColorMatrix = new ColorMatrix();
+				var cmo1:ColorMatrixObject = new ColorMatrixObject(55, 0.7, null, 0, new Color(0, 0, 0));
+				cm1.applyColorMatrixObject(cmo1);
+				closeButton.filters = [cm1.filter];
+				
+				
+				collection = Context.Model.itemCollectionsManager.getCollectionByType(itemCollectionTypeP);
+				collectionName = collection.name;
+				collectionDescription = collection.description;
+				
+				// init slots
+				
+				slotsGroup.removeAllElements();
+				
+				var allElementsIsCollected: Boolean = true;
+				for each(var it: ItemType in collection.itemParts)
+				{
+					var partSlot: PartSlot = new PartSlot();
+					partSlot.initContent(it);
+					
+					partSlot.addEventListener(MouseEvent.MOUSE_OVER, showInfoGroup);
+					partSlot.addEventListener(MouseEvent.MOUSE_OUT, hideInfoGroup);
+					
+					slotsGroup.addElement(partSlot);
+					
+					if(Context.Model.currentSettings.gameProfile.getItemProfileObject(it) == null)
+					{
+						allElementsIsCollected = false;
+					}
+				}
+				
+				// once
+				if(allElementsIsCollected)
+				{
+					allowedGroup.visible = true;
+				}else
+				{
+					deniedGroup.visible = true;
+				}
+			}
+			
+			private function showInfoGroup(e: MouseEvent):void
+			{
+				if(e.currentTarget is PartSlot)
+				{
+					itemDescription = (e.currentTarget as PartSlot).itemObject.viewObject.description;
+					
+					upInfoA.stop();
+					overInfoA.play();
+				}
+			}
+			
+			private function hideInfoGroup(e: MouseEvent):void
+			{
+				overInfoA.stop();
+				upInfoA.play();
+			}
+			
+			
+			private function init():void {
+				apearingA.play();
+				
+				
+			}
+			
+			private function close():void {
+				Context.Model.dispatchCustomEvent(ContextEvent.IM_REMOVE_RIGHT_CONTENT_SUB_MENU);
+			}
+			
+			private function closeWrapper():void {
+				disapearingA.play();
+			}
+		]]>
+	</fx:Script>
+	
+	<fx:Declarations>
+		
+		<s:Parallel id="overInfoA">
+			<s:Fade target="{stateBottomMenuGroup}" alphaFrom="{stateBottomMenuGroup.alpha}" alphaTo="0" duration="200"/>
+			<s:Fade target="{infoGroup}" alphaFrom="{infoGroup.alpha}" alphaTo="1.0" duration="200"/>
+		</s:Parallel>
+		
+		
+		<s:Parallel id="upInfoA">
+			<s:Fade target="{stateBottomMenuGroup}" alphaFrom="{stateBottomMenuGroup.alpha}" alphaTo="1" duration="200"/>
+			<s:Fade target="{infoGroup}" alphaFrom="{infoGroup.alpha}" alphaTo="0.0" duration="200"/>
+		</s:Parallel>
+		
+		<s:Animate id="disapearingA" target="{this}" duration="600"
+				   effectEnd="{close();}">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="1"
+								valueTo="0"
+								/>
+		</s:Animate>
+		
+		<s:Animate id="apearingA" target="{this}" duration="600">
+			<s:SimpleMotionPath property="alpha"
+								valueFrom="0" valueTo="1"
+								/>
+		</s:Animate>
+		
+	</fx:Declarations>
+	
+	<s:BitmapImage source="@Embed(source='assets/windows/global/inventory/collectionBG.jpg')" />
+	
+	<s:VGroup width="100%" height="100%"
+			  horizontalAlign="center"
+			  >
+		<s:VGroup width="100%" height="100%"
+				  horizontalAlign="center" verticalAlign="middle"
+				  gap="30">
+			
+			<s:VGroup width="100%" horizontalAlign="center">
+				<s:Label text="Коллекция {collectionName}" fontFamily="mpbc" fontSize="24" color="0xdfbc78" />
+				<s:Label text="{collectionDescription}" fontFamily="mpr" fontSize="12" color="0xdfbc78"
+						 maxWidth="364" textAlign="center"
+						 />
+			</s:VGroup>
+			
+			<s:HGroup width="100%" horizontalAlign="center"
+					  gap="10"
+					  id="slotsGroup" />
+			
+			<s:Group id="bottomMenuGroup">
+				<s:Group id="stateBottomMenuGroup" width="100%">
+					<s:HGroup id="deniedGroup" width="100%" horizontalAlign="center" verticalAlign="middle"
+							  visible="false"
+							  >
+						<s:BitmapImage source="@Embed(source='assets/pageworld/worlds/locationenter/redLock.png')" />
+						<s:Label text="Еще не все собрано" fontFamily="mpbc" fontSize="20" color="0xff6000" />
+					</s:HGroup>
+					
+					<s:HGroup id="allowedGroup" width="100%" horizontalAlign="center" verticalAlign="middle"
+							  visible="false"
+							  >
+						<flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
+													  customLabel="Забрать"
+													  fontSize="28"
+													  fontSizeOver="28"
+													  />
+					</s:HGroup>
+				</s:Group>
+				
+				
+				<s:VGroup id="infoGroup" width="100%" horizontalAlign="center" verticalAlign="middle"
+						  visible="true" alpha="0"
+						  >
+					<s:Label text="{itemDescription}" fontFamily="mpr" fontSize="14" color="0xc6993f" />
+					<s:Label text="Добыча: На всех локациях" fontFamily="mpbc" fontSize="14" color="0xdfbc78" />
+				</s:VGroup>
+				
+			</s:Group>
+		</s:VGroup>
+		
+		
+	</s:VGroup>
+	
+	<flexcomponents:CloseButton id="closeButton"
+								x="390" y="10"
+								skinClass="skins.buttons.CloseButtonOriginS"
+								scaleX="0.6" scaleY="0.6"
+								click="closeWrapper();"
+								/>
+	
+</s:Group>

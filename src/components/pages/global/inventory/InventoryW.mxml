@@ -41,18 +41,20 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.items.ItemType
-        import components.common.items.categories.MarketCategory
-        import components.pages.global.inventory.left.BomberEquipButton
-        import components.pages.global.inventory.right.equip.BomberContent
-        import components.pages.global.inventory.right.equip.submenu.ConfirmContentSubMenu
-        import components.pages.global.inventory.right.equip.submenu.ItemInfoContentSubMenu
-        import components.pages.global.inventory.right.equip.submenu.WarningContentSubMenu
-        import components.pages.global.inventory.right.market.MarketContent
-
-        import mx.controls.Alert
-        import mx.core.IVisualElement
-        import mx.managers.PopUpManager
+			import components.common.items.ItemType;
+			import components.common.items.categories.MarketCategory;
+			import components.common.items.collections.ItemCollectionType;
+			import components.pages.global.inventory.left.BomberEquipButton;
+			import components.pages.global.inventory.right.equip.BomberContent;
+			import components.pages.global.inventory.right.equip.submenu.collectionsubmenu.CollectionInfoSubMenu;
+			import components.pages.global.inventory.right.equip.submenu.ConfirmContentSubMenu;
+			import components.pages.global.inventory.right.equip.submenu.ItemInfoContentSubMenu;
+			import components.pages.global.inventory.right.equip.submenu.WarningContentSubMenu;
+			import components.pages.global.inventory.right.market.MarketContent;
+			
+			import mx.controls.Alert;
+			import mx.core.IVisualElement;
+			import mx.managers.PopUpManager;
 
         /* For ConfirmContent */
 
@@ -79,6 +81,7 @@
             Context.Model.removeCustomEventListener(ContextEvent.IM_RIGHT_CONTENT_WARNING, on_IM_RIGHT_CONTENT_WARNING);
             Context.Model.removeCustomEventListener(ContextEvent.IM_RIGHT_CONTENT_CONFIRM, on_IM_RIGHT_CONTENT_CONFIRM);
             Context.Model.removeCustomEventListener(ContextEvent.IM_RIGHT_CONTENT_INFO, on_IM_RIGHT_CONTENT_INFO);
+			Context.Model.removeCustomEventListener(ContextEvent.IM_RIGHT_SHOW_COLLECTION, on_IM_RIGHT_SHOW_COLLECTION);
 
             pack.destroy()
 
@@ -115,6 +118,7 @@
             Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_WARNING, on_IM_RIGHT_CONTENT_WARNING);
             Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_CONFIRM, on_IM_RIGHT_CONTENT_CONFIRM);
             Context.Model.addCustomListener(ContextEvent.IM_RIGHT_CONTENT_INFO, on_IM_RIGHT_CONTENT_INFO);
+			Context.Model.addCustomListener(ContextEvent.IM_RIGHT_SHOW_COLLECTION, on_IM_RIGHT_SHOW_COLLECTION);
 
             Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_SHOW_BOMBER_CONTENT);
             Context.Model.dispatchCustomEvent(ContextEvent.IM_NEED_TO_CHANGE_BOMBER_BUTTON_EQUIP_STATE, BomberEquipButton.STATE_ON);
@@ -138,6 +142,20 @@
         }
 
         //handlers
+		private function on_IM_RIGHT_SHOW_COLLECTION(e:ContextEvent):void 
+		{
+			subMenuContentGroup.removeAllElements();
+			
+			var content:CollectionInfoSubMenu = new CollectionInfoSubMenu();
+			if (e.data != null && e.data is ItemCollectionType) {
+				content.initContent(e.data);
+			} else {
+				Alert.show("Error with pass data look in InventoryW.mxml");
+			}
+			
+			subMenuContentGroup.addElement(content);
+		}	
+			
         private function on_IM_NEED_TO_SHOW_BOMBER_CONTENT(e:ContextEvent):void {
             if (!(rightContent is BomberContent)) {
                 rightContent = new BomberContent();

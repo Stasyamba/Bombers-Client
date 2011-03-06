@@ -10,10 +10,14 @@
 
     <fx:Script>
 		<![CDATA[
-        import components.common.items.ItemProfileObject
-        import components.common.items.categories.ItemCategory
-
-        import mx.collections.ArrayCollection
+			import components.common.items.ItemProfileObject;
+			import components.common.items.ItemType;
+			import components.common.items.categories.ItemCategory;
+			import components.common.items.collections.ItemCollectionObject;
+			import components.common.items.collections.ItemCollectionType;
+			
+			import mx.collections.ArrayCollection;
+			import mx.controls.Alert;
 
         public static const QUEST_ITEMS_STATE:int = 0;
         public static const OTHER_ITEMS_STATE:int = 1;
@@ -42,11 +46,15 @@
                     allowedItemCategories = [ItemCategory.QUEST_ITEM];
                     break;
                 case OTHER_ITEMS_STATE:
-                    allowedItemCategories = [ItemCategory.AURA, ItemCategory.METAMORPH, ItemCategory.WEAPON];
+                    allowedItemCategories = [ItemCategory.AURA, ItemCategory.METAMORPH, ItemCategory.WEAPON, ItemCategory.PART];
                     break;
             }
 
-            for each(var io:ItemProfileObject in Context.Model.currentSettings.gameProfile.packItems) {
+			var itemCollectionsTypes: Array = new Array();
+			
+            for each(var io:ItemProfileObject in Context.Model.currentSettings.gameProfile.packItems) 
+			{
+				
                 var currentItemCategory:ItemCategory = Context.Model.itemsCategoryManager.getItemCategory(io.itemType);
 
                 var itemIsAllow:Boolean = false;
@@ -56,9 +64,44 @@
                         break;
                     }
                 }
-
-                if (itemIsAllow) {
-                    itemsCollection.addItem(io);
+				
+				if (itemIsAllow) 
+				{
+					if(currentItemCategory != ItemCategory.PART)
+					{
+                   	 	itemsCollection.addItem(io);
+					}else
+					{
+						//mx.controls.Alert.show("PartFinded");
+						// parts 
+						// кладем в коллекцию всего 1 часть из каждой коллекции, а дальше все разруливается
+						
+						var collectionType: ItemCollectionType = Context.Model.itemCollectionsManager.getCollection(io.itemType).type;
+						
+						// find collection type in collections 
+						var isFinded: Boolean = false;
+						
+						for each(var c: ItemCollectionType in itemCollectionsTypes)
+						{
+							if(collectionType == c)
+							{
+								isFinded = true;
+								break;
+							}
+						}
+						
+						if(!isFinded)
+						{
+							if(collectionType != null)
+							{
+								itemCollectionsTypes.push(collectionType);
+							}
+							
+							itemsCollection.addItem(io);
+						}
+						
+						
+					}
                 }
             }
 

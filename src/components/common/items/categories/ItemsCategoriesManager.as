@@ -1,5 +1,5 @@
 package components.common.items.categories {
-import components.common.items.ItemType
+import components.common.items.ItemType;
 
 public class ItemsCategoriesManager {
     public function ItemsCategoriesManager() {
@@ -22,7 +22,18 @@ public class ItemsCategoriesManager {
         var res:ItemCategory = null;
 
         switch (itemType) {
+			case ItemType.PART_BLACK_PAPER:
+			case ItemType.PART_BOOTS:
+			case ItemType.PART_CAP:
+			case ItemType.PART_GENERATOR:
+			case ItemType.PART_GLOVES:
+			case ItemType.PART_MAGIC_SNOW:
+			case ItemType.PART_ULTRA_RAY:
+				res = ItemCategory.PART;
+				break;
+			
             case ItemType.AURA_FIRE:
+			case ItemType.AURA_WARM_NIGHT:
                 res = ItemCategory.AURA;
                 break;
 

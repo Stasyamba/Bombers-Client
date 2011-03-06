@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" 
+		 xmlns:flexcomponents="components.common.flexcomponents.*"
+		 mouseOut="upA.play()"
+		 mouseOver="overA.play()"
+		 >
+	
+	<fx:Declarations>
+		
+		<s:Parallel id="overA">
+			<s:Fade target="{imageGlowFilter}" alphaFrom="0" alphaTo="1" duration="100"/>
+			<s:Fade target="{imageShadowFilter}" alphaFrom="0.5" alphaTo="0.0" duration="100"/>
+		</s:Parallel>
+		
+
+		<s:Parallel id="upA">
+			<s:Fade target="{imageGlowFilter}" alphaFrom="1" alphaTo="0" duration="100"/>
+			<s:Fade target="{imageShadowFilter}" alphaFrom="0" alphaTo="0.5" duration="100"/>
+		</s:Parallel>
+			
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import components.common.items.ItemObject;
+			import components.common.items.ItemType;
+			import components.common.items.ItemViewObject;
+			import components.common.utils.adjustcolor.ColorMatrix;
+			import components.common.utils.adjustcolor.ColorMatrixObject;
+				
+			public var itemObject:ItemObject = null;
+			
+			public function initContent(itemType: ItemType):void 
+			{
+				
+				itemObject = Context.Model.itemsManager.getItem(itemType);
+				partImage.source = itemObject.viewObject.smallImageURL;
+				
+				var cm: ColorMatrix = new ColorMatrix();
+				cm.desaturate();
+				
+				// serach in got items 
+				if(Context.Model.currentSettings.gameProfile.getItemProfileObject(itemType) == null)
+				{
+					partImage.filters = [cm.filter];
+					partImage.alpha = 0.7;
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:Group id="baseGroup">
+		
+		<s:BitmapImage id="bgImage" source="@Embed(source='assets/windows/global/inventory/auraSlotBG.jpg')">
+			<s:filters>
+				<s:DropShadowFilter id="imageShadowFilter" distance="0" blurX="5" blurY="5" color="0x000000" alpha="0.5" />
+				<s:GlowFilter id="imageGlowFilter" blurX="10" blurY="10" color="0xfca918" alpha="0"
+							  strength="3"
+							  />
+			</s:filters>
+		</s:BitmapImage>
+		
+		<s:HGroup width="{bgImage.width}" height="{bgImage.height}"
+				  horizontalAlign="center" verticalAlign="middle">
+			<mx:Image id="partImage"
+					  trustContent="{Context.Model.trustContent}"
+					  />
+		</s:HGroup>
+		
+	</s:Group>
+	
+	
+</s:Group>
