@@ -4,7 +4,7 @@
  */
 
 package engine.playerColors {
-import engine.data.location1.bombs.Bombs
+import engine.data.common.bombs.Bombs
 
 import flash.display.BitmapData
 

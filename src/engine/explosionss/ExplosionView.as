@@ -32,7 +32,7 @@ public class ExplosionView extends Sprite implements IDrawable,IDestroyable {
         graphics.clear();
         if (explosion != null && explosion.type != ExplosionType.NULL) {
             explosion.forEachPoint(function(point:ExplosionPoint):void {
-                graphics.beginBitmapFill(Context.imageService.getExplosion(explosion.type, point.type));
+                graphics.beginBitmapFill(Context.imageService.explosion(explosion.type, point.type));
                 graphics.drawRect(point.x * Consts.BLOCK_SIZE, point.y * Consts.BLOCK_SIZE, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE);
                 graphics.endFill();
             })

@@ -22,12 +22,7 @@
 
         public function init():void {
             //todo: location code
-            Context.imageService.backgroundLoaded.addOnce(onBackgroundLoaded)
-            Context.imageService.loadMapBackground(LocationType.WORLD1_GRASSFIELDS)
-        }
-
-        private function onBackgroundLoaded(data:*):void {
-            bg.addChild(data as Loader)
+            bg.addChild(Context.imageService.asContentDisplay("l00.map.background"))
         }
 
         public function everyGameTabOpeningInit():void {
@@ -67,7 +62,7 @@
 
         private function initSinglePlayer():void {
             //listener'll be removed in gameModel
-            Context.gameModel.gameEnded.add(function ():void {
+            Context.gameModel.gameEnded.add(function (p0:String,p1:int):void {
 
                 endGame();
                 Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW)

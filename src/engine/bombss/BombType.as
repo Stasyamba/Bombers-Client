@@ -6,6 +6,8 @@
 package engine.bombss {
 import engine.maps.interfaces.IDynObjectType
 
+import loading.LoaderUtils
+
 public class BombType implements IDynObjectType {
 
     public static const NULL:BombType = new BombType(-1, "NULL", false);
@@ -57,6 +59,10 @@ public class BombType implements IDynObjectType {
                 return SMOKE
         }
         throw new ArgumentError("wrong bombType value");
+    }
+
+    public function get stringId():String {
+        return LoaderUtils.stringId(value)
     }
 }
 }

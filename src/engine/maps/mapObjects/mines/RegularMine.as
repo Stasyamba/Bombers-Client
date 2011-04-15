@@ -6,7 +6,7 @@
 package engine.maps.mapObjects.mines {
 import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IPlayerBomber
-import engine.explosionss.Explosion
+import engine.explosionss.RegularExplosion
 import engine.maps.interfaces.ICollectableDynObject
 import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock
@@ -63,7 +63,7 @@ public class RegularMine implements ICollectableDynObject {
 
     public function activateOn(bomber:IBomber):void {
         if (!bomber.isImmortal)
-            bomber.explode(new Explosion(null, -1, -1, 1))
+            bomber.explode(new RegularExplosion(null,null, -1, -1, 1))
         block.collectObject(Context.game.playerManager.isItMe(bomber))
     }
 

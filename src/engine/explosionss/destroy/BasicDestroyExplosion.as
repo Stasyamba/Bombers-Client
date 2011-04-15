@@ -4,7 +4,7 @@
  */
 
 package engine.explosionss.destroy {
-import engine.utils.greensock.TweenMax
+import greensock.TweenMax
 
 import flash.display.BlendMode
 import flash.display.Sprite
@@ -19,7 +19,7 @@ public class BasicDestroyExplosion {
 
         for (var i:int = 0; i < 3; i++) {
             var expl:Sprite = new Sprite();
-            expl.graphics.beginBitmapFill(Context.imageService.getDieExplosion(i))
+            expl.graphics.beginBitmapFill(Context.imageService.dieExplosion(i))
             expl.graphics.drawRect(0, 0, 153, 159);
             expl.graphics.endFill();
             expl.x = x;

@@ -9,15 +9,15 @@ import engine.bombers.interfaces.IPlayerBomber
 import engine.data.Consts
 import engine.interfaces.IDestroyable
 import engine.utils.Direction
-import engine.utils.greensock.TweenMax
+
+import flash.display.BitmapData
+
+import greensock.TweenMax
 
 import flash.display.Bitmap
 import flash.display.Sprite
 
 public class PlayerView extends BomberViewBase implements IDestroyable {
-
-    [Embed(source="../../data/location1/images/playerPointer.png")]
-    private static const playerPointerClass:Class;
 
     private var playerPointer:Sprite;
     private var pulsesCount:int;
@@ -49,7 +49,7 @@ public class PlayerView extends BomberViewBase implements IDestroyable {
     }
 
     private function drawPointer():void {
-        playerPointer.graphics.beginBitmapFill((new playerPointerClass() as Bitmap).bitmapData);
+        playerPointer.graphics.beginBitmapFill(Context.imageService.playerPointer());
         playerPointer.graphics.drawRect(0, 0, 70, 80);
         playerPointer.graphics.endFill()
     }

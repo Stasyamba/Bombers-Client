@@ -33,7 +33,7 @@ public class RegularBomb extends BombBase implements ITimeActivatableDynObject {
     }
 
     override protected function getExplosion():IExplosion {
-        return _explosionsBuilder.make(ExplosionType.REGULAR, block.x, block.y, _power)
+        return _explosionsBuilder.make(ExplosionType.REGULAR,owner, block.x, block.y, _power)
     }
 }
 }

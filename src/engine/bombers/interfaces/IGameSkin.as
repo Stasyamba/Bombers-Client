@@ -14,14 +14,10 @@ import flash.display.Sprite
 public interface IGameSkin {
     function updateSkin(dir:Direction):void;
 
-    function get color():PlayerColor;
-
-    function set color(playerColor:PlayerColor):void;
-
     function get skin():BomberSkin;
 
     function get currentSkin():SkinElement;
 
-    function get currentMask():Sprite;
+    function get isColored():Boolean
 }
 }

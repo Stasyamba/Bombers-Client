@@ -26,7 +26,7 @@ public class AtomBomb extends BombBase implements ITimeActivatableDynObject {
     }
 
     override protected function getExplosion():IExplosion {
-        return _explosionsBuilder.make(ExplosionType.ATOM, block.x, block.y)
+        return _explosionsBuilder.make(ExplosionType.ATOM, owner, block.x, block.y)
     }
 
 }

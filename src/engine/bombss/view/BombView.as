@@ -57,7 +57,7 @@ public class BombView extends DestroyableSprite implements IDrawable {
         }
         if (!pulsing) startPulsing();
 
-        graphics.beginBitmapFill(Context.imageService.getBomb(block.object.type as BombType, (block.object as ITimeActivatableDynObject).owner.color), null, false, true);
+        graphics.beginBitmapFill(Context.imageService.bomb(block.object.type as BombType, (block.object as ITimeActivatableDynObject).owner.color), null, false, true);
         graphics.drawRect(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE);
         graphics.endFill();
     }

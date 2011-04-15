@@ -10,5 +10,7 @@ public interface IDynObjectType {
     function get key():String;
 
     function get waitToAdd():int;
+
+    function get stringId():String
 }
 }

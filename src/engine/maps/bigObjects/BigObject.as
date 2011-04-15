@@ -15,7 +15,7 @@ import engine.maps.interfaces.IMapBlockState
 import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapBlocks.mapBlockStates.BlockUnderBigObject
 import engine.maps.mapObjects.DynObjectType
-import engine.utils.greensock.TweenMax
+import greensock.TweenMax
 
 import org.osflash.signals.Signal
 

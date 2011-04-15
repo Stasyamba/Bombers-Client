@@ -6,7 +6,7 @@
 package engine.ui {
 import engine.data.Consts
 
-import engine.utils.greensock.TweenMax
+import greensock.TweenMax
 
 import flash.display.BitmapData
 import flash.display.Sprite
@@ -21,7 +21,7 @@ public class SmokeSprite extends Sprite {
     }
 
     public function start():void {
-        var bm:BitmapData = Context.imageService.getSmoke()
+        var bm:BitmapData = Context.imageService.smoke()
         graphics.beginBitmapFill(bm)
         graphics.drawRect(0,0,Consts.SMOKE_WIDTH,Consts.SMOKE_HEIGHT)
         graphics.endFill()

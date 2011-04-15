@@ -4,6 +4,8 @@
  */
 
 package engine.games {
+import components.common.worlds.locations.LocationType
+
 import engine.model.managers.interfaces.IEnemiesManager
 import engine.model.managers.interfaces.IExplosionsManager
 import engine.model.managers.interfaces.IMapManager
@@ -25,5 +27,7 @@ public interface IGame {
 
     //buffer is used to send explosions from syn objects to explosions manager, which operates with blocks of explosions
     function get explosionExchangeBuffer():Array
+
+    function get location():LocationType
 }
 }

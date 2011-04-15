@@ -11,16 +11,16 @@ import engine.model.explosionss.ExplosionType
 
 public class BoxExplosion extends ExplosionBase implements IExplosion {
     public function BoxExplosion(map:IMap, centerX:int = -1, centerY:int = -1) {
-        super(map, centerX, centerY)
+        super(map, centerX, centerY,_owner)
         timeToLive = type.timeToLive
     }
 
     public function perform():void {
-        addPoint(new ExplosionPoint(centerX, centerY, ExplosionPointType.CROSS));
+        addPoint(new ExplosionPoint(centerX, centerY, ExplosionPointType.CROSS,_owner,type));
         for (var x:int = centerX - 1; x <= centerX + 1; x++) {
             for (var y:int = centerY - 1; y <= centerY + 1; y++) {
                 if (map.validPoint(x, y) && map.getBlock(x, y).type == MapBlockType.FREE)
-                    addPoint(new ExplosionPoint(x, y, ExplosionPointType.CROSS))
+                    addPoint(new ExplosionPoint(x, y, ExplosionPointType.CROSS,_owner,type))
             }
         }
 

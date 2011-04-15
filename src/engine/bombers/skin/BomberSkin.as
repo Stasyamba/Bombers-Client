@@ -18,8 +18,5 @@ public class BomberSkin {
         this.colors = colors;
     }
 
-    public static function fromBomberType(bomberType:BomberType):BomberSkin {
-        return Context.imageService.getBomberSkin(bomberType.name)
-    }
 }
 }

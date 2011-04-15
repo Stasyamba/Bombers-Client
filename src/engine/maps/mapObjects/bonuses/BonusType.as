@@ -6,6 +6,8 @@
 package engine.maps.mapObjects.bonuses {
 import engine.maps.interfaces.IDynObjectType
 
+import loading.LoaderUtils
+
 public class BonusType implements IDynObjectType {
 
     public static const ADD_BOMB:BonusType = new BonusType(101, "ADD_BOMB");
@@ -53,6 +55,10 @@ public class BonusType implements IDynObjectType {
 
     public function get waitToAdd():int {
         return 0
+    }
+
+    public function get stringId():String {
+        return LoaderUtils.stringId(value)
     }
 }
 }

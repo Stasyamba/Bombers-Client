@@ -18,19 +18,8 @@ public class MapManager implements IMapManager {
     }
 
     public function make(xml:XML):IMap {
-        switch (String(xml.type)) {
-            case "REGULAR":
-                _map = new Map(xml, mapBlockBuilder);
-                return _map;
-            case "SINGLE":
-                _map = new Map(xml, mapBlockBuilder);
-                return _map;
-        }
-        throw new ArgumentError("Invalid XML map type");
-    }
-
-    public function reset():void {
-        _map = null;
+        _map = new Map(xml, mapBlockBuilder);
+         return _map;
     }
 
     public function get map():IMap {

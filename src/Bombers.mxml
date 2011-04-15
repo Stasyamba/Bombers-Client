@@ -8,8 +8,8 @@
         usePreloader="true"
         width="807" height="700"
         backgroundColor="0x000000"
-        frameRate="60" xmlns:preloaders="components.common.utils.preloaders.*"
-		preloader="components.common.utils.preloaders.MainPreloader"
+        frameRate="30" xmlns:preloaders="components.common.utils.preloaders.*"
+        preloader="components.common.utils.preloaders.MainPreloader"
         >
 
     <vkUI:layout>
@@ -73,34 +73,38 @@
 
     <fx:Script>
 		<![CDATA[
-		import api.vkontakte.VkontakteGlobals;
-		
-		import appmodel.ApplicationModel;
-		
-		import components.ApplicationView;
-		import components.WallView;
-		import components.common.profiles.VkontakteProfile;
-		import components.common.utils.enviroment.vkontakte.ApiResult;
-		import components.common.utils.enviroment.vkontakte.FlashVars;
-		
-		import engine.utils.greensock.TweenMax;
-		
-		import mx.controls.Alert;
-		import mx.core.IVisualElement;
-		import mx.utils.ObjectUtil;
+        import api.vkontakte.VkontakteGlobals
+
+        import appmodel.ApplicationModel
+
+        import components.ApplicationView
+        import components.WallView
+        import components.common.profiles.VkontakteProfile
+        import components.common.utils.enviroment.vkontakte.ApiResult
+        import components.common.utils.enviroment.vkontakte.FlashVars
+
+        import components.common.worlds.locations.LocationType
+        import components.pages.world.windows.friendsgame.TypeGameToggle
+
+        import greensock.loading.LoaderMax
+        import greensock.loading.SWFLoader
+        import greensock.loading.data.SWFLoaderVars
+        import greensock.loading.display.ContentDisplay
+
+        import mx.core.IVisualElement
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
-		public static const WALL_LOTTERY_EMULATION: int = 2;
-		public static const APP_STARTED_DEVELOPMENT:int = 3;
-			
+        public static const WALL_LOTTERY_EMULATION:int = 2;
+        public static const APP_STARTED_DEVELOPMENT:int = 3;
+
         private var mainContentGroup:IVisualElement;
 
-		/* private function testTarget(e: MouseEvent): void	
-		{
-			mx.controls.Alert.show(ObjectUtil.toString({target: e.target.toString()}));
-		} */
-			
+        /* private function testTarget(e: MouseEvent): void
+         {
+         mx.controls.Alert.show(ObjectUtil.toString({target: e.target.toString()}));
+         } */
+
 
         override protected function onAddedToStage(e:Event):void {
             super.onAddedToStage(e);
@@ -123,49 +127,47 @@
                 Context.Model.currentSettings.flashVars.postId = VkontakteGlobals.wrapper.application.parameters.post_id;
                 Context.Model.currentSettings.flashVars.userId = VkontakteGlobals.wrapper.application.parameters.user_id;
                 Context.Model.currentSettings.flashVars.auth_key = VkontakteGlobals.wrapper.application.parameters.auth_key;
-				
-				
+
+
                 if (Context.Model.currentSettings.flashVars.referrer == FlashVars.WALL_VIEW_INLINE) {
                     initApp(APP_STARTED_FROM_WALL);
                 } else {
 
                     Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
-					Context.Model.currentSettings.votes = Context.Model.currentSettings.apiResult.votes;
-					
+                    Context.Model.currentSettings.votes = Context.Model.currentSettings.apiResult.votes;
+
                     //initApp(APP_STARTED_COMMON);
-					initApp(APP_STARTED_DEVELOPMENT);
-          
+                    initApp(APP_STARTED_DEVELOPMENT);
+
                 }
             } else {
                 // local testing
-				Context.Model.trustContent = false;
-               
+                Context.Model.trustContent = false;
+
             }
         }
 
-		private function localEmulation(): void
-		{
-			Context.Model.viewer.id = "72969483";
-			Context.Model.currentSettings.apiResult = new ApiResult("", true);
-			
-			initApp(APP_STARTED_COMMON);
-			
-			chooseModeGroup.visible = false;
-		}
-			
-		private function wallEmultation(): void	
-		{
-			Context.Model.viewer.id = "72969483";
-			Context.Model.currentSettings.apiResult = new ApiResult("", true);
-			
-			Context.Model.currentSettings.flashVars.postId = "x31ox31x30ox32ox30ox30";
-			Context.Model.currentSettings.flashVars.userId = "72969483";
-			
-			initApp(WALL_LOTTERY_EMULATION);
-			
-			chooseModeGroup.visible = false;
-		}
-			
+        private function localEmulation():void {
+            Context.Model.viewer.id = "72969483";
+            Context.Model.currentSettings.apiResult = new ApiResult("", true);
+
+            initApp(APP_STARTED_COMMON);
+
+            chooseModeGroup.visible = false;
+        }
+
+        private function wallEmultation():void {
+            Context.Model.viewer.id = "72969483";
+            Context.Model.currentSettings.apiResult = new ApiResult("", true);
+
+            Context.Model.currentSettings.flashVars.postId = "x31ox31x30ox32ox30ox30";
+            Context.Model.currentSettings.flashVars.userId = "72969483";
+
+            initApp(WALL_LOTTERY_EMULATION);
+
+            chooseModeGroup.visible = false;
+        }
+
         private function onSettingsChanged(e:Object):void {
             navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
             // may be starting initiated proccess with standert functions
@@ -180,24 +182,36 @@
 
         private function initApp(type:int):void {
 
-			chooseModeGroup.visible = false;
-
+            chooseModeGroup.visible = false;
+            Security.allowDomain("*")
+            var l:SWFLoader = new SWFLoader("http://www.vensella.ru/eg/en.swf?14231", new SWFLoaderVars().name("l00.monsters.en").onComplete(function () {
+                var c:ContentDisplay = LoaderMax.getContent("l00.monsters.en")
+                testContent.addChild(c)
+                var mc:MovieClip = c.getChildAt(0) as MovieClip;
+                //(mc as Object).setMove(2)
+                trace(mc["stopMove"])
+//                var lo : LoadedObject = Context.imageService.loadedObject("l00.monsters.en")
+//                    var mc:MovieClip = lo.content
+//                    testContent.addChild(mc)
+//					mc.play()
+            }))
+            l.load()
             switch (type) {
-				
-				case WALL_LOTTERY_EMULATION:
-					
-					basePreloaderGroup.visible = false;
-					
-					mainContentGroup = new WallView();
-					mainApplicationGroup.addElement(mainContentGroup);
-					
-					break;
-				
+
+                case WALL_LOTTERY_EMULATION:
+
+                    basePreloaderGroup.visible = false;
+
+                    mainContentGroup = new WallView();
+                    mainApplicationGroup.addElement(mainContentGroup);
+
+                    break;
+
                 case APP_STARTED_FROM_WALL:
-		
-					//mx.controls.Alert.show(Context.Model.viewer.id);
-					
-					basePreloaderGroup.visible = false;
+
+                    //mx.controls.Alert.show(Context.Model.viewer.id);
+
+                    basePreloaderGroup.visible = false;
 
                     mainContentGroup = new WallView();
                     mainApplicationGroup.addElement(mainContentGroup);
@@ -208,7 +222,7 @@
                     break;
 
                 case APP_STARTED_COMMON:
-				
+
                     mainContentGroup = new ApplicationView();
                     mainApplicationGroup.addElement(mainContentGroup);
 
@@ -222,7 +236,7 @@
                         disconnectedWindow.visible = true;
                     });
 
-                    Context.gameServer.loginError.addOnce(function():void{
+                    Context.gameServer.loginError.addOnce(function():void {
                         basePreloaderGroup.visible = false
                         disconnectedText.text = "Не удалось войти на сервер.\nСкорее всего, у вас просто\nоткрыто еще одно окно\nБомбастеров"
                         disconnectedWindow.visible = true;
@@ -237,56 +251,90 @@
                     }
 
                     break;
-				case APP_STARTED_DEVELOPMENT:
-					
-					chooseModeGroup.visible = false;
-					basePreloaderGroup.visible = false;
-					developmentGroup.visible = true;
-					
-					break;
+                case APP_STARTED_DEVELOPMENT:
+
+                    chooseModeGroup.visible = false;
+                    basePreloaderGroup.visible = false;
+                    developmentGroup.visible = true;
+                    break;
                 default:
                     break;
             }
         }
 
         private function retry():void {
-            if(isWrapperExists){
+            if (isWrapperExists) {
                 VkontakteGlobals.wrapper.external.navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK))
             }
         }
-			
-		private function setId(id:int):void {
-			
-			mainContentGroup = new ApplicationView();
-			mainApplicationGroup.addElement(mainContentGroup);
 
-			
-			Context.Model.currentSettings.socialProfile = new VkontakteProfile("test"+id.toString());
-			Context.Model.currentSettings.flashVars.auth_key = "test"+id.toString();
-			developmentGroup.visible = false;
-			
-			Context.gameModel.init();
-		}
-			
+        private function setId(id:int):void {
+
+            mainContentGroup = new ApplicationView();
+            mainApplicationGroup.addElement(mainContentGroup);
+
+
+            Context.Model.currentSettings.socialProfile = new VkontakteProfile("test" + id.toString());
+            Context.Model.currentSettings.flashVars.auth_key = "test" + id.toString();
+            developmentGroup.visible = false;
+
+            Context.gameModel.init();
+        }
+
+        private function joinTestGame_clickHandler(event:MouseEvent):void {
+            Context.gameModel.fastJoinFailed.addOnce(function():void {
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
+                {
+                    text: "Мне очень стыдно.. но не удалось.. попробуй еще раз!",
+                    type: TypeGameToggle.TOGGLE_STATE_ENJOY
+                });
+            })
+
+            Context.gameModel.someoneJoinedToGame.addOnce(function(p1:*):void {
+                Context.Model.windowsManager.closeAll(true);
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+            })
+            Context.gameModel.joinConcreteGame("test", "test")
+
+        }
+
+        private function createTestGame_clickHandler(event:MouseEvent):void {
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
+                {
+                    text: "Создаю игру...",
+                    type: TypeGameToggle.TOGGLE_STATE_CREATE
+                });
+                Context.gameModel.createGameFailed.addOnce(function():void {
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
+                    {
+                        text: "Не удалось создать игру!",
+                        type: TypeGameToggle.TOGGLE_STATE_CREATE
+                    });
+                })
+                Context.gameModel.someoneJoinedToGame.addOnce(function (p1:*):void {
+                    Context.Model.windowsManager.closeAll(true);
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+                })
+            Context.gameModel.tryCreateRegularGame("test", "test", LocationType.WORLD1_GRASSFIELDS)
+        }
         ]]>
 	</fx:Script>
-	
-	
-	
+
+
     <s:BorderContainer
             id="mainApplicationGroup"
             width="100%" height="100%"
             backgroundColor="0xffffff"
             borderVisible="false"
             />
-	
-	<s:HGroup id="chooseModeGroup" width="100%" height="100%">
-		<s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
-			<s:Button label="Local emulation" click="localEmulation();" />
-			<s:Button label="Wall emulation" click="wallEmultation();" />
-		</s:HGroup>
-	</s:HGroup>
-	
+
+    <s:HGroup id="chooseModeGroup" width="100%" height="100%">
+        <s:HGroup width="100%" height="100%" horizontalAlign="center" verticalAlign="middle">
+            <s:Button label="Local emulation" click="localEmulation();"/>
+            <s:Button label="Wall emulation" click="wallEmultation();"/>
+        </s:HGroup>
+    </s:HGroup>
+
     <s:Group id="basePreloaderGroup" width="100%" height="100%"
              visible="false">
         <s:Rect width="100%" height="100%"
@@ -318,7 +366,8 @@
                   horizontalAlign="center" verticalAlign="middle"
                   paddingTop="-200"
                 >
-            <s:Label id="disconnectedText" text="Произошло отключение от сервера" fontFamily="mpbc" fontSize="50" color="0xeeeeee" textAlign="center"/>
+            <s:Label id="disconnectedText" text="Произошло отключение от сервера" fontFamily="mpbc" fontSize="50"
+                     color="0xeeeeee" textAlign="center"/>
             <flexcomponents:PatternButton skinClass="skins.buttons.Pattern3ButtonS"
                                           customLabel="Еще раз"
                                           fontSize="30"
@@ -327,14 +376,16 @@
                     />
         </s:VGroup>
     </s:Group>
-	
-	<s:HGroup id="developmentGroup" width="100%" height="100%"
-			  horizontalAlign="center" verticalAlign="middle"
-			  visible="false"
-			  >
-		<s:Button label="ID1" click="setId(1);" />
-		<s:Button label="ID2" click="setId(2);" />
-		<s:Button label="ID3" click="setId(3);" />
-	</s:HGroup>
 
-</vkUI:VkontakteApplication> 
+    <s:HGroup id="developmentGroup" width="100%" height="100%"
+              horizontalAlign="center" verticalAlign="middle"
+              visible="false"
+            >
+        <s:Button label="ID1" click="setId(1);"/>
+        <s:Button label="ID2" click="setId(2);"/>
+        <s:Button label="ID3" click="setId(3);"/>
+    </s:HGroup>
+    <mx:UIComponent id="testContent" width="300" height="300" x="100" y="100"/>
+    <s:Button id="createTestGame" click="createTestGame_clickHandler(event)" x="100" y="100" content="create test"/>
+    <s:Button id="joinTestGame" click="joinTestGame_clickHandler(event)" x="100" y="130" content="join test"/>
+</vkUI:VkontakteApplication>

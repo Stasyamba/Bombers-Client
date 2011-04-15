@@ -50,10 +50,11 @@ public class ExplosionsManager implements IExplosionsManager {
 
     public function updateAllExplosions():void {
         var explType:ExplosionType = getAllExplosionsType();
-        var result:IExplosion = explosionsBuilder.make(explType);
+        var result:IExplosion = explosionsBuilder.make(explType,null);
 
         for each (var block:IMapBlock in mapManager.map.blocks) {
             var type:ExplosionPointType = ExplosionPointType.NONE;
+            var layers:Array = new Array()
             for each (var expl:IExplosion in explosions.source) {
                 var p:ExplosionPoint = expl.getPoint(block.x, block.y);
                 if (p != null) {
@@ -61,13 +62,15 @@ public class ExplosionsManager implements IExplosionsManager {
                         type = p.type;
                     else {
                         type = addTypes(type, p.type);
-                        if (type == ExplosionPointType.CROSS)
-                            break;
                     }
+                    layers = layers.concat(p.layers)
                 }
             }
-            if (type != ExplosionPointType.NONE)
-                result.addPoint(new ExplosionPoint(block.x, block.y, type))
+            if (type != ExplosionPointType.NONE){
+                var pp:ExplosionPoint = new ExplosionPoint(block.x, block.y, type)
+				pp.layers = layers
+                result.addPoint(p)
+			}
         }
         _allExplosions = result;
         EngineContext.explosionsUpdated.dispatch(result);

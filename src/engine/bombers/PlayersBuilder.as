@@ -29,8 +29,8 @@ public class PlayersBuilder {
         return new EnemyBomber(game, playerProfile, lobbyProfile.nick, color);
     }
 
-    public function makeEnemyBot(game:IGame, playerProfile:PlayerGameProfile, name:String, color:PlayerColor, walkingStrategy:IWalkingStrategy):IEnemyBomber {
-        return new BotEnemyBomber(game, playerProfile, name, color, walkingStrategy);
+    public function makeEnemyBot(game:IGame, playerProfile:PlayerGameProfile, name:String, walkingStrategy:IWalkingStrategy):IEnemyBomber {
+        return new BotEnemyBomber(game, playerProfile, name, walkingStrategy);
     }
 
 

@@ -43,7 +43,7 @@ public class OverMapView extends Sprite implements IDrawable {
         var print:Sprite = getPrint(block.x, block.y);
         print.graphics.clear();
         if (block.hasExplosionPrint) {
-            print.graphics.beginBitmapFill(Context.imageService.getExplosionPrint(block.explodedBy))
+            print.graphics.beginBitmapFill(Context.imageService.explosionPrint(block.explodedBy))
             print.graphics.drawRect(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE);
             print.graphics.endFill();
         }

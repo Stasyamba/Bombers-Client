@@ -18,106 +18,99 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import api.vkontakte.VkontakteGlobals;
-			import appmodel.ApplicationModel;
-			import flash.net.navigateToURL;
-			import engine.utils.greensock.TweenMax;
-			import flash.utils.getTimer;
-			import mx.utils.ObjectUtil;
-			import mx.controls.Alert;
-			import components.common.resources.ResourcePrice;
-			
-			[Bindable]
-			private var tryCount: int = 2;
-			
-			[Bindable]
-			private var labelVisble: Boolean = true;
-			[Bindable]
-			private var buttonPanel1Visible: Boolean = false;
-			[Bindable]
-			private var buttonPanel2Visible: Boolean = false;
-			
-			private var rp:ResourcePrice = null;
-			
-			public static const MUST_WIN:int = 0;
-			public static const MUST_LOOSE:int = 1;
-			public static const RANDOM:int = 2;
-			
-			//private var userId: String = "";
-			private var posterId: String;
-			
-			public function initContent(posterIdP: String): void
-			{
-				//this.rp = rp;
-				posterId = posterIdP;
-			}
-			
-			private function init(): void
-			{
-				Context.Model.addCustomListener(ContextEvent.WALL_TRY_COUNT_CHANGED, function (e: ContextEvent): void
-				{
-					buttonPanel1Visible = false;
-					buttonPanel2Visible = false;
-					labelVisble = false;
-					
-					tryCount = Context.Model.currentSettings.lotteryTryToWinCount;
-					if(tryCount == 0)
-					{
-						if(Context.Model.currentSettings.lotteryPresentFinded != null)
-						{
-							buttonPanel1Visible = true;
-						}else
-						{
-							buttonPanel2Visible = true;
-						}
-					}else
-					{
-						labelVisble = true;
-					}
-				});
-				
-				
-				Context.Model.addCustomListener(ContextEvent.WALL_FAST_LOGINED, function (e: ContextEvent): void
-				{
-					//mx.controls.Alert.show((e.data as Boolean).toString());
-					
-					var typeLottery:int = e.data as int;
-					
-					chests.initContent(rp, typeLottery);
-					Context.Model.currentSettings.lotteryTryToWinCount = tryCount;
-				});
-				
-				
-				// get response from server
-                Context.gameServer.connected.addOnce(function():void{
-                    Context.gameServer.login(Context.Model.viewer.id, Context.Model.currentSettings.flashVars.auth_key);//Context.Model.viewer.id)
-                });
-					
-                Context.gameServer.connectWall();
+        import api.vkontakte.VkontakteGlobals;
 
-			}
-			
-			private function getPresent(): void
-			{
-				getPrizeButton.enabled = false;
-				
-				if(Context.Model.viewer.id == Context.Model.currentSettings.flashVars.userId)
-				{
-					Context.gameServer.wall_sendSubmitPrice(posterId);
-				}
-				
-				TweenMax.delayedCall(1.5, function(): void
-				{
-					VkontakteGlobals.wrapper.external.navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
-				});
-			}
-			
-			private function navigateToGame(): void
-			{
-				VkontakteGlobals.wrapper.external.navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
-			}
-			
-		]]>
+        import appmodel.ApplicationModel;
+
+        import flash.net.navigateToURL;
+
+        import greensock.TweenMax;
+
+        import flash.utils.getTimer;
+
+        import mx.utils.ObjectUtil;
+        import mx.controls.Alert;
+
+        import components.common.resources.ResourcePrice;
+
+        [Bindable]
+        private var tryCount:int = 2;
+
+        [Bindable]
+        private var labelVisble:Boolean = true;
+        [Bindable]
+        private var buttonPanel1Visible:Boolean = false;
+        [Bindable]
+        private var buttonPanel2Visible:Boolean = false;
+
+        private var rp:ResourcePrice = null;
+
+        public static const MUST_WIN:int = 0;
+        public static const MUST_LOOSE:int = 1;
+        public static const RANDOM:int = 2;
+
+        //private var userId: String = "";
+        private var posterId:String;
+
+        public function initContent(posterIdP:String):void {
+            //this.rp = rp;
+            posterId = posterIdP;
+        }
+
+        private function init():void {
+            Context.Model.addCustomListener(ContextEvent.WALL_TRY_COUNT_CHANGED, function (e:ContextEvent):void {
+                buttonPanel1Visible = false;
+                buttonPanel2Visible = false;
+                labelVisble = false;
+
+                tryCount = Context.Model.currentSettings.lotteryTryToWinCount;
+                if (tryCount == 0) {
+                    if (Context.Model.currentSettings.lotteryPresentFinded != null) {
+                        buttonPanel1Visible = true;
+                    } else {
+                        buttonPanel2Visible = true;
+                    }
+                } else {
+                    labelVisble = true;
+                }
+            });
+
+
+            Context.Model.addCustomListener(ContextEvent.WALL_FAST_LOGINED, function (e:ContextEvent):void {
+                //mx.controls.Alert.show((e.data as Boolean).toString());
+
+                var typeLottery:int = e.data as int;
+
+                chests.initContent(rp, typeLottery);
+                Context.Model.currentSettings.lotteryTryToWinCount = tryCount;
+            });
+
+
+            // get response from server
+            Context.gameServer.connected.addOnce(function():void {
+                Context.gameServer.login(Context.Model.viewer.id, Context.Model.currentSettings.flashVars.auth_key);//Context.Model.viewer.id)
+            });
+
+            Context.gameServer.connectWall();
+
+        }
+
+        private function getPresent():void {
+            getPrizeButton.enabled = false;
+
+            if (Context.Model.viewer.id == Context.Model.currentSettings.flashVars.userId) {
+                Context.gameServer.wall_sendSubmitPrice(posterId);
+            }
+
+            TweenMax.delayedCall(1.5, function():void {
+                VkontakteGlobals.wrapper.external.navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
+            });
+        }
+
+        private function navigateToGame():void {
+            VkontakteGlobals.wrapper.external.navigateToURL(new URLRequest(ApplicationModel.APPLICATION_LINK));
+        }
+        ]]>
 	</fx:Script>
 	
 	

@@ -56,20 +56,32 @@
 
         }
 
-        private function singleGameButton_clickHandler(event:MouseEvent):void {
-            /* if (Context.Model.currentSettings.gameProfile.energy > enegryRequired) {
-             if (locationType == LocationType.WORLD1_GRASSFIELDS) {
-             Context.Model.windowsManager.closeAll(false);
-             Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
-             Context.gameModel.readyToCreateGame.addOnce(function ():void {
-             Context.gameModel.createSinglePlayerGame("test");
-             })
-             }
-             } else {
-             setWarningGroupVisible(true);
-             } */
+        private function tryCreateQuest(event:MouseEvent):void {
+            if (Context.Model.currentSettings.gameProfile.energy > enegryRequired) {
+                Context.gameModel.createQuestFailed.addOnce(function():void {
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_ERROR_FRIENDS_GAMEW,
+                    {
+                        text: "Не удалось создать игру!",
+                        type: TypeGameToggle.TOGGLE_STATE_CREATE
+                    });
+                })
+                Context.gameModel.questGameCreated.addOnce(function ():void {
+                    Context.Model.windowsManager.closeAll(true);
+                    Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+                })
+                Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
+                {
+                    text: "Создаю игру...",
+                    type: TypeGameToggle.TOGGLE_STATE_CREATE
+                });
+                Context.gameModel.tryCreateQuest(questId.text, locationType)
 
-            setBetaGroupVisible(true);
+
+            } else {
+                setWarningGroupVisible(true);
+            }
+
+            //setBetaGroupVisible(true);
         }
 
         private function setWarningGroupVisible(visible:Boolean):void {
@@ -146,11 +158,11 @@
                                           fontSizeOver="24"
                                           click="fastJoin()"
                     />
-
+            <s:TextInput id="questId" text="q00_00"/>
             <flexcomponents:PatternButton id="singleGameButton"
                                           customLabel="Взять задание"
                                           skinClass="skins.buttons.Pattern3ButtonS"
-                                          click="singleGameButton_clickHandler(event)"
+                                          click="tryCreateQuest(event)"
                     />
         </s:VGroup>
 
@@ -214,7 +226,7 @@
                   gap="20"
                 >
             <s:Label
-                    text="В заданиях вы можете добвать ресурсы за энергию! Но пока что у нас бета, и мы придумываем вам интересные задания."
+                    text="В заданиях вы можете добывать ресурсы за энергию! Но пока что у нас бета, и мы придумываем вам интересные задания."
                     maxWidth="400"
                     textAlign="center"
                     fontFamily="mpbc" fontSize="24" color="0xffe61c"

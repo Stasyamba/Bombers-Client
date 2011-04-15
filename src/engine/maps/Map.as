@@ -4,16 +4,11 @@
  */
 
 package engine.maps {
-import engine.data.location1.mapObjects.BigObjects
-import engine.maps.bigObjects.BigObject
 import engine.maps.builders.MapBlockBuilder
 import engine.maps.interfaces.IBigObject
-import engine.maps.interfaces.IBigObjectDescription
 import engine.maps.interfaces.IMapBlock
 import engine.maps.mapBlocks.MapBlockType
 import engine.utils.Direction
-
-import flash.geom.Point
 
 import mx.collections.ArrayList
 import mx.controls.Alert
@@ -80,27 +75,27 @@ public class Map implements IMap {
 
         //decorations
         for each (var bObj:XML in xml.decorations.Decoration) {
-            var descr:IBigObjectDescription = BigObjects.objects[String(bObj.@id)] as IBigObjectDescription;
-            var origin:Point = new Point(bObj.@x, bObj.@y);
-            var blocksArr:Vector.<IMapBlock> = new Vector.<IMapBlock>();
-            var bo:IBigObject = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder, true)
-            decorations.push(bo);
+//            var descr:IBigObjectDescription = BigObjects.objects[String(bObj.@id)] as IBigObjectDescription;
+//            var origin:Point = new Point(bObj.@x, bObj.@y);
+//            var blocksArr:Vector.<IMapBlock> = new Vector.<IMapBlock>();
+//            var bo:IBigObject = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder, true)
+//            decorations.push(bo);
         }
         //bigObjects
         for each (bObj in xml.bigObjects.BigObject) {
-            descr = BigObjects.objects[String(bObj.@id)] as IBigObjectDescription;
-            origin = new Point(bObj.@x, bObj.@y);
-            blocksArr = new Vector.<IMapBlock>();
-            for (var i:int = 0; i < descr.blocks.length; i++) {
-                var obj:Object = descr.blocks[i]
-                blocksArr.push(getBlock(origin.x + int(obj.x), origin.y + int(obj.y)));
-            }
-            //todo: BO builder
-            bo = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder)
-            if (bObj.@layer == "higher")
-                higherBigObjects.push(bo);
-            else
-                lowerBigObjects.push(bo);
+//            descr = BigObjects.objects[String(bObj.@id)] as IBigObjectDescription;
+//            origin = new Point(bObj.@x, bObj.@y);
+//            blocksArr = new Vector.<IMapBlock>();
+//            for (var i:int = 0; i < descr.blocks.length; i++) {
+//                var obj:Object = descr.blocks[i]
+//                blocksArr.push(getBlock(origin.x + int(obj.x), origin.y + int(obj.y)));
+//            }
+//            //todo: BO builder
+//            bo = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder)
+//            if (bObj.@layer == "higher")
+//                higherBigObjects.push(bo);
+//            else
+//                lowerBigObjects.push(bo);
         }
         for each (var spawn:XML in xml.spawns.Spawn) {
             _spawns.push({x:spawn.@x,y:spawn.@y})

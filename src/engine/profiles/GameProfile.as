@@ -198,8 +198,8 @@ public class GameProfile {
 	
     public function getSkin(slot:int):BomberSkin {
         if (slot % 2 != 0)
-            return Context.imageService.getBomberSkin("fury")
-        return Context.imageService.getBomberSkin("robot")
+            return Context.imageService.bomberSkin(BomberType.FURY_JOE)
+        return Context.imageService.bomberSkin(BomberType.R2D3)
     }
 
     public static function fromISFSObject(obj:ISFSObject):GameProfile {

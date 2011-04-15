@@ -1,0 +1,144 @@
+<!--
+  ~ Copyright (c) 2011.
+  ~ Pavkin Vladimir
+  -->
+<Game>
+    <id>q00_00</id>
+    <name>Тестовая миссия 1</name>
+    <description>В этой миссии вы должны выпилить дверь за минимально возможное время.</description>
+    <location>0</location>
+    <map>
+        <Map width="20" height="16">
+            <spawns>
+                <PlayerSpawn x="1" y="0"/>
+                <EnemySpawn x="15" y="14">
+                    <!--frequency=[Hz], start=[sec]-->
+                    <Spawns id="1" life="1" freq="0.1" start="0"/>
+                    <Spawns id="2" life="2" freq="0.01" start="25"/>
+                </EnemySpawn>
+            </spawns>
+            <rows>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffIIIbbFFFff---f</Row>
+                <Row>ffffffIIIwwFFFff|||f</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+                <Row>ffffffffffffffffffff</Row>
+            </rows>
+            <shadows>
+                <ShadowRect x="10" y="8" width="3" height="2"/>
+                <ShadowEllipse x="0" y="12" width="4" height="3"/>
+            </shadows>
+            <objects>
+                <Object id="101">
+                    <Instance x="2" y="0"/>
+                    <Instance x="2" y="4"/>
+                </Object>
+                <Object id="103">
+                    <Instance x="2" y="1"/>
+                    <Instance x="2" y="2"/>
+                </Object>
+                <!--something special like mushrooms-->
+                <Object id="1100">
+                    <Instance x="3" y="3"/>
+                    <Instance x="4" y="4"/>
+                </Object>
+            </objects>
+            <bigObjects>
+                <!--3 BO types-->
+                <BigObjectActivator id="0" x="15" y="4" width="1" height="1" clipId="00.bo.keyLock_01" layer="lower"
+                                    keys="1" activates="1">
+                    <blocks>
+                        <ObjectBlock x="0" y="0"
+                                     canGoThrough="true"
+                                     canSetBomb="false"
+                                     canExplosionGoThrough="false"
+                                     explodesAndStopsExplosion="true"
+                                     explodes="false"/>
+                    </blocks>
+                </BigObjectActivator>
+                <ActivatedBigObject id="1" x="5" y="10" width="2" height="1" clipId="00.bo.gates_01" layer="lower">
+                    <blocks>
+                        <ObjectBlock x="0" y="0"
+                                     canGoThrough="false"
+                                     canSetBomb="false"
+                                     canExplosionGoThrough="false"
+                                     explodesAndStopsExplosion="true"
+                                     explodes="false"/>
+                        <ObjectBlock x="1" y="0"
+                                     canGoThrough="false"
+                                     canSetBomb="false"
+                                     canExplosionGoThrough="false"
+                                     explodesAndStopsExplosion="true"
+                                     explodes="false"/>
+                    </blocks>
+                </ActivatedBigObject>
+                <SimpleBigObject id="2" x="8" y="10" width="2" height="1" clipId="00.bo.gates_01" layer="lower"
+                                 life="100">
+                    <blocks>
+                        <ObjectBlock x="0" y="0"
+                                     canGoThrough="false"
+                                     canSetBomb="false"
+                                     canExplosionGoThrough="false"
+                                     explodesAndStopsExplosion="true"
+                                     explodes="true"/>
+                        <ObjectBlock x="1" y="0"
+                                     canGoThrough="false"
+                                     canSetBomb="false"
+                                     canExplosionGoThrough="false"
+                                     explodesAndStopsExplosion="true"
+                                     explodes="true"/>
+                    </blocks>
+                </SimpleBigObject>
+            </bigObjects>
+        </Map>
+    </map>
+    <enemies>
+        <Bot moves="right_wall" life="20" damageOnTouch="1" skin="l01.rat" id="2" spawnx="0" spawny="10"/>
+        <Bot moves="right_wall" life="10" skin="l00.cow" id="3" spawnx="1" spawny="10"/>
+    </enemies>
+    <!--goals types:
+        - DefeatEnemyGoal
+        - CollectObjectsGoal
+        - DestroyBOGoal
+        - ActivateBOGoal
+        - ReachCoordsGoal-->
+    <goals>
+        <DefeatEnemyGoal id="all"/>
+    </goals>
+    <!--done panel components:
+        - EnemiesAlive (number)
+        - BOActivated (activated/all)
+        - BODestroyed (destroyed/all)
+        - ObjectsCollected (collected/all)
+        - TimeLeft (time)
+        - Boss'sLife (current/all)-->
+    <donePanel>
+        <EnemiesAlive/>
+    </donePanel>
+    <!--2 types: count and time-->
+    <medals type="time">
+        <Bronze time="03:00">
+            <Resource id="00" val="100"/>
+        </Bronze>
+        <Silver time="02:00">
+            <Resource id="00" val="300"/>
+            <Experience val="20"/>
+        </Silver>
+        <Gold time="01:00">
+            <Resource id="00" val="500"/>
+            <Experience val="30"/>
+            <Object id="03" val="1"/>
+        </Gold>
+    </medals>
+</Game>

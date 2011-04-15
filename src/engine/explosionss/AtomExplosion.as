@@ -4,6 +4,7 @@
  */
 
 package engine.explosionss {
+import engine.bombers.interfaces.IBomber
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.IMap
 import engine.model.explosionss.ExplosionType
@@ -12,24 +13,24 @@ public class AtomExplosion extends ExplosionBase implements IExplosion {
 
     private static const BRANCH_LENGTH:int = 2;
 
-    public function AtomExplosion(map:IMap, centerX:int = -1, centerY:int = -1) {
-        super(map, centerX, centerY)
+    public function AtomExplosion(map:IMap, owner:IBomber, centerX:int = -1, centerY:int = -1) {
+        super(map, centerX, centerY, owner)
         timeToLive = type.timeToLive
     }
 
     private function addHorBranches(y:int):void {
         var firstSet:Boolean = false;
 
-        addPoint(new ExplosionPoint(centerX, y, ExplosionPointType.CROSS));
+        addPoint(new ExplosionPoint(centerX, y, ExplosionPointType.CROSS,_owner,type));
 
         for (var i:int = -BRANCH_LENGTH; i < 0; i++) {
             if (map.validPoint(centerX + i, y)) {
                 if (!firstSet) {
-                    addPoint(new ExplosionPoint(centerX + i, y, ExplosionPointType.LEFT))
+                    addPoint(new ExplosionPoint(centerX + i, y, ExplosionPointType.LEFT,_owner,type))
                     firstSet = true;
                 }
                 else
-                    addPoint(new ExplosionPoint(centerX + i, y, ExplosionPointType.HORIZONTAL))
+                    addPoint(new ExplosionPoint(centerX + i, y, ExplosionPointType.HORIZONTAL,_owner,type))
             }
         }
 
@@ -37,11 +38,11 @@ public class AtomExplosion extends ExplosionBase implements IExplosion {
         for (i = BRANCH_LENGTH; i > 0; i--) {
             if (map.validPoint(centerX + i, y)) {
                 if (!firstSet) {
-                    addPoint(new ExplosionPoint(centerX + i, y, ExplosionPointType.RIGHT))
+                    addPoint(new ExplosionPoint(centerX + i, y, ExplosionPointType.RIGHT,_owner,type))
                     firstSet = true;
                 }
                 else
-                    addPoint(new ExplosionPoint(centerX + i, y, ExplosionPointType.HORIZONTAL))
+                    addPoint(new ExplosionPoint(centerX + i, y, ExplosionPointType.HORIZONTAL,_owner,type))
             }
         }
     }
@@ -50,16 +51,16 @@ public class AtomExplosion extends ExplosionBase implements IExplosion {
 
         var firstSet:Boolean = false;
 
-        addPoint(new ExplosionPoint(x, centerY, ExplosionPointType.CROSS));
+        addPoint(new ExplosionPoint(x, centerY, ExplosionPointType.CROSS,_owner,type));
 
         for (var i:int = -BRANCH_LENGTH; i < 0; i++) {
             if (map.validPoint(x, centerY + i)) {
                 if (!firstSet) {
-                    addPoint(new ExplosionPoint(x, centerY + i, ExplosionPointType.UP))
+                    addPoint(new ExplosionPoint(x, centerY + i, ExplosionPointType.UP,_owner,type))
                     firstSet = true;
                 }
                 else
-                    addPoint(new ExplosionPoint(x, centerY + i, ExplosionPointType.VERTICAL))
+                    addPoint(new ExplosionPoint(x, centerY + i, ExplosionPointType.VERTICAL,_owner,type))
             }
         }
 
@@ -67,11 +68,11 @@ public class AtomExplosion extends ExplosionBase implements IExplosion {
         for (i = BRANCH_LENGTH; i > 0; i--) {
             if (map.validPoint(x, centerY + i)) {
                 if (!firstSet) {
-                    addPoint(new ExplosionPoint(x, centerY + i, ExplosionPointType.DOWN))
+                    addPoint(new ExplosionPoint(x, centerY + i, ExplosionPointType.DOWN,_owner,type))
                     firstSet = true;
                 }
                 else
-                    addPoint(new ExplosionPoint(x, centerY + i, ExplosionPointType.VERTICAL))
+                    addPoint(new ExplosionPoint(x, centerY + i, ExplosionPointType.VERTICAL,_owner,type))
             }
         }
     }
@@ -87,7 +88,7 @@ public class AtomExplosion extends ExplosionBase implements IExplosion {
     }
 
     public function perform():void {
-        addPoint(new ExplosionPoint(centerX, centerY, ExplosionPointType.CROSS));
+        addPoint(new ExplosionPoint(centerX, centerY, ExplosionPointType.CROSS,_owner,type));
         var x:int,y:int;
 
         //x-line
@@ -97,13 +98,13 @@ public class AtomExplosion extends ExplosionBase implements IExplosion {
             else
                 switch (x) {
                     case 0:
-                        addPoint(new ExplosionPoint(0, centerY, ExplosionPointType.LEFT))
+                        addPoint(new ExplosionPoint(0, centerY, ExplosionPointType.LEFT,_owner,type))
                         break;
                     case map.width - 1:
-                        addPoint(new ExplosionPoint(map.width - 1, centerY, ExplosionPointType.RIGHT))
+                        addPoint(new ExplosionPoint(map.width - 1, centerY, ExplosionPointType.RIGHT,_owner,type))
                         break;
                     default:
-                        addPoint(new ExplosionPoint(x, centerY, ExplosionPointType.HORIZONTAL))
+                        addPoint(new ExplosionPoint(x, centerY, ExplosionPointType.HORIZONTAL,_owner,type))
                 }
         }
         //y-line
@@ -113,13 +114,13 @@ public class AtomExplosion extends ExplosionBase implements IExplosion {
             else
                 switch (y) {
                     case 0:
-                        addPoint(new ExplosionPoint(centerX, 0, ExplosionPointType.UP))
+                        addPoint(new ExplosionPoint(centerX, 0, ExplosionPointType.UP,_owner,type))
                         break;
                     case map.height - 1:
-                        addPoint(new ExplosionPoint(centerX, map.height - 1, ExplosionPointType.DOWN))
+                        addPoint(new ExplosionPoint(centerX, map.height - 1, ExplosionPointType.DOWN,_owner,type))
                         break;
                     default:
-                        addPoint(new ExplosionPoint(centerX, y, ExplosionPointType.VERTICAL))
+                        addPoint(new ExplosionPoint(centerX, y, ExplosionPointType.VERTICAL,_owner,type))
                 }
         }
 

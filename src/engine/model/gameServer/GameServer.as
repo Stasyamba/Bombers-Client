@@ -4,57 +4,59 @@
  */
 
 package engine.model.gameServer {
-import com.smartfoxserver.v2.SmartFox;
-import com.smartfoxserver.v2.core.SFSEvent;
-import com.smartfoxserver.v2.entities.Room;
-import com.smartfoxserver.v2.entities.data.ISFSArray;
-import com.smartfoxserver.v2.entities.data.ISFSObject;
-import com.smartfoxserver.v2.entities.data.SFSObject;
-import com.smartfoxserver.v2.requests.ExtensionRequest;
-import com.smartfoxserver.v2.requests.JoinRoomRequest;
-import com.smartfoxserver.v2.requests.LeaveRoomRequest;
-import com.smartfoxserver.v2.requests.LoginRequest;
-import com.smartfoxserver.v2.requests.PublicMessageRequest;
+import com.smartfoxserver.v2.SmartFox
+import com.smartfoxserver.v2.core.SFSEvent
+import com.smartfoxserver.v2.entities.Room
+import com.smartfoxserver.v2.entities.data.ISFSArray
+import com.smartfoxserver.v2.entities.data.ISFSObject
+import com.smartfoxserver.v2.entities.data.SFSObject
+import com.smartfoxserver.v2.requests.ExtensionRequest
+import com.smartfoxserver.v2.requests.JoinRoomRequest
+import com.smartfoxserver.v2.requests.LeaveRoomRequest
+import com.smartfoxserver.v2.requests.LoginRequest
+import com.smartfoxserver.v2.requests.PublicMessageRequest
 
-import components.common.base.access.rules.levelrule.AccessLevelRule;
-import components.common.base.expirance.ExperianceObject;
-import components.common.base.market.ItemMarketObject;
-import components.common.bombers.BomberType;
-import components.common.items.ItemObject;
-import components.common.items.ItemProfileObject;
-import components.common.items.ItemType;
-import components.common.resources.ResourceObject;
-import components.common.resources.ResourcePrice;
-import components.wall.chest.WallChest;
+import components.common.base.access.rules.levelrule.AccessLevelRule
+import components.common.base.expirance.ExperianceObject
+import components.common.base.market.ItemMarketObject
+import components.common.bombers.BomberType
+import components.common.items.ItemObject
+import components.common.items.ItemProfileObject
+import components.common.items.ItemType
+import components.common.resources.ResourceObject
+import components.common.resources.ResourcePrice
+import components.common.worlds.locations.LocationType
+import components.wall.chest.WallChest
 
-import engine.EngineContext;
-import engine.maps.interfaces.IDynObject;
-import engine.maps.interfaces.IDynObjectType;
-import engine.maps.mapObjects.DynObjectType;
-import engine.model.signals.InGameMessageReceivedSignal;
-import engine.model.signals.ProfileLoadedSignal;
-import engine.model.signals.manage.GameServerConnectedSignal;
-import engine.model.signals.manage.LoggedInSignal;
-import engine.profiles.GameProfile;
-import engine.profiles.LobbyProfile;
-import engine.profiles.PlayerGameProfile;
-import engine.utils.Direction;
-import engine.utils.greensock.TweenMax;
-import engine.weapons.WeaponType;
+import engine.EngineContext
+import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IDynObjectType
+import engine.maps.mapObjects.DynObjectType
+import engine.model.signals.InGameMessageReceivedSignal
+import engine.model.signals.ProfileLoadedSignal
+import engine.model.signals.manage.GameServerConnectedSignal
+import engine.model.signals.manage.LoggedInSignal
+import engine.profiles.GameProfile
+import engine.profiles.LobbyProfile
+import engine.profiles.PlayerGameProfile
+import engine.utils.Direction
+import engine.weapons.WeaponType
 
-import flash.events.TimerEvent;
-import flash.utils.Timer;
+import flash.events.TimerEvent
+import flash.utils.Timer
 
-import mx.controls.Alert;
+import greensock.TweenMax
 
-import org.osflash.signals.Signal;
-import org.osmf.media.IMediaTrait;
+import mx.utils.ObjectUtil
+
+import org.osflash.signals.Signal
 
 public class GameServer extends SmartFox {
 
     //output
     private static const VIEW_DIRECTION_CHANGED:String = "view_direction_changed";
     //input
+    private static const MOVE_TICK:String = "M"
     private static const GAME_STARTED:String = "game.lobby.gameStarted";
     private static const THREE_SECONDS_TO_START:String = "game.lobby.3SecondsToStart";
     private static const DYNAMIC_OBJECT_ADDED:String = 'game.DOAdd';
@@ -86,18 +88,19 @@ public class GameServer extends SmartFox {
     private static const INT_GAME_NAME:String = "interface.gameManager.findGameName"
     private static const INT_FAST_JOIN:String = "interface.gameManager.fastJoin"
     private static const INT_FAST_JOIN_RESULT:String = "interface.gameManager.fastJoin.result"
+    private static const INT_CREATE_QUEST:String = "interface.gameManager.createGame"
     private static const INT_CREATE_GAME:String = "interface.gameManager.createGame"
     private static const INT_CREATE_GAME_RESULT:String = "interface.gameManager.createGame.result"
-	private static const INT_TRY_LUCK:String = "interface.tryLuck"
-	private static const INT_TRY_LUCK_RESULT:String = "interface.tryLuck.result"
-	private static const INT_BUY_LUCK:String = "interface.buyLuck"
-	private static const INT_BUY_LUCK_RESULT:String = "interface.buyLuck.result"
-	private static const INT_TAKE_PRIZE:String = "interface.takePrize"
-	private static const INT_TAKE_PRIZE_RESULT:String = "interface.takePrize.result"
-		
+    private static const INT_TRY_LUCK:String = "interface.tryLuck"
+    private static const INT_TRY_LUCK_RESULT:String = "interface.tryLuck.result"
+    private static const INT_BUY_LUCK:String = "interface.buyLuck"
+    private static const INT_BUY_LUCK_RESULT:String = "interface.buyLuck.result"
+    private static const INT_TAKE_PRIZE:String = "interface.takePrize"
+    private static const INT_TAKE_PRIZE_RESULT:String = "interface.takePrize.result"
+
     private static const LOBBY_PROFILES:String = "game.lobby.playersProfiles"
     private static const LOBBY_READY:String = "game.lobby.readyChanged"
-
+    private static const LOBBY_LOCATION:String = "game.lobby.location"
 
     public var ip:String;
     public var port:int;
@@ -118,6 +121,7 @@ public class GameServer extends SmartFox {
 
     private var startPingFlag:Boolean = true
     private var tenSecondsTimer:Timer = new Timer(10000);
+    private var namesOrder:Array
 
     public function GameServer() {
         super(true)
@@ -197,6 +201,13 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest(INT_GAME_NAME, null, null))
     }
 
+    public function createQuestRequest(questId:String, locId:int):void {
+        var params:ISFSObject = new SFSObject();
+        params.putInt("interface.gameManager.createSingleGame.fields.locationId", locId);
+        params.putUtfString("interface.gameManager.createSingleGame.fields.questId", questId);
+        send(new ExtensionRequest(INT_CREATE_QUEST, params, null))
+    }
+
     public function createNewGameRequest(name:String, pass:String, locationId:int):void {
         var params:ISFSObject = new SFSObject();
         params.putInt("interface.gameManager.createGame.fields.locationId", locationId);
@@ -226,9 +237,6 @@ public class GameServer extends SmartFox {
     public function sendPlayerDirectionChanged(x:Number, y:Number, dir:Direction, viewDirectionChanged:Boolean):void {
 
         var params:ISFSObject = new SFSObject();
-        params.putInt("slot", Context.gameModel.myLobbyProfile().slot)
-        params.putDouble("x", x);
-        params.putDouble("y", y);
         params.putInt("dir", dir.value);
 
         send(new ExtensionRequest(INPUT_DIRECTION_CHANGED, params, gameRoom));
@@ -317,10 +325,10 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest("interface.setNick", params, null));
     }
 
-    public function wall_sendSubmitPrice(posterId: String):void {
-		var params:ISFSObject = new SFSObject();
+    public function wall_sendSubmitPrice(posterId:String):void {
+        var params:ISFSObject = new SFSObject();
         params.putUtfString("PostCreatorId", posterId);
-		
+
         send(new ExtensionRequest("bombersWall.submitPrize", params, null));
     }
 
@@ -333,24 +341,21 @@ public class GameServer extends SmartFox {
         tenSecondsTimer.start()
     }
 
-	public function tryLottery():void
-	{
-		send(new ExtensionRequest(INT_TRY_LUCK, null, null));
-	}
-	
-	public function buyLuck():void
-	{
-		var params:ISFSObject = new SFSObject();
-		params.putInt("interface.buyLuck.fields.luck", 3);
-		
-		send(new ExtensionRequest(INT_BUY_LUCK, params, null));
-	}
-	
-	public function takePrize():void
-	{
-		send(new ExtensionRequest(INT_TAKE_PRIZE, null, null));
-	}
-	
+    public function tryLottery():void {
+        send(new ExtensionRequest(INT_TRY_LUCK, null, null));
+    }
+
+    public function buyLuck():void {
+        var params:ISFSObject = new SFSObject();
+        params.putInt("interface.buyLuck.fields.luck", 3);
+
+        send(new ExtensionRequest(INT_BUY_LUCK, params, null));
+    }
+
+    public function takePrize():void {
+        send(new ExtensionRequest(INT_TAKE_PRIZE, null, null));
+    }
+
     //----------------------Handlers---------------------------
 
     private function onConnected(event:SFSEvent):void {
@@ -417,26 +422,45 @@ public class GameServer extends SmartFox {
     private function onExtensionResponse(event:SFSEvent):void {
         var responseParams:ISFSObject = event.params.params as SFSObject;
         switch (event.params.cmd) {
-            case INPUT_DIRECTION_CHANGED:
-                //special case, message is broadcasted
-                var slot:int = responseParams.getInt("slot");
-                if (Context.gameModel.isMySlot(slot))
-                    return
-                EngineContext.enemyInputDirectionChanged.dispatch(
-                        slot,
-                        responseParams.getDouble("x"),
-                        responseParams.getDouble("y"),
-                        Direction.byValue(responseParams.getInt("dir")));
+            case MOVE_TICK:
+                var dirArr:ISFSArray = responseParams.getSFSArray("ID")
+                var cxArr:ISFSArray = responseParams.getSFSArray("CX")
+                var cyArr:ISFSArray = responseParams.getSFSArray("CY")
+                var moveTickObject:Object = {}
+                for (var i:int = 0; i < namesOrder.length; i++) {
+                    var name:String = namesOrder[i];
+                    var dir:Direction = Direction.byValue(dirArr.getInt(i))
+                    var cx:Number = cxArr.getDouble(i)
+                    var cy:Number = cyArr.getDouble(i)
+                    slot = Context.gameModel.getLobbyProfileById(name).slot
+                    moveTickObject[slot] = {dir:dir,x:cx,y:cy}
+                    trace(ObjectUtil.toString(moveTickObject))
+                }
+                EngineContext.moveTick.dispatch(moveTickObject)
                 break;
+
+//            case INPUT_DIRECTION_CHANGED:
+//                //special case, message is broadcasted
+//                var slot:int = responseParams.getInt("slot");
+//                if (Context.gameModel.isMySlot(slot))
+//                    return
+//                EngineContext.enemyInputDirectionChanged.dispatch(
+//                        slot,
+//                        responseParams.getDouble("x"),
+//                        responseParams.getDouble("y"),
+//                        Direction.byValue(responseParams.getInt("dir")));
+//                break;
             case THREE_SECONDS_TO_START:
                 //move this shit to model
                 var playerGameData:Array = new Array();
                 var sfsArr:ISFSArray = responseParams.getSFSArray("game.lobby.3SecondsToStart.fields.PlayerGameProfiles")
+                namesOrder = new Array()
                 for (var i:int = 0; i < sfsArr.size(); i++) {
                     var obj:ISFSObject = sfsArr.getSFSObject(i)
                     var x:int = obj.getInt("StartX")
                     var y:int = obj.getInt("StartY")
                     var name:String = obj.getUtfString("UserId")
+                    namesOrder.push(name)
                     var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)
                     var auras:Array = new Array()
                     var bType:BomberType = BomberType.byValue(obj.getInt("BomberId"))
@@ -520,14 +544,12 @@ public class GameServer extends SmartFox {
                 updLobbyExperience(slot, responseParams.getInt("Rank"), responseParams.getInt("Experience"))
                 EngineContext.enemyDied.dispatch(slot);
                 break;
-            case
-            DEATH_WALL_APPEARED:
+            case DEATH_WALL_APPEARED:
                 EngineContext.deathWallAppeared.dispatch(
                         responseParams.getInt("x"),
                         responseParams.getInt("y"))
                 break;
-            case
-            GAME_ENDED:
+            case GAME_ENDED:
                 var wId:String = responseParams.getUtfString("game.gameEnded.WinnerId")
                 var wExp:int = responseParams.getInt("game.gameEnded.WinnerExperience")
                 slot = Context.gameModel.getLobbyProfileById(wId).slot
@@ -541,8 +563,7 @@ public class GameServer extends SmartFox {
                 var arr:ISFSArray = responseParams.getSFSArray("profiles");
                 Context.gameModel.lobbyProfiles = getLobbyProfilesFromSFSArray(arr)
                 break;
-            case
-            INT_GAME_PROFILE_LOADED:
+            case INT_GAME_PROFILE_LOADED:
 
                 //resourceCost
                 var plist:ISFSObject = responseParams.getSFSObject("Pricelist")
@@ -589,30 +610,29 @@ public class GameServer extends SmartFox {
                 //gp
                 var gp:GameProfile = GameProfile.fromISFSObject(responseParams);
                 profileLoaded.dispatch(gp);
-				
-				// lottery
-				Context.Model.currentSettings.lotteryResourcePrize = new ResourcePrice(
-					responseParams.getInt("GoldPrize"),
-					responseParams.getInt("CrystalPrize"),
-					responseParams.getInt("AdamantiumPrize"),
-					responseParams.getInt("AntimatterPrize")
-				);
-				
-				Context.Model.currentSettings.lotteryTryToWinCount = responseParams.getInt("LuckCount");
-				
-				Context.Model.dispatchCustomEvent(ContextEvent.L_TRY_TO_SHOW_LOTTERY);
-				
-				// immitation
-				Context.Model.currentSettings.gameProfile.gotItems.push(new ItemProfileObject(ItemType.PART_BOOTS, 1));
-				Context.Model.currentSettings.gameProfile.packItems.push(new ItemProfileObject(ItemType.PART_BOOTS, 1));
-				
-				Context.Model.currentSettings.gameProfile.gotItems.push(new ItemProfileObject(ItemType.PART_MAGIC_SNOW, 1));
-				Context.Model.currentSettings.gameProfile.packItems.push(new ItemProfileObject(ItemType.PART_MAGIC_SNOW, 1));
-				
-				
+
+                // lottery
+                Context.Model.currentSettings.lotteryResourcePrize = new ResourcePrice(
+                        responseParams.getInt("GoldPrize"),
+                        responseParams.getInt("CrystalPrize"),
+                        responseParams.getInt("AdamantiumPrize"),
+                        responseParams.getInt("AntimatterPrize")
+                        );
+
+                Context.Model.currentSettings.lotteryTryToWinCount = responseParams.getInt("LuckCount");
+
+                Context.Model.dispatchCustomEvent(ContextEvent.L_TRY_TO_SHOW_LOTTERY);
+
+                // immitation
+                Context.Model.currentSettings.gameProfile.gotItems.push(new ItemProfileObject(ItemType.PART_BOOTS, 1));
+                Context.Model.currentSettings.gameProfile.packItems.push(new ItemProfileObject(ItemType.PART_BOOTS, 1));
+
+                Context.Model.currentSettings.gameProfile.gotItems.push(new ItemProfileObject(ItemType.PART_MAGIC_SNOW, 1));
+                Context.Model.currentSettings.gameProfile.packItems.push(new ItemProfileObject(ItemType.PART_MAGIC_SNOW, 1));
+
+
                 break;
-            case
-            INT_BUY_RESOURCES_RESULT:
+            case INT_BUY_RESOURCES_RESULT:
                 trace("resources bought");
                 var status:Boolean = responseParams.getBool("interface.buyResources.result.fields.status")
                 if (!status) {
@@ -635,8 +655,7 @@ public class GameServer extends SmartFox {
                     }
                 }
                 break;
-            case
-            INT_BUY_ITEM_RESULT:
+            case INT_BUY_ITEM_RESULT:
                 trace("item bought");
                 status = responseParams.getBool("interface.buyItem.result.fields.status")
                 if (!status) {
@@ -649,41 +668,39 @@ public class GameServer extends SmartFox {
                         responseParams.getInt("interface.buyItem.result.fields.resourceType1"),
                         responseParams.getInt("interface.buyItem.result.fields.resourceType2"),
                         responseParams.getInt("interface.buyItem.result.fields.resourceType3"))
-				
+
                 Context.Model.currentSettings.gameProfile.addItem(iType, count)
                 Context.Model.currentSettings.gameProfile.resources.setFrom(rp)
-				
+
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.IT_BUY_SUCCESS, {it:iType,count:count})
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_GOTITEMS_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_PACKITEMS_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED)
                 Context.Model.dispatchCustomEvent(ContextEvent.IM_ITEMBUY_SUCCESS, iType)
-				
-				Context.Model.dispatchCustomEvent(ContextEvent.RGAME_NEED_TO_SET_WEAPON_TO_HAND, iType);
+
+                Context.Model.dispatchCustomEvent(ContextEvent.RGAME_NEED_TO_SET_WEAPON_TO_HAND, iType);
                 break;
-            case
-            INT_GAME_NAME_RESULT:
+            case INT_GAME_NAME_RESULT:
                 newGameNameObtained.dispatch(responseParams.getUtfString("interface.gameManager.findGameName.result.fields.gameName"))
                 break;
-            case
-            INT_FAST_JOIN_RESULT:
+            case INT_FAST_JOIN_RESULT:
                 Context.gameModel.fastJoinFailed.dispatch()
                 break;
-            case
-            INT_CREATE_GAME_RESULT:
+            case INT_CREATE_GAME_RESULT:
                 Context.gameModel.createGameFailed.dispatch()
                 break;
-            case
-            LOBBY_PROFILES:
+            case LOBBY_PROFILES:
                 var arr:ISFSArray = responseParams.getSFSArray("profiles");
                 var newLPs:Array = getLobbyProfilesFromSFSArray(arr)
                 var lp:LobbyProfile = getNewLobbyProfile(newLPs)
                 Context.gameModel.lobbyProfiles = newLPs
                 Context.gameModel.someoneJoinedToGame.dispatch(lp);
                 break;
-            case
-            LOBBY_READY:
+            case LOBBY_LOCATION:
+                Context.gameModel.currentLocation = LocationType.byValue(responseParams.getInt("LocationId"))
+				break
+            case LOBBY_READY:
                 var ready:Boolean = responseParams.getBool("IsReady")
                 var name:String = responseParams.getUtfString("Id");
                 var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)
@@ -693,74 +710,68 @@ public class GameServer extends SmartFox {
                 break;
 
             //WALL
-            case
-            "bombersWall.isRegisteredLoaded":
+            case "bombersWall.isRegisteredLoaded":
                 var flag:Boolean = responseParams.getBool("IsRegistered")
                 //mx.controls.Alert.show("Login success -> "+flag.toString());
-                
-				Context.Model.dispatchCustomEvent(ContextEvent.WALL_FAST_LOGINED, flag ? WallChest.MUST_LOOSE : WallChest.MUST_WIN);
-                break;
-			
-			case 
-			INT_TRY_LUCK_RESULT:
-			
-			
-			var newResources: ResourcePrice = new ResourcePrice(
-				responseParams.getInt("Gold"),
-				responseParams.getInt("Crystal"),
-				responseParams.getInt("Adamantium"),
-				responseParams.getInt("Antimatter")
-			);
-			
-			//mx.controls.Alert.show(newResources.toString());
 
-			var diff: ResourcePrice = newResources.getDifference(Context.Model.currentSettings.gameProfile.resources);
-			var arrRes: Array = diff.getResourceObjectArr();
-			var resourceObject:ResourceObject = null;
-			
-			for each(var ro:ResourceObject in arrRes)
-			{
-				if(ro.value != 0)
-				{
-					resourceObject = ro;
-					break;
-				}
-			}
-			
-			Context.Model.currentSettings.gameProfile.resources = newResources.clone();
-			
-			Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED);
-			Context.Model.dispatchCustomEvent(ContextEvent.L_CHEST_IS_CHECKED, resourceObject);
-			
-			
-			break;
-			
-			case 
-			INT_BUY_LUCK_RESULT:
-			Context.Model.currentSettings.gameProfile.energy = responseParams.getInt("Energy");
-			Context.Model.currentSettings.lotteryTryToWinCount = responseParams.getInt("LuckCount");
-			
-			Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED);
-			Context.Model.dispatchCustomEvent(ContextEvent.L_RESET_CHESTS);
-			Context.Model.dispatchCustomEvent(ContextEvent.L_SHOW_CHEST_BLOCK, false);
-			
-			break;
-			
-			case 
-			INT_TAKE_PRIZE_RESULT:
-			
-			var newResources: ResourcePrice = new ResourcePrice(
-				responseParams.getInt("Gold"),
-				responseParams.getInt("Crystal"),
-				responseParams.getInt("Adamantium"),
-				responseParams.getInt("Antimatter")
-			);
-			
-			Context.Model.currentSettings.gameProfile.resources = newResources.clone();
-			Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED);
-			Context.Model.dispatchCustomEvent(ContextEvent.TL_RESET_PRIZE);
-			
-			break;
+                Context.Model.dispatchCustomEvent(ContextEvent.WALL_FAST_LOGINED, flag ? WallChest.MUST_LOOSE : WallChest.MUST_WIN);
+                break;
+
+            case INT_TRY_LUCK_RESULT:
+
+
+                var newResources:ResourcePrice = new ResourcePrice(
+                        responseParams.getInt("Gold"),
+                        responseParams.getInt("Crystal"),
+                        responseParams.getInt("Adamantium"),
+                        responseParams.getInt("Antimatter")
+                        );
+
+                //mx.controls.Alert.show(newResources.toString());
+
+                var diff:ResourcePrice = newResources.getDifference(Context.Model.currentSettings.gameProfile.resources);
+                var arrRes:Array = diff.getResourceObjectArr();
+                var resourceObject:ResourceObject = null;
+
+                for each(var ro:ResourceObject in arrRes) {
+                    if (ro.value != 0) {
+                        resourceObject = ro;
+                        break;
+                    }
+                }
+
+                Context.Model.currentSettings.gameProfile.resources = newResources.clone();
+
+                Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED);
+                Context.Model.dispatchCustomEvent(ContextEvent.L_CHEST_IS_CHECKED, resourceObject);
+
+
+                break;
+
+            case INT_BUY_LUCK_RESULT:
+                Context.Model.currentSettings.gameProfile.energy = responseParams.getInt("Energy");
+                Context.Model.currentSettings.lotteryTryToWinCount = responseParams.getInt("LuckCount");
+
+                Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED);
+                Context.Model.dispatchCustomEvent(ContextEvent.L_RESET_CHESTS);
+                Context.Model.dispatchCustomEvent(ContextEvent.L_SHOW_CHEST_BLOCK, false);
+
+                break;
+
+            case INT_TAKE_PRIZE_RESULT:
+
+                var newResources:ResourcePrice = new ResourcePrice(
+                        responseParams.getInt("Gold"),
+                        responseParams.getInt("Crystal"),
+                        responseParams.getInt("Adamantium"),
+                        responseParams.getInt("Antimatter")
+                        );
+
+                Context.Model.currentSettings.gameProfile.resources = newResources.clone();
+                Context.Model.dispatchCustomEvent(ContextEvent.GP_RESOURCE_CHANGED);
+                Context.Model.dispatchCustomEvent(ContextEvent.TL_RESET_PRIZE);
+
+                break;
         }
     }
 

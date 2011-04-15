@@ -42,7 +42,7 @@
         private function tryToCreateGame():void {
             if (Utils.isCorrectGameName(gameNameTextInput.text)) {
                 //todo: сделать механизм выбора локации (пока просто захардкодена трава)
-                Context.gameModel.tryCreateRegularGame(gameNameTextInput.text, gamePassTextInput.text, LocationType.WORLD1_GRASSFIELDS.value)
+                Context.gameModel.tryCreateRegularGame(gameNameTextInput.text, gamePassTextInput.text, LocationType.WORLD1_GRASSFIELDS)
                 Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_WARNING_FRIENDS_GAMEW,
                 {
                     text: "Создаю игру...",
