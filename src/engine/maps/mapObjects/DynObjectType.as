@@ -9,6 +9,8 @@ import engine.maps.interfaces.IDynObjectType
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.maps.mapObjects.mines.MineType
 
+import loading.LoaderUtils
+
 public class DynObjectType implements IDynObjectType {
 
     public static const NULL:DynObjectType = new DynObjectType(-1, "NULL");
@@ -70,6 +72,10 @@ public class DynObjectType implements IDynObjectType {
 
     public function get waitToAdd():int {
         return 0
+    }
+
+    public function get stringId():String {
+        return LoaderUtils.stringId(value)
     }
 }
 }

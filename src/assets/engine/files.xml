@@ -1,0 +1,98 @@
+<!--
+  ~ Copyright (c) 2011.
+  ~ Pavkin Vladimir
+  -->
+
+<Files>
+    <locations addr="assets/engine/locations/">
+        <Location id="00">
+            <Folder name="map">
+                <File name="background" ext=".jpg"/>
+                <File name="box1" ext=".png"/>
+                <File name="box2" ext=".png"/>
+                <File name="box3" ext=".png"/>
+                <File name="wall1" ext=".png"/>
+            </Folder>
+        </Location>
+
+        <Location id="01">
+            <Folder name="map">
+                <File name="background" ext=".jpg"/>
+                <File name="box1" ext=".png"/>
+                <File name="wall1" ext=".png"/>
+            </Folder>
+        </Location>
+
+        <Location id="02">
+            <Folder name="map">
+                <File name="background" ext=".jpg"/>
+                <File name="box1" ext=".png"/>
+                <File name="box2" ext=".png"/>
+                <File name="wall1" ext=".png"/>
+            </Folder>
+        </Location>
+    </locations>
+    <bombers addr="assets/engine/bombers/">
+        <Bomber id="00">
+            <File name="up" ext=".png"/>
+            <File name="up_mask" ext=".png"/>
+            <File name="down" ext=".png"/>
+            <File name="down_mask" ext=".png"/>
+            <File name="left" ext=".png"/>
+            <File name="left_mask" ext=".png"/>
+            <File name="right" ext=".png"/>
+            <File name="right_mask" ext=".png"/>
+        </Bomber>
+        <Bomber id="01">
+            <File name="up" ext=".png"/>
+            <File name="up_mask" ext=".png"/>
+            <File name="down" ext=".png"/>
+            <File name="down_mask" ext=".png"/>
+            <File name="left" ext=".png"/>
+            <File name="left_mask" ext=".png"/>
+            <File name="right" ext=".png"/>
+            <File name="right_mask" ext=".png"/>
+        </Bomber>
+    </bombers>
+    <common addr="assets/engine/common/">
+        <DO>
+            <File name="00" ext=".png"/>
+            <File name="01" ext=".png"/>
+            <File name="03" ext=".png"/>
+            <File name="41" ext=".png"/>
+            <File name="101" ext=".png"/>
+            <File name="102" ext=".png"/>
+            <File name="103" ext=".png"/>
+            <File name="104" ext=".png"/>
+        </DO>
+        <explosions>
+            <File name="cross" ext=".png"/>
+            <File name="down" ext=".png"/>
+            <File name="up" ext=".png"/>
+            <File name="left" ext=".png"/>
+            <File name="right" ext=".png"/>
+            <File name="horizontal" ext=".png"/>
+            <File name="vertical" ext=".png"/>
+
+            <File name="print" ext=".png"/>
+
+            <File name="smoke" ext=".png"/>
+
+            <File name="die0" ext=".png"/>
+            <File name="die1" ext=".png"/>
+            <File name="die2" ext=".png"/>
+        </explosions>
+        <healthBar>
+            <File name="green_center" ext=".png"/>
+            <File name="green_side" ext=".png"/>
+            <File name="red_center" ext=".png"/>
+            <File name="red_side" ext=".png"/>
+            <File name="yellow_center" ext=".png"/>
+            <File name="yellow_side" ext=".png"/>
+        </healthBar>
+        <other>
+            <File name="playerPointer" ext=".png"/>
+        </other>
+    </common>
+
+</Files>

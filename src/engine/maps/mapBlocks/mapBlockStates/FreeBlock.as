@@ -4,14 +4,16 @@
  */
 
 package engine.maps.mapBlocks.mapBlockStates {
+import engine.bombers.interfaces.IBomber
 import engine.explosionss.interfaces.IExplosion
+import engine.maps.interfaces.IActiveMapBlockState
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlockState
 import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapObjects.NullDynObject
 import engine.model.explosionss.ExplosionType
 
-public class FreeBlock implements IMapBlockState {
+public class FreeBlock implements IActiveMapBlockState {
 
     public function FreeBlock() {
     }
@@ -58,6 +60,10 @@ public class FreeBlock implements IMapBlockState {
 
     public function set hiddenObject(value:IDynObject):void {
 
+    }
+
+    public function activateOn(bomber:IBomber):void {
+        bomber.resetSpeed()
     }
 }
 }

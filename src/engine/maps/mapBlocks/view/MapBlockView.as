@@ -9,6 +9,7 @@ import engine.data.Consts
 import engine.interfaces.IDrawable
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
+import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapObjects.DynObjectType
 
 import flash.display.BitmapData
@@ -84,7 +85,7 @@ public class MapBlockView extends Sprite implements IDrawable {
     private function drawHiddenObject():void {
         if (block.isExplodingNow && block.hiddenObject.type != DynObjectType.NULL) {
             trace("DRAWN HIDDEN")
-            graphics.beginBitmapFill(Context.imageService.getObject(block.hiddenObject.type));
+            graphics.beginBitmapFill(Context.imageService.dynObject(block.hiddenObject.type));
             graphics.drawRect(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE);
             graphics.endFill();
         }
@@ -99,7 +100,8 @@ public class MapBlockView extends Sprite implements IDrawable {
 
     private function drawBlock():void {
         if (blinking) return;
-        var bData:BitmapData = Context.imageService.getMapBlock(block.type)
+        if (block.type == MapBlockType.FREE) return
+        var bData:BitmapData = Context.imageService.mapBlock(block.type, Context.game.location)
         if (bData == null) return;
         graphics.beginBitmapFill(bData);
         graphics.drawRect(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE);

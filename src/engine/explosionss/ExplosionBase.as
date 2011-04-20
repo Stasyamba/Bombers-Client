@@ -4,17 +4,21 @@
  */
 
 package engine.explosionss {
+import engine.bombers.interfaces.IBomber
 import engine.maps.IMap
 
 import mx.collections.ArrayList
 
 public class ExplosionBase {
 
-    public function ExplosionBase(map:IMap, centerX:int, centerY:int) {
-        this.map = map;
-        _centerX = centerX;
-        _centerY = centerY;
+    public function ExplosionBase(map:IMap, centerX:int, centerY:int, owner:IBomber) {
+        _owner = owner
+        this.map = map
+        _centerX = centerX
+        _centerY = centerY
     }
+
+    protected var _owner:IBomber
 
     protected var map:IMap;
     public var timeToLive:int;

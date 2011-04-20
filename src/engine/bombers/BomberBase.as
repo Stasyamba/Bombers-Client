@@ -4,6 +4,7 @@
  */
 
 package engine.bombers {
+import components.common.bombers.BlockChanceObject
 import components.common.bombers.BomberType
 
 import engine.bombers.interfaces.IBomber
@@ -11,7 +12,8 @@ import engine.bombers.interfaces.IGameSkin
 import engine.bombers.interfaces.IMapCoords
 import engine.bombers.mapInfo.MapCoords
 import engine.bombers.skin.BomberSkin
-import engine.bombers.skin.GameSkin
+import engine.bombers.skin.ColoredGameSkin
+import engine.bombers.skin.SimpleGameSkin
 import engine.data.Consts
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
@@ -20,7 +22,9 @@ import engine.model.signals.StateAddedSignal
 import engine.model.signals.StateRemovedSignal
 import engine.playerColors.PlayerColor
 import engine.utils.ViewState
-import engine.utils.greensock.TweenMax
+import engine.weapons.WeaponType
+
+import greensock.TweenMax
 
 import org.osflash.signals.Signal
 
@@ -41,10 +45,14 @@ public class BomberBase implements IBomber {
     protected var _life:int;
     protected var _startLife:int
     protected var _speed:Number;
+    protected var _explicitSpeed:Number = -1;
     protected var _bombCount:int;
     protected var _bombPower:int;
     protected var _bombTaken:int
 
+    protected var _critChance:Number
+    protected var _blockChance:Number
+    protected var _specialBlockChances:Array
 
     private var _isImmortal:Boolean;
     private var _becameImmortal:Signal = new Signal();
@@ -55,10 +63,15 @@ public class BomberBase implements IBomber {
 
     private var _lifeChanged:Signal = new Signal();
 
-    public function BomberBase(game:IGame, slot:int, bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin) {
+    private var _auras:Array
+
+    public function BomberBase(game:IGame, slot:int, bomberType:BomberType, userName:String, color:PlayerColor, skin:BomberSkin, auras:Array) {
         this.game = game;
         _slot = slot;
-        _gameSkin = new GameSkin(skin, color);
+        if (color == null)
+            _gameSkin = new SimpleGameSkin(skin)
+        else
+            _gameSkin = new ColoredGameSkin(skin, color);
         _color = color;
         _userName = userName;
 
@@ -68,6 +81,8 @@ public class BomberBase implements IBomber {
         _speed = bomberType.speed;
         _bombPower = bomberType.bombPower;
         _bombCount = bomberType.bombCount;
+
+        _auras = auras
     }
 
     public function makeImmortalFor(millisecs:int, blink:Boolean = true):void {
@@ -148,6 +163,8 @@ public class BomberBase implements IBomber {
     }
 
     public function get speed():Number {
+        if (_explicitSpeed >= 0)
+            return _explicitSpeed
         return _speed + getAurasSpeedBonus()
     }
 
@@ -183,8 +200,35 @@ public class BomberBase implements IBomber {
         return _bombPower
     }
 
+    public function get baseBlockChance():Number {
+        return _blockChance
+    }
+
+    public function get baseCritChance():Number {
+        return _critChance
+    }
+
+    public function getTotalBlockChance(bt:BomberType):Number {
+        var sbc:Number = 0
+        for (var i:int = 0; i < _specialBlockChances.length; i++) {
+            var bco:BlockChanceObject = _specialBlockChances[i];
+            if (bco.bomberType == bt) {
+                sbc += bco.blockChance
+            }
+        }
+        return sbc + _blockChance
+    }
+
     public function incSpeed():void {
         _speed *= 1.1;
+    }
+
+    public function setSpeed(val:int):void {
+        _explicitSpeed = val
+    }
+
+    public function resetSpeed():void {
+        _explicitSpeed = -1
     }
 
     public function incBombCount():void {
@@ -215,6 +259,15 @@ public class BomberBase implements IBomber {
 
     public function explode(expl:IExplosion):void {
         throw new Error("method BomberBase.explode can't be called")
+    }
+
+    public function hasAura(aura:WeaponType):Boolean {
+        for (var i:int = 0; i < _auras.length; i++) {
+            var weaponType:WeaponType = _auras[i];
+            if (weaponType == aura)
+                return true
+        }
+        return false
     }
 
     public function kill():void {

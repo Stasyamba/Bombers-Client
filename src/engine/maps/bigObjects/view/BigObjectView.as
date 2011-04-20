@@ -11,7 +11,7 @@ import engine.maps.interfaces.IBigObject
 import engine.utils.IStatedView
 import engine.utils.ViewState
 import engine.utils.ViewStateManager
-import engine.utils.greensock.TweenMax
+import greensock.TweenMax
 
 import flash.display.BlendMode
 import flash.display.Sprite
@@ -71,7 +71,7 @@ public class BigObjectView extends Sprite implements IDrawable,IStatedView {
 
     public function draw():void {
         graphics.clear();
-        graphics.beginBitmapFill(Context.imageService.getBigObject(object.description.skin));
+        graphics.beginBitmapFill(Context.imageService.bigObject(object.description.skin));
         graphics.drawRect(0, 0, object.description.width * Consts.BLOCK_SIZE, object.description.height * Consts.BLOCK_SIZE);
         graphics.endFill();
     }

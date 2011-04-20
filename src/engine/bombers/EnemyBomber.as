@@ -6,7 +6,6 @@
 package engine.bombers {
 import engine.EngineContext
 import engine.bombers.interfaces.IEnemyBomber
-import engine.bombers.skin.BomberSkin
 import engine.data.Consts
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
@@ -16,20 +15,28 @@ import engine.utils.Direction
 
 public class EnemyBomber extends BomberBase implements IEnemyBomber {
 
-    protected var _direction:Direction = Direction.NONE;
+    protected var _serverDir:Direction = Direction.NONE;
 
 
     public function EnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, color:PlayerColor) {
-        super(game, playerProfile.slot, playerProfile.bomberType, userName, color, BomberSkin.fromBomberType(playerProfile.bomberType));
+        super(game, playerProfile.slot, playerProfile.bomberType, userName, color, Context.imageService.bomberSkin(playerProfile.bomberType), playerProfile.auras);
 
-        for (var i:int = 0; i < playerProfile.auras.length; i++) {
-            var object:Object = playerProfile.auras[i];
-
-        }
-
-        EngineContext.enemyInputDirectionChanged.add(directionChanged);
+        EngineContext.moveTick.add(onMoveTick)
         EngineContext.enemyDamaged.add(onDamaged);
         EngineContext.enemyDied.add(onDied);
+    }
+
+    private function onMoveTick(obj:Object):void {
+        if (!Context.gameModel.isPlayingNow)
+            return
+        var tickObject:Object = obj[slot]
+        _coords.setXExplicit(tickObject.x)
+        _coords.setYExplicit(tickObject.y)
+        if (_serverDir != tickObject.dir) {
+            _serverDir = tickObject.dir
+            _gameSkin.updateSkin(_serverDir);
+            EngineContext.enemyInputDirectionChanged.dispatch(slot, coords.getRealX(), coords.getRealY(), _serverDir)
+        }
     }
 
     private function onDied(id:int):void {
@@ -44,25 +51,10 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
         }
     }
 
-    protected function directionChanged(id:int, x:Number, y:Number, dir:Direction):void {
-        if (id != slot)
-            return;
-        if(!Context.gameModel.isPlayingNow)
-            return
-        _coords.elemX = int(x / Consts.BLOCK_SIZE);
-        _coords.xDef = x % Consts.BLOCK_SIZE;
-
-        _coords.elemY = int(y / Consts.BLOCK_SIZE);
-        _coords.yDef = y % Consts.BLOCK_SIZE;
-
-        _gameSkin.updateSkin(dir);
-        _direction = dir;
-    }
-
     public function performSmoothMotion(moveAmount:Number):void {
         if (!Context.gameModel.isPlayingNow)
             return
-        switch (_direction) {
+        switch (_serverDir) {
             case Direction.NONE:
                 return;
             case Direction.LEFT:

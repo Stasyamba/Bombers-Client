@@ -11,7 +11,7 @@ import engine.maps.mapObjects.DynObjectType
 import engine.utils.IStatedView
 import engine.utils.ViewState
 import engine.utils.ViewStateManager
-import engine.utils.greensock.TweenMax
+import greensock.TweenMax
 
 import flash.display.BlendMode
 import flash.display.Sprite
@@ -38,7 +38,7 @@ public class MineView extends DestroyableSprite implements IStatedView {
         graphics.clear();
         if (block.object.type == DynObjectType.NULL)
             return;
-        graphics.beginBitmapFill(Context.imageService.getObject(block.object.type));
+        graphics.beginBitmapFill(Context.imageService.dynObject(block.object.type));
         graphics.drawRect(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE);
         graphics.endFill();
     }

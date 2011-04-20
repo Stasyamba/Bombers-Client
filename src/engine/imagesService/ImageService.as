@@ -4,58 +4,81 @@
  */
 
 package engine.imagesService {
+import components.common.bombers.BomberType
 import components.common.worlds.locations.LocationType
 
 import engine.bombers.skin.BomberSkin
+import engine.bombers.skin.SkinElement
 import engine.bombss.BombType
 import engine.data.Consts
-import engine.data.Explosions
-import engine.data.location1.bombs.Bombs
-import engine.data.location1.health_bar.HealthBar
-import engine.data.location1.mapObjects.BigObjectsSkins
-import engine.data.location1.mapObjects.bonuses.Bonuses
-import engine.data.location1.mapObjects.mines.Mines
-import engine.data.location1.maps.MapBlocks
-import engine.data.location1.skins.BomberSkins
 import engine.explosionss.ExplosionPointType
 import engine.maps.interfaces.IDynObjectType
 import engine.maps.mapBlocks.MapBlockType
-import engine.maps.mapObjects.bonuses.BonusType
-import engine.maps.mapObjects.mines.MineType
 import engine.model.explosionss.ExplosionType
 import engine.playerColors.PlayerColor
 
+import flash.display.Bitmap
 import flash.display.BitmapData
-import flash.display.Loader
-import flash.events.Event
 import flash.geom.Point
 import flash.geom.Rectangle
-import flash.net.URLRequest
+import flash.utils.ByteArray
+import flash.utils.Dictionary
 
-import org.osflash.signals.Signal
+import greensock.loading.LoaderMax
+import greensock.loading.display.ContentDisplay
+
+import loading.BombersContentLoader
+import loading.LoadedObject
 
 public class ImageService {
 
-    private var l:Loader
-    private var _locationBackgrounds:Array = new Array()
 
-    private var _backgroundLoaded:Signal = new Signal(Object)
+    private function get whatIsLoaded():Dictionary {
+        return BombersContentLoader.whatIsLoaded
+    }
+
+    private function get loadedStuff():Dictionary {
+        return BombersContentLoader.loadedImages
+    }
 
     public function ImageService() {
     }
 
-    public function getHealthBar(lifePercent:Number):BitmapData {
+
+    public function loadedObject(id:String):LoadedObject {
+        var res:LoadedObject = loadedStuff[id]
+        if (res == null) {
+            throw new Error("Object " + id + " was not found")
+        }
+        if (!res.loaded) {
+            throw new Error("Object " + id + " is not yet loaded")
+        }
+        return res
+    }
+
+    public function isLoaded(id:String):Boolean {
+        if (id.indexOf(".") == -1) { //not an id
+            return whatIsLoaded[id] != null
+        }
+        var res:LoadedObject = loadedStuff[id]
+        if (res == null) {
+            throw new Error("Object " + id + " was not found")
+        }
+        return res.loaded
+    }
+
+    public function healthBar(lifePercent:Number):BitmapData {
         var side:BitmapData,center:BitmapData;
         var b:BitmapData = new BitmapData(Consts.HEALTH_BAR_WIDTH, Consts.HEALTH_BAR_HEIGHT, true, 0);
         if (lifePercent > 0.9) {
-            side = HealthBar.GREEN_SIDE;
-            center = HealthBar.GREEN_CENTER;
+            side = loadedObject("common.healthBar.green_side").content.bitmapData
+            center = loadedObject("common.healthBar.green_center").content.bitmapData
         } else if (lifePercent > 0.4) {
-            side = HealthBar.YELLOW_SIDE;
-            center = HealthBar.YELLOW_CENTER;
+            side = loadedObject("common.healthBar.yellow_side").content.bitmapData
+            center = loadedObject("common.healthBar.yellow_center").content.bitmapData
         } else {
-            side = HealthBar.RED_SIDE;
-            center = HealthBar.RED_CENTER;
+            side = loadedObject("common.healthBar.red_side").content.bitmapData
+            center = loadedObject("common.healthBar.red_center").content.bitmapData
         }
         var length:int = int(lifePercent * Consts.HEALTH_BAR_WIDTH);
         b.copyPixels(side, new Rectangle(0, 0, 1, 5), new Point(0, 0));
@@ -66,18 +89,24 @@ public class ImageService {
         return b;
     }
 
-    public function getBomberSkin(skinName:String):BomberSkin {
-        return BomberSkins[skinName];
+    public function bomberSkin(bomberType:BomberType):BomberSkin {
+        if (_bomberSkins[bomberType.value] != null)
+            return _bomberSkins[bomberType.value]
+        return makeSkin(bomberType);
     }
 
-    public function getMapBlock(blockType:MapBlockType, location:String = ""):BitmapData {
-
-        return MapBlocks[blockType.key];
+    private function bomberSkinElement(id:String):Bitmap {
+        return loadedObject(id).content as Bitmap
     }
 
-    public function getBomb(type:BombType, color:PlayerColor):BitmapData {
+    //todo:add variety support
+    public function mapBlock(blockType:MapBlockType, locationType:LocationType):BitmapData {
+        return loadedObject(locationType.stringId + ".map." + blockType.key.toLowerCase() + "1").content.bitmapData as BitmapData
+    }
+
+    public function bomb(type:BombType, color:PlayerColor):BitmapData {
         var b:BitmapData = new BitmapData(Consts.BLOCK_SIZE, Consts.BLOCK_SIZE, true, 0);
-        var bImage:BitmapData = Bombs[type.key];
+        var bImage:BitmapData = dynObject(type);
         b.copyPixels(bImage, new Rectangle(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE), new Point(0, 0));
         if (type.needGlow) {
             b.copyPixels(color.bombGlow, new Rectangle(0, 0, Consts.BLOCK_SIZE, Consts.BLOCK_SIZE), new Point(0, 0), null, null, true);
@@ -86,61 +115,86 @@ public class ImageService {
         return b;
     }
 
-    public function getExplosion(explType:ExplosionType, explPointType:ExplosionPointType):BitmapData {
+    public function explosion(explType:ExplosionType, explPointType:ExplosionPointType):BitmapData {
         switch (explType) {
             case ExplosionType.REGULAR:
             case ExplosionType.ATOM:
             case ExplosionType.DYNAMITE:
-                return Explosions[explPointType.value]
+                return loadedObject("common.explosions." + explPointType.value.toLowerCase()).content.bitmapData as BitmapData
         }
         return null;
     }
 
-    public function getObject(type:IDynObjectType):BitmapData {
-        if (type is BonusType) {
-            return Bonuses[type.key];
-        } else if (type is MineType)
-            return Mines[type.key]
-        return null;
+    public function dynObject(type:IDynObjectType):BitmapData {
+        return loadedObject("common.DO." + type.stringId).content.bitmapData as BitmapData
     }
 
-    public function getExplosionPrint(explType:ExplosionType):BitmapData {
-        return Explosions['PRINT'];
+    public function explosionPrint(explType:ExplosionType):BitmapData {
+        return loadedObject("common.explosions.print").content.bitmapData as BitmapData
     }
 
-    public function getDieExplosion(index:int):BitmapData {
+    public function dieExplosion(index:int):BitmapData {
         if (index < 0 || index > 2)
             throw new ArgumentError("wrong die explosion index");
-        return Explosions['DIE' + index]
+        return loadedObject("common.explosions.die" + index).content.bitmapData as BitmapData
     }
 
-    public function getBigObject(skin:String):BitmapData {
-        return BigObjectsSkins[skin];
+    /*
+     * if locType != null id is constructed this way: locId.bo.id
+     * */
+    public function bigObject(id:String, locType:LocationType = null):BitmapData {
+        if (locType != null)
+            return loadedObject(locType.stringId + ".bo." + id).content.bitmapData as BitmapData
+        return loadedObject(id).content.bitmapData as BitmapData
     }
 
-    public function getSmoke():BitmapData {
-        return Explosions["SMOKE1"]
+    public function smoke():BitmapData {
+        return loadedObject("common.explosions.smoke").content.bitmapData as BitmapData
     }
 
-    public function get backgroundLoaded():Signal {
-        return _backgroundLoaded
+    //todo: later return LoadedObject
+    public function mapBackground(locationType:LocationType):BitmapData {
+        return loadedObject(locationType.stringId + ".map.background").content.bitmapData as BitmapData
     }
 
-    public function loadMapBackground(locationType:LocationType):void {
-        if (_locationBackgrounds[locationType.value] != null)
-            _backgroundLoaded.dispatch(_locationBackgrounds[locationType.value])
-        else {
-            l = new Loader()
-            var u_completeHandler : Function = function(event:Event):void {
-                l.contentLoaderInfo.removeEventListener(Event.COMPLETE, u_completeHandler);
-                backgroundLoaded.dispatch(l)
-            }
-            l.contentLoaderInfo.addEventListener(Event.COMPLETE, u_completeHandler);
-            l.load(new URLRequest("http://www.vensella.ru/eg/mapBGGrass.jpg"))
-            backgroundLoaded.addOnce(function(obj:*):void {
-                _locationBackgrounds[locationType.value] = obj
-            })
+    public function playerPointer():BitmapData {
+        return loadedObject("common.other.playerPointer").content.bitmapData as BitmapData
+    }
+
+    public function asContentDisplay(id:String):ContentDisplay {
+        return LoaderMax.getContent(id)
+    }
+
+    [Embed(source="BomberSkins.xml",mimeType="application/octet-stream")]
+    private const bomberSkinsC:Class;
+    private var _bomberSkinsXml:XML;
+    private var _bomberSkins:Object = new Object()
+
+    private function get bomberSkinsXml():XML {
+        if (_bomberSkinsXml == null) {
+            var file:ByteArray = new bomberSkinsC();
+            var str:String = file.readUTFBytes(file.length);
+            _bomberSkinsXml = new XML(str);
         }
+        return _bomberSkinsXml;
+    }
+
+    private function makeSkin(b:BomberType):BomberSkin {
+        var skinXml:XMLList = bomberSkinsXml.child(b.name);
+        var colorsObject:Object = new Object();
+        var skinElements:Object = new Object();
+
+        for each (var skinColor:XML in skinXml.colors.SkinColor) {
+            var pColor:String = skinColor.@val;
+            colorsObject[pColor] = {color:uint(skinColor.color.@val),blendMode:skinColor.blendMode.@val,opacity:Number(skinColor.opacity.@val)}
+        }
+        skinElements.left = new SkinElement(bomberSkinElement(b.stringId + ".left"), bomberSkinElement(b.stringId + ".left_mask"))
+        skinElements.right = new SkinElement(bomberSkinElement(b.stringId + ".right"), bomberSkinElement(b.stringId + ".right_mask"))
+        skinElements.up = new SkinElement(bomberSkinElement(b.stringId + ".up"), bomberSkinElement(b.stringId + ".up_mask"))
+        skinElements.down = new SkinElement(bomberSkinElement(b.stringId + ".down"), bomberSkinElement(b.stringId + ".down_mask"))
+        skinElements.none = new SkinElement(bomberSkinElement(b.stringId + ".down"), bomberSkinElement(b.stringId + ".down_mask"))
+
+        return new BomberSkin(b.name, skinElements, colorsObject);
     }
 
 }

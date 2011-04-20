@@ -4,6 +4,8 @@
  */
 
 package engine.games {
+import components.common.worlds.locations.LocationType
+
 import engine.bombers.PlayersBuilder
 import engine.bombers.interfaces.IBomber
 import engine.explosionss.ExplosionPoint
@@ -25,9 +27,11 @@ import mx.collections.ArrayList
 
 public class GameBase {
 
-    public function GameBase() {
+    public function GameBase(location:LocationType) {
+        _location = location
     }
 
+    protected var _location:LocationType
     //managers
     protected var _mapManager:MapManager;
     protected var _playerManager:IPlayerManager;

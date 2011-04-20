@@ -1,4 +1,6 @@
 package components.common.worlds.locations {
+import loading.LoaderUtils
+
 public class LocationType {
 
     public static const WORLD1_GRASSFIELDS:LocationType = new LocationType(0, "GRASS_FIELDS");
@@ -28,6 +30,10 @@ public class LocationType {
         return _name;
     }
 
+    public function get stringId():String {
+        return "l" + LoaderUtils.stringId(_value)
+    }
+
     public function toString():String {
         return "Value: " + _value.toString() + "name: " + name;
     }
@@ -54,6 +60,11 @@ public class LocationType {
                 return WORLD1_MOON
         }
         throw new ArgumentError("no LocationType found with value = " + value);
+    }
+
+     public static function byStringId(sID:String):LocationType {
+        var i:int = int(sID.substr(1))
+        return byValue(i)
     }
 }
 }

@@ -19,7 +19,7 @@
 
         import engine.profiles.LobbyProfile
 
-        import engine.utils.greensock.TweenMax
+        import greensock.TweenMax
 
         import mx.core.ScrollPolicy
 
@@ -102,7 +102,7 @@
         }
 
         private function updateScrollPosition():void {
-            TweenMax.delayedCall(0.1,function():void{
+            TweenMax.delayedCall(0.1, function():void {
                 chatTextArea.verticalScrollPosition = chatTextArea.maxVerticalScrollPosition;
             })
         }

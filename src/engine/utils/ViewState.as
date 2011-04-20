@@ -4,7 +4,7 @@
  */
 
 package engine.utils {
-import engine.utils.greensock.TweenMax
+import greensock.TweenMax
 
 import flash.display.Sprite
 

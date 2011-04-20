@@ -4,7 +4,7 @@
  */
 
 package engine.utils {
-import engine.explosionss.Explosion
+import engine.explosionss.RegularExplosion
 
 import flash.display.Bitmap
 import flash.ui.Keyboard

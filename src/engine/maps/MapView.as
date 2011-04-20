@@ -4,18 +4,14 @@
  */
 
 package engine.maps {
-import as3reflect.Constant
-
 import components.common.worlds.locations.LocationType
 
 import engine.data.Consts
-import engine.data.location1.maps.MapBlocks
 import engine.interfaces.IDestroyable
 import engine.interfaces.IDrawable
 import engine.maps.interfaces.IBigObject
 
 import flash.display.BitmapData
-import flash.display.Loader
 import flash.display.Sprite
 
 public class MapView extends Sprite implements IDrawable,IDestroyable {
@@ -34,19 +30,16 @@ public class MapView extends Sprite implements IDrawable,IDestroyable {
         removeAllChildren();
 
         //todo:real location
-        Context.imageService.backgroundLoaded.addOnce(function(obj:*):void{
-            var bd : BitmapData = new BitmapData((obj as Loader).width,(obj as Loader).height)
-            bd.draw(obj as Loader)
+        var bd:BitmapData = Context.imageService.mapBackground(LocationType.WORLD1_GRASSFIELDS)
 
-            graphics.beginBitmapFill(bd)
-            graphics.drawRect(0,0,map.width * Consts.BLOCK_SIZE,map.height * Consts.BLOCK_SIZE)
-            graphics.endFill()
-        })
-        Context.imageService.loadMapBackground(LocationType.WORLD1_GRASSFIELDS)
+        graphics.beginBitmapFill(bd)
+        graphics.drawRect(0, 0, map.width * Consts.BLOCK_SIZE, map.height * Consts.BLOCK_SIZE)
+        graphics.endFill()
+
 
         for each (var obj:IBigObject in map.decorations) {
             var sp:Sprite = new Sprite()
-            sp.graphics.beginBitmapFill(Context.imageService.getBigObject(obj.description.skin));
+            sp.graphics.beginBitmapFill(Context.imageService.bigObject(obj.description.skin));
             sp.graphics.drawRect(0, 0, obj.description.width * Consts.BLOCK_SIZE, obj.description.height * Consts.BLOCK_SIZE);
             sp.graphics.endFill();
             sp.x = obj.x * Consts.BLOCK_SIZE;

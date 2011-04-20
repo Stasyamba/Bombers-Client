@@ -8,6 +8,7 @@ import engine.model.signals.DieWallAppearedSignal
 import engine.model.signals.FrameEnteredSignal
 import engine.model.signals.MissionAccomplishedSignal
 import engine.model.signals.MissionFailedSignal
+import engine.model.signals.MoveTickSignal
 import engine.model.signals.SmokeAddedSignal
 import engine.model.signals.WeaponActivatedSignal
 import engine.model.signals.WeaponDeactivatedSignal
@@ -38,6 +39,7 @@ public class EngineContext {
 
     //signals
     //---movement
+    private var _moveTick:MoveTickSignal = new MoveTickSignal()
     private var _playerCoordinatesChanged:PlayerCoordsChangedSignal = new PlayerCoordsChangedSignal();
     private var _playerViewDirectionChanged:PlayerViewDirectionChangedSignal = new PlayerViewDirectionChangedSignal();
     private var _playerInputDirectionChanged:PlayerInputDirectionChangedSignal = new PlayerInputDirectionChangedSignal();
@@ -72,6 +74,7 @@ public class EngineContext {
     //---frame
     private var _frameEntered:FrameEnteredSignal = new FrameEnteredSignal();
     private var _smokeAdded:SmokeAddedSignal = new SmokeAddedSignal()
+
 
     function EngineContext() {
     }
@@ -220,6 +223,10 @@ public class EngineContext {
         //---goals
         taskAccomplished.removeAll()
         taskFailed.removeAll()
+    }
+
+    public static function get moveTick():MoveTickSignal {
+        return instance._moveTick
     }
 }
 }

@@ -4,11 +4,15 @@
  */
 
 package engine.bombers.interfaces {
+import components.common.bombers.BomberType
+
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.IMap
 import engine.model.signals.StateAddedSignal
 import engine.model.signals.StateRemovedSignal
 import engine.playerColors.PlayerColor
+
+import engine.weapons.WeaponType
 
 import org.osflash.signals.Signal
 
@@ -60,6 +64,10 @@ public interface IBomber {
 
     function get baseSpeed():Number
 
+    function get baseBlockChance():Number
+
+    function get baseCritChance():Number
+
     function get bombCount():int
 
     function get baseBombCount():int
@@ -81,5 +89,13 @@ public interface IBomber {
     function returnBomb():void;
 
     function get lifeChanged():Signal;
+
+    function hasAura(aura:WeaponType):Boolean
+
+    function setSpeed(i:int):void
+
+    function resetSpeed():void
+
+    function getTotalBlockChance(bt:BomberType):Number
 }
 }

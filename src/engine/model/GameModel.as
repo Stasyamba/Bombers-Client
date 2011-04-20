@@ -5,12 +5,15 @@
 
 package engine.model {
 import components.common.items.ItemProfileObject
-
 import components.common.items.categories.ItemCategory
+import components.common.worlds.locations.LocationType
 
 import engine.EngineContext
+import engine.data.Consts
+import engine.data.quests.Quests
 import engine.games.GameBuilder
 import engine.games.GameType
+import engine.games.quest.QuestObject
 import engine.model.signals.GameEndedSignal
 import engine.model.signals.GameReadySignal
 import engine.model.signals.MapLoadedSignal
@@ -27,7 +30,12 @@ import engine.model.signals.manage.ThreeSecondsToStartSignal
 import engine.profiles.GameProfile
 import engine.profiles.LobbyProfile
 import engine.profiles.PlayerGameProfile
-import engine.utils.greensock.TweenMax
+
+import greensock.TweenMax
+
+import loading.BombersContentLoader
+
+import mx.collections.ArrayCollection
 
 import org.osflash.signals.Signal
 
@@ -55,11 +63,17 @@ public class GameModel {
 
 
     public var readyToCreateGame:ReadyToCreateGameSignal = new ReadyToCreateGameSignal();
+
+    //quest
+    public var questGameCreated:Signal = new Signal()
+    public var createQuestFailed:Signal = new Signal()
+
     //not used now
     public var joinedToRoom:JoinedToRoomSignal = new JoinedToRoomSignal();
     public var joinedToGameRoom:JoinedToGameSignal = new JoinedToGameSignal();
 
     // fields
+    private var _currentLocation:LocationType
     private var _gameType:GameType;
     public var lobbyProfiles:Array
     public var lastGameLobbyProfiles:Array
@@ -70,6 +84,7 @@ public class GameModel {
     public var gamePass:String
     public var isPlayingNow:Boolean = false
 
+    private var _quests:ArrayCollection = new ArrayCollection()
 
     function GameModel() {
     }
@@ -77,10 +92,32 @@ public class GameModel {
     //----------init-------------
 
     public function init():void {
+        BombersContentLoader.questsLoaded.add(fillQuests)
+        BombersContentLoader.loadQuests()
+        BombersContentLoader.loadImages()
+
         Context.gameServer.connected.add(onGameServerConnected);
         Context.gameServer.loggedIn.add(onLoggedIn);
         Context.gameServer.connectDefault();
         Context.gameServer.profileLoaded.add(onProfileLoaded);
+    }
+
+    private function fillQuests():void {
+        for (var i:int = 0; i < Consts.LOCATIONS_COUNT; i++)
+            _quests.addItem(new ArrayCollection())
+        for each(var name:String in Quests.questsNames) {
+            var xml:XML = Quests.questXml(name)
+            var lId:int = xml.location;
+            (_quests[lId] as ArrayCollection).addItem(new QuestObject(xml))
+        }
+        //check
+        for (var i:int = 0; i < _quests.length; i++) {
+            var arr:ArrayCollection = _quests[i];
+            for (var j:int = 0; j < arr.length; j++) {
+                var qObj:QuestObject = arr[j];
+                trace("quest " + qObj.name + " at loc " + i + ": " + qObj.description)
+            }
+        }
     }
 
     private function onGameServerConnected():void {
@@ -91,24 +128,28 @@ public class GameModel {
 
     //----------singleplayer-----------
 
-    public function createSinglePlayerGame(gameId:String):void {
+    public function tryCreateQuest(questId:String, locationType:LocationType):void {
+        Context.gameServer.createQuestRequest(questId, locationType.value)
+        questGameCreated.addOnce(onQuestCreated)
+        createQuestFailed.addOnce(onCreateQuestFailed)
+        createdByMe = true
+        _gameType = GameType.QUEST
+        _currentLocation = locationType
+
+        //todo: imitation
+        questGameCreated.dispatch(questId, 666)
+    }
+
+    public function createQuestGame(questId:String, gameId:String):void {
 
         gameReady.addOnce(function():void {
             TweenMax.delayedCall(3, function():void {
                 gameStarted.dispatch();
             })
         })
-        _gameType = GameType.SINGLE
-        createdByMe = true
 
-        Context.game = gameBuilder.makeSinglePlayer(GameType.SINGLE, gameId);
-        if (Context.game.ready) {
-            gameReady.dispatch();
-        } else {
-            mapLoaded.addOnce(function(xml:XML):void {
-                gameReady.dispatch();
-            })
-        }
+        Context.game = gameBuilder.makeQuest(GameType.QUEST,currentLocation, questId, gameId);
+
     }
 
 
@@ -119,14 +160,15 @@ public class GameModel {
         leftGame.dispatch();
     }
 
-    public function tryCreateRegularGame(name:String, pass:String, locationId:int):void {
-        Context.gameServer.createNewGameRequest(name, pass, locationId)
+    public function tryCreateRegularGame(name:String, pass:String, location:LocationType):void {
+        Context.gameServer.createNewGameRequest(name, pass, location.value)
         someoneJoinedToGame.addOnce(onJoinedToGame)
         createGameFailed.addOnce(onFastJoinFailed)
         createdByMe = true;
         gameName = name
         gamePass = pass
         _gameType = GameType.REGULAR
+        _currentLocation = location
     }
 
     public function fastJoin(locationId:int = -1):void {
@@ -135,7 +177,9 @@ public class GameModel {
         fastJoinFailed.addOnce(onFastJoinFailed)
         createdByMe = false;
         _gameType = GameType.REGULAR
-
+        if (locationId >= 0) {
+            _currentLocation = LocationType.byValue(locationId)
+        }
     }
 
     public function joinConcreteGame(name:String, pass:String):void {
@@ -168,21 +212,20 @@ public class GameModel {
     private function onProfileLoaded(profile:GameProfile):void {
         Context.Model.currentSettings.gameProfile = profile
         Context.Model.currentSettings.gameProfileLoaded = true;
-		
+
         if (profile.photoURL == "") {
-			if(
-			profile.id != "test1" &&
-			profile.id != "test2" &&
-			profile.id != "test3" &&
-			profile.id != "test4" && 
-			profile.id != "test5" )
-			{
-            	Context.gameServer.sendSetPhotoRequest(Context.Model.currentSettings.socialProfile.photoURL)
-			}
-			
+            if (
+                    profile.id != "test1" &&
+                            profile.id != "test2" &&
+                            profile.id != "test3" &&
+                            profile.id != "test4" &&
+                            profile.id != "test5") {
+                Context.gameServer.sendSetPhotoRequest(Context.Model.currentSettings.socialProfile.photoURL)
+            }
+
             Context.Model.currentSettings.gameProfile.photoURL = Context.Model.currentSettings.socialProfile.photoURL
         }
-		
+
         Context.Model.dispatchCustomEvent(ContextEvent.GP_AURS_TURNED_ON_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_LEFT_WEAPON_IS_CHANGED)
         Context.Model.dispatchCustomEvent(ContextEvent.GP_ENERGY_IS_CHANGED)
@@ -195,6 +238,34 @@ public class GameModel {
 
     private function onLoggedIn(name:String):void {
         Context.gameServer.joinDefaultRoom();
+    }
+
+    private function onQuestCreated(gameId:String, questId:String):void {
+        createQuestFailed.removeAll()
+        questGameCreated.removeAll()
+        leftGame.add(onLeftGame)
+        if (readyToCreateQuest()) {
+            createQuestGame(questId, gameId)
+        } else {
+            var taskSignal:Signal = new Signal()
+            taskSignal.addOnce(function():void {
+                createQuestGame(questId, gameId)
+            })
+            BombersContentLoader.addTask(taskSignal, [currentLocation.stringId,"bombers","common"])
+
+        }
+    }
+
+    private function readyToCreateQuest():Boolean {
+        return Context.imageService.isLoaded(currentLocation.stringId) && Context.imageService.isLoaded("common");
+    }
+
+
+    private function onCreateQuestFailed():void {
+        questGameCreated.removeAll()
+        createQuestFailed.removeAll()
+        _gameType = null
+        _currentLocation = null
     }
 
     private function onJoinedToGame(p1:*):void {
@@ -215,6 +286,8 @@ public class GameModel {
 
         fastJoinFailed.removeAll()
         createGameFailed.removeAll()
+        createQuestFailed.removeAll()
+        questGameCreated.removeAll()
         someoneJoinedToGame.removeAll()
         someoneLeftGame.removeAll()
         leftGame.removeAll()
@@ -239,7 +312,7 @@ public class GameModel {
             var playerGP:PlayerGameProfile = data[i];
             this.playerGameProfiles[playerGP.slot] = playerGP
         }
-        Context.game = gameBuilder.makeRegular(mapId, playerGameProfiles);
+        Context.game = gameBuilder.makeRegular(mapId,currentLocation, playerGameProfiles);
         if (Context.game.ready) {
             gameReady.dispatch();
         } else {
@@ -318,7 +391,7 @@ public class GameModel {
         return null
     }
 
-    // getters & setters
+// getters & setters
     public function get gameType():GameType {
         return _gameType;
     }
@@ -326,6 +399,14 @@ public class GameModel {
 
     public function isMySlot(slot:int):Boolean {
         return lobbyProfiles[slot].id == Context.Model.currentSettings.gameProfile.id
+    }
+
+    public function get currentLocation():LocationType {
+        return _currentLocation
+    }
+
+    public function set currentLocation(currentLocation:LocationType):void {
+        _currentLocation = currentLocation
     }
 }
 }

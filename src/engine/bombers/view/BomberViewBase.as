@@ -5,6 +5,7 @@
 
 package engine.bombers.view {
 import engine.bombers.interfaces.IBomber
+import engine.bombers.skin.ColoredGameSkin
 import engine.bombers.skin.SkinElement
 import engine.data.Consts
 import engine.explosionss.destroy.BasicDestroyExplosion
@@ -12,7 +13,7 @@ import engine.interfaces.IDrawable
 import engine.utils.IStatedView
 import engine.utils.ViewState
 import engine.utils.ViewStateManager
-import engine.utils.greensock.TweenMax
+import greensock.TweenMax
 
 import flash.display.BlendMode
 import flash.display.Sprite
@@ -80,13 +81,15 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
 
         rotation = 0;
 
-        _mask = _bomber.gameSkin.currentMask;
-        addChildAt(_mask, 0);
+        if (_bomber.gameSkin.isColored){
+            _mask = (_bomber.gameSkin as ColoredGameSkin).currentMask;
+            addChildAt(_mask, 0);
+        }
     }
 
     private function drawHealthBar():void {
         healthBar.graphics.clear();
-        healthBar.graphics.beginBitmapFill(Context.imageService.getHealthBar(_bomber.life / _bomber.startLife));
+        healthBar.graphics.beginBitmapFill(Context.imageService.healthBar(_bomber.life / _bomber.startLife));
         healthBar.graphics.drawRect(0, 0, Consts.HEALTH_BAR_WIDTH, Consts.HEALTH_BAR_HEIGHT)
         healthBar.graphics.endFill();
     }

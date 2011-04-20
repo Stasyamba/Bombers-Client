@@ -6,6 +6,8 @@
 package engine.maps.mapObjects.mines {
 import engine.maps.interfaces.IDynObjectType
 
+import loading.LoaderUtils
+
 public class MineType implements IDynObjectType {
     public static const REGULAR:MineType = new MineType(41, "REGULAR");
 
@@ -27,6 +29,10 @@ public class MineType implements IDynObjectType {
 
     public function get waitToAdd():int {
         return 2000
+    }
+
+    public function get stringId():String {
+        return LoaderUtils.stringId(value)
     }
 }
 }

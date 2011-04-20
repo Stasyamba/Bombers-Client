@@ -14,7 +14,7 @@ public class Consts {
     public static const BLOCK_START:int = -BLOCK_SIZE_2;
     public static const BLOCK_END:int = BLOCK_SIZE_2 - 1;
 
-    public static const BOMBER_SIZE:Number = 38;
+    public static const BOMBER_SIZE:Number = 40;
     public static const BOMBER_SIZE_2:Number = BOMBER_SIZE / 2;
 
     public static const HEALTH_BAR_WIDTH:uint = 30;
@@ -29,6 +29,8 @@ public class Consts {
 
     public static const SMOKE_WIDTH:Number = 95
     public static const SMOKE_HEIGHT:Number = 93
+
+    public static const LOCATIONS_COUNT:int = 9
 
 
 }

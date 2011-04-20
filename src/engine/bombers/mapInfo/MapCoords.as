@@ -461,5 +461,25 @@ public class MapCoords implements IMapCoords {
             return Math.abs(xDef);
         return Math.abs(yDef);
     }
+
+    public function setXExplicit(x:Number):void {
+        elemX = int(x / Consts.BLOCK_SIZE);
+        xDef = x % Consts.BLOCK_SIZE;
+    }
+
+    public function setYExplicit(y:Number):void {
+        elemY = int(y / Consts.BLOCK_SIZE);
+        yDef = y % Consts.BLOCK_SIZE;
+    }
+
+    private function getExplBlocksCount(value:Number):int {
+        return int(Math.abs(value) / Consts.BLOCK_SIZE);
+    }
+
+    private function getExplDeflection(value:Number):int {
+        return value - getExplBlocksCount(value) * Consts.BLOCK_SIZE
+    }
+
+
 }
 }

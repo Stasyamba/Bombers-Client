@@ -9,7 +9,5 @@ public interface IMapManager {
     function setDieWall(x:int, y:int):void;
 
     function get canUseMap():Boolean;
-
-    function reset():void;
 }
 }

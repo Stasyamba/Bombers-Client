@@ -24,6 +24,10 @@ public interface IMapCoords {
 
     function set yDef(value:Number):void;
 
+    function setXExplicit(x:Number):void;
+
+    function setYExplicit(y:Number):void;
+
     function stepLeft(moveAmount:Number,spectatorMode:Boolean = false):void;
 
     function stepRight(moveAmount:Number,spectatorMode:Boolean = false):void;

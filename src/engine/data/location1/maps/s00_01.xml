@@ -1,0 +1,47 @@
+<!--
+  ~ Copyright (c) 2011.
+  ~ Pavkin Vladimir
+  -->
+<Map>
+    <id val="s00_01"/>
+    <name>testSingle</name>
+    <type>SINGLE</type>
+    <size width="17" height="11"/>
+    <spawns>
+        <Spawn x="0" y="0"/>
+    </spawns>
+    <rows>
+        <Row val="ffffbffffffffffff"/>
+        <Row val="fffffffffffffffff"/>
+        <Row val="fffffffffffffffff"/>
+        <Row val="fffffffffbfffffff"/>
+        <Row val="fffffffffffffffff"/>
+        <Row val="fffffffbfffffffff"/>
+        <Row val="fffffffffffffffff"/>
+        <Row val="ffffffffffbbbffff"/>
+        <Row val="fffffbfffffffffff"/>
+        <Row val="ffffffffffbbbffff"/>
+        <Row val="ffffffffffffbffff"/>
+    </rows>
+    <objects>
+        <!--strictly placed-->
+        <!--bonus in box-->
+        <object id="101" x="4" y="0"/>
+        <!--bonus opened-->
+        <object id="102" x="5" y="0"/>
+        <!--mine-->
+        <object id="41" x="2" y="2"/>
+        <!--rules-->
+        <randomPlace id="104" count="6" placementType="ONLY_BOXES"/>
+        <randomPlace id="103" count="10" placementType="ALL"/>
+        <randomPlace id="41" count="3" placementType="ONLY_FREE"/>
+        <!--todo:special switches for (big) objects-->
+    </objects>
+    <decorations>
+        <Decoration id="vk" x="7" y="4"/>
+    </decorations>
+    <bigObjects>
+        <BigObject id="vk" life="2" x="10" y="5" layer="lower"/>
+        <BigObject id="vk" life="2" x="5" y="9" layer="higher"/>
+    </bigObjects>
+</Map>
