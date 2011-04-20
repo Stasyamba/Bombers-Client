@@ -132,8 +132,13 @@
                     Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
 					Context.Model.currentSettings.votes = Context.Model.currentSettings.apiResult.votes;
 					
-                    //initApp(APP_STARTED_COMMON);
-					initApp(APP_STARTED_DEVELOPMENT);
+					if(!Context.Model.isDevelopment)
+					{
+                    	initApp(APP_STARTED_COMMON);
+					}else
+					{
+						initApp(APP_STARTED_DEVELOPMENT);
+					}
           
                 }
             } else {
@@ -335,6 +340,7 @@
 		<s:Button label="ID1" click="setId(1);" />
 		<s:Button label="ID2" click="setId(2);" />
 		<s:Button label="ID3" click="setId(3);" />
+		
 	</s:HGroup>
 
 </vkUI:VkontakteApplication> 

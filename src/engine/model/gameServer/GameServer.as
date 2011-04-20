@@ -98,6 +98,9 @@ public class GameServer extends SmartFox {
     private static const LOBBY_PROFILES:String = "game.lobby.playersProfiles"
     private static const LOBBY_READY:String = "game.lobby.readyChanged"
 
+	private static const ADMIN_RELOAD_MAPS: String = "admin.reloadMapManager";
+	private static const ADMIN_RELOAD_PRICE: String = "admin.reloadPricelistManager";
+		
 
     public var ip:String;
     public var port:int;
@@ -335,7 +338,8 @@ public class GameServer extends SmartFox {
 
 	public function tryLottery():void
 	{
-		send(new ExtensionRequest(INT_TRY_LUCK, null, null));
+		var params:ISFSObject = new SFSObject();
+		send(new ExtensionRequest(INT_TRY_LUCK, params, null));
 	}
 	
 	public function buyLuck():void
@@ -348,7 +352,20 @@ public class GameServer extends SmartFox {
 	
 	public function takePrize():void
 	{
-		send(new ExtensionRequest(INT_TAKE_PRIZE, null, null));
+		var params:ISFSObject = new SFSObject();
+		send(new ExtensionRequest(INT_TAKE_PRIZE, params, null));
+	}
+	
+	public function adminReloadMaps():void 
+	{
+		var params:ISFSObject = new SFSObject();
+		send(new ExtensionRequest(ADMIN_RELOAD_MAPS, params, null));
+	}
+	
+	public function adminReloadPrice():void 
+	{
+		var params:ISFSObject = new SFSObject();
+		send(new ExtensionRequest(ADMIN_RELOAD_PRICE, params, null));
 	}
 	
     //----------------------Handlers---------------------------
