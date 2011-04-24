@@ -3,7 +3,7 @@
   ~ Pavkin Vladimir
   -->
 <Skins>
-    <FURY_JOE>
+    <b00>
         <colors>
             <SkinColor val="orange">
                 <blendMode val="overlay"/>
@@ -26,8 +26,8 @@
                 <color val="0xde0e5c"/>
             </SkinColor>
         </colors>
-    </FURY_JOE>
-    <R2D3>
+    </b00>
+    <b01>
         <colors>
             <SkinColor val="orange">
                 <blendMode val="overlay"/>
@@ -50,5 +50,5 @@
                 <color val="0xd70303"/>
             </SkinColor>
         </colors>
-    </R2D3>
+    </b01>
 </Skins>

@@ -52,7 +52,7 @@ public class GameProfile {
     /*
      * content = [BomberType,...]
      * */
-    public var bombersOpened:Array = [BomberType.FURY_JOE,BomberType.R2D3];
+    public var bombersOpened:Array = [];
     //public var vkProfile:VkontakteProfile;
 
 
@@ -195,8 +195,8 @@ public class GameProfile {
 
     public function getSkin(slot:int):BasicSkin {
         if (slot % 2 != 0)
-            return Context.imageService.bomberSkin(BomberType.FURY_JOE)
-        return Context.imageService.bomberSkin(BomberType.R2D3)
+            return Context.imageService.bomberSkin(BomberType.get(0))
+        return Context.imageService.bomberSkin(BomberType..get(1))
     }
 
     public static function fromISFSObject(obj:ISFSObject):GameProfile {
@@ -235,6 +235,8 @@ public class GameProfile {
         }
 
         items = obj.getSFSArray("BombersOpen");
+        res.bombersOpened.push(BomberType.get(0))
+        res.bombersOpened.push(BomberType.get(1))
         for (i = 0; i < items.size(); i++) {
             res.bombersOpened.push(BomberType.byValue(items.getInt(i)))
         }

@@ -98,15 +98,18 @@ public class GameModel {
     public function init():void {
         LoaderMax.activate([XMLLoader,SWFLoader,ImageLoader])
         BombersContentLoader.questsLoaded.add(fillQuests)
-        BombersContentLoader.loadQuests()
-        BombersContentLoader.loadGraphics()
         BombersContentLoader.loadBombers()
+        BombersContentLoader.loadQuests()
         BombersContentLoader.loadMonsters()
 
-        Context.gameServer.connected.add(onGameServerConnected);
-        Context.gameServer.loggedIn.add(onLoggedIn);
-        Context.gameServer.connectDefault();
-        Context.gameServer.profileLoaded.add(onProfileLoaded);
+        BombersContentLoader.readyToUseAppView.addOnce(function() {
+            BombersContentLoader.loadGraphics()
+
+            Context.gameServer.connected.add(onGameServerConnected);
+            Context.gameServer.loggedIn.add(onLoggedIn);
+            Context.gameServer.connectDefault();
+            Context.gameServer.profileLoaded.add(onProfileLoaded);
+        })
     }
 
     private function fillQuests():void {

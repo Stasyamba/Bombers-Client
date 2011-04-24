@@ -41,7 +41,10 @@
             if (rgo.senderUserProfile != null) {
                 userImage.source = rgo.senderUserProfile.photoURL;
             } else {
-                userImage.source = Context.Model.bomberManager.getBomber(BomberType.FURY_JOE).viewObject.bigImageURL;
+                //replaced
+                //userImage.source = Context.Model.bomberManager.getBomber(BomberType.FURY_JOE).viewObject.bigImageURL;
+                //with
+                userImage.source = Context.Model.bomberManager.getBomber(BomberType.get(0)).viewObject.bigImageURL;
             }
 
 

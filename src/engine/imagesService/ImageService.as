@@ -180,7 +180,7 @@ public class ImageService {
     }
 
     private function makeSkin(b:BomberType):BasicSkin {
-        var skinXml:XMLList = bomberSkinsXml.child(b.name);
+        var skinXml:XMLList = bomberSkinsXml.child(b.stringId);
         var colorsObject:Object = new Object();
         var skinElements:Object = new Object();
 

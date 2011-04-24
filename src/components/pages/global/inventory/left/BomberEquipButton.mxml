@@ -54,8 +54,6 @@
 		<![CDATA[
         import components.common.bombers.BomberType
 
-        import greensock.loading.display.ContentDisplay
-
         public static const STATE_ON:int = 0;
         public static const STATE_OFF:int = 1;
 
@@ -108,14 +106,14 @@
 
         private function changeBomber():void {
             //todo:when there will be more than two bombers, do something else
-            if (Context.Model.currentSettings.gameProfile.currentBomberType == BomberType.FURY_JOE) {
-                Context.gameServer.sendChangeBomberRequest(BomberType.R2D3)
-                Context.Model.currentSettings.gameProfile.currentBomberType = BomberType.R2D3
+            if (Context.Model.currentSettings.gameProfile.currentBomberType.value == 0) {
+                Context.gameServer.sendChangeBomberRequest(BomberType.get(1))
+                Context.Model.currentSettings.gameProfile.currentBomberType = BomberType.get(1)
             }
             else {
 
-                Context.gameServer.sendChangeBomberRequest(BomberType.FURY_JOE)
-                Context.Model.currentSettings.gameProfile.currentBomberType = BomberType.FURY_JOE
+                Context.gameServer.sendChangeBomberRequest(BomberType.get(0))
+                Context.Model.currentSettings.gameProfile.currentBomberType = BomberType.get(0)
             }
             Context.Model.dispatchCustomEvent(ContextEvent.GP_CURRENT_BOMBER_CHANGED)
         }

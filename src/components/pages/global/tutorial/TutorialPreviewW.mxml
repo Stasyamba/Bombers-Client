@@ -57,7 +57,7 @@
 
 
             apearingAnimation.play();
-            bomberImage.source = Context.Model.bomberManager.getBomber(BomberType.FURY_JOE).viewObject.bigImageURL;
+            bomberImage.source = Context.Model.bomberManager.getBomber(BomberType.get(0)).viewObject.bigImageURL;
         }
         ]]>
 	</fx:Script>

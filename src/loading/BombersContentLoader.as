@@ -35,30 +35,102 @@ public class BombersContentLoader {
     private static var _monstersXml:XML
     private static var _bombersXml:XML
 
-    public static var locationLoaded:Signal = new Signal(LocationType)
-    public static var bomberLoaded:Signal = new Signal(BomberType)
-    public static var commonLoaded:Signal = new Signal()
-    public static var allBombersLoaded:Signal = new Signal()
+    public static var locationGraphicsLoaded:Signal = new Signal(LocationType)
+    public static var bomberGraphicsLoaded:Signal = new Signal(BomberType)
+    public static var commonGraphicsLoaded:Signal = new Signal()
+    public static var allBombersGraphicsLoaded:Signal = new Signal()
+
+
+    public static var readyToUseAppView:Signal = new Signal()
 
     // bombers
+    public static var bomberTypesLoaded:Signal = new Signal()
+
+    private static var _areBomberTypesLoaded:Boolean
+
     public static function loadBombers():void {
         var xmlLoader:XMLLoader = new XMLLoader(BOMBERS_ADDRESS,
                 new XMLLoaderVars()
                         .onComplete(onBombersXmlComplete)
-                        .onError(onBobmersXmlError)
+                        .onError(onBombersXmlError)
                         .noCache(true))
         xmlLoader.load()
     }
-     private static function onBobmersXmlError(e:LoaderEvent):void {
+
+    private static function onBombersXmlError(e:LoaderEvent):void {
         throw new Error("error loading bombers description: " + e.text)
     }
 
     private static function onBombersXmlComplete(e:LoaderEvent):void {
         _bombersXml = (e.target as XMLLoader).content
-        for each (var b:XML in _bombersXml.M) {
-            BomberType.add(new BomberType(b.@id,b.@name, b.@graphicsId,ItemType.byValue(b.@bombId),b.@bombCount,b.@bombPower,b.@speed, b.@life,b.@crit,b.@block, b.@immortalTime))
+        for each (var b:XML in _bombersXml.B) {
+            //todo: access rules parsing
+            var accessRules:Array = new Array()
+            var bt:BomberType = new BomberType(b.@id, b.@name, ItemType.byValue(b.@bombId), b.@bombCount, b.@bombPower, b.@speed, b.@life, b.@crit, b.@block, b.@immortalTime, b.@graphicsId, accessRules, b.@description, b.@bigImageURL)
+            BomberType.add(bt)
+            Context.Model.bomberManager.addBomber(bt)
         }
+        _areBomberTypesLoaded = true
+        bomberTypesLoaded.dispatch()
+        if (_areQuestsLoaded)
+            readyToUseAppView.dispatch()
     }
+
+    // Quests
+
+    private static var _questsNames:Array = ["q00_00"]
+
+    private static var _areQuestsLoaded:Boolean = false
+    private static var _questXmls:Array = new Array()
+
+    public static var questsLoaded:Signal = new Signal()
+
+    public static function get areQuestsLoaded():Boolean {
+        return _areQuestsLoaded
+    }
+
+    public static function loadQuests():void {
+        var queue:LoaderMax = new LoaderMax(new LoaderMaxVars()
+                .name("quests")
+                .onComplete((
+                function(e:LoaderEvent) {
+                    trace("quests loaded")
+                    _areQuestsLoaded = true
+                    questsLoaded.dispatch()
+                    if (_areBomberTypesLoaded)
+                        readyToUseAppView.dispatch()
+                }))
+                .onError(
+                function(e:LoaderEvent) {
+                    throw new Error("Error loading quests: " + e.target.text)
+                })
+                )
+        for each (var name:String in _questsNames) {
+            queue.append(new XMLLoader(name + ".xml", new XMLLoaderVars()
+                    .name(name)
+                    .noCache(true)
+                    .onError(
+                    function(e:LoaderEvent) {
+                        throw new Error("Error loading quest " + e.target.name + ": " + e.target.text)
+                    })
+                    .onComplete(
+                    function(e:LoaderEvent) {
+                        trace("quest " + name + " loaded")
+                        _questXmls[e.target.name] = e.target.content
+                    })))
+        }
+        queue.prependURLs(QUESTS_ADDRESS)
+        queue.load()
+    }
+
+    public static function questXML(questId:String):XML {
+        return _questXmls[questId]
+    }
+
+    public static function get questsNames():Array {
+        return _questsNames
+    }
+
     // monsters
     public static function loadMonsters():void {
         var xmlLoader:XMLLoader = new XMLLoader(MONSTERS_ADDRESS,
@@ -127,7 +199,7 @@ public class BombersContentLoader {
                 .onComplete(
                 function (e:LoaderEvent):void {
                     whatIsLoaded["common"] = true
-                    commonLoaded.dispatch()
+                    commonGraphicsLoaded.dispatch()
                     trace("common loaded")
                 })
                 .name("common")
@@ -146,7 +218,7 @@ public class BombersContentLoader {
                 .onComplete(
                 function (e:LoaderEvent):void {
                     whatIsLoaded["bombers"] = true
-                    allBombersLoaded.dispatch()
+                    allBombersGraphicsLoaded.dispatch()
                     trace("bombers loaded")
                 })
                 .name("bombers")
@@ -179,7 +251,7 @@ public class BombersContentLoader {
                             function (e:LoaderEvent):void {
                                 whatIsLoaded[bId] = true
                                 trace("bomber " + bId + " loaded")
-                                bomberLoaded.dispatch(BomberType.byStringId(bId))
+                                bomberGraphicsLoaded.dispatch(BomberType.byStringId(bId))
                             })
                             .name(bId))
             bombersQueue.append(bLdr)
@@ -212,7 +284,7 @@ public class BombersContentLoader {
                     function (e:LoaderEvent):void {
                         whatIsLoaded[e.target.name] = true
                         trace("location Loaded: " + e.target.name)
-                        locationLoaded.dispatch(LocationType.byStringId(e.target.name))
+                        locationGraphicsLoaded.dispatch(LocationType.byStringId(e.target.name))
                     })
                     .name(loc_id)
                     )
@@ -301,59 +373,6 @@ public class BombersContentLoader {
                 return
         }
         taskSignal.dispatch()
-    }
-
-    // Quests
-
-    private static var _questsNames:Array = ["q00_00"]
-
-    private static var _areQuestsLoaded:Boolean = false
-    private static var xmls:Array = new Array()
-
-    public static var questsLoaded:Signal = new Signal()
-
-    public static function get areQuestsLoaded():Boolean {
-        return _areQuestsLoaded
-    }
-
-    public static function loadQuests():void {
-        var queue:LoaderMax = new LoaderMax(new LoaderMaxVars()
-                .name("quests")
-                .onComplete((
-                function(e:LoaderEvent) {
-                    trace("quests loaded")
-                    _areQuestsLoaded = true
-                    questsLoaded.dispatch()
-                }))
-                .onError(
-                function(e:LoaderEvent) {
-                    throw new Error("Error loading quests: " + e.target.text)
-                })
-                )
-        for each (var name:String in _questsNames) {
-            queue.append(new XMLLoader(name + ".xml", new XMLLoaderVars()
-                    .name(name)
-                    .noCache(true)
-                    .onError(
-                    function(e:LoaderEvent) {
-                        throw new Error("Error loading quest " + e.target.name + ": " + e.target.text)
-                    })
-                    .onComplete(
-                    function(e:LoaderEvent) {
-                        trace("quest " + name + " loaded")
-                        xmls[e.target.name] = e.target.content
-                    })))
-        }
-        queue.prependURLs(QUESTS_ADDRESS)
-        queue.load()
-    }
-
-    public static function questXML(questId:String):XML {
-        return xmls[questId]
-    }
-
-    public static function get questsNames():Array {
-        return _questsNames
     }
 
 

@@ -1,18 +1,16 @@
 package components.common.bombers {
-import components.common.items.ItemType
+import components.common.items.ItemType;
 
-import engine.games.quest.monsters.ICreatureType
+import engine.games.quest.monsters.ICreatureType;
 
-import loading.LoaderUtils
+import loading.LoaderUtils;
 
 public class BomberType implements ICreatureType {
 
-    public static const FURY_JOE:BomberType = new BomberType(0, "FURY_JOE", "b00", ItemType.BASE_BOMB, 1, 1, 100, 3, 0.05, 0.05);
-    public static const R2D3:BomberType = new BomberType(1, "R2D3", "b00", ItemType.BASE_BOMB, 1, 1, 100, 3, 0.05, 0.05);
+    private static var _all:Array
 
     private var _value:int;
     private var _name:String;
-    private var _graphicsId:String
     private var _baseBomb:ItemType;
 
     //game skills
@@ -26,16 +24,16 @@ public class BomberType implements ICreatureType {
     private var _specialCritChances:Array = new Array()
     private var _immortalTime:Number
 
+    //view
+    private var _graphicsId:String
+    private var _accessRules:Array = new Array()
+    private var _description:String
+    private var _bigImageURL:String
 
-    public static function initBlocks():void {
-        R2D3._specialBlockChances.push(new BlockChanceObject(R2D3, 0.5))
-    }
 
-
-    public function BomberType(value:int, name:String, graphicsId:String, baseBomb:ItemType, bombCount:int, bombPower:int, speed:Number, startLife:int, critChance:Number, blockChance:Number, immortalTime:Number = 3.0) {
+    public function BomberType(value:int, name:String, baseBomb:ItemType, bombCount:int, bombPower:int, speed:Number, startLife:int, critChance:Number, blockChance:Number, immortalTime:Number, graphicsId:String, accessRules:Array, description:String, bigImageURL:String) {
         _value = value
         _name = name
-        _graphicsId = graphicsId
         _baseBomb = baseBomb
         _bombCount = bombCount
         _bombPower = bombPower
@@ -43,6 +41,12 @@ public class BomberType implements ICreatureType {
         _startLife = startLife
         _critChance = critChance
         _blockChance = blockChance
+        _immortalTime = immortalTime
+
+        _graphicsId = graphicsId
+        _accessRules = accessRules
+        _description = description
+        _bigImageURL = bigImageURL
     }
 
     public function get value():int {
@@ -62,11 +66,10 @@ public class BomberType implements ICreatureType {
     }
 
     public static function byValue(value:int):BomberType {
-        switch (value) {
-            case FURY_JOE.value:
-                return FURY_JOE
-            case R2D3.value:
-                return R2D3
+        for each (var bt:BomberType in _all) {
+            if (bt.value == value){
+               return bt
+            }
         }
         throw new ArgumentError("no BomberType found with value = " + value);
     }
@@ -121,7 +124,29 @@ public class BomberType implements ICreatureType {
     }
 
     public static function add(t:BomberType):void {
-        //todo:implement
+		if(_all == null)
+			_all = new Array()
+        _all.push(t)
+    }
+
+    public function get graphicsId():String {
+        return _graphicsId
+    }
+
+    public function get accessRules():Array {
+        return _accessRules
+    }
+
+    public function get description():String {
+        return _description
+    }
+
+    public function get bigImageURL():String {
+        return _bigImageURL
+    }
+
+    public static function get(value:int):BomberType {
+        return byValue(value)
     }
 }
 }

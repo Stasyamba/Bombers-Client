@@ -1,386 +1,374 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
-		 xmlns:s="library://ns.adobe.com/flex/spark"
-		 xmlns:mx="library://ns.adobe.com/flex/mx"
-		 
-		 xmlns:world="components.pages.world.*"
-		 xmlns:game="components.pages.game.*"
-		 width="100%" height="100%"
-		 creationComplete="init();"
-		 >
-	<!--xmlns:infectingcore="components.infectingcore.*"-->
-	<!--xmlns:healingcore="components.healingcore.*" -->
-	<!--xmlns:mapcore="components.mapcore.*" -->
-	<!--xmlns:messagescore="components.messagescore.*"-->
-	
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
-	
-	<fx:Script>
+         xmlns:s="library://ns.adobe.com/flex/spark"
+         xmlns:mx="library://ns.adobe.com/flex/mx"
+
+         xmlns:world="components.pages.world.*"
+         xmlns:game="components.pages.game.*"
+         width="100%" height="100%"
+         creationComplete="init();"
+        >
+    <!--xmlns:infectingcore="components.infectingcore.*"-->
+    <!--xmlns:healingcore="components.healingcore.*" -->
+    <!--xmlns:mapcore="components.mapcore.*" -->
+    <!--xmlns:messagescore="components.messagescore.*"-->
+
+    <fx:Declarations>
+        <!-- Place non-visual elements (e.g., services, value objects) here -->
+    </fx:Declarations>
+
+    <fx:Script>
 		<![CDATA[
-			import api.vkontakte.VkontakteGlobals;
-			
-			import components.common.game.requesttogame.RequestGameObject;
-			import components.common.profiles.VkontakteProfile;
-			import components.common.resources.ResourcePrice;
-			import components.pages.game.windows.create.GameCreatedW;
-			import components.pages.global.energymarket.EnergyMarketW;
-			import components.pages.global.gamerequest.ConnectToGameW;
-			import components.pages.global.inventory.InventoryW;
-			import components.pages.global.lottery.LotteryW;
-			import components.pages.global.resourcemarket.ResourceMarketW;
-			import components.pages.global.takeloot.TakeLootW;
-			import components.pages.global.tutorial.TutorialPreviewW;
-			import components.pages.world.windows.creategame.CreateGameW;
-			import components.wall.SendWallObject;
-			
-			import engine.games.GameType;
-			
-			import mx.controls.Alert;
-			import mx.core.IVisualElement;
-			import mx.managers.PopUpManager;
-			import mx.managers.PopUpManagerChildList;
-			
-			public static const TAB_NAME_WORLD:String = "WorldPage";
-			public static const TAB_NAME_GAME:String = "GamePage";
-			public static const TAB_NAME_INVENORY:String = "InventoryPage";	
-			
-			public var activeWindow: IVisualElement = null;	
-			
-			public static function getTabIndexByName(name:String):int {
-				var res:int = 0;
-				switch (name) {
-					case ApplicationView.TAB_NAME_WORLD:
-						res = 0;
-						break;
-					case ApplicationView.TAB_NAME_GAME:
-						res = 1;
-						break;
-					case ApplicationView.TAB_NAME_INVENORY:
-						res = 2;
-						break;
-					
-					default:
-						res = -1;
-						break;
-				}
-				
-				return res;
-			}
-			
-			private function tabChanged():void {
-				var tabName:String = "";
-				
-				switch (contentMainViewStack.selectedIndex) {
-					case 0:
-						tabName = TAB_NAME_WORLD;
-						break;
-					case 1:
-						tabName = TAB_NAME_GAME;
-						break;
-					case 2:
-						tabName = TAB_NAME_INVENORY;
-						break;
-					default:
-						break;
-				}
-				
-				Context.Model.dispatchCustomEvent(ContextEvent.MAIN_TAB_CHANGED, tabName);
-			}
-			
-			private function init():void 
-			{
-				Context.Model.addCustomListener(ContextEvent.NEED_TO_SHOW_ERROR, function(e:ContextEvent):void {
-					openErrorWindow(e.data);
-				});
-				
-				Context.Model.addCustomListener(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, function(e:ContextEvent):void {
-					var index:int = getTabIndexByName(e.data);
-					
-					if (index != -1) {
-						hiddenControlingMenuGroup.selectedIndex = index;
-					} else {
-						Alert.show("Error occured");
-					}
-					
-					if ((parentApplication as Bombers).isWrapperExists) {
-						// if (e.data == TAB_NAME_GAME)
-						//VkontakteGlobals.wrapper.external.resizeWindow(812, 700)
-						//else
-						//VkontakteGlobals.wrapper.external.resizeWindow(812, 500)
-					}
-					
-				});
-				
-				Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_RESOURCE_MARKET, function (e:ContextEvent):void {
-					//var rp: ResourcePrice = new ResourcePrice(0,0,0,0);
-					if (e.data is ResourcePrice) {
-						//rp.cloneFrom(e.data.resourcePrice as ResourcePrice);
-						openResourceMarket(e.data);
-					}
-					
-					
-				});
-				
-				
-				
-				Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, function (e:ContextEvent):void {
-					if (e.data is Boolean) {
-						openInventoryMarket(e.data);
-					}
-				});
-				
-				/* requests */
-				
-				Context.Model.addCustomListener(ContextEvent.OE_REQUEST_COLLECTION_IS_CHANGED, function (e:ContextEvent):void {
-					if (Context.Model.currentSettings.requestToGames.length == 0) {
-						Context.Model.windowsManager.closeAll(true);
-						Context.Model.dispatchCustomEvent(ContextEvent.OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY, false);
-					}
-				});
-				
-				Context.Model.addCustomListener(ContextEvent.OE_SHOW_REQUEST_TO_GAME_WINDOW, function (e:ContextEvent):void {
-					// check is user not in the game right now
-					openRequestGameW();
-				});
-				
-				Context.Model.addCustomListener(ContextEvent.OE_NEW_REQUEST_TO_GAME, function (e:ContextEvent):void {
-					if (e.data is RequestGameObject) {
-						Context.Model.currentSettings.addRequest(e.data as RequestGameObject);
-						Context.Model.dispatchCustomEvent(ContextEvent.OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY, true);
-					}
-				});
-				
-				Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_ENERGY_MARKET, function (e:ContextEvent):void {
-					openEnergyMarket();
-				});
-				
-				Context.Model.addCustomListener(ContextEvent.VK_SEND_TO_WALL, function (e:ContextEvent):void {
-					if (e.data is SendWallObject) {
-						sendToWall(e.data);
-					}
-				});
-				
-				
-				
-				
-				Context.Model.addCustomListener(ContextEvent.L_NEED_TO_SHOW_LOTTERY, function(e: ContextEvent): void
-				{
-					showLottery();
-				});
-				
-				Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_TAKE_LOOT_WINDOW, function (e: ContextEvent):void
-				{
-					showLoot();
-				});
-				
-				Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_GAME_CREATING_WINDOW, function (e: ContextEvent):void
-				{
-					showGameCreating();
-				});
-				
-				
-				/*disconnected*/
-				
-				Context.gameServer.disconnected.add(onDisconnected)
-				
-				/* for local testing */
-				idGroup.visible = !(parentApplication as Bombers).isWrapperExists;
-				
-				/* for development */
-				devGroup.visible = Context.Model.isDevelopment;
-				
-				if ((parentApplication as Bombers).isWrapperExists) {
-					var currentLocation:String = ""+VkontakteGlobals.wrapper.external.getLocation();
-					if (currentLocation != "") 
-					{
-						Context.gameServer.profileLoaded.addOnce(function(p1:*):void 
-						{
-							var arr:Array = currentLocation.split("-");
-							
-							//mx.controls.Alert.show("Я почти внутри, ептааа!");
-							
-							if (arr.length == 2) {
-								/* var newRequest:RequestGameObject = new RequestGameObject(, GameType.REGULAR, null);
-								Context.Model.currentSettings.addRequest(newRequest);
-								
-								openRequestGameW(); */
-								//mx.controls.Alert.show("Я внутри, ептааа!");
-								
-								Context.gameModel.fastJoinFailed.addOnce(joinTheGameFailed);
-								Context.gameModel.someoneJoinedToGame.addOnce(joinTheGame);
-								
-								Context.gameModel.joinConcreteGame(arr[0], arr[1]);
-							}else
-							{
-								if(Context.Model.currentSettings.lotteryTryToWinCount > 0)
-								{
-									showLottery();
-								}
-							}
-						});
-					}
-				}
-				
-				
-				/// immitation
-				//showLottery();
-				//showLoot();
-				
-			}
-			
-			private function joinTheGameFailed():void
-			{
-				Context.gameModel.someoneJoinedToGame.remove(joinTheGame);
-				mx.controls.Alert.show("Нет такой игры");
-			}
-			
-			private function joinTheGame(p1:*):void
-			{
-				Context.gameModel.fastJoinFailed.remove(joinTheGameFailed);
-				Context.Model.windowsManager.closeAll(true);
-				Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
-			}
-			
-			private function showGameCreating():void
-			{
-				var gw: CreateGameW = new CreateGameW();
-				gw.x = 150;
-				gw.y = 163;
-				
-				PopUpManager.addPopUp(gw, parentApplication as Bombers, false);
-			}
-			
-			private function sendToWall(swo:SendWallObject):void {
-				if (swo != null && swo.up != null) {
-					Context.Model.wallSavePhotoID(swo.up.id, swo.imageId, swo.postId, swo.message);
-				}
-			}
-			
-			private function showLoot():void {
-				var twl: TakeLootW = new TakeLootW();
-				
-				PopUpManager.addPopUp(twl, this, true);
-				PopUpManager.centerPopUp(twl);
-				
-				twl.y -= 42;
-			}	
-			
-			private function showLottery():void {
-				var lw:LotteryW = new LotteryW()
-				
-				PopUpManager.addPopUp(lw, this, true);
-				PopUpManager.centerPopUp(lw);
-				
-				lw.y -= 42;
-			}
-			
-			private function onDisconnected():void {
-				Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, TAB_NAME_GAME)
-				Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_DISCONNECTED_WINDOW)
-			}
-			
-			
-			private function openEnergyMarket():void {
-				var emw:EnergyMarketW = new EnergyMarketW();
-				
-				
-				PopUpManager.addPopUp(emw, this, true);
-				PopUpManager.centerPopUp(emw);
-				
-				emw.y -= 92;
-			}
-			
-			private function openRequestGameW():void {
-				var cgw:ConnectToGameW = new ConnectToGameW();
-				
-				
-				PopUpManager.addPopUp(cgw, this, true);
-				PopUpManager.centerPopUp(cgw);
-				
-				cgw.y -= 122;
-			}
-			
-			private function openTutorialPreview():void {
-				var tw:TutorialPreviewW = new TutorialPreviewW();
-				
-				
-				PopUpManager.addPopUp(tw, this, true);
-				PopUpManager.centerPopUp(tw);
-				
-				tw.y -= 102;
-			}
-			
-			private function openResourceMarket(rp:ResourcePrice):void {
-				var rmw: ResourceMarketW = new ResourceMarketW();
-				rmw.rp.cloneFrom(rp);
-				rmw.x = 50;
-				rmw.y = 50;
-				
-				PopUpManager.addPopUp(rmw, this, false);
-			}
-			
-			private function openInventoryMarket(isOpenedFromGamePage:Boolean):void {
-				var imw:InventoryW = new InventoryW();
-				imw.isOpenedFromGamePage = isOpenedFromGamePage;
-				imw.x = 20;
-				imw.y = 50;
-				
-				PopUpManager.addPopUp(imw, this, true);
-			}
-			
-			private function openErrorWindow(data:String):void {
-				//var errorW: ErrorW = new ErrorW();
-				//errorW.errorText = data;
-				
-				//PopUpManager.addPopUp(errorW, this, true);
-				//PopUpManager.centerPopUp(errorW);
-			}
-			
-			// immitation
-			private function setId(id:int):void {
-				Context.Model.currentSettings.socialProfile = new VkontakteProfile("test"+id.toString());
-				Context.Model.currentSettings.flashVars.auth_key = "test"+id.toString();
-				idGroup.visible = false;
-				Context.gameModel.init();
-			}
-		]]>
+        import api.vkontakte.VkontakteGlobals
+
+        import components.common.game.requesttogame.RequestGameObject
+        import components.common.profiles.VkontakteProfile
+        import components.common.resources.ResourcePrice
+        import components.pages.global.energymarket.EnergyMarketW
+        import components.pages.global.gamerequest.ConnectToGameW
+        import components.pages.global.inventory.InventoryW
+        import components.pages.global.lottery.LotteryW
+        import components.pages.global.resourcemarket.ResourceMarketW
+        import components.pages.global.takeloot.TakeLootW
+        import components.pages.global.tutorial.TutorialPreviewW
+        import components.pages.world.windows.creategame.CreateGameW
+        import components.wall.SendWallObject
+
+        import loading.BombersContentLoader
+
+        import mx.controls.Alert
+        import mx.core.IVisualElement
+        import mx.managers.PopUpManager
+
+        public static const TAB_NAME_WORLD:String = "WorldPage";
+        public static const TAB_NAME_GAME:String = "GamePage";
+        public static const TAB_NAME_INVENORY:String = "InventoryPage";
+
+        public var activeWindow:IVisualElement = null;
+
+        public static function getTabIndexByName(name:String):int {
+            var res:int = 0;
+            switch (name) {
+                case ApplicationView.TAB_NAME_WORLD:
+                    res = 0;
+                    break;
+                case ApplicationView.TAB_NAME_GAME:
+                    res = 1;
+                    break;
+                case ApplicationView.TAB_NAME_INVENORY:
+                    res = 2;
+                    break;
+
+                default:
+                    res = -1;
+                    break;
+            }
+
+            return res;
+        }
+
+        private function tabChanged():void {
+            var tabName:String = "";
+
+            switch (contentMainViewStack.selectedIndex) {
+                case 0:
+                    tabName = TAB_NAME_WORLD;
+                    break;
+                case 1:
+                    tabName = TAB_NAME_GAME;
+                    break;
+                case 2:
+                    tabName = TAB_NAME_INVENORY;
+                    break;
+                default:
+                    break;
+            }
+
+            Context.Model.dispatchCustomEvent(ContextEvent.MAIN_TAB_CHANGED, tabName);
+        }
+
+        private function init():void {
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_SHOW_ERROR, function(e:ContextEvent):void {
+                openErrorWindow(e.data);
+            });
+
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, function(e:ContextEvent):void {
+                var index:int = getTabIndexByName(e.data);
+
+                if (index != -1) {
+                    hiddenControlingMenuGroup.selectedIndex = index;
+                } else {
+                    Alert.show("Error occured");
+                }
+
+                if ((parentApplication as Bombers).isWrapperExists) {
+                    // if (e.data == TAB_NAME_GAME)
+                    //VkontakteGlobals.wrapper.external.resizeWindow(812, 700)
+                    //else
+                    //VkontakteGlobals.wrapper.external.resizeWindow(812, 500)
+                }
+
+            });
+
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_RESOURCE_MARKET, function (e:ContextEvent):void {
+                //var rp: ResourcePrice = new ResourcePrice(0,0,0,0);
+                if (e.data is ResourcePrice) {
+                    //rp.cloneFrom(e.data.resourcePrice as ResourcePrice);
+                    openResourceMarket(e.data);
+                }
+
+
+            });
+
+
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_INVENTORY_MARKET, function (e:ContextEvent):void {
+                if (e.data is Boolean) {
+                    openInventoryMarket(e.data);
+                }
+            });
+
+            /* requests */
+
+            Context.Model.addCustomListener(ContextEvent.OE_REQUEST_COLLECTION_IS_CHANGED, function (e:ContextEvent):void {
+                if (Context.Model.currentSettings.requestToGames.length == 0) {
+                    Context.Model.windowsManager.closeAll(true);
+                    Context.Model.dispatchCustomEvent(ContextEvent.OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY, false);
+                }
+            });
+
+            Context.Model.addCustomListener(ContextEvent.OE_SHOW_REQUEST_TO_GAME_WINDOW, function (e:ContextEvent):void {
+                // check is user not in the game right now
+                openRequestGameW();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.OE_NEW_REQUEST_TO_GAME, function (e:ContextEvent):void {
+                if (e.data is RequestGameObject) {
+                    Context.Model.currentSettings.addRequest(e.data as RequestGameObject);
+                    Context.Model.dispatchCustomEvent(ContextEvent.OE_CHANGE_REQEUST_TO_GAME_BUTTON_ACTIVITY, true);
+                }
+            });
+
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_ENERGY_MARKET, function (e:ContextEvent):void {
+                openEnergyMarket();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.VK_SEND_TO_WALL, function (e:ContextEvent):void {
+                if (e.data is SendWallObject) {
+                    sendToWall(e.data);
+                }
+            });
+
+
+            Context.Model.addCustomListener(ContextEvent.L_NEED_TO_SHOW_LOTTERY, function(e:ContextEvent):void {
+                showLottery();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_TAKE_LOOT_WINDOW, function (e:ContextEvent):void {
+                showLoot();
+            });
+
+            Context.Model.addCustomListener(ContextEvent.NEED_TO_OPEN_GAME_CREATING_WINDOW, function (e:ContextEvent):void {
+                showGameCreating();
+            });
+
+
+            /*disconnected*/
+
+            Context.gameServer.disconnected.add(onDisconnected)
+
+            /* for local testing */
+            idGroup.visible = !(parentApplication as Bombers).isWrapperExists;
+
+            /* for development */
+            devGroup.visible = Context.Model.isDevelopment;
+
+            if ((parentApplication as Bombers).isWrapperExists) {
+                var currentLocation:String = "" + VkontakteGlobals.wrapper.external.getLocation();
+                if (currentLocation != "") {
+                    Context.gameServer.profileLoaded.addOnce(function(p1:*):void {
+                        var arr:Array = currentLocation.split("-");
+
+                        //mx.controls.Alert.show("Я почти внутри, ептааа!");
+
+                        if (arr.length == 2) {
+                            /* var newRequest:RequestGameObject = new RequestGameObject(, GameType.REGULAR, null);
+                             Context.Model.currentSettings.addRequest(newRequest);
+
+                             openRequestGameW(); */
+                            //mx.controls.Alert.show("Я внутри, ептааа!");
+
+                            Context.gameModel.fastJoinFailed.addOnce(joinTheGameFailed);
+                            Context.gameModel.someoneJoinedToGame.addOnce(joinTheGame);
+
+                            Context.gameModel.joinConcreteGame(arr[0], arr[1]);
+                        } else {
+                            if (Context.Model.currentSettings.lotteryTryToWinCount > 0) {
+                                showLottery();
+                            }
+                        }
+                    });
+                }
+            }
+
+
+            /// immitation
+            //showLottery();
+            //showLoot();
+
+        }
+
+        private function joinTheGameFailed():void {
+            Context.gameModel.someoneJoinedToGame.remove(joinTheGame);
+            Alert.show("Нет такой игры");
+        }
+
+        private function joinTheGame(p1:*):void {
+            Context.gameModel.fastJoinFailed.remove(joinTheGameFailed);
+            Context.Model.windowsManager.closeAll(true);
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
+        }
+
+        private function showGameCreating():void {
+            var gw:CreateGameW = new CreateGameW();
+            gw.x = 150;
+            gw.y = 163;
+
+            PopUpManager.addPopUp(gw, parentApplication as Bombers, false);
+        }
+
+        private function sendToWall(swo:SendWallObject):void {
+            if (swo != null && swo.up != null) {
+                Context.Model.wallSavePhotoID(swo.up.id, swo.imageId, swo.postId, swo.message);
+            }
+        }
+
+        private function showLoot():void {
+            var twl:TakeLootW = new TakeLootW();
+
+            PopUpManager.addPopUp(twl, this, true);
+            PopUpManager.centerPopUp(twl);
+
+            twl.y -= 42;
+        }
+
+        private function showLottery():void {
+            var lw:LotteryW = new LotteryW()
+
+            PopUpManager.addPopUp(lw, this, true);
+            PopUpManager.centerPopUp(lw);
+
+            lw.y -= 42;
+        }
+
+        private function onDisconnected():void {
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, TAB_NAME_GAME)
+            Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_SHOW_DISCONNECTED_WINDOW)
+        }
+
+
+        private function openEnergyMarket():void {
+            var emw:EnergyMarketW = new EnergyMarketW();
+
+
+            PopUpManager.addPopUp(emw, this, true);
+            PopUpManager.centerPopUp(emw);
+
+            emw.y -= 92;
+        }
+
+        private function openRequestGameW():void {
+            var cgw:ConnectToGameW = new ConnectToGameW();
+
+
+            PopUpManager.addPopUp(cgw, this, true);
+            PopUpManager.centerPopUp(cgw);
+
+            cgw.y -= 122;
+        }
+
+        private function openTutorialPreview():void {
+            var tw:TutorialPreviewW = new TutorialPreviewW();
+
+
+            PopUpManager.addPopUp(tw, this, true);
+            PopUpManager.centerPopUp(tw);
+
+            tw.y -= 102;
+        }
+
+        private function openResourceMarket(rp:ResourcePrice):void {
+            var rmw:ResourceMarketW = new ResourceMarketW();
+            rmw.rp.cloneFrom(rp);
+            rmw.x = 50;
+            rmw.y = 50;
+
+            PopUpManager.addPopUp(rmw, this, false);
+        }
+
+        private function openInventoryMarket(isOpenedFromGamePage:Boolean):void {
+            var imw:InventoryW = new InventoryW();
+            imw.isOpenedFromGamePage = isOpenedFromGamePage;
+            imw.x = 20;
+            imw.y = 50;
+
+            PopUpManager.addPopUp(imw, this, true);
+        }
+
+        private function openErrorWindow(data:String):void {
+            //var errorW: ErrorW = new ErrorW();
+            //errorW.errorText = data;
+
+            //PopUpManager.addPopUp(errorW, this, true);
+            //PopUpManager.centerPopUp(errorW);
+        }
+
+        // immitation
+        private function setId(id:int):void {
+            Context.Model.currentSettings.socialProfile = new VkontakteProfile("test" + id.toString());
+            Context.Model.currentSettings.flashVars.auth_key = "test" + id.toString();
+            idGroup.visible = false;
+            Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER, true)
+            BombersContentLoader.readyToUseAppView.addOnce(function():void {
+                Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER, false)
+            })
+            Context.gameModel.init();
+        }
+        ]]>
 	</fx:Script>
-	
-	<s:ButtonBar id="hiddenControlingMenuGroup"
-				 visible="false"
-				 enabled="true"
-				 dataProvider="{contentMainViewStack}"
-				 />
-	
-	<mx:ViewStack id="contentMainViewStack"
-				  borderStyle="solid"
-				  borderVisible="false"
-				  backgroundColor="0xffffff"
-				  contentBackgroundColor="0xffffff"
-				  width="100%" height="100%"
-				  change="tabChanged();"
-				  selectedIndex="0"
-				  >
-		
-		
-		<world:WorldPage/>
-		<game:GamePage/>
-		
-		
-	</mx:ViewStack>
-	
-	<s:HGroup id="devGroup">
-		<s:Button label="Reload Maps" click="Context.gameServer.adminReloadMaps();" />
-		<s:Button label="Reload Price" click="Context.gameServer.adminReloadPrice();" />
-	</s:HGroup>
-	
-	<s:HGroup id="idGroup">
-		<s:Button label="ID1" click="setId(1);"/>
-		<s:Button label="ID2" click="setId(2);"/>
-		<s:Button label="ID3" click="setId(3);"/>
-		<s:Button label="ID4" click="setId(4);"/>
-		<s:Button label="ID5" click="setId(5);"/>
-	</s:HGroup>
+
+    <s:ButtonBar id="hiddenControlingMenuGroup"
+                 visible="false"
+                 enabled="true"
+                 dataProvider="{contentMainViewStack}"
+            />
+
+    <mx:ViewStack id="contentMainViewStack"
+                  borderStyle="solid"
+                  borderVisible="false"
+                  backgroundColor="0xffffff"
+                  contentBackgroundColor="0xffffff"
+                  width="100%" height="100%"
+                  change="tabChanged();"
+                  selectedIndex="0"
+            >
+
+
+        <world:WorldPage/>
+        <game:GamePage/>
+
+
+    </mx:ViewStack>
+
+    <s:HGroup id="devGroup" y="20">
+        <s:Button label="Reload Maps" click="Context.gameServer.adminReloadMaps();"/>
+        <s:Button label="Reload Price" click="Context.gameServer.adminReloadPrice();"/>
+    </s:HGroup>
+
+    <s:HGroup id="idGroup">
+        <s:Button label="ID1" click="setId(1);"/>
+        <s:Button label="ID2" click="setId(2);"/>
+        <s:Button label="ID3" click="setId(3);"/>
+        <s:Button label="ID4" click="setId(4);"/>
+        <s:Button label="ID5" click="setId(5);"/>
+    </s:HGroup>
 </s:Group>
