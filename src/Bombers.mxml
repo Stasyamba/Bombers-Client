@@ -135,11 +135,16 @@
                 } else {
 
                     Context.Model.currentSettings.apiResult = new ApiResult(VkontakteGlobals.wrapper.application.parameters.api_result, false);
-                    Context.Model.currentSettings.votes = Context.Model.currentSettings.apiResult.votes;
-
-                    //initApp(APP_STARTED_COMMON);
-                    initApp(APP_STARTED_DEVELOPMENT);
-
+					Context.Model.currentSettings.votes = Context.Model.currentSettings.apiResult.votes;
+					
+					if(!Context.Model.isDevelopment)
+					{
+                    	initApp(APP_STARTED_COMMON);
+					}else
+					{
+						initApp(APP_STARTED_DEVELOPMENT);
+					}
+          
                 }
             } else {
                 // local testing

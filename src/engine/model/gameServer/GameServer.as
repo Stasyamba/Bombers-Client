@@ -100,6 +100,11 @@ public class GameServer extends SmartFox {
 
     private static const LOBBY_PROFILES:String = "game.lobby.playersProfiles"
     private static const LOBBY_READY:String = "game.lobby.readyChanged"
+
+	private static const ADMIN_RELOAD_MAPS: String = "admin.reloadMapManager";
+	private static const ADMIN_RELOAD_PRICE: String = "admin.reloadPricelistManager";
+		
+
     private static const LOBBY_LOCATION:String = "game.lobby.location"
 
     public var ip:String;
@@ -341,21 +346,38 @@ public class GameServer extends SmartFox {
         tenSecondsTimer.start()
     }
 
-    public function tryLottery():void {
-        send(new ExtensionRequest(INT_TRY_LUCK, null, null));
-    }
-
-    public function buyLuck():void {
-        var params:ISFSObject = new SFSObject();
-        params.putInt("interface.buyLuck.fields.luck", 3);
-
-        send(new ExtensionRequest(INT_BUY_LUCK, params, null));
-    }
-
-    public function takePrize():void {
-        send(new ExtensionRequest(INT_TAKE_PRIZE, null, null));
-    }
-
+	public function tryLottery():void
+	{
+		var params:ISFSObject = new SFSObject();
+		send(new ExtensionRequest(INT_TRY_LUCK, params, null));
+	}
+	
+	public function buyLuck():void
+	{
+		var params:ISFSObject = new SFSObject();
+		params.putInt("interface.buyLuck.fields.luck", 3);
+		
+		send(new ExtensionRequest(INT_BUY_LUCK, params, null));
+	}
+	
+	public function takePrize():void
+	{
+		var params:ISFSObject = new SFSObject();
+		send(new ExtensionRequest(INT_TAKE_PRIZE, params, null));
+	}
+	
+	public function adminReloadMaps():void 
+	{
+		var params:ISFSObject = new SFSObject();
+		send(new ExtensionRequest(ADMIN_RELOAD_MAPS, params, null));
+	}
+	
+	public function adminReloadPrice():void 
+	{
+		var params:ISFSObject = new SFSObject();
+		send(new ExtensionRequest(ADMIN_RELOAD_PRICE, params, null));
+	}
+	
     //----------------------Handlers---------------------------
 
     private function onConnected(event:SFSEvent):void {

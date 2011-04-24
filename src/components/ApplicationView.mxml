@@ -188,6 +188,8 @@
 				/* for local testing */
 				idGroup.visible = !(parentApplication as Bombers).isWrapperExists;
 				
+				/* for development */
+				devGroup.visible = Context.Model.isDevelopment;
 				
 				if ((parentApplication as Bombers).isWrapperExists) {
 					var currentLocation:String = ""+VkontakteGlobals.wrapper.external.getLocation();
@@ -368,6 +370,12 @@
 		
 		
 	</mx:ViewStack>
+	
+	<s:HGroup id="devGroup">
+		<s:Button label="Reload Maps" click="Context.gameServer.adminReloadMaps();" />
+		<s:Button label="Reload Price" click="Context.gameServer.adminReloadPrice();" />
+	</s:HGroup>
+	
 	<s:HGroup id="idGroup">
 		<s:Button label="ID1" click="setId(1);"/>
 		<s:Button label="ID2" click="setId(2);"/>

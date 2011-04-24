@@ -118,6 +118,9 @@ public class ApplicationModel extends VkontakteApplicationModel {
         return newArray;
     }
 
+	
+	public var isDevelopment: Boolean = true;
+	
     [Bindable]
     public var currentSettings:Settings = new Settings();
 
