@@ -1,15 +1,15 @@
 package engine.profiles {
-import com.smartfoxserver.v2.entities.data.ISFSArray;
-import com.smartfoxserver.v2.entities.data.ISFSObject;
+import com.smartfoxserver.v2.entities.data.ISFSArray
+import com.smartfoxserver.v2.entities.data.ISFSObject
 
-import components.common.bombers.BomberType;
-import components.common.items.ItemProfileObject;
-import components.common.items.ItemType;
-import components.common.resources.ResourcePrice;
-import components.common.worlds.WorldsType;
-import components.common.worlds.locations.LocationType;
+import components.common.bombers.BomberType
+import components.common.items.ItemProfileObject
+import components.common.items.ItemType
+import components.common.resources.ResourcePrice
+import components.common.worlds.WorldsType
+import components.common.worlds.locations.LocationType
 
-import engine.bombers.skin.BomberSkin;
+import engine.bombers.skin.BasicSkin
 
 public class GameProfile {
 
@@ -181,22 +181,19 @@ public class GameProfile {
         }
     }
 
-	public function getItemProfileObject(itemType: ItemType): ItemProfileObject
-	{
-		var res: ItemProfileObject = null;
-		
-		for each(var i: ItemProfileObject in gotItems)
-		{
-			if(i.itemType == itemType)
-			{
-				res = i.clone();
-			}
-		}
-		
-		return res;
-	}
-	
-    public function getSkin(slot:int):BomberSkin {
+    public function getItemProfileObject(itemType:ItemType):ItemProfileObject {
+        var res:ItemProfileObject = null;
+
+        for each(var i:ItemProfileObject in gotItems) {
+            if (i.itemType == itemType) {
+                res = i.clone();
+            }
+        }
+
+        return res;
+    }
+
+    public function getSkin(slot:int):BasicSkin {
         if (slot % 2 != 0)
             return Context.imageService.bomberSkin(BomberType.FURY_JOE)
         return Context.imageService.bomberSkin(BomberType.R2D3)
@@ -287,7 +284,7 @@ public class GameProfile {
 
     public function set experience(value:int):void {
         _experience = value
-        Context.Model.dispatchCustomEvent(ContextEvent.GP_EXPERIENCE_CHANGED,value)
+        Context.Model.dispatchCustomEvent(ContextEvent.GP_EXPERIENCE_CHANGED, value)
     }
 }
 }

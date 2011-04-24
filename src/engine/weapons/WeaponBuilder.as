@@ -27,7 +27,7 @@ public class WeaponBuilder {
             case WeaponType.DYNAMITE_WEAPON:
                 return new DynamiteWeapon(_mapManager, charges);
             case WeaponType.SMOKE_BOMB_WEAPON:
-                return new SmokeBombWeapon(_mapManager,charges)
+                return new SmokeBombWeapon(_mapManager, charges)
         }
         throw new ArgumentError("unknown special bomb type");
     }

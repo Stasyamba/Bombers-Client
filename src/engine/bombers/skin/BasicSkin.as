@@ -4,15 +4,13 @@
  */
 
 package engine.bombers.skin {
-import components.common.bombers.BomberType
-
-public class BomberSkin {
+public class BasicSkin {
 
     public var name:String
     public var skinElements:Object;
     public var colors:Object;
 
-    public function BomberSkin(name:String, skinElements:Object, colors:Object) {
+    public function BasicSkin(name:String, skinElements:Object, colors:Object) {
         this.name = name;
         this.skinElements = skinElements;
         this.colors = colors;

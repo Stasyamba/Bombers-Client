@@ -4,8 +4,6 @@
  */
 
 package engine.data.common.bombs {
-import engine.data.common.*;
-
 import flash.display.Bitmap
 import flash.display.BitmapData
 
@@ -27,7 +25,7 @@ public class Bombs {
     [Embed(source="redGlow.png")]
     private static var redGlow:Class;
 
-      public static function get BLUE_GLOW():BitmapData {
+    public static function get BLUE_GLOW():BitmapData {
         if (blueGlowBitmap == null) {
             blueGlowBitmap = new blueGlow();
             blueGlowBitmap.smoothing = true;

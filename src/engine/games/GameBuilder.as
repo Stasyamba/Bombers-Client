@@ -8,7 +8,10 @@ import components.common.worlds.locations.LocationType
 
 import engine.data.quests.Quests
 import engine.games.quest.QuestGame
-import engine.games.quest.goals.GoalsBuilder
+import engine.games.quest.QuestObject
+import engine.games.quest.goals.IGoal
+import engine.games.quest.monsters.MonsterType
+import engine.games.quest.monsters.walking.WalkingStrategy
 import engine.games.regular.RegularGame
 import engine.playerColors.PlayerColor
 import engine.profiles.PlayerGameProfile
@@ -32,7 +35,7 @@ public class GameBuilder {
         throw new Error("No more colors")
     }
 
-    public function makeRegular(mapId:int,location:LocationType, playerProfiles:Array):IGame {
+    public function makeRegular(mapId:int, location:LocationType, playerProfiles:Array):IGame {
         var game:RegularGame = new RegularGame(location);
         for each (var prof:PlayerGameProfile in playerProfiles) {
             game.addPlayer(prof, getColor(prof.slot))
@@ -41,23 +44,23 @@ public class GameBuilder {
         return game;
     }
 
-    public function makeQuest(gameType:GameType, location:LocationType, questId:String,gameId:String):IGame {
-        var xml:XML = Quests.questXml(questId)
-        switch (gameType) {
-            case GameType.QUEST:
-                var game:QuestGame = new QuestGame(gameId,location);
-                //todo:deal with colors
-                game.addPlayer(Context.gameServer.mySelf, getColor(1))
-                for each (var enemy:XML in xml.enemies.Enemy) {
-                    game.addBot()
-                }
-                for each (var goal:XML in xml.goals.children()) {
-                    game.addGoal(GoalsBuilder.makeFromXml(goal));
-                }
-                game.applyMapXml(xml.map)
-                return game;
+    public function makeQuest(quest:QuestObject, gameId:String):IGame {
+        var xml:XML = Quests.questXml(quest.id)
+        var game:QuestGame = new QuestGame(gameId, quest);
+        //todo:deal with colors
+        var plSpawn:XML = xml.map.Map.spawns.Spawn[0]
+        game.addPlayer(plSpawn.x, plSpawn.y, getColor(1))
+        for each (var m:XML in xml.monsters.Monster) {
+            game.addMonster(m.@x, m.@y, MonsterType.byId(m.@monsterId), m.@slot != null ? m.@slot : -1, WalkingStrategy.byId(m.@walks))
         }
-        throw new ArgumentError("invalid gameType");
+
+        game.applyMapXml(xml.map.Map[0])
+
+        for each (var goal:IGoal in quest.goals) {
+            game.addGoal(goal);
+        }
+
+        return game;
     }
 }
 }

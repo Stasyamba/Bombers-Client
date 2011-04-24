@@ -4,17 +4,14 @@
  */
 
 package engine.bombers.interfaces {
-import engine.bombers.skin.BomberSkin
+import engine.bombers.skin.BasicSkin
 import engine.bombers.skin.SkinElement
-import engine.playerColors.PlayerColor
 import engine.utils.Direction
-
-import flash.display.Sprite
 
 public interface IGameSkin {
     function updateSkin(dir:Direction):void;
 
-    function get skin():BomberSkin;
+    function get skin():BasicSkin;
 
     function get currentSkin():SkinElement;
 

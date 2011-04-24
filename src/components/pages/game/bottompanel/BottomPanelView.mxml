@@ -26,7 +26,7 @@
 
             Context.Model.addCustomListener(ContextEvent.GPAGE_MY_PARAMETERS_IS_CHANGED, function (e:ContextEvent):void {
                 if (Context.gameModel.isPlayingNow) {
-                    mySpeed.count = BomberType.getViewSpeed(Context.Model.currentSettings.gameProfile.currentBomberType, Context.game.playerManager.me.speed);
+                    mySpeed.count = Context.Model.currentSettings.gameProfile.currentBomberType.getViewSpeed(Context.game.playerManager.me.speed);
                     myBombsCount.count = Context.game.playerManager.me.baseBombCount;
                     myWavePower.count = Context.game.playerManager.me.bombPower;
                     myHealth.count = Context.game.playerManager.me.life;
@@ -74,7 +74,7 @@
 
 
         private function updateFromBomberType():void {
-            mySpeed.count = BomberType.getViewSpeed(Context.Model.currentSettings.gameProfile.currentBomberType, Context.Model.currentSettings.gameProfile.currentBomberType.speed);
+            mySpeed.count = Context.Model.currentSettings.gameProfile.currentBomberType.getViewSpeed(Context.Model.currentSettings.gameProfile.currentBomberType.speed);
             myBombsCount.count = Context.Model.currentSettings.gameProfile.currentBomberType.bombCount;
             myWavePower.count = Context.Model.currentSettings.gameProfile.currentBomberType.bombPower;
             myHealth.count = Context.Model.currentSettings.gameProfile.currentBomberType.startLife;

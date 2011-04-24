@@ -5,14 +5,15 @@
 
 package engine.bombers.view {
 import engine.EngineContext
+import engine.bombers.CreatureBase
 import engine.bombers.interfaces.IEnemyBomber
 import engine.interfaces.IDestroyable
 import engine.utils.Direction
 
-public class EnemyView extends BomberViewBase implements IDestroyable {
+public class EnemyView extends CreatureViewBase implements IDestroyable {
 
     public function EnemyView(bomber:IEnemyBomber) {
-        super(bomber);
+        super(bomber as CreatureBase);
         EngineContext.enemyInputDirectionChanged.add(inputDirectionChanged);
         EngineContext.enemySmoothMovePerformed.add(updateCoords)
         EngineContext.enemyDied.add(onEnemyDied);
@@ -35,7 +36,7 @@ public class EnemyView extends BomberViewBase implements IDestroyable {
     }
 
     private function get bomber():IEnemyBomber {
-        return _bomber as IEnemyBomber;
+        return _creature as IEnemyBomber;
     }
 
     public function destroy():void {
@@ -45,7 +46,7 @@ public class EnemyView extends BomberViewBase implements IDestroyable {
     }
 
     protected function onEnemyDied(slot:int):void {
-        if (slot == _bomber.slot) {
+        if (slot == _creature.slot) {
             onDied();
             destroy();
         }

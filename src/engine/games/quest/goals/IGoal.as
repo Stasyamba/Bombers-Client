@@ -8,5 +8,7 @@ import engine.games.quest.IQuestGame
 
 public interface IGoal {
     function check(game:IQuestGame):Boolean
+
+    function get text():String
 }
 }

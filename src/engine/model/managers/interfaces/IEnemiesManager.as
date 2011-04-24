@@ -1,6 +1,7 @@
 package engine.model.managers.interfaces {
 import engine.bombers.interfaces.IEnemyBomber
 import engine.explosionss.interfaces.IExplosion
+import engine.games.quest.monsters.Monster
 import engine.maps.interfaces.IDynObject
 
 public interface IEnemiesManager {
@@ -23,5 +24,7 @@ public interface IEnemiesManager {
     function checkEnemiesMetExplosion(e:IExplosion):void;
 
     function checkEnemyTakenObject(enemie:IEnemyBomber, object:IDynObject):Boolean
+
+    function addMonster(monster:Monster):void
 }
 }

@@ -6,7 +6,6 @@
 package engine.bombers {
 import engine.EngineContext
 import engine.bombers.interfaces.IEnemyBomber
-import engine.data.Consts
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
 import engine.playerColors.PlayerColor

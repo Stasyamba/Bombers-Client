@@ -5,7 +5,8 @@
 
 package engine.maps.mapBlocks.mapBlockStates {
 import engine.explosionss.interfaces.IExplosion
-import engine.maps.interfaces.IBigObject
+import engine.maps.bigObjects.BigObjectBase
+import engine.maps.bigObjects.SimpleBigObject
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlockState
@@ -22,7 +23,7 @@ public class BlockUnderBigObject implements IMapBlockState {
     private var _typeAfterObjectDestroyed:MapBlockType;
     private var _objectAfterObjectDestroyed:IDynObjectType;
 
-    private var objectUnder:IBigObject;
+    private var objectUnder:BigObjectBase;
     private var _explodes:Boolean;
 
     public function explodesAndStopsExplosion():Boolean {
@@ -47,7 +48,7 @@ public class BlockUnderBigObject implements IMapBlockState {
 
     public function explode(expl:IExplosion):void {
         if (_explodes)
-            objectUnder.explode(expl);
+            (objectUnder as SimpleBigObject).explode(expl);
     }
 
     public function get type():MapBlockType {
@@ -70,7 +71,7 @@ public class BlockUnderBigObject implements IMapBlockState {
 
     }
 
-    public function BlockUnderBigObject(explodesAndStopsExplosion:Boolean, canGoThrough:Boolean, canSetBomb:Boolean, canExplosionGoThrough:Boolean, typeAfterObjectDestroyed:MapBlockType, objectAfterObjectDestroyed:IDynObjectType, explodes:Boolean, objectUnder:IBigObject) {
+    public function BlockUnderBigObject(explodesAndStopsExplosion:Boolean, canGoThrough:Boolean, canSetBomb:Boolean, canExplosionGoThrough:Boolean, typeAfterObjectDestroyed:MapBlockType, objectAfterObjectDestroyed:IDynObjectType, explodes:Boolean, objectUnder:BigObjectBase) {
         _explodesAndStopsExplosion = explodesAndStopsExplosion;
         _canGoThrough = canGoThrough;
         _canSetBomb = canSetBomb;

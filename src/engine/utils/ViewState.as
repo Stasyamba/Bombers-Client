@@ -4,9 +4,9 @@
  */
 
 package engine.utils {
-import greensock.TweenMax
-
 import flash.display.Sprite
+
+import greensock.TweenMax
 
 public class ViewState {
     private var _name:String;

@@ -19,7 +19,7 @@ public class MapManager implements IMapManager {
 
     public function make(xml:XML):IMap {
         _map = new Map(xml, mapBlockBuilder);
-         return _map;
+        return _map;
     }
 
     public function get map():IMap {

@@ -4,7 +4,6 @@
  */
 
 package engine.model.signals.manage {
-
 import engine.profiles.LobbyProfile
 
 import org.osflash.signals.Signal

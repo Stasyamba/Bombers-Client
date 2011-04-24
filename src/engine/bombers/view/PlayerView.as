@@ -5,19 +5,17 @@
 
 package engine.bombers.view {
 import engine.EngineContext
+import engine.bombers.CreatureBase
 import engine.bombers.interfaces.IPlayerBomber
 import engine.data.Consts
 import engine.interfaces.IDestroyable
 import engine.utils.Direction
 
-import flash.display.BitmapData
+import flash.display.Sprite
 
 import greensock.TweenMax
 
-import flash.display.Bitmap
-import flash.display.Sprite
-
-public class PlayerView extends BomberViewBase implements IDestroyable {
+public class PlayerView extends CreatureViewBase implements IDestroyable {
 
     private var playerPointer:Sprite;
     private var pulsesCount:int;
@@ -25,7 +23,7 @@ public class PlayerView extends BomberViewBase implements IDestroyable {
     private var pointerTween:TweenMax;
 
     public function PlayerView(bomber:IPlayerBomber) {
-        super(bomber);
+        super(bomber as CreatureBase);
 
         EngineContext.playerCoordinatesChanged.add(updateCoords);
         EngineContext.playerInputDirectionChanged.add(onInputDirectionChanged);
@@ -37,7 +35,7 @@ public class PlayerView extends BomberViewBase implements IDestroyable {
     }
 
     private function onInputDirectionChanged(x:Number, y:Number, dir:Direction, viewDirChanged:Boolean):void {
-        if (_bomber.isDead)
+        if (_creature.isDead)
             return;
         draw();
     }
@@ -90,7 +88,7 @@ public class PlayerView extends BomberViewBase implements IDestroyable {
     }
 
     private function get bomber():IPlayerBomber {
-        return _bomber as IPlayerBomber;
+        return _creature as IPlayerBomber;
     }
 
     public function destroy():void {

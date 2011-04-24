@@ -4,7 +4,7 @@
  */
 
 package engine.bombers.view {
-import engine.bombers.interfaces.IBomber
+import engine.bombers.CreatureBase
 import engine.bombers.skin.ColoredGameSkin
 import engine.bombers.skin.SkinElement
 import engine.data.Consts
@@ -13,14 +13,15 @@ import engine.interfaces.IDrawable
 import engine.utils.IStatedView
 import engine.utils.ViewState
 import engine.utils.ViewStateManager
-import greensock.TweenMax
 
 import flash.display.BlendMode
 import flash.display.Sprite
 
-public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
+import greensock.TweenMax
 
-    protected var _bomber:IBomber;
+public class CreatureViewBase extends Sprite implements IDrawable,IStatedView {
+
+    protected var _creature:CreatureBase;
 
     protected var healthBar:Sprite = new Sprite();
 
@@ -31,9 +32,9 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
     private var _tunableProperties:Object = {x:true,y:true,alpha:true,blendMode:true,scaleX:true,scaleY:true};
     private var _defaultAlpha:Number = 1;
 
-    public function BomberViewBase(bomber:IBomber) {
+    public function CreatureViewBase(bomber:CreatureBase) {
         super();
-        _bomber = bomber;
+        _creature = bomber;
         this.x = bomber.coords.getRealX();
         this.y = bomber.coords.getRealY();
         healthBar = new Sprite();
@@ -43,9 +44,9 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
 
         stateManager = new ViewStateManager(this);
 
-        this._bomber.stateAdded.add(addState);
-        this._bomber.stateRemoved.add(removeState);
-        this._bomber.lifeChanged.add(draw)
+        this._creature.stateAdded.add(addState);
+        this._creature.stateRemoved.add(removeState);
+        this._creature.lifeChanged.add(draw)
         draw();
     }
 
@@ -62,9 +63,9 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
         if (_mask != null && this.contains(_mask))
             removeChild(_mask);
 
-        if (_bomber.isDead) {
+        if (_creature.isDead) {
             graphics.clear()
-            if(contains(healthBar))
+            if (contains(healthBar))
                 removeChild(healthBar);
             return;
         }
@@ -73,7 +74,7 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
 
         graphics.clear();
 
-        var directionSkin:SkinElement = _bomber.gameSkin.currentSkin;
+        var directionSkin:SkinElement = _creature.gameSkin.currentSkin;
 
         graphics.beginBitmapFill(directionSkin.skin.bitmapData);
         graphics.drawRect(0, 0, Consts.BOMBER_SIZE, Consts.BOMBER_SIZE);
@@ -81,15 +82,15 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
 
         rotation = 0;
 
-        if (_bomber.gameSkin.isColored){
-            _mask = (_bomber.gameSkin as ColoredGameSkin).currentMask;
+        if (_creature.gameSkin.isColored) {
+            _mask = (_creature.gameSkin as ColoredGameSkin).currentMask;
             addChildAt(_mask, 0);
         }
     }
 
     private function drawHealthBar():void {
         healthBar.graphics.clear();
-        healthBar.graphics.beginBitmapFill(Context.imageService.healthBar(_bomber.life / _bomber.startLife));
+        healthBar.graphics.beginBitmapFill(Context.imageService.healthBar(_creature.life / _creature.startLife));
         healthBar.graphics.drawRect(0, 0, Consts.HEALTH_BAR_WIDTH, Consts.HEALTH_BAR_HEIGHT)
         healthBar.graphics.endFill();
     }
@@ -112,8 +113,8 @@ public class BomberViewBase extends Sprite implements IDrawable,IStatedView {
 
     public function getDefaultProperty(prop:String):* {
         switch (prop) {
-            case "x": return _bomber.coords.getRealX();
-            case "y": return _bomber.coords.getRealY();
+            case "x": return _creature.coords.getRealX();
+            case "y": return _creature.coords.getRealY();
             case "alpha": return _defaultAlpha;
             case "blendMode":return BlendMode.NORMAL;
             case "scaleX": return 1.0;

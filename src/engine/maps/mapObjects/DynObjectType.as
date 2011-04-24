@@ -8,6 +8,8 @@ import engine.bombss.BombType
 import engine.maps.interfaces.IDynObjectType
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.maps.mapObjects.mines.MineType
+import engine.maps.mapObjects.special.SpecialObjectType
+import engine.utils.Utils
 
 import loading.LoaderUtils
 
@@ -32,6 +34,9 @@ public class DynObjectType implements IDynObjectType {
     }
 
     public static function byValue(value:int):IDynObjectType {
+        if (Utils.between(1011, value, 1013))
+            return SpecialObjectType.byValue(value)
+
         switch (value) {
             case NULL.value:return NULL;
             case BonusType.ADD_BOMB.value:return BonusType.ADD_BOMB;
@@ -67,7 +72,7 @@ public class DynObjectType implements IDynObjectType {
             case BombType.ATOM.key:return BombType.ATOM
             case BombType.DYNAMITE.key:return BombType.DYNAMITE
         }
-        throw new ArgumentError("bad value")
+        throw new ArgumentError("bad value " + key)
     }
 
     public function get waitToAdd():int {

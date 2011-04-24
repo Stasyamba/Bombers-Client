@@ -7,10 +7,13 @@ package engine.ui {
 import engine.EngineContext
 import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.view.EnemyView
+import engine.bombers.view.MonsterView
 import engine.bombers.view.PlayerView
 import engine.data.Consts
 import engine.explosionss.ExplosionView
 import engine.games.IGame
+import engine.games.quest.monsters.Monster
+import engine.games.regular.RegularGame
 import engine.interfaces.IDestroyable
 import engine.interfaces.IDrawable
 import engine.maps.MapView
@@ -77,10 +80,18 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
         mapBlocksView = new MapBlocksView(game.mapManager.map)
         contentUI.addChild(mapBlocksView);
 
-        game.enemiesManager.forEachAliveEnemy(function todo(item:IEnemyBomber, slot:int):void {
-            var enemyView:EnemyView = new EnemyView(item);
-            enemiesViews.addItem(enemyView);
-            contentUI.addChild(enemyView);
+        if (game is RegularGame) {
+            (game as RegularGame).enemiesManager.forEachAliveEnemy(function todo(item:IEnemyBomber, slot:int):void {
+                var enemyView:EnemyView = new EnemyView(item);
+                enemiesViews.addItem(enemyView);
+                contentUI.addChild(enemyView);
+            })
+        }
+
+        game.monstersManager.forEachAliveMonster(function todo(item:Monster, slot:int):void {
+            var monsterView:MonsterView = new MonsterView(item);
+            enemiesViews.addItem(monsterView);
+            contentUI.addChild(monsterView);
         })
 
         playerView = new PlayerView(game.playerManager.me);

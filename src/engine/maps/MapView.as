@@ -9,7 +9,7 @@ import components.common.worlds.locations.LocationType
 import engine.data.Consts
 import engine.interfaces.IDestroyable
 import engine.interfaces.IDrawable
-import engine.maps.interfaces.IBigObject
+import engine.maps.bigObjects.BigObjectBase
 
 import flash.display.BitmapData
 import flash.display.Sprite
@@ -37,11 +37,11 @@ public class MapView extends Sprite implements IDrawable,IDestroyable {
         graphics.endFill()
 
 
-        for each (var obj:IBigObject in map.decorations) {
+        for each (var obj:BigObjectBase in map.decorations) {
             var sp:Sprite = new Sprite()
-            sp.graphics.beginBitmapFill(Context.imageService.bigObject(obj.description.skin));
-            sp.graphics.drawRect(0, 0, obj.description.width * Consts.BLOCK_SIZE, obj.description.height * Consts.BLOCK_SIZE);
-            sp.graphics.endFill();
+//            sp.graphics.beginBitmapFill(Context.imageService.bigObject(obj.description.skin));
+//            sp.graphics.drawRect(0, 0, obj.description.width * Consts.BLOCK_SIZE, obj.description.height * Consts.BLOCK_SIZE);
+//            sp.graphics.endFill();
             sp.x = obj.x * Consts.BLOCK_SIZE;
             sp.y = obj.y * Consts.BLOCK_SIZE;
             addChild(sp);

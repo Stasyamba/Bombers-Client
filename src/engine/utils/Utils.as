@@ -4,15 +4,10 @@
  */
 
 package engine.utils {
-import engine.explosionss.RegularExplosion
-
-import flash.display.Bitmap
 import flash.ui.Keyboard
 import flash.utils.ByteArray
 import flash.utils.getDefinitionByName
 import flash.utils.getQualifiedClassName
-
-import mx.utils.ObjectUtil
 
 public class Utils {
 
@@ -25,6 +20,7 @@ public class Utils {
     public static function checkNick(nick:String):Boolean {
         return nick.length >= 4 && !(nick.length > 12)
     }
+
     public static function isArrowKey(code:uint):Boolean {
         return code == Keyboard.LEFT || code == Keyboard.RIGHT || code == Keyboard.UP || code == Keyboard.DOWN;
     }

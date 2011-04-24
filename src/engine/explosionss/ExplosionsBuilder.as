@@ -16,20 +16,20 @@ public class ExplosionsBuilder {
         this.mapManager = mapManager;
     }
 
-    public function make(explType:ExplosionType,owner:IBomber, centerX:int = -1, centerY:int = -1, power:int = -1):IExplosion {
+    public function make(explType:ExplosionType, owner:IBomber, centerX:int = -1, centerY:int = -1, power:int = -1):IExplosion {
         switch (explType) {
             case ExplosionType.REGULAR:
-                return new RegularExplosion(mapManager.map,owner, centerX, centerY, power)
+                return new RegularExplosion(mapManager.map, owner, centerX, centerY, power)
             case ExplosionType.ATOM:
-                return new AtomExplosion(mapManager.map,owner, centerX, centerY)
+                return new AtomExplosion(mapManager.map, owner, centerX, centerY)
             case ExplosionType.BOX:
                 return new BoxExplosion(mapManager.map, centerX, centerY)
             case ExplosionType.DYNAMITE:
-                var e:RegularExplosion = new RegularExplosion(mapManager.map,owner, centerX, centerY, 2)
+                var e:RegularExplosion = new RegularExplosion(mapManager.map, owner, centerX, centerY, 2)
                 e.damage = 2;
                 return e
             case ExplosionType.SMOKE:
-                return new SmokeExplosion(mapManager.map,owner,centerX,centerY)
+                return new SmokeExplosion(mapManager.map, owner, centerX, centerY)
             case ExplosionType.NULL:
                 return NullExplosion.getInstance();
         }

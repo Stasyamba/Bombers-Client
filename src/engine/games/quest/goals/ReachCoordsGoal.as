@@ -6,13 +6,14 @@
 package engine.games.quest.goals {
 import engine.games.quest.IQuestGame
 
-public class ReachCoordsGoal implements IGoal {
+public class ReachCoordsGoal extends GoalBase implements IGoal {
 
     private var _x:int;
     private var _y:int;
     public static const name:String = "ReachCoordsGoal";
 
-    public function ReachCoordsGoal(x:int, y:int) {
+    public function ReachCoordsGoal(text:String, x:int, y:int) {
+        super(text)
         _x = x;
         _y = y;
     }

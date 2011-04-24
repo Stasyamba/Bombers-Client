@@ -11,10 +11,11 @@ import engine.maps.mapObjects.DynObjectType
 import engine.utils.IStatedView
 import engine.utils.ViewState
 import engine.utils.ViewStateManager
-import greensock.TweenMax
 
 import flash.display.BlendMode
 import flash.display.Sprite
+
+import greensock.TweenMax
 
 public class MineView extends DestroyableSprite implements IStatedView {
     private var block:IMapBlock;

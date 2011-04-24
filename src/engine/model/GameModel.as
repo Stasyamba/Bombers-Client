@@ -32,6 +32,10 @@ import engine.profiles.LobbyProfile
 import engine.profiles.PlayerGameProfile
 
 import greensock.TweenMax
+import greensock.loading.ImageLoader
+import greensock.loading.LoaderMax
+import greensock.loading.SWFLoader
+import greensock.loading.XMLLoader
 
 import loading.BombersContentLoader
 
@@ -92,9 +96,12 @@ public class GameModel {
     //----------init-------------
 
     public function init():void {
+        LoaderMax.activate([XMLLoader,SWFLoader,ImageLoader])
         BombersContentLoader.questsLoaded.add(fillQuests)
         BombersContentLoader.loadQuests()
-        BombersContentLoader.loadImages()
+        BombersContentLoader.loadGraphics()
+        BombersContentLoader.loadBombers()
+        BombersContentLoader.loadMonsters()
 
         Context.gameServer.connected.add(onGameServerConnected);
         Context.gameServer.loggedIn.add(onLoggedIn);
@@ -108,7 +115,8 @@ public class GameModel {
         for each(var name:String in Quests.questsNames) {
             var xml:XML = Quests.questXml(name)
             var lId:int = xml.location;
-            (_quests[lId] as ArrayCollection).addItem(new QuestObject(xml))
+            var q:QuestObject = new QuestObject(xml);
+            (_quests[lId] as ArrayCollection).addItem(q)
         }
         //check
         for (var i:int = 0; i < _quests.length; i++) {
@@ -118,6 +126,15 @@ public class GameModel {
                 trace("quest " + qObj.name + " at loc " + i + ": " + qObj.description)
             }
         }
+    }
+
+    public function getQuestObject(id:String):QuestObject {
+        var loc_id:int = id.substr(1, 2) as int
+        for each (var q:QuestObject in _quests[loc_id]) {
+            if (q.id == id)
+                return q
+        }
+        throw new Error("no quest with loc_id = " + loc_id + " and id = " + id)
     }
 
     private function onGameServerConnected():void {
@@ -148,7 +165,7 @@ public class GameModel {
             })
         })
 
-        Context.game = gameBuilder.makeQuest(GameType.QUEST,currentLocation, questId, gameId);
+        Context.game = gameBuilder.makeQuest(getQuestObject(questId), gameId);
 
     }
 
@@ -240,7 +257,7 @@ public class GameModel {
         Context.gameServer.joinDefaultRoom();
     }
 
-    private function onQuestCreated(gameId:String, questId:String):void {
+    private function onQuestCreated(questId:String, gameId:String):void {
         createQuestFailed.removeAll()
         questGameCreated.removeAll()
         leftGame.add(onLeftGame)
@@ -312,7 +329,7 @@ public class GameModel {
             var playerGP:PlayerGameProfile = data[i];
             this.playerGameProfiles[playerGP.slot] = playerGP
         }
-        Context.game = gameBuilder.makeRegular(mapId,currentLocation, playerGameProfiles);
+        Context.game = gameBuilder.makeRegular(mapId, currentLocation, playerGameProfiles);
         if (Context.game.ready) {
             gameReady.dispatch();
         } else {

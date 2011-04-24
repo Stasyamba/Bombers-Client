@@ -6,12 +6,13 @@
 package engine.games.quest.goals {
 import engine.games.quest.IQuestGame
 
-public class ActivateBOGoal implements IGoal{
+public class ActivateBOGoal extends GoalBase implements IGoal {
     private var _boId:int
 
-    public static const name:String = "DestroyBOGoal";
+    public static const name:String = "ActivateBOGoal";
 
-    public function ActivateBOGoal(boId:int) {
+    public function ActivateBOGoal(text:String, boId:int) {
+        super(text)
         _boId = boId
     }
 

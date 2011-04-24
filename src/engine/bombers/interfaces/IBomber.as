@@ -11,7 +11,6 @@ import engine.maps.IMap
 import engine.model.signals.StateAddedSignal
 import engine.model.signals.StateRemovedSignal
 import engine.playerColors.PlayerColor
-
 import engine.weapons.WeaponType
 
 import org.osflash.signals.Signal
@@ -97,5 +96,7 @@ public interface IBomber {
     function resetSpeed():void
 
     function getTotalBlockChance(bt:BomberType):Number
+
+    function get bomberType():BomberType
 }
 }

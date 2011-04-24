@@ -7,7 +7,6 @@ package engine.games {
 import components.common.worlds.locations.LocationType
 
 import engine.bombers.PlayersBuilder
-import engine.bombers.interfaces.IBomber
 import engine.explosionss.ExplosionPoint
 import engine.explosionss.ExplosionsBuilder
 import engine.explosionss.interfaces.IExplosion
@@ -16,7 +15,6 @@ import engine.maps.builders.MapBlockBuilder
 import engine.maps.builders.MapBlockStateBuilder
 import engine.maps.interfaces.IMapBlock
 import engine.model.managers.interfaces.IDynObjectManager
-import engine.model.managers.interfaces.IEnemiesManager
 import engine.model.managers.interfaces.IExplosionsManager
 import engine.model.managers.interfaces.IMapManager
 import engine.model.managers.interfaces.IPlayerManager
@@ -35,7 +33,7 @@ public class GameBase {
     //managers
     protected var _mapManager:MapManager;
     protected var _playerManager:IPlayerManager;
-    protected var _enemiesManager:IEnemiesManager;
+
     protected var _explosionsManager:IExplosionsManager;
     protected var _dynObjectManager:IDynObjectManager;
 
@@ -59,10 +57,6 @@ public class GameBase {
         return _playerManager;
     }
 
-    public function get enemiesManager():IEnemiesManager {
-        return _enemiesManager;
-    }
-
     public function get dynObjectManager():IDynObjectManager {
         return _dynObjectManager;
     }
@@ -71,11 +65,6 @@ public class GameBase {
         return _explosionsManager;
     }
 
-    public function getPlayer(slot:int):IBomber {
-        if (slot == playerManager.mySlot)
-            return playerManager.me;
-        return enemiesManager.getEnemyBySlot(slot);
-    }
 
     //----------------Handlers---------------
 
@@ -99,5 +88,6 @@ public class GameBase {
     public function get explosionExchangeBuffer():Array {
         return _explosionExchangeBuffer
     }
+
 }
 }

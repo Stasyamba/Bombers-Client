@@ -73,25 +73,26 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals
-
-        import appmodel.ApplicationModel
-
-        import components.ApplicationView
-        import components.WallView
-        import components.common.profiles.VkontakteProfile
-        import components.common.utils.enviroment.vkontakte.ApiResult
-        import components.common.utils.enviroment.vkontakte.FlashVars
-
-        import components.common.worlds.locations.LocationType
-        import components.pages.world.windows.friendsgame.TypeGameToggle
-
-        import greensock.loading.LoaderMax
-        import greensock.loading.SWFLoader
-        import greensock.loading.data.SWFLoaderVars
-        import greensock.loading.display.ContentDisplay
-
-        import mx.core.IVisualElement
+			import api.vkontakte.VkontakteGlobals;
+			
+			import appmodel.ApplicationModel;
+			
+			import components.ApplicationView;
+			import components.WallView;
+			import components.common.profiles.VkontakteProfile;
+			import components.common.utils.enviroment.vkontakte.ApiResult;
+			import components.common.utils.enviroment.vkontakte.FlashVars;
+			import components.common.worlds.locations.LocationType;
+			import components.pages.world.windows.friendsgame.TypeGameToggle;
+			
+			import greensock.TweenMax;
+			import greensock.events.LoaderEvent;
+			import greensock.loading.LoaderMax;
+			import greensock.loading.SWFLoader;
+			import greensock.loading.data.SWFLoaderVars;
+			import greensock.loading.display.ContentDisplay;
+			
+			import mx.core.IVisualElement;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
@@ -184,12 +185,25 @@
 
             chooseModeGroup.visible = false;
             Security.allowDomain("*")
-            var l:SWFLoader = new SWFLoader("http://www.vensella.ru/eg/en.swf?14231", new SWFLoaderVars().name("l00.monsters.en").onComplete(function () {
-                var c:ContentDisplay = LoaderMax.getContent("l00.monsters.en")
-                testContent.addChild(c)
-                var mc:MovieClip = c.getChildAt(0) as MovieClip;
+            var l:SWFLoader = new SWFLoader("http://www.vensella.ru/eg/en.swf?231", new SWFLoaderVars()
+				.name("l00.monsters.en")
+				.context(new LoaderContext(false,ApplicationDomain.currentDomain))
+				.onComplete(function (e:LoaderEvent) {
+					var cl:Class = (e.target as SWFLoader).getClass("Enemies")
+					var c:Object = new cl()
+					testContent.addChild(c as MovieClip)
+					c.setMove(0)
+					TweenMax.delayedCall(3,c.setMove,[1])
+					TweenMax.delayedCall(6,c.setMove,[2])
+					TweenMax.delayedCall(9,c.setMove,[3])
+					TweenMax.delayedCall(12,c.setMove,[4])
+					
+                //var c:ContentDisplay = LoaderMax.getContent("l00.monsters.en")
+                //testContent.addChild(c)
+                //var mc:MovieClip = c.getChildAt(0) as MovieClip;
                 //(mc as Object).setMove(2)
-                trace(mc["stopMove"])
+               // trace(mc["stopMove"])
+					
 //                var lo : LoadedObject = Context.imageService.loadedObject("l00.monsters.en")
 //                    var mc:MovieClip = lo.content
 //                    testContent.addChild(mc)

@@ -4,12 +4,6 @@
  */
 
 package engine.data.quests {
-import greensock.events.LoaderEvent
-import greensock.loading.LoaderMax
-import greensock.loading.XMLLoader
-import greensock.loading.data.LoaderMaxVars
-import greensock.loading.data.XMLLoaderVars
-
 import loading.BombersContentLoader
 
 public class Quests {

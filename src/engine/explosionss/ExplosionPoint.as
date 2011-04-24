@@ -13,14 +13,14 @@ public class ExplosionPoint {
     private var _x:int;
     private var _y:int;
     // array of ExplosionPointLayerObject
-    public var layers : Array = new Array()
+    public var layers:Array = new Array()
 
-    public function ExplosionPoint(x:int, y:int, type:ExplosionPointType,owner:IBomber = null,ep:ExplosionType = null) {
+    public function ExplosionPoint(x:int, y:int, type:ExplosionPointType, owner:IBomber = null, ep:ExplosionType = null) {
         _x = x;
         _y = y;
         _type = type;
-        if(owner!=null)
-            layers.push(new ExplosionPointLayerObject(owner,ep))
+        if (owner != null)
+            layers.push(new ExplosionPointLayerObject(owner, ep))
     }
 
     public function get type():ExplosionPointType {

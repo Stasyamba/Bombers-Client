@@ -4,6 +4,7 @@
  */
 
 package engine.maps.mapBlocks.mapBlockStates {
+import engine.bombers.CreatureBase
 import engine.bombers.interfaces.IBomber
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.interfaces.IActiveMapBlockState
@@ -13,17 +14,21 @@ import engine.maps.mapObjects.NullDynObject
 import engine.model.explosionss.ExplosionType
 import engine.ui.IceSprite
 import engine.utils.ViewState
-import greensock.TweenMax
 import engine.weapons.WeaponType
+
+import greensock.TweenMax
 
 public class IceBlock implements IActiveMapBlockState {
     public function IceBlock() {
     }
 
-    public function activateOn(bomber:IBomber):void {
-        if (!bomber.hasAura(WeaponType.ICE_AURA)) {
-            freeze(bomber)
-            TweenMax.delayedCall(3, unfreeze, [bomber])
+    public function activateOn(creature:CreatureBase):void {
+        var b:IBomber = creature as IBomber
+        if (b != null) {
+            if (!b.hasAura(WeaponType.ICE_AURA)) {
+                freeze(b)
+                TweenMax.delayedCall(3, unfreeze, [creature])
+            }
         }
     }
 

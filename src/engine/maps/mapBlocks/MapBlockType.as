@@ -59,7 +59,7 @@ public class MapBlockType {
             case "ELECTRO_HOR":return ELECTRO_HOR;
             case "ELECTRO_VERT":return ELECTRO_VERT;
         }
-        throw new ArgumentError("invalid key value")
+        throw new ArgumentError("invalid key value " + key)
     }
 
     public static function fromChar(ch:uint):MapBlockType {

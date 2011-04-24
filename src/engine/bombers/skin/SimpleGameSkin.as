@@ -9,7 +9,7 @@ import engine.utils.Direction
 
 public class SimpleGameSkin implements IGameSkin {
 
-    private var _skin:BomberSkin;
+    private var _skin:BasicSkin;
     private var _currentSkin:SkinElement;
 
     public function get isColored():Boolean {
@@ -18,7 +18,7 @@ public class SimpleGameSkin implements IGameSkin {
 
     private var masks:Object = new Object();
 
-    public function SimpleGameSkin(skin:BomberSkin) {
+    public function SimpleGameSkin(skin:BasicSkin) {
         _skin = skin;
         _currentSkin = skin.skinElements[Direction.NONE.key];
 
@@ -28,7 +28,7 @@ public class SimpleGameSkin implements IGameSkin {
         _currentSkin = _skin.skinElements[dir.key];
     }
 
-    public function get skin():BomberSkin {
+    public function get skin():BasicSkin {
         return _skin;
     }
 

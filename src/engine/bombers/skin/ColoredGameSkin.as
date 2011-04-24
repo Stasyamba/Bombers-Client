@@ -14,7 +14,7 @@ import flash.display.Sprite
 
 public class ColoredGameSkin implements IGameSkin {
 
-    private var _skin:BomberSkin;
+    private var _skin:BasicSkin;
     private var _currentSkin:SkinElement;
 
     public function get isColored():Boolean {
@@ -25,7 +25,7 @@ public class ColoredGameSkin implements IGameSkin {
     private var masks:Object = new Object();
     private var _currentMask:Sprite;
 
-    public function ColoredGameSkin(skin:BomberSkin, color:PlayerColor) {
+    public function ColoredGameSkin(skin:BasicSkin, color:PlayerColor) {
         _skin = skin;
         this.color = color;
         masks.left = getMask(Direction.LEFT)
@@ -52,7 +52,7 @@ public class ColoredGameSkin implements IGameSkin {
         _color = value;
     }
 
-    public function get skin():BomberSkin {
+    public function get skin():BasicSkin {
         return _skin;
     }
 

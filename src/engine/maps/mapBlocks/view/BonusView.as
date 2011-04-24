@@ -8,9 +8,10 @@ import engine.data.Consts
 import engine.interfaces.IDrawable
 import engine.maps.interfaces.IMapBlock
 import engine.maps.mapObjects.DynObjectType
-import greensock.TweenMax
 
 import flash.display.Sprite
+
+import greensock.TweenMax
 
 public class BonusView extends DestroyableSprite implements IDrawable {
 

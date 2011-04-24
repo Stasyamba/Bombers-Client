@@ -4,8 +4,6 @@
  */
 
 package engine.games.regular {
-import engine.games.*;
-
 import components.common.worlds.locations.LocationType
 
 import engine.EngineContext
@@ -15,13 +13,15 @@ import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.interfaces.IPlayerBomber
 import engine.data.common.maps.Maps
 import engine.explosionss.ExplosionsBuilder
-import engine.games.regular.IMultiPlayerGame
+import engine.games.*
 import engine.maps.builders.DynObjectBuilder
 import engine.maps.builders.MapBlockBuilder
 import engine.maps.builders.MapBlockStateBuilder
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock
+import engine.model.managers.interfaces.IEnemiesManager
+import engine.model.managers.quest.MonstersManager
 import engine.model.managers.regular.DynObjectManager
 import engine.model.managers.regular.EnemiesManager
 import engine.model.managers.regular.ExplosionsManager
@@ -30,13 +30,16 @@ import engine.model.managers.regular.PlayerManager
 import engine.playerColors.PlayerColor
 import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
-import greensock.TweenMax
 import engine.weapons.WeaponBuilder
 import engine.weapons.WeaponType
 import engine.weapons.interfaces.IActivatableWeapon
 import engine.weapons.interfaces.IDeactivatableWeapon
 
+import greensock.TweenMax
+
 public class RegularGame extends GameBase implements IMultiPlayerGame {
+
+    protected var _enemiesManager:IEnemiesManager;
 
     private var _weaponsUsed:Array = new Array()
 
@@ -54,7 +57,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         _playerManager = new PlayerManager();
         _enemiesManager = new EnemiesManager();
 
-        _explosionsManager = new ExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
+        _explosionsManager = new ExplosionsManager(explosionsBuilder, mapManager, playerManager);
         _dynObjectManager = new DynObjectManager(playerManager, mapManager)
         weaponBuilder = new WeaponBuilder(_mapManager)
         playersBuilder = new PlayersBuilder(weaponBuilder);
@@ -242,6 +245,21 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
     public function get location():LocationType {
         return _location
+    }
+
+    public function get enemiesManager():IEnemiesManager {
+        return _enemiesManager;
+    }
+
+    public function getPlayer(slot:int):IBomber {
+        if (slot == playerManager.mySlot)
+            return playerManager.me;
+        return enemiesManager.getEnemyBySlot(slot);
+    }
+
+    public function get monstersManager():MonstersManager {
+        //todo:shit
+        return new MonstersManager()
     }
 }
 }

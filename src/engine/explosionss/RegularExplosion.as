@@ -17,7 +17,7 @@ public class RegularExplosion extends ExplosionBase implements IExplosion {
     private var _damage:int = 1
 
     public function RegularExplosion(map:IMap, owner:IBomber, centerX:int = -1, centerY:int = -1, power:int = -1) {
-        super(map, centerX, centerY,owner)
+        super(map, centerX, centerY, owner)
         this.initialPower = power;
         timeToLive = type.timeToLive;
     }
@@ -38,7 +38,7 @@ public class RegularExplosion extends ExplosionBase implements IExplosion {
         var willExpand:Boolean = canExpand(direction, toX, toY) && power > 0;
 
         var epType:ExplosionPointType = ExplosionPointType.getExplosionPointType(willExpand, direction);
-        addPoint(new ExplosionPoint(toX, toY, epType,_owner,type));
+        addPoint(new ExplosionPoint(toX, toY, epType, _owner, type));
 
 
         if (willExpand) {
@@ -49,7 +49,7 @@ public class RegularExplosion extends ExplosionBase implements IExplosion {
 
 
     public function perform():void {
-        addPoint(new ExplosionPoint(centerX, centerY, ExplosionPointType.CROSS,_owner,type));
+        addPoint(new ExplosionPoint(centerX, centerY, ExplosionPointType.CROSS, _owner, type));
 
         if (canExpand(Direction.LEFT, centerX, centerY))
             expand(centerX - 1, centerY, Direction.LEFT, initialPower - 1);

@@ -33,5 +33,6 @@ public class Consts {
     public static const LOCATIONS_COUNT:int = 9
 
 
+    public static const SPEED_BONUS_MULTIPLIER:Number = 1.1
 }
 }

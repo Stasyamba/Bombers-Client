@@ -28,13 +28,13 @@ public interface IMapCoords {
 
     function setYExplicit(y:Number):void;
 
-    function stepLeft(moveAmount:Number,spectatorMode:Boolean = false):void;
+    function stepLeft(moveAmount:Number, spectatorMode:Boolean = false):void;
 
-    function stepRight(moveAmount:Number,spectatorMode:Boolean = false):void;
+    function stepRight(moveAmount:Number, spectatorMode:Boolean = false):void;
 
-    function stepUp(moveAmount:Number,spectatorMode:Boolean = false):void;
+    function stepUp(moveAmount:Number, spectatorMode:Boolean = false):void;
 
-    function stepDown(moveAmount:Number,spectatorMode:Boolean = false):void;
+    function stepDown(moveAmount:Number, spectatorMode:Boolean = false):void;
 
     function getRealX():Number;
 

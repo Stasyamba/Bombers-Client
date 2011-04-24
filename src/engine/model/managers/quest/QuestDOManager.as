@@ -5,22 +5,21 @@
 
 package engine.model.managers.quest {
 import engine.EngineContext
-import engine.bombers.interfaces.IEnemyBomber
+import engine.games.quest.monsters.Monster
 import engine.maps.interfaces.ICollectableDynObject
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.ITimeActivatableDynObject
-import engine.model.managers.interfaces.IEnemiesManager
 import engine.model.managers.interfaces.IMapManager
 import engine.model.managers.interfaces.IPlayerManager
 import engine.model.managers.regular.DynObjectManager
 
 public class QuestDOManager extends DynObjectManager {
 
-    private var _enemiesManager:IEnemiesManager;
+    private var _monstersManager:MonstersManager;
 
-    public function QuestDOManager(playerManager:IPlayerManager, enemiesManager:IEnemiesManager, mapManager:IMapManager) {
+    public function QuestDOManager(playerManager:IPlayerManager, monstersManager:MonstersManager, mapManager:IMapManager) {
         super(playerManager, mapManager)
-        _enemiesManager = enemiesManager;
+        _monstersManager = monstersManager;
     }
 
 
@@ -53,10 +52,10 @@ public class QuestDOManager extends DynObjectManager {
                 EngineContext.objectActivated.dispatch(playerManager.mySlot, object.block.x, object.block.y, object.type);
             }
         }
-        _enemiesManager.forEachAliveEnemy(function todo(enemy:IEnemyBomber, id:int) {
-            if (_enemiesManager.checkEnemyTakenObject(enemy, object)) {
+        _monstersManager.forEachAliveMonster(function todo(monster:Monster, id:int) {
+            if (_monstersManager.checkMonsterTakenObject(monster, object)) {
                 if (!object.wasTriedToBeTaken) {
-                    trace("enemie " + id + " tried to take")
+                    trace("monster " + id + " tried to take")
                     object.tryToTake();
                     EngineContext.objectActivated.dispatch(id, object.block.x, object.block.y, object.type);
                 }

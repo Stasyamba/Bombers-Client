@@ -8,12 +8,13 @@ import engine.games.quest.IQuestGame
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IDynObjectType
 
-public class CollectObjectsGoal implements IGoal {
+public class CollectObjectsGoal extends GoalBase implements IGoal {
 
     private var _amount:MapObjectAmount;
     public static const name:String = "CollectObjectsGoal";
 
-    public function CollectObjectsGoal(amount:MapObjectAmount) {
+    public function CollectObjectsGoal(text:String, amount:MapObjectAmount) {
+        super(text)
         _amount = amount
     }
 

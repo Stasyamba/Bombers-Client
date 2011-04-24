@@ -4,10 +4,18 @@
  */
 
 package engine.maps {
+import engine.games.quest.monsters.MonsterType
+import engine.games.quest.spawns.MonsterSpawn
+import engine.maps.bigObjects.ActivatedBigObject
+import engine.maps.bigObjects.BigObjectActivator
+import engine.maps.bigObjects.BigObjectBase
+import engine.maps.bigObjects.BigObjectLayer
+import engine.maps.bigObjects.SimpleBigObject
 import engine.maps.builders.MapBlockBuilder
-import engine.maps.interfaces.IBigObject
 import engine.maps.interfaces.IMapBlock
 import engine.maps.mapBlocks.MapBlockType
+import engine.shadows.ShadowObject
+import engine.shadows.ShadowShape
 import engine.utils.Direction
 
 import mx.collections.ArrayList
@@ -21,18 +29,21 @@ public class Map implements IMap {
 
     private var _blocks:Vector.<IMapBlock>;
 
-    private var _lowerBigObjects:Vector.<IBigObject> = new Vector.<IBigObject>;
-    private var _higherBigObjects:Vector.<IBigObject> = new Vector.<IBigObject>;
-    private var _decorations:Vector.<IBigObject> = new Vector.<IBigObject>;
+    private var _bigObjects:Array = new Array()
+    private var _lowerBigObjects:Vector.<BigObjectBase> = new Vector.<BigObjectBase>;
+    private var _higherBigObjects:Vector.<BigObjectBase> = new Vector.<BigObjectBase>;
+    private var _decorations:Vector.<BigObjectBase> = new Vector.<BigObjectBase>;
 
 
     private var _width:uint;
     private var _height:uint;
     private var _spawns:Array = new Array();
+    private var _monsterSpawns:Array = new Array()
 
     private var _explosionPrints:ArrayList = new ArrayList();
 
     private var _blockDestroyed:Signal = new Signal(int, int, MapBlockType)
+    private var _shadows:Array = new Array()
 
     //blockBuilder is injected via mapBuilder
     public function Map(xml:XML, blockBuilder:MapBlockBuilder) {
@@ -67,39 +78,66 @@ public class Map implements IMap {
                         _blockDestroyed.dispatch(x, y, type);
                     })
                 } catch(er:ArgumentError) {
-                    Alert.show("String contains bad symbols");
+                    Alert.show("String contains bad symbol " + rowStr.charCodeAt(x));
                 }
             }
             y++;
         }
 
-        //decorations
-        for each (var bObj:XML in xml.decorations.Decoration) {
-//            var descr:IBigObjectDescription = BigObjects.objects[String(bObj.@id)] as IBigObjectDescription;
-//            var origin:Point = new Point(bObj.@x, bObj.@y);
-//            var blocksArr:Vector.<IMapBlock> = new Vector.<IMapBlock>();
-//            var bo:IBigObject = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder, true)
-//            decorations.push(bo);
-        }
         //bigObjects
+        for each (var bObj:XML in xml.bigObjects.BigObject) {
+            var bo:BigObjectBase;
+            switch (String(bObj.@t)) {
+                case "activator":
+                    bo = new BigObjectActivator(bObj, this, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder)
+                    break
+                case "activated":
+                    bo = new ActivatedBigObject(bObj, this, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder)
+                    break
+                case "simple":
+                    bo = new SimpleBigObject(bObj, this, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder, bObj.@life)
+                    break
+            }
+            _bigObjects[bo.id] = bo
+            switch (bo.layer) {
+                case BigObjectLayer.DECORATION:
+                    decorations.push(bo)
+                    break
+                case BigObjectLayer.HIGHER:
+                    higherBigObjects.push(bo);
+                    break
+                case BigObjectLayer.LOWER:
+                    lowerBigObjects.push(bo);
+                    break
+                default:
+                    throw new Error("impossible case")
+            }
+        }
+        //resolve activators links
         for each (bObj in xml.bigObjects.BigObject) {
-//            descr = BigObjects.objects[String(bObj.@id)] as IBigObjectDescription;
-//            origin = new Point(bObj.@x, bObj.@y);
-//            blocksArr = new Vector.<IMapBlock>();
-//            for (var i:int = 0; i < descr.blocks.length; i++) {
-//                var obj:Object = descr.blocks[i]
-//                blocksArr.push(getBlock(origin.x + int(obj.x), origin.y + int(obj.y)));
-//            }
-//            //todo: BO builder
-//            bo = new BigObject(origin.x, origin.y, descr, blocksArr, blockBuilder.mapBlockStateBuilder, blockBuilder.dynObjectBuilder)
-//            if (bObj.@layer == "higher")
-//                higherBigObjects.push(bo);
-//            else
-//                lowerBigObjects.push(bo);
+            var bo:BigObjectBase = getBO(bObj.@id)
+            if (bo is BigObjectActivator) {
+                var target:ActivatedBigObject = getBO(bObj.@target) as ActivatedBigObject
+                if (target == null) {
+                    throw new Error("couldn't find target with id = " + bObj.@target)
+                }
+                (bo as BigObjectActivator).setTarget(target)
+            }
         }
         for each (var spawn:XML in xml.spawns.Spawn) {
             _spawns.push({x:spawn.@x,y:spawn.@y})
         }
+        for each (var mSpawn:XML in xml.spawns.MonsterSpawn) {
+            _monsterSpawns.push(new MonsterSpawn(mSpawn.@x, mSpawn.@y, MonsterType.byId(mSpawn.@monsterId), mSpawn.@freq, mSpawn.@start, mSpawn.@stop))
+        }
+        //shadows
+        for each (var s:XML in xml.shadows.Shadow) {
+            _shadows.push(new ShadowObject(s.@x, s.@y, s.@width, s.@height, ShadowShape.fromString(s.@shape)))
+        }
+    }
+
+    private function getBO(id:int):BigObjectBase {
+        return _bigObjects[id]
     }
 
     private function index(x:int, y:int):int {
@@ -175,20 +213,32 @@ public class Map implements IMap {
         return _explosionPrints;
     }
 
-    public function get lowerBigObjects():Vector.<IBigObject> {
+    public function get lowerBigObjects():Vector.<BigObjectBase> {
         return _lowerBigObjects;
     }
 
-    public function get higherBigObjects():Vector.<IBigObject> {
+    public function get higherBigObjects():Vector.<BigObjectBase> {
         return _higherBigObjects;
     }
 
-    public function get decorations():Vector.<IBigObject> {
+    public function get decorations():Vector.<BigObjectBase> {
         return _decorations;
     }
 
     public function get blockDestroyed():Signal {
         return _blockDestroyed;
+    }
+
+    public function get bigObjects():Array {
+        return _bigObjects
+    }
+
+    public function get monsterSpawns():* {
+        return _monsterSpawns
+    }
+
+    public function get shadows():Array {
+        return _shadows
     }
 }
 }

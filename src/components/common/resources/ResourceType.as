@@ -23,5 +23,21 @@ public class ResourceType {
     public function get name():String {
         return _name;
     }
+
+    public static function byId(id:int):ResourceType {
+        switch (id) {
+            case GOLD._value:
+                return GOLD
+            case CRYSTALS._value:
+                return CRYSTALS
+            case ADAMANT._value:
+                return ADAMANT
+            case ANTIMATTER._value:
+                return ANTIMATTER
+            case ENERGY._value:
+                return ENERGY
+        }
+        throw new Error("no resource with id = " + id)
+    }
 }
 }

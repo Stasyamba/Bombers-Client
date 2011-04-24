@@ -3,7 +3,7 @@
  * Pavkin Vladimir
  */
 
-package engine.bombers.bots {
+package engine.games.quest.monsters.walking {
 import engine.bombers.interfaces.IMapCoords
 import engine.utils.Direction
 

@@ -4,7 +4,7 @@
  */
 
 package engine.games.regular {
-import engine.games.*;
+import engine.games.*
 
 public interface IMultiPlayerGame extends IGame {
 }

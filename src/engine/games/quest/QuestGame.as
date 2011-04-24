@@ -4,21 +4,19 @@
  */
 
 package engine.games.quest {
-import com.smartfoxserver.v2.entities.User
-
-import components.common.bombers.BomberType
 import components.common.worlds.locations.LocationType
 
 import engine.EngineContext
 import engine.bombers.PlayersBuilder
-import engine.bombers.bots.AlongRightWallWalkingStrategy
 import engine.bombers.interfaces.IBomber
-import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.interfaces.IPlayerBomber
-import engine.data.common.maps.Maps
+import engine.data.Consts
 import engine.explosionss.ExplosionsBuilder
 import engine.games.*
 import engine.games.quest.goals.IGoal
+import engine.games.quest.monsters.Monster
+import engine.games.quest.monsters.MonsterType
+import engine.games.quest.monsters.walking.IWalkingStrategy
 import engine.maps.builders.DynObjectBuilder
 import engine.maps.builders.MapBlockBuilder
 import engine.maps.builders.MapBlockStateBuilder
@@ -26,8 +24,8 @@ import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.IMapBlock
 import engine.maps.mapBlocks.MapBlockType
+import engine.model.managers.quest.MonstersManager
 import engine.model.managers.quest.QuestDOManager
-import engine.model.managers.quest.QuestEnemiesManager
 import engine.model.managers.quest.QuestExplosionsManager
 import engine.model.managers.regular.MapManager
 import engine.model.managers.regular.PlayerManager
@@ -45,14 +43,16 @@ import mx.controls.Alert
 
 public class QuestGame extends GameBase implements IQuestGame {
 
-
     private var _goals:ArrayList = new ArrayList();
     private var _gameStats:GameStats = new GameStats();
 
     private var _gameId:String
+    private var _questObject:QuestObject
 
-    public function QuestGame(gameId:String, location:LocationType) {
-        super(location)
+    private var _monstersManager:MonstersManager
+
+    public function QuestGame(gameId:String, quest:QuestObject) {
+        super(LocationType.byValue(quest.locationId))
         _gameId = gameId
 
         mapBlockStateBuilder = new MapBlockStateBuilder();
@@ -65,16 +65,16 @@ public class QuestGame extends GameBase implements IQuestGame {
 
 
         _playerManager = new PlayerManager();
-        _enemiesManager = new QuestEnemiesManager();
+        _monstersManager = new MonstersManager();
 
-        _explosionsManager = new QuestExplosionsManager(explosionsBuilder, mapManager, playerManager, enemiesManager);
-        _dynObjectManager = new QuestDOManager(playerManager, enemiesManager, mapManager);
+        _explosionsManager = new QuestExplosionsManager(explosionsBuilder, mapManager, playerManager, monstersManager);
+        _dynObjectManager = new QuestDOManager(playerManager, monstersManager, mapManager);
         weaponBuilder = new WeaponBuilder(_mapManager)
         playersBuilder = new PlayersBuilder(weaponBuilder)
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
             EngineContext.frameEntered.add(playerManager.movePlayer);
-            EngineContext.frameEntered.add(enemiesManager.moveEnemies);
+            EngineContext.frameEntered.add(monstersManager.moveMonsters);
             EngineContext.frameEntered.add(explosionsManager.checkExplosions);
             EngineContext.frameEntered.add(dynObjectManager.checkObjectsActivated);
 
@@ -91,6 +91,8 @@ public class QuestGame extends GameBase implements IQuestGame {
             EngineContext.explosionsRemoved.add(onExplosionsRemoved)
 
             EngineContext.taskAccomplished.add(onTaskAccomplished)
+
+            EngineContext.needToAddMonster.add(addMonster)
         })
 
         //goals
@@ -122,7 +124,6 @@ public class QuestGame extends GameBase implements IQuestGame {
         return true;
     }
 
-
     private function onWeaponUsed(slot:int, x:int, y:int, type:WeaponType):void {
         var b:IBomber = getPlayer(slot);
         //todo: govnocode!!!
@@ -139,34 +140,26 @@ public class QuestGame extends GameBase implements IQuestGame {
         _goals.addItem(goal);
     }
 
-    public function addPlayer(mySelf:User, color:PlayerColor):void {
+    public function addPlayer(x:int, y:int, color:PlayerColor):void {
         var gp:GameProfile = Context.Model.currentSettings.gameProfile
-        playerManager.setPlayer(playersBuilder.makePlayer(this, gp, new PlayerGameProfile(1, gp.currentBomberType, 0, 0, gp.aursTurnedOn), color));
+        playerManager.setPlayer(playersBuilder.makePlayer(this, gp, new PlayerGameProfile(1, gp.currentBomberType, x, y, gp.aursTurnedOn), color));
     }
 
-    public function addBot():void {
-        enemiesManager.addEnemy(playersBuilder.makeEnemyBot(this, new PlayerGameProfile(enemiesManager.enemiesCount + 2, BomberType.R2D3, 0, 0, new Array()), "bot" + enemiesManager.enemiesCount, new AlongRightWallWalkingStrategy()))
+    public function addMonster(x:int, y:int, monsterType:MonsterType, slot:int = -1, walkingStrategy:IWalkingStrategy = null):void {
+        var monster:Monster = playersBuilder.makeMonster(this,x,y, slot > 0 ? slot : monstersManager.getNewSlot(), monsterType, walkingStrategy)
+        monstersManager.addMonster(monster)
+        EngineContext.monsterAdded.dispatch(monster)
     }
-
 
     public function get type():GameType {
         return GameType.QUEST;
     }
 
-    public function applyMap(mapId:String):void {
-        var xml:XML = Maps.getXmlById(mapId);
-        if (xml == null) { //need to load map
-            Context.gameModel.mapLoaded.addOnce(onMapLoaded);
-        } else {
-            onMapLoaded(xml);
-        }
-    }
-
     private function onMapLoaded(xml:XML):void {
         mapManager.make(xml);
         playerManager.me.putOnMap(mapManager.map, mapManager.map.spawns[0].x, mapManager.map.spawns[0].y);
-        enemiesManager.forEachAliveEnemy(function(enemy:IEnemyBomber, slot:int):void {
-            enemy.putOnMap(mapManager.map, mapManager.map.spawns[slot].x, mapManager.map.spawns[slot].y)
+        monstersManager.forEachAliveMonster(function(monster:Monster, slot:int):void {
+            monster.putOnMap(mapManager.map, monster.startX, monster.startY)
         })
         mapManager.map.blockDestroyed.add(function(x:int, y:int, type:MapBlockType):void {
             gameStats.destroyedBlocks.addItem({type:type,x:x,y:y});
@@ -188,6 +181,20 @@ public class QuestGame extends GameBase implements IQuestGame {
 
     public function get gameId():String {
         return _gameId
+    }
+
+    public function getPlayer(slot:int):IBomber {
+        if (slot == playerManager.mySlot)
+            return playerManager.me;
+        return monstersManager.getMonsterBySlot(slot);
+    }
+
+    public function get monstersManager():MonstersManager {
+        return _monstersManager
+    }
+
+    public function get questObject():QuestObject {
+        return _questObject
     }
 }
 }

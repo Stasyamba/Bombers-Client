@@ -4,11 +4,13 @@
  */
 
 package engine.bombers {
-import engine.bombers.bots.IWalkingStrategy
 import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
 import engine.games.IGame
+import engine.games.quest.monsters.Monster
+import engine.games.quest.monsters.MonsterType
+import engine.games.quest.monsters.walking.IWalkingStrategy
 import engine.playerColors.PlayerColor
 import engine.profiles.GameProfile
 import engine.profiles.LobbyProfile
@@ -29,8 +31,8 @@ public class PlayersBuilder {
         return new EnemyBomber(game, playerProfile, lobbyProfile.nick, color);
     }
 
-    public function makeEnemyBot(game:IGame, playerProfile:PlayerGameProfile, name:String, walkingStrategy:IWalkingStrategy):IEnemyBomber {
-        return new BotEnemyBomber(game, playerProfile, name, walkingStrategy);
+    public function makeMonster(game:IGame,x:int,y:int, slot:int, monsterType:MonsterType, walkingStrategy:IWalkingStrategy):Monster {
+        return new Monster(game, x,y,slot, monsterType, walkingStrategy);
     }
 
 

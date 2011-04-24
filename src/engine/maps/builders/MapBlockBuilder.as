@@ -20,7 +20,7 @@ public class MapBlockBuilder {
     }
 
     public function make(x:int, y:int, type:MapBlockType):IMapBlock {
-        if(type == MapBlockType.NULL)
+        if (type == MapBlockType.NULL)
             return NullMapBlock.getInstance()
         return new MapBlock(x, y, mapBlockStateBuilder.make(type), mapBlockStateBuilder, dynObjectBuilder);
     }

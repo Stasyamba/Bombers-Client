@@ -5,15 +5,16 @@
 
 package loading {
 import components.common.bombers.BomberType
+import components.common.items.ItemType
 import components.common.worlds.locations.LocationType
+
+import engine.games.quest.monsters.MonsterType
 
 import flash.utils.Dictionary
 
 import greensock.events.LoaderEvent
-import greensock.loading.ImageLoader
 import greensock.loading.LoaderMax
 import greensock.loading.LoaderStatus
-import greensock.loading.SWFLoader
 import greensock.loading.XMLLoader
 import greensock.loading.core.LoaderCore
 import greensock.loading.data.LoaderMaxVars
@@ -23,29 +24,73 @@ import org.osflash.signals.Signal
 
 public class BombersContentLoader {
 
-    private static const IMAGES_ADDRESS:String = "http://www.vensella.ru/vp/"
+    private static const IMAGES_ADDRESS:String = "http://www.vensella.ru/vp/images/"
+    private static const QUESTS_ADDRESS:String = "http://www.vensella.ru/vp/quests/"
+    private static const MONSTERS_ADDRESS:String = "http://www.vensella.ru/vp/monsters/monsters.xml"
+    private static const BOMBERS_ADDRESS:String = "http://www.vensella.ru/vp/bombers/bombers.xml"
 
     private static var _filesXml:XML
     private static var _whatIsLoaded:Dictionary = new Dictionary()
-    private static var _loadedImages:Dictionary = new Dictionary()
-
+    private static var _loadedGraphics:Dictionary = new Dictionary()
+    private static var _monstersXml:XML
+    private static var _bombersXml:XML
 
     public static var locationLoaded:Signal = new Signal(LocationType)
     public static var bomberLoaded:Signal = new Signal(BomberType)
     public static var commonLoaded:Signal = new Signal()
     public static var allBombersLoaded:Signal = new Signal()
 
-    public static function loadImages():void {
-        LoaderMax.activate([XMLLoader,SWFLoader,ImageLoader])
-        var xmlLoader:XMLLoader = new XMLLoader(IMAGES_ADDRESS + "engine/files.xml",
+    // bombers
+    public static function loadBombers():void {
+        var xmlLoader:XMLLoader = new XMLLoader(BOMBERS_ADDRESS,
                 new XMLLoaderVars()
-                        .onComplete(onXmlComplete)
-                        .onError(onXmlError)
+                        .onComplete(onBombersXmlComplete)
+                        .onError(onBobmersXmlError)
+                        .noCache(true))
+        xmlLoader.load()
+    }
+     private static function onBobmersXmlError(e:LoaderEvent):void {
+        throw new Error("error loading bombers description: " + e.text)
+    }
+
+    private static function onBombersXmlComplete(e:LoaderEvent):void {
+        _bombersXml = (e.target as XMLLoader).content
+        for each (var b:XML in _bombersXml.M) {
+            BomberType.add(new BomberType(b.@id,b.@name, b.@graphicsId,ItemType.byValue(b.@bombId),b.@bombCount,b.@bombPower,b.@speed, b.@life,b.@crit,b.@block, b.@immortalTime))
+        }
+    }
+    // monsters
+    public static function loadMonsters():void {
+        var xmlLoader:XMLLoader = new XMLLoader(MONSTERS_ADDRESS,
+                new XMLLoaderVars()
+                        .onComplete(onMonstersXmlComplete)
+                        .onError(onMonstersXmlError)
                         .noCache(true))
         xmlLoader.load()
     }
 
-    private static function onXmlError(e:LoaderEvent):void {
+    private static function onMonstersXmlError(e:LoaderEvent):void {
+        throw new Error("error loading monsters description: " + e.text)
+    }
+
+    private static function onMonstersXmlComplete(e:LoaderEvent):void {
+        _monstersXml = (e.target as XMLLoader).content
+        for each (var m:XML in _monstersXml.M) {
+            MonsterType.add(new MonsterType(m.@id, m.@graphicsId, m.@speed, m.@life, m.@immortalTime, m.@name))
+        }
+    }
+
+    // graphics
+    public static function loadGraphics():void {
+        var xmlLoader:XMLLoader = new XMLLoader(IMAGES_ADDRESS + "engine/files.xml",
+                new XMLLoaderVars()
+                        .onComplete(onGraphicsXmlComplete)
+                        .onError(onGraphicsXmlError)
+                        .noCache(true))
+        xmlLoader.load()
+    }
+
+    private static function onGraphicsXmlError(e:LoaderEvent):void {
         throw new Error("Error loading files.xml: " + e.text)
     }
 
@@ -65,11 +110,11 @@ public class BombersContentLoader {
                             .name(fid))
             comQueue.append(ldr)
             trace("added common: " + fid)
-            _loadedImages[fid] = new LoadedObject(fid, ldr)
+            _loadedGraphics[fid] = new LoadedObject(fid, ldr)
         }
     }
 
-    private static function onXmlComplete(e:LoaderEvent):void {
+    private static function onGraphicsXmlComplete(e:LoaderEvent):void {
 
         _filesXml = (e.target as XMLLoader).content
 
@@ -122,7 +167,7 @@ public class BombersContentLoader {
                                 })
                                 .name(fid))
                 bArr.push(ldr)
-                _loadedImages[fid] = new LoadedObject(fid, ldr)
+                _loadedGraphics[fid] = new LoadedObject(fid, ldr)
             }
             var bLdr:LoaderCore = LoaderMax.parse(bArr,
                     new LoaderMaxVars()
@@ -196,7 +241,7 @@ public class BombersContentLoader {
                                     })
                                     .name(fid))
                     fldrLdr.append(ldr)
-                    _loadedImages[fid] = new LoadedObject(fid, ldr)
+                    _loadedGraphics[fid] = new LoadedObject(fid, ldr)
                 }
 
                 locLdr.append(fldrLdr)
@@ -227,8 +272,8 @@ public class BombersContentLoader {
         return _whatIsLoaded
     }
 
-    public static function get loadedImages():Dictionary {
-        return _loadedImages
+    public static function get loadedGraphics():Dictionary {
+        return _loadedGraphics
     }
 
     public static function addTask(taskSignal:Signal, array:Array):void {
@@ -258,10 +303,9 @@ public class BombersContentLoader {
         taskSignal.dispatch()
     }
 
-    //Quests
+    // Quests
 
     private static var _questsNames:Array = ["q00_00"]
-    private static const QUESTS_ADDRESS:String = "engine/data/quests/"
 
     private static var _areQuestsLoaded:Boolean = false
     private static var xmls:Array = new Array()
@@ -289,6 +333,7 @@ public class BombersContentLoader {
         for each (var name:String in _questsNames) {
             queue.append(new XMLLoader(name + ".xml", new XMLLoaderVars()
                     .name(name)
+                    .noCache(true)
                     .onError(
                     function(e:LoaderEvent) {
                         throw new Error("Error loading quest " + e.target.name + ": " + e.target.text)

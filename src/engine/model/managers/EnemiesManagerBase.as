@@ -10,21 +10,21 @@ public class EnemiesManagerBase {
     public function EnemiesManagerBase() {
     }
 
-    private var enemies:Array = new Array();
+    protected var _enemies:Array = new Array();
     private var _enemiesCount:int = 0;
 
     public function addEnemy(enemy:IEnemyBomber):void {
-        enemies[enemy.slot] = enemy;
+        _enemies[enemy.slot] = enemy;
         _enemiesCount++;
     }
 
     public function removeEnemyBySlot(slot:int):void {
-        enemies[slot] = null;
+        _enemies[slot] = null;
         _enemiesCount--;
     }
 
     public function getEnemyBySlot(slot:int):IEnemyBomber {
-        return enemies[slot];
+        return _enemies[slot];
     }
 
     public function get enemiesCount():int {
@@ -32,13 +32,13 @@ public class EnemiesManagerBase {
     }
 
     public function hasEnemy(slot:int):Boolean {
-        return !(enemies[slot] == null);
+        return !(_enemies[slot] == null);
     }
 
 
     public function forEachAliveEnemy(todo:Function):void {
-        for (var i:int = 0; i < enemies.length; i++) {
-            var enemy:IEnemyBomber = enemies[i];
+        for (var i:int = 0; i < _enemies.length; i++) {
+            var enemy:IEnemyBomber = _enemies[i];
             if (enemy != null && !enemy.isDead)
                 todo(enemy, i);
         }

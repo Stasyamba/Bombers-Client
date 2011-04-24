@@ -4,11 +4,11 @@
  */
 
 package engine.maps.mapBlocks.mapBlockStates {
+import engine.bombers.CreatureBase
 import engine.bombers.interfaces.IBomber
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.interfaces.IActiveMapBlockState
 import engine.maps.interfaces.IDynObject
-import engine.maps.interfaces.IMapBlockState
 import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapObjects.NullDynObject
 import engine.model.explosionss.ExplosionType
@@ -18,9 +18,12 @@ public class FireBlock implements IActiveMapBlockState {
     public function FireBlock() {
     }
 
-    public function activateOn(bomber:IBomber):void {
-        if (!bomber.hasAura(WeaponType.FIRE_AURA)){
-             bomber.life--
+    public function activateOn(creature:CreatureBase):void {
+       if (creature is IBomber) {
+            if (!((creature as IBomber).hasAura(WeaponType.FIRE_AURA))) {
+                creature.life--
+                creature.makeImmortalFor(creature.immortalTime,true)
+            }
         }
     }
 

@@ -7,12 +7,13 @@ package engine.games.quest.goals {
 import engine.games.quest.IQuestGame
 import engine.maps.mapBlocks.MapBlockType
 
-public class DestroyBlocksGoal implements IGoal {
+public class DestroyBlocksGoal extends GoalBase implements IGoal {
 
     public static const name:String = "DestroyBlocksGoal";
     private var _amount:MapBlockAmount;
 
-    public function DestroyBlocksGoal(amount:MapBlockAmount) {
+    public function DestroyBlocksGoal(text:String, amount:MapBlockAmount) {
+        super(text)
         _amount = amount;
     }
 

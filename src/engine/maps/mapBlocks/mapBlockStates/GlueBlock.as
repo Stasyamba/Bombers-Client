@@ -4,7 +4,7 @@
  */
 
 package engine.maps.mapBlocks.mapBlockStates {
-import engine.bombers.interfaces.IBomber
+import engine.bombers.CreatureBase
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.interfaces.IActiveMapBlockState
 import engine.maps.interfaces.IDynObject
@@ -16,8 +16,8 @@ public class GlueBlock implements IActiveMapBlockState {
     public function GlueBlock() {
     }
 
-    public function activateOn(bomber:IBomber):void {
-        bomber.setSpeed(20)
+    public function activateOn(creature:CreatureBase):void {
+        creature.setSpeed(20)
     }
 
     public function explodesAndStopsExplosion():Boolean {

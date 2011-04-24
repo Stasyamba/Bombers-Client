@@ -1,0 +1,46 @@
+<!--
+  ~ Copyright (c) 2011.
+  ~ Pavkin Vladimir
+  -->
+
+<Bombers>
+    <B id="00"
+       name="Злобный Джо"
+       graphicsId="b00"
+       bombId="00"
+       bombCount="1"
+       bombPower="1"
+       speed="100"
+       life="3"
+       crit="0.01"
+       block="0.01"
+       immortalTime="3">
+        <blocks>
+            <B id="00" val="0.05"/>
+            <L id="00" val="0.15"/>
+        </blocks>
+        <crits>
+            <B id="00" val="0.05"/>
+            <L id="00" val="0.15"/>
+        </crits>
+    </B>
+    <B id="01"
+       name="R2-D3"
+       graphicsId="b01"
+       bombId="00"
+       bombCount="1"
+       bombPower="1"
+       speed="100"
+       life="3"
+       crit="0.01"
+       block="0.01"
+       immortalTime="3">
+        <blocks>
+            <B id="01" val="0.25"/>
+        </blocks>
+        <crits>
+            <B id="01" val="0.25"/>
+        </crits>
+    </B>
+
+</Bombers>

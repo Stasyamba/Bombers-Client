@@ -7,7 +7,7 @@ package engine.bombers.skin {
 import engine.utils.Direction
 
 public class SkinInfo {
-    public var skin:BomberSkin;
+    public var skin:BasicSkin;
     public var currentSkin:SkinElement;
 
     public function updateSkin(dir:Direction):void {
@@ -32,7 +32,7 @@ public class SkinInfo {
         }
     }
 
-    public function SkinInfo(skin:BomberSkin, color:uint) {
+    public function SkinInfo(skin:BasicSkin, color:uint) {
         this.skin = skin;
         this.currentSkin = skin.none;
     }

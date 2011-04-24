@@ -4,7 +4,7 @@
  */
 
 package engine.maps {
-import engine.maps.interfaces.IBigObject
+import engine.maps.bigObjects.BigObjectBase
 import engine.maps.interfaces.IMapBlock
 import engine.utils.Direction
 
@@ -36,11 +36,11 @@ public interface IMap {
 
     function get explosionPrints():ArrayList;
 
-    function get higherBigObjects():Vector.<IBigObject>;
+    function get higherBigObjects():Vector.<BigObjectBase>;
 
-    function get lowerBigObjects():Vector.<IBigObject>;
+    function get lowerBigObjects():Vector.<BigObjectBase>;
 
-    function get decorations():Vector.<IBigObject>;
+    function get decorations():Vector.<BigObjectBase>;
 
     function get blockDestroyed():Signal;
 }

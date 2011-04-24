@@ -42,7 +42,7 @@ public class DynObjectBuilder {
                 return new BoxBomb(explosionsBuilder, block, owner)
             case BombType.DYNAMITE:
                 return new DynamiteBomb(explosionsBuilder, block, owner)
-             case BombType.SMOKE:
+            case BombType.SMOKE:
                 return new SmokeBomb(explosionsBuilder, block, owner)
             //bonuses
             case BonusType.ADD_BOMB:

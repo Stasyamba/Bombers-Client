@@ -1,0 +1,31 @@
+<!--
+  ~ Copyright (c) 2011.
+  ~ Pavkin Vladimir
+  -->
+
+<Monsters>
+    <M id="00.monsters.rat_01"
+       graphicsId="00.monsters.rat"
+       speed="60"
+       life="1"
+       immortalTime="2"
+       name="Говнокрыса"/>
+    <M id="00.monsters.rat_02"
+       graphicsId="00.monsters.rat"
+       speed="80"
+       life="3"
+       immortalTime="2"
+       name="Крыса"/>
+    <M id="00.monsters.rat_03"
+       graphicsId="00.monsters.rat"
+       speed="100"
+       life="5"
+       immortalTime="3"
+       name="Крутая крыса"/>
+    <M id="00.monsters.rat_04"
+       graphicsId="00.monsters.rat"
+       speed="100"
+       life="6"
+       immortalTime="4"
+       name="Мегаговнокрыса"/>
+</Monsters>

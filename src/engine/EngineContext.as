@@ -4,10 +4,14 @@
  */
 
 package engine {
+import engine.games.quest.monsters.Monster
+import engine.games.quest.monsters.MonsterType
 import engine.model.signals.DieWallAppearedSignal
 import engine.model.signals.FrameEnteredSignal
 import engine.model.signals.MissionAccomplishedSignal
 import engine.model.signals.MissionFailedSignal
+import engine.model.signals.MonsterCoordsChangedSignal
+import engine.model.signals.MonsterDirectionChangedSignal
 import engine.model.signals.MoveTickSignal
 import engine.model.signals.SmokeAddedSignal
 import engine.model.signals.WeaponActivatedSignal
@@ -74,6 +78,13 @@ public class EngineContext {
     //---frame
     private var _frameEntered:FrameEnteredSignal = new FrameEnteredSignal();
     private var _smokeAdded:SmokeAddedSignal = new SmokeAddedSignal()
+
+    //---quests only
+    private var _monsterDirectionChanged:MonsterDirectionChangedSignal = new MonsterDirectionChangedSignal()
+    private var _monsterCoordsChanged:MonsterCoordsChangedSignal = new MonsterCoordsChangedSignal()
+    private var _needToAddMonster:Signal = new Signal(MonsterType, Number, Number)
+    private var _monsterAdded:Signal = new Signal(Monster)
+    private var _monsterDied:Signal = new Signal(Monster)
 
 
     function EngineContext() {
@@ -227,6 +238,26 @@ public class EngineContext {
 
     public static function get moveTick():MoveTickSignal {
         return instance._moveTick
+    }
+
+    public static function get monsterDirectionChanged():MonsterDirectionChangedSignal {
+        return instance._monsterDirectionChanged
+    }
+
+    public static function get monsterCoordsChanged():MonsterCoordsChangedSignal {
+        return instance._monsterCoordsChanged
+    }
+
+    public static function get monsterDied():Signal {
+        return instance._monsterDied
+    }
+
+    public static function get needToAddMonster():Signal {
+        return instance._needToAddMonster
+    }
+
+    public static function get monsterAdded():Signal {
+        return instance._monsterAdded
     }
 }
 }

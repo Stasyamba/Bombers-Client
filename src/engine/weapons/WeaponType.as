@@ -14,9 +14,9 @@ public class WeaponType {
     public static const DYNAMITE_WEAPON:WeaponType = new WeaponType(03, "DYNAMITE_WEAPON");
     public static const SMOKE_BOMB_WEAPON:WeaponType = new WeaponType(04, "SMOKE_BOMB_WEAPON")
     //potions
-    public static const HAMELEON:WeaponType = new WeaponType(21, "HAMELEON_WEAPON",true);
-    public static const LITTLE_HEALTH_PACK_WEAPON:WeaponType = new WeaponType(22, "LITTLE_HEALTH_PACK_WEAPON",true)
-    public static const MEDIUM_HEALTH_PACK_WEAPON:WeaponType = new WeaponType(23, "MEDIUM_HEALTH_PACK_WEAPON",true)
+    public static const HAMELEON:WeaponType = new WeaponType(21, "HAMELEON_WEAPON", true);
+    public static const LITTLE_HEALTH_PACK_WEAPON:WeaponType = new WeaponType(22, "LITTLE_HEALTH_PACK_WEAPON", true)
+    public static const MEDIUM_HEALTH_PACK_WEAPON:WeaponType = new WeaponType(23, "MEDIUM_HEALTH_PACK_WEAPON", true)
     //mines
     public static const REGULAR_MINE:WeaponType = new WeaponType(41, "REGULAR_MINE_WEAPON");
     //auras
@@ -33,7 +33,7 @@ public class WeaponType {
     private var _decreaseOnActivate:Boolean
 
 
-    public function WeaponType(value:int, key:String,decreaseOnActivate:Boolean = false) {
+    public function WeaponType(value:int, key:String, decreaseOnActivate:Boolean = false) {
         _value = value;
         _key = key;
         _decreaseOnActivate = decreaseOnActivate

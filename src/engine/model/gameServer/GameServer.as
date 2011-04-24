@@ -699,7 +699,7 @@ public class GameServer extends SmartFox {
                 break;
             case LOBBY_LOCATION:
                 Context.gameModel.currentLocation = LocationType.byValue(responseParams.getInt("LocationId"))
-				break
+                break
             case LOBBY_READY:
                 var ready:Boolean = responseParams.getBool("IsReady")
                 var name:String = responseParams.getUtfString("Id");

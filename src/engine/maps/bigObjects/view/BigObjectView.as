@@ -7,35 +7,36 @@ package engine.maps.bigObjects.view {
 import engine.data.Consts
 import engine.explosionss.destroy.BasicDestroyExplosion
 import engine.interfaces.IDrawable
-import engine.maps.interfaces.IBigObject
+import engine.maps.bigObjects.BigObjectBase
 import engine.utils.IStatedView
 import engine.utils.ViewState
 import engine.utils.ViewStateManager
-import greensock.TweenMax
 
 import flash.display.BlendMode
 import flash.display.Sprite
 
+import greensock.TweenMax
+
 public class BigObjectView extends Sprite implements IDrawable,IStatedView {
 
-    private var object:IBigObject;
+    private var object:BigObjectBase;
 
     private var stateManager:ViewStateManager;
 
     private var _tunableProperties:Object = {x:true,y:true,alpha:true,blendMode:true,scaleX:true,scaleY:true};
     private var _defaultAlpha:Number = 1;
 
-    public function BigObjectView(obj:IBigObject) {
+    public function BigObjectView(obj:BigObjectBase) {
         super();
         object = obj;
         x = obj.x * Consts.BLOCK_SIZE;
         y = obj.y * Consts.BLOCK_SIZE;
 
         stateManager = new ViewStateManager(this)
-
-        obj.explosionStarted.add(onExplosionStarted)
-        obj.explosionStopped.add(onExplosionStopped)
-        obj.destroyed.add(onDestroyed)
+	//important, don't remove
+//        obj.explosionStarted.add(onExplosionStarted)
+//        obj.explosionStopped.add(onExplosionStopped)
+//        obj.destroyed.add(onDestroyed)
 
         draw();
 
@@ -70,10 +71,10 @@ public class BigObjectView extends Sprite implements IDrawable,IStatedView {
     }
 
     public function draw():void {
-        graphics.clear();
-        graphics.beginBitmapFill(Context.imageService.bigObject(object.description.skin));
-        graphics.drawRect(0, 0, object.description.width * Consts.BLOCK_SIZE, object.description.height * Consts.BLOCK_SIZE);
-        graphics.endFill();
+//        graphics.clear();
+//        graphics.beginBitmapFill(Context.imageService.bigObject(object.description.skin));
+//        graphics.drawRect(0, 0, object.description.width * Consts.BLOCK_SIZE, object.description.height * Consts.BLOCK_SIZE);
+//        graphics.endFill();
     }
 
     public function get tunableProperties():Object {

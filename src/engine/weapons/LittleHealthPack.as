@@ -15,7 +15,7 @@ public class LittleHealthPack extends ActivatableWeaponBase implements IActivata
     public static const HEALING_POWER:int = 1;
 
     public function canActivate(x:uint, y:uint, by:IBomber):Boolean {
-        return _charges>0 && by.life<by.startLife
+        return _charges > 0 && by.life < by.startLife
     }
 
     public function activate(x:uint, y:uint, by:IBomber):void {
@@ -23,7 +23,7 @@ public class LittleHealthPack extends ActivatableWeaponBase implements IActivata
     }
 
     public function activateStatic(b:IBomber, x:int, y:int):void {
-        activate(x,y,b)
+        activate(x, y, b)
     }
 
     public override function get type():WeaponType {

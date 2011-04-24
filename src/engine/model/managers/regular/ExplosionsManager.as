@@ -9,7 +9,6 @@ import engine.explosionss.*
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.interfaces.IMapBlock
 import engine.model.explosionss.ExplosionType
-import engine.model.managers.interfaces.IEnemiesManager
 import engine.model.managers.interfaces.IExplosionsManager
 import engine.model.managers.interfaces.IMapManager
 import engine.model.managers.interfaces.IPlayerManager
@@ -23,14 +22,12 @@ public class ExplosionsManager implements IExplosionsManager {
     protected var playerManager:IPlayerManager;
 
     protected var _allExplosions:IExplosion;
-    protected var enemiesManager:IEnemiesManager;
 
 
-    public function ExplosionsManager(explosionsBuilder:ExplosionsBuilder, mapManager:IMapManager, playerManager:IPlayerManager, enemiesManager:IEnemiesManager) {
+    public function ExplosionsManager(explosionsBuilder:ExplosionsBuilder, mapManager:IMapManager, playerManager:IPlayerManager) {
         this.explosionsBuilder = explosionsBuilder;
         this.mapManager = mapManager;
         this.playerManager = playerManager;
-        this.enemiesManager = enemiesManager
     }
 
     public function addExplosions(expls:Array):void {
@@ -50,7 +47,7 @@ public class ExplosionsManager implements IExplosionsManager {
 
     public function updateAllExplosions():void {
         var explType:ExplosionType = getAllExplosionsType();
-        var result:IExplosion = explosionsBuilder.make(explType,null);
+        var result:IExplosion = explosionsBuilder.make(explType, null);
 
         for each (var block:IMapBlock in mapManager.map.blocks) {
             var type:ExplosionPointType = ExplosionPointType.NONE;
@@ -66,11 +63,11 @@ public class ExplosionsManager implements IExplosionsManager {
                     layers = layers.concat(p.layers)
                 }
             }
-            if (type != ExplosionPointType.NONE){
+            if (type != ExplosionPointType.NONE) {
                 var pp:ExplosionPoint = new ExplosionPoint(block.x, block.y, type)
-				pp.layers = layers
+                pp.layers = layers
                 result.addPoint(p)
-			}
+            }
         }
         _allExplosions = result;
         EngineContext.explosionsUpdated.dispatch(result);

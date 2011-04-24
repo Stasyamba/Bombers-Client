@@ -4,10 +4,10 @@
  */
 
 package engine.explosionss.destroy {
-import greensock.TweenMax
-
 import flash.display.BlendMode
 import flash.display.Sprite
+
+import greensock.TweenMax
 
 public class BasicDestroyExplosion {
 

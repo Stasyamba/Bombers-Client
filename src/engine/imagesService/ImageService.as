@@ -7,7 +7,7 @@ package engine.imagesService {
 import components.common.bombers.BomberType
 import components.common.worlds.locations.LocationType
 
-import engine.bombers.skin.BomberSkin
+import engine.bombers.skin.BasicSkin
 import engine.bombers.skin.SkinElement
 import engine.bombss.BombType
 import engine.data.Consts
@@ -38,7 +38,7 @@ public class ImageService {
     }
 
     private function get loadedStuff():Dictionary {
-        return BombersContentLoader.loadedImages
+        return BombersContentLoader.loadedGraphics
     }
 
     public function ImageService() {
@@ -89,7 +89,7 @@ public class ImageService {
         return b;
     }
 
-    public function bomberSkin(bomberType:BomberType):BomberSkin {
+    public function bomberSkin(bomberType:BomberType):BasicSkin {
         if (_bomberSkins[bomberType.value] != null)
             return _bomberSkins[bomberType.value]
         return makeSkin(bomberType);
@@ -179,7 +179,7 @@ public class ImageService {
         return _bomberSkinsXml;
     }
 
-    private function makeSkin(b:BomberType):BomberSkin {
+    private function makeSkin(b:BomberType):BasicSkin {
         var skinXml:XMLList = bomberSkinsXml.child(b.name);
         var colorsObject:Object = new Object();
         var skinElements:Object = new Object();
@@ -194,7 +194,7 @@ public class ImageService {
         skinElements.down = new SkinElement(bomberSkinElement(b.stringId + ".down"), bomberSkinElement(b.stringId + ".down_mask"))
         skinElements.none = new SkinElement(bomberSkinElement(b.stringId + ".down"), bomberSkinElement(b.stringId + ".down_mask"))
 
-        return new BomberSkin(b.name, skinElements, colorsObject);
+        return new BasicSkin(b.name, skinElements, colorsObject);
     }
 
 }
