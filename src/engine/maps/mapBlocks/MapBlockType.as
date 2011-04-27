@@ -6,19 +6,21 @@
 package engine.maps.mapBlocks {
 public class MapBlockType {
 
-    public static const NULL:MapBlockType = new MapBlockType("NULL");
-    public static const FREE:MapBlockType = new MapBlockType("FREE");
-    public static const BOX:MapBlockType = new MapBlockType("BOX");
-    public static const WALL:MapBlockType = new MapBlockType("WALL");
-    public static const DEATH_WALL:MapBlockType = new MapBlockType("DEATH_WALL");
-    public static const FRAGILE_WALL:MapBlockType = new MapBlockType("FRAGILE_WALL");
-    public static const UNDER_BIG_OBJECT:MapBlockType = new MapBlockType("UNDER_BIG_OBJECT");
-    public static const FIRE:MapBlockType = new MapBlockType("FIRE")
-    public static const MAGNET:MapBlockType = new MapBlockType("MAGNET")
-    public static const ICE:MapBlockType = new MapBlockType("ICE")
-    public static const GLUE:MapBlockType = new MapBlockType("GLUE")
-    public static const ELECTRO_HOR:MapBlockType = new MapBlockType("ELECTRO_HOR")
-    public static const ELECTRO_VERT:MapBlockType = new MapBlockType("ELECTRO_VERT")
+    public static const DEFAULT_GRAPHICS_NAME:String = "_"
+
+    public static const NULL:MapBlockType = new MapBlockType("NULL",false,null);
+    public static const FREE:MapBlockType = new MapBlockType("FREE",false,null);
+    public static const BOX:MapBlockType = new MapBlockType("BOX",true,DEFAULT_GRAPHICS_NAME);
+    public static const WALL:MapBlockType = new MapBlockType("WALL",true,DEFAULT_GRAPHICS_NAME);
+    public static const DEATH_WALL:MapBlockType = new MapBlockType("DEATH_WALL",true,DEFAULT_GRAPHICS_NAME,"wall");
+    public static const FRAGILE_WALL:MapBlockType = new MapBlockType("FRAGILE_WALL",true,DEFAULT_GRAPHICS_NAME);
+    public static const UNDER_BIG_OBJECT:MapBlockType = new MapBlockType("UNDER_BIG_OBJECT",false,null);
+    public static const FIRE:MapBlockType = new MapBlockType("FIRE",true,"common.map.fire1")
+    public static const MAGNET:MapBlockType = new MapBlockType("MAGNET",true,"common.map.magnet1")
+    public static const ICE:MapBlockType = new MapBlockType("ICE",true,"common.map.ice1")
+    public static const GLUE:MapBlockType = new MapBlockType("GLUE",true,"common.map.glue1")
+    public static const ELECTRO_HOR:MapBlockType = new MapBlockType("ELECTRO_HOR",true,"common.map.electro-hor1")
+    public static const ELECTRO_VERT:MapBlockType = new MapBlockType("ELECTRO_VERT",true,"common.map.electro-vert1")
 
     private static const f:uint = 0x66;
     private static const b:uint = 0x62;
@@ -34,9 +36,15 @@ public class MapBlockType {
     private static const EV:uint = 0x7C;  //|
 
     private var _key:String;
+    private var _draws:Boolean
+    private var _graphicsName:String
+    private var _nameAs:String
 
-    public function MapBlockType(value:String) {
+    public function MapBlockType(value:String,draws:Boolean,graphicsName:String,drawAs:String = null) {
         _key = value;
+        _draws = draws
+        _graphicsName = graphicsName
+        _nameAs = drawAs
     }
 
     public function get key():String {
@@ -77,6 +85,18 @@ public class MapBlockType {
             case u: return UNDER_BIG_OBJECT;
         }
         throw new ArgumentError("Invalid block type char");
+    }
+
+    public function get draws():Boolean {
+        return _draws
+    }
+
+    public function get graphicsName():String {
+        return _graphicsName
+    }
+
+    public function get nameAs():String {
+        return _nameAs
     }
 }
 }

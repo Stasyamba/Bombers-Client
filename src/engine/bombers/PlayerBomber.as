@@ -180,7 +180,6 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         if (_prevDir != _direction.direction) {
             _serverDir = _direction.direction
             updateInputDirection()
-            Context.gameServer.sendPlayerDirectionChanged(_coords.getRealX(), _coords.getRealY(), _serverDir, false);
         }
     }
 

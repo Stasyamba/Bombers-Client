@@ -88,5 +88,13 @@ public class QuestObject {
     public function get bronzeMedal():MedalBase {
         return _bronzeMedal
     }
+
+    public function get imageURL():String {
+        return _xml.questImage
+    }
+
+    public function get previewImageURL():String {
+        return _xml.previewImage
+    }
 }
 }

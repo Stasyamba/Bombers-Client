@@ -35,6 +35,8 @@ import engine.model.signals.movement.PlayerInputDirectionChangedSignal
 import engine.model.signals.movement.PlayerViewDirectionChangedSignal
 import engine.model.signals.weapons.TriedToActivateWeaponSignal
 
+import engine.utils.Direction
+
 import org.osflash.signals.Signal
 
 public class EngineContext {
@@ -48,6 +50,7 @@ public class EngineContext {
     private var _playerViewDirectionChanged:PlayerViewDirectionChangedSignal = new PlayerViewDirectionChangedSignal();
     private var _playerInputDirectionChanged:PlayerInputDirectionChangedSignal = new PlayerInputDirectionChangedSignal();
     private var _enemyInputDirectionChanged:EnemyInputDirectionChangedSignal = new EnemyInputDirectionChangedSignal();
+    private var _enemyDirectionForecast:Signal = new Signal(int,Direction)
     private var _enemySmoothMovePerformed:EnemySmoothMovePerformedSignal = new EnemySmoothMovePerformedSignal();
     //---weapons
     private var _currentWeaponChanged:Signal = new Signal();
@@ -258,6 +261,10 @@ public class EngineContext {
 
     public static function get monsterAdded():Signal {
         return instance._monsterAdded
+    }
+
+    public static function get enemyDirectionForecast():Signal {
+        return instance._enemyDirectionForecast
     }
 }
 }

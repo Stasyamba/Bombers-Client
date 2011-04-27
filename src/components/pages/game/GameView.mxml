@@ -30,16 +30,14 @@
             Context.gameModel.gameReady.add(function ():void {
                 gameView = new GameFieldView(Context.game);
                 addElement(gameView);
-				
-				//stage.focus = null;
-				//gameView.setFocus();
-                //gameView.focusManager.activate();
             });
+
             Context.gameModel.leftGame.add(function():void {
                 endGame()
                 while (hasEventListener(Event.ENTER_FRAME))
                     unsubscribeEnterFrameEvent();
             })
+
             if (Context.gameModel.gameType.isMultiplayer) {
                 initMultiPlayer();
             } else {
@@ -47,8 +45,6 @@
             }
 
             subscribeEnterFrameEvent();
-
-            Context.gameModel.readyToCreateGame.dispatch();
         }
 
         private function initMultiPlayer():void {

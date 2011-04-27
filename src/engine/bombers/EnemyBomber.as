@@ -23,6 +23,13 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
         EngineContext.moveTick.add(onMoveTick)
         EngineContext.enemyDamaged.add(onDamaged);
         EngineContext.enemyDied.add(onDied);
+        EngineContext.enemyDirectionForecast.add(onEnemyDirectionForecast)
+    }
+
+    private function onEnemyDirectionForecast(slot:int,dir:Direction):void {
+        if(slot != _slot)
+            return
+        _serverDir = dir
     }
 
     private function onMoveTick(obj:Object):void {

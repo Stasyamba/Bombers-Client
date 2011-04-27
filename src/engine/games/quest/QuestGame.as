@@ -73,6 +73,7 @@ public class QuestGame extends GameBase implements IQuestGame {
         playersBuilder = new PlayersBuilder(weaponBuilder)
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
+
             EngineContext.frameEntered.add(playerManager.movePlayer);
             EngineContext.frameEntered.add(monstersManager.moveMonsters);
             EngineContext.frameEntered.add(explosionsManager.checkExplosions);
@@ -83,9 +84,8 @@ public class QuestGame extends GameBase implements IQuestGame {
             });
             EngineContext.weaponActivated.add(onWeaponUsed);
 
-            EngineContext.objectActivated.add(onObjectTaken);
-
-            EngineContext.objectAdded.add(onObjectAppeared)
+            EngineContext.objectAdded.add(onObjectAdded)
+            EngineContext.objectActivated.add(onObjectActivated);
 
             EngineContext.explosionGroupAdded.add(onExplosionsAdded)
             EngineContext.explosionsRemoved.add(onExplosionsRemoved)
@@ -99,14 +99,14 @@ public class QuestGame extends GameBase implements IQuestGame {
         EngineContext.frameEntered.add(checkGoals);
     }
 
-    private function onObjectAppeared(x:int, y:int, type:IDynObjectType):void {
+    private function onObjectAdded(slot:int, x:int, y:int, type:IDynObjectType):void {
         var b:IMapBlock = mapManager.map.getBlock(x, y);
         var object:IDynObject = dynObjectBuilder.make(type, b);
         b.setObject(object);
         dynObjectManager.addObject(object);
     }
 
-    private function onObjectTaken(id:int, x:int, y:int, objType:IDynObjectType):void {
+    private function onObjectActivated(id:int, x:int, y:int, objType:IDynObjectType):void {
         var bomber:IBomber = getPlayer(id);
         dynObjectManager.activateObject(x, y, bomber);
     }

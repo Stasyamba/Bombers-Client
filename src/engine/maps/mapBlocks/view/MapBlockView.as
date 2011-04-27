@@ -100,7 +100,7 @@ public class MapBlockView extends Sprite implements IDrawable {
 
     private function drawBlock():void {
         if (blinking) return;
-        if (block.type == MapBlockType.FREE) return
+        if (!block.type.draws) return
         var bData:BitmapData = Context.imageService.mapBlock(block.type, Context.game.location)
         if (bData == null) return;
         graphics.beginBitmapFill(bData);

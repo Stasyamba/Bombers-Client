@@ -205,6 +205,7 @@ public class BombersContentLoader {
                 .name("common")
                 )
         commonHelper("DO", comQueue)
+        commonHelper("map", comQueue)
         commonHelper("explosions", comQueue)
         commonHelper("healthBar", comQueue)
         commonHelper("other", comQueue)

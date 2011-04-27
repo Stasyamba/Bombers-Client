@@ -162,14 +162,8 @@ public class GameModel {
 
     public function createQuestGame(questId:String, gameId:String):void {
 
-        gameReady.addOnce(function():void {
-            TweenMax.delayedCall(3, function():void {
-                gameStarted.dispatch();
-            })
-        })
-
         Context.game = gameBuilder.makeQuest(getQuestObject(questId), gameId);
-
+		threeSecondsToStart.dispatch(null,0)
     }
 
 
@@ -264,8 +258,16 @@ public class GameModel {
         createQuestFailed.removeAll()
         questGameCreated.removeAll()
         leftGame.add(onLeftGame)
+			
+		threeSecondsToStart.addOnce(function(p0:*,p1:*):void {
+			gameReady.dispatch()
+			TweenMax.delayedCall(3, function():void {
+				gameStarted.dispatch();
+			})
+		})
+			
         if (readyToCreateQuest()) {
-            createQuestGame(questId, gameId)
+            TweenMax.delayedCall(0.2,createQuestGame,[questId, gameId])
         } else {
             var taskSignal:Signal = new Signal()
             taskSignal.addOnce(function():void {

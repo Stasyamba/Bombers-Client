@@ -85,9 +85,10 @@
         }
 
         private function onThreeSecondsToStart(p1:*, p2:*):void {
-            for (var j:int = 0; j < Context.gameModel.lobbyProfiles.length; j++) {
-                setReady(false, j)
-            }
+			if(Context.gameModel.gameType == GameType.REGULAR)
+	            for (var j:int = 0; j < Context.gameModel.lobbyProfiles.length; j++) {
+	                setReady(false, j)
+	            }
         }
 
         private function onLeftGame():void {

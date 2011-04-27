@@ -101,7 +101,15 @@ public class ImageService {
 
     //todo:add variety support
     public function mapBlock(blockType:MapBlockType, locationType:LocationType):BitmapData {
-        return loadedObject(locationType.stringId + ".map." + blockType.key.toLowerCase() + "1").content.bitmapData as BitmapData
+        if(!blockType.draws)
+            throw new Error("no image for not drawn block " + blockType.key)
+        if(blockType.graphicsName == MapBlockType.DEFAULT_GRAPHICS_NAME){
+            if(blockType.nameAs != null)
+                return loadedObject(locationType.stringId + ".map." + blockType.nameAs + "1").content.bitmapData as BitmapData
+            return loadedObject(locationType.stringId + ".map." + blockType.key.toLowerCase() + "1").content.bitmapData as BitmapData
+        }
+        return loadedObject(blockType.graphicsName).content.bitmapData as BitmapData
+
     }
 
     public function bomb(type:BombType, color:PlayerColor):BitmapData {

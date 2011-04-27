@@ -4,9 +4,11 @@
   -->
 <Game>
     <id>q00_00</id>
+    <location>0</location>
     <name>Тестовая миссия 1</name>
     <description>В этой миссии вы должны выпилить дверь за минимально возможное время.</description>
-    <location>0</location>
+    <questImage>http://www.vensella.ru/eg/bombers/furyJoe/furyJoeBigImage.png</questImage>
+    <previewImage>http://www.vensella.ru/eg/bombers/furyJoe/furyJoeBigImage.png</previewImage>
     <maxTime>03:00</maxTime>
     <map>
         <Map>

@@ -70,6 +70,7 @@ public class GameServer extends SmartFox {
 
     //bidirectional
     private static const INPUT_DIRECTION_CHANGED:String = "game.IDC";
+    private static const ENEMY_DIRECTION_FORECAST:String = "Mm"
     private static const PLAYER_DAMAGED:String = "game.playerDamaged";
     private static const DAMAGE_PLAYER:String = "game.damagePlayer"
     private static const ACTIVATE_WEAPON:String = "game.AW";
@@ -460,7 +461,12 @@ public class GameServer extends SmartFox {
                 }
                 EngineContext.moveTick.dispatch(moveTickObject)
                 break;
-
+            case ENEMY_DIRECTION_FORECAST:
+                var name:String = responseParams.getUtfString("U")
+                var slot:int = Context.gameModel.getLobbyProfileById(name).slot
+                var dir:Direction = Direction.byValue(responseParams.getInt("I"))
+                EngineContext.enemyDirectionForecast.dispatch(slot,dir)
+				break;
 //            case INPUT_DIRECTION_CHANGED:
 //                //special case, message is broadcasted
 //                var slot:int = responseParams.getInt("slot");

@@ -15,6 +15,7 @@ import engine.utils.ViewState
 import engine.utils.ViewStateManager
 
 import flash.display.BlendMode
+import flash.display.MovieClip
 import flash.display.Sprite
 
 import greensock.TweenMax
