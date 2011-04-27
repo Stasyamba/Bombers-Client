@@ -24,20 +24,22 @@ public class CreatureViewBase extends Sprite implements IDrawable,IStatedView {
 
     protected var _creature:CreatureBase;
 
+    protected var _self:MovieClip
     protected var healthBar:Sprite = new Sprite();
-
-    protected var _mask:Sprite;
 
     private var stateManager:ViewStateManager;
 
     private var _tunableProperties:Object = {x:true,y:true,alpha:true,blendMode:true,scaleX:true,scaleY:true};
     private var _defaultAlpha:Number = 1;
 
-    public function CreatureViewBase(bomber:CreatureBase) {
+    public function CreatureViewBase(creature:CreatureBase) {
         super();
-        _creature = bomber;
-        this.x = bomber.coords.getRealX();
-        this.y = bomber.coords.getRealY();
+        _creature = creature;
+        _self = Context.imageService.creatureSWF(_creature.graphicsId)
+        _self.x = _self.y = Consts.BOMBER_SIZE_2
+        addChild(_self)
+        this.x = creature.coords.getRealX();
+        this.y = creature.coords.getRealY();
         healthBar = new Sprite();
         healthBar.x = int((Consts.BLOCK_SIZE - Consts.HEALTH_BAR_WIDTH) / 2)
         healthBar.y = -4;
@@ -61,11 +63,9 @@ public class CreatureViewBase extends Sprite implements IDrawable,IStatedView {
     }
 
     public function draw():void {
-        if (_mask != null && this.contains(_mask))
-            removeChild(_mask);
-
         if (_creature.isDead) {
-            graphics.clear()
+            if (contains(_self))
+                removeChild(_self);
             if (contains(healthBar))
                 removeChild(healthBar);
             return;
@@ -73,20 +73,8 @@ public class CreatureViewBase extends Sprite implements IDrawable,IStatedView {
 
         drawHealthBar();
 
-        graphics.clear();
+        _self.setMove(_creature.direction.value)
 
-        var directionSkin:SkinElement = _creature.gameSkin.currentSkin;
-
-        graphics.beginBitmapFill(directionSkin.skin.bitmapData);
-        graphics.drawRect(0, 0, Consts.BOMBER_SIZE, Consts.BOMBER_SIZE);
-        graphics.endFill();
-
-        rotation = 0;
-
-        if (_creature.gameSkin.isColored) {
-            _mask = (_creature.gameSkin as ColoredGameSkin).currentMask;
-            addChildAt(_mask, 0);
-        }
     }
 
     private function drawHealthBar():void {

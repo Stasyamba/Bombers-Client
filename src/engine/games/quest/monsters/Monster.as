@@ -24,6 +24,7 @@ public class Monster extends CreatureBase {
         _walkingStrategy = walkingStrategy;
         _startX = startX
         _startY = startY
+        _direction = Direction.NONE
     }
 
     public function move(elapsedMilliSecs:int):void {
@@ -88,5 +89,8 @@ public class Monster extends CreatureBase {
         return _startY
     }
 
+    public override function get direction():Direction {
+        return _direction
+    }
 }
 }

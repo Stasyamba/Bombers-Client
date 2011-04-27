@@ -16,7 +16,6 @@ import engine.weapons.WeaponType
 import org.osflash.signals.Signal
 
 public interface IBomber {
-    function get gameSkin():IGameSkin;
 
     function get slot():int;
 

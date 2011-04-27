@@ -36,10 +36,6 @@ public class BomberBase extends CreatureBase implements IBomber {
 
     public function BomberBase(game:IGame, slot:int, bomberType:BomberType, userName:String, color:PlayerColor, skin:BasicSkin, auras:Array) {
         super(game, slot, bomberType)
-        if (color == null)
-            _gameSkin = new SimpleGameSkin(skin)
-        else
-            _gameSkin = new ColoredGameSkin(skin, color);
         _color = color;
         _userName = userName;
 

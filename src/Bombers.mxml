@@ -188,24 +188,6 @@
 
             chooseModeGroup.visible = false;
 
-            //test code for loaded swf
-            Security.allowDomain("*")
-            var l:SWFLoader = new SWFLoader("http://www.vensella.ru/eg/en.swf?231", new SWFLoaderVars()
-                    .name("l00.monsters.en")
-                    .context(new LoaderContext(false, ApplicationDomain.currentDomain))
-                    .onComplete(function (e:LoaderEvent) {
-                var cl:Class = (e.target as SWFLoader).getClass("Enemies")
-                var c:Object = new cl()
-                testContent.addChild(c as MovieClip)
-                c.setMove(0)
-                TweenMax.delayedCall(3, c.setMove, [1])
-                TweenMax.delayedCall(6, c.setMove, [2])
-                TweenMax.delayedCall(9, c.setMove, [3])
-                TweenMax.delayedCall(12, c.setMove, [4])
-            }))
-            l.load()
-            // test code end
-
             switch (type) {
 
                 case WALL_LOTTERY_EMULATION:

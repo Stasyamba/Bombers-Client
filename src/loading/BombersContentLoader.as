@@ -10,14 +10,18 @@ import components.common.worlds.locations.LocationType
 
 import engine.games.quest.monsters.MonsterType
 
+import flash.system.ApplicationDomain
+import flash.system.LoaderContext
 import flash.utils.Dictionary
 
 import greensock.events.LoaderEvent
 import greensock.loading.LoaderMax
 import greensock.loading.LoaderStatus
+import greensock.loading.SWFLoader
 import greensock.loading.XMLLoader
 import greensock.loading.core.LoaderCore
 import greensock.loading.data.LoaderMaxVars
+import greensock.loading.data.SWFLoaderVars
 import greensock.loading.data.XMLLoaderVars
 
 import org.osflash.signals.Signal
@@ -349,6 +353,31 @@ public class BombersContentLoader {
         return _loadedGraphics
     }
 
+    //creatures swf
+
+    public static const CREATURES_CLASS_NAME:String = "Enemies"
+    public static const CREATURES_SWF_ADDRESS:String = "http://www.vensella.ru/eg/en.swf"
+    public static var enemiesClass:Class
+
+    public static function loadCreatures():void {
+        var l:SWFLoader = new SWFLoader(CREATURES_SWF_ADDRESS, new SWFLoaderVars()
+                .name("creatures_swf")
+                .context(new LoaderContext(false, ApplicationDomain.currentDomain))
+                .noCache(true)
+                .onComplete(
+                function(e:LoaderEvent):void {
+                    enemiesClass = (e.target as SWFLoader).getClass(CREATURES_CLASS_NAME)
+                    if (enemiesClass == null)
+                        throw new Error("couldn't find class " + CREATURES_CLASS_NAME + " in creatures swf")
+                })
+                .onError(
+                function(e:LoaderEvent):void {
+                    throw new Error("error loading creatures swf: " + e.text)
+                }))
+        l.load()
+    }
+
+    //tasks
     public static function addTask(taskSignal:Signal, array:Array):void {
         var taskObj:Object = new Object()
         for (var i:int = 0; i < array.length; i++) {

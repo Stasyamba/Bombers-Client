@@ -142,7 +142,7 @@ public class QuestGame extends GameBase implements IQuestGame {
 
     public function addPlayer(x:int, y:int, color:PlayerColor):void {
         var gp:GameProfile = Context.Model.currentSettings.gameProfile
-        playerManager.setPlayer(playersBuilder.makePlayer(this, gp, new PlayerGameProfile(1, gp.currentBomberType, x, y, gp.aursTurnedOn), color));
+        playerManager.setPlayer(playersBuilder.makeQuestPlayer(this, gp, new PlayerGameProfile(1, gp.currentBomberType, x, y, gp.aursTurnedOn), color));
     }
 
     public function addMonster(x:int, y:int, monsterType:MonsterType, slot:int = -1, walkingStrategy:IWalkingStrategy = null):void {

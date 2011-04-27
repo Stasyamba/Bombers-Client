@@ -19,6 +19,7 @@ import engine.playerColors.PlayerColor
 
 import flash.display.Bitmap
 import flash.display.BitmapData
+import flash.display.MovieClip
 import flash.geom.Point
 import flash.geom.Rectangle
 import flash.utils.ByteArray
@@ -203,6 +204,12 @@ public class ImageService {
         skinElements.none = new SkinElement(bomberSkinElement(b.stringId + ".down"), bomberSkinElement(b.stringId + ".down_mask"))
 
         return new BasicSkin(b.name, skinElements, colorsObject);
+    }
+
+    public function creatureSWF(graphicsId:String):MovieClip{
+        var m:MovieClip = new BombersContentLoader.enemiesClass()
+        //m.setCreature(graphicsId)
+        return m
     }
 
 }

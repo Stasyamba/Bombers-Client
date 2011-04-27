@@ -18,6 +18,8 @@ public interface ICreatureType {
 
     function get immortalTime():Number
 
+    function get graphicsId():String
+
     function getViewSpeed(speed:Number):int
 
 }

@@ -20,6 +20,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     public function EnemyBomber(game:IGame, playerProfile:PlayerGameProfile, userName:String, color:PlayerColor) {
         super(game, playerProfile.slot, playerProfile.bomberType, userName, color, Context.imageService.bomberSkin(playerProfile.bomberType), playerProfile.auras);
 
+        _serverDir = Direction.NONE
         EngineContext.moveTick.add(onMoveTick)
         EngineContext.enemyDamaged.add(onDamaged);
         EngineContext.enemyDied.add(onDied);
@@ -40,7 +41,6 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
         _coords.setYExplicit(tickObject.y)
         if (_serverDir != tickObject.dir) {
             _serverDir = tickObject.dir
-            _gameSkin.updateSkin(_serverDir);
             EngineContext.enemyInputDirectionChanged.dispatch(slot, coords.getRealX(), coords.getRealY(), _serverDir)
         }
     }
@@ -91,5 +91,8 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     }
 
 
+    override public function get direction():Direction {
+        return _serverDir
+    }
 }
 }

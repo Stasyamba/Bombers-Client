@@ -101,7 +101,7 @@ public class GameModel {
         BombersContentLoader.loadBombers()
         BombersContentLoader.loadQuests()
         BombersContentLoader.loadMonsters()
-
+        BombersContentLoader.loadCreatures()
         BombersContentLoader.readyToUseAppView.addOnce(function() {
             BombersContentLoader.loadGraphics()
 
@@ -163,7 +163,7 @@ public class GameModel {
     public function createQuestGame(questId:String, gameId:String):void {
 
         Context.game = gameBuilder.makeQuest(getQuestObject(questId), gameId);
-		threeSecondsToStart.dispatch(null,0)
+        threeSecondsToStart.dispatch(null, 0)
     }
 
 
@@ -258,16 +258,23 @@ public class GameModel {
         createQuestFailed.removeAll()
         questGameCreated.removeAll()
         leftGame.add(onLeftGame)
-			
-		threeSecondsToStart.addOnce(function(p0:*,p1:*):void {
-			gameReady.dispatch()
-			TweenMax.delayedCall(3, function():void {
-				gameStarted.dispatch();
-			})
-		})
-			
+
+        gameStarted.addOnce(function():void {
+            isPlayingNow = true
+            gameEnded.addOnce(function(p0:*,p1:*):void {
+                leftGame.dispatch()
+            })
+        })
+
+        threeSecondsToStart.addOnce(function(p0:*, p1:*):void {
+            gameReady.dispatch()
+            TweenMax.delayedCall(3, function():void {
+                gameStarted.dispatch();
+            })
+        })
+
         if (readyToCreateQuest()) {
-            TweenMax.delayedCall(0.2,createQuestGame,[questId, gameId])
+            TweenMax.delayedCall(0.2, createQuestGame, [questId, gameId])
         } else {
             var taskSignal:Signal = new Signal()
             taskSignal.addOnce(function():void {

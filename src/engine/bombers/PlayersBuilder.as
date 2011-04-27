@@ -8,6 +8,7 @@ import engine.bombers.interfaces.IEnemyBomber
 import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
 import engine.games.IGame
+import engine.games.quest.QuestGame
 import engine.games.quest.monsters.Monster
 import engine.games.quest.monsters.MonsterType
 import engine.games.quest.monsters.walking.IWalkingStrategy
@@ -31,13 +32,20 @@ public class PlayersBuilder {
         return new EnemyBomber(game, playerProfile, lobbyProfile.nick, color);
     }
 
-    public function makeMonster(game:IGame,x:int,y:int, slot:int, monsterType:MonsterType, walkingStrategy:IWalkingStrategy):Monster {
-        return new Monster(game, x,y,slot, monsterType, walkingStrategy);
+    public function makeMonster(game:IGame, x:int, y:int, slot:int, monsterType:MonsterType, walkingStrategy:IWalkingStrategy):Monster {
+        return new Monster(game, x, y, slot, monsterType, walkingStrategy);
     }
 
 
     public function PlayersBuilder(weaponBuilder:WeaponBuilder) {
         this.weaponBuilder = weaponBuilder;
+    }
+
+    public function makeQuestPlayer(game:QuestGame, gp:GameProfile, playerGameProfile:PlayerGameProfile, color:PlayerColor):QuestPlayerBomber {
+        var inputDirection:InputDirection = new InputDirection();
+
+        return new QuestPlayerBomber(game, playerGameProfile.slot, gp, color, inputDirection, weaponBuilder)
+
     }
 }
 }

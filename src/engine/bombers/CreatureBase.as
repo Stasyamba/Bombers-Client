@@ -13,6 +13,7 @@ import engine.games.quest.monsters.ICreatureType
 import engine.maps.IMap
 import engine.model.signals.StateAddedSignal
 import engine.model.signals.StateRemovedSignal
+import engine.utils.Direction
 import engine.utils.ViewState
 
 import greensock.TweenMax
@@ -24,7 +25,6 @@ public class CreatureBase {
     protected var _map:IMap;
 
     protected var _coords:IMapCoords;
-    protected var _gameSkin:IGameSkin;
 
     protected var _slot:int;
 
@@ -34,14 +34,14 @@ public class CreatureBase {
     protected var _explicitSpeed:Number = -1;
 
 
-    private var _isImmortal:Boolean;
-    private var _becameImmortal:Signal = new Signal();
-    private var _lostImmortal:Signal = new Signal();
+    protected var _isImmortal:Boolean;
+    protected var _becameImmortal:Signal = new Signal();
+    protected var _lostImmortal:Signal = new Signal();
 
-    private var _stateAdded:StateAddedSignal = new StateAddedSignal();
-    private var _stateRemoved:StateRemovedSignal = new StateRemovedSignal();
+    protected var _stateAdded:StateAddedSignal = new StateAddedSignal();
+    protected var _stateRemoved:StateRemovedSignal = new StateRemovedSignal();
 
-    private var _lifeChanged:Signal = new Signal();
+    protected var _lifeChanged:Signal = new Signal();
 
     protected var _type:ICreatureType
 
@@ -95,10 +95,6 @@ public class CreatureBase {
 
     public function get life():int {
         return _life;
-    }
-
-    public function get gameSkin():IGameSkin {
-        return _gameSkin;
     }
 
     public function get coords():IMapCoords {
@@ -159,6 +155,14 @@ public class CreatureBase {
 
     public function get type():ICreatureType {
         return _type
+    }
+
+    public function get graphicsId():String {
+        return type.graphicsId
+    }
+
+    public function get direction():Direction{
+        throw new Error("can't get direction for CreatureBase")
     }
 }
 }
