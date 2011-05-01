@@ -16,12 +16,11 @@ public class SpecialObject extends BonusBase implements ICollectableDynObject {
 
     public function SpecialObject(block:IMapBlock, type:SpecialObjectType) {
         super(block);
+        _type = type
     }
 
     public override function activateOn(player:IBomber):void {
         super.activateOn(player)
-        player.incBombCount();
-        trace("player " + player.slot + " collected bonus bomb , bombs = " + player.bombCount);
     }
 
     public function get type():IDynObjectType {

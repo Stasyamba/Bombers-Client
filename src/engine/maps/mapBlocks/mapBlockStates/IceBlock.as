@@ -29,7 +29,13 @@ public class IceBlock implements IActiveMapBlockState {
                 freeze(b)
                 TweenMax.delayedCall(3, unfreeze, [creature])
             }
+        } else {
+            //todo: add monster freeze
         }
+    }
+
+    public function deactivateOn(creature:CreatureBase):void {
+
     }
 
     private function unfreeze(bomber:IBomber):void {
@@ -48,7 +54,7 @@ public class IceBlock implements IActiveMapBlockState {
         return false
     }
 
-    public function canGoThrough():Boolean {
+    public function canGoThrough(creature:CreatureBase = null):Boolean {
         return true
     }
 
@@ -85,5 +91,10 @@ public class IceBlock implements IActiveMapBlockState {
 
     public function set hiddenObject(value:IDynObject):void {
     }
+
+    public function get blinks():Boolean {
+        return false
+    }
+
 }
 }

@@ -39,7 +39,7 @@ public class BombType implements IDynObjectType {
         return _needGlow;
     }
 
-    public function get waitToAdd():int {
+    public function get waitToAdd():Number {
         return 0
     }
 

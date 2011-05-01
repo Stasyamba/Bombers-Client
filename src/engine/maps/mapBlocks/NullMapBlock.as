@@ -4,6 +4,7 @@
  */
 
 package engine.maps.mapBlocks {
+import engine.bombers.CreatureBase
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
@@ -77,7 +78,7 @@ public class NullMapBlock extends MapBlockBase implements IMapBlock {
         return false;
     }
 
-    public function canGoThrough():Boolean {
+    public function canGoThrough(creature:CreatureBase = null):Boolean {
         return false;
     }
 
@@ -128,5 +129,10 @@ public class NullMapBlock extends MapBlockBase implements IMapBlock {
     public function get objectSet():Signal {
         return null
     }
+	
+	public function get blinks():Boolean {
+		return false
+	}
+
 }
 }

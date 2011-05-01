@@ -90,7 +90,7 @@
 
         public function close():void {
             PopUpManager.removePopUp(this);
-			Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SET_GAME_FOCUS);
+            Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SET_GAME_FOCUS);
         }
 
         public function closeWrapper():void {
@@ -101,10 +101,20 @@
             closeTimer.removeEventListener(TimerEvent.TIMER, timerTick);
         }
 
+        private function onGameStarted():void {
+            closeWrapper()
+            Context.gameModel.questStarted.remove(onQuestStarted)
+        }
+
+        private function onQuestStarted():void {
+            closeWrapper()
+            Context.gameModel.gameStarted.remove(onGameStarted)
+        }
+
         private function panelCreationComplete():void {
-            Context.gameModel.gameStarted.addOnce(function ():void {
-                closeWrapper()
-            })
+            Context.gameModel.gameStarted.addOnce(onGameStarted)
+            Context.gameModel.questStarted.addOnce(onQuestStarted)
+
             closeTimer.addEventListener(TimerEvent.TIMER, timerTick);
 
             closeTimer.start();

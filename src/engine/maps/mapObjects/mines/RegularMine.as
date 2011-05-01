@@ -24,7 +24,7 @@ public class RegularMine implements ICollectableDynObject {
         _owner = owner
     }
 
-    public function onAddedToMap():void {
+    public function grabCorrespondingWeapon():void {
         if (_owner is IPlayerBomber)
             Context.game.playerManager.me.decWeapon(WeaponType.byValue(type.value))
     }

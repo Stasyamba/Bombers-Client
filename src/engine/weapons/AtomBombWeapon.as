@@ -36,8 +36,16 @@ public class AtomBombWeapon extends ActivatableWeaponBase implements IActivatabl
     }
 
 
-    public function activateStatic(b:IBomber, x:int, y:int):void {
+    public function activateStatic(x:int, y:int, by:IBomber):void {
     }
 
+    public function qActivate(x:uint, y:uint, by:IBomber):void {
+        _charges--
+        qActivateStatic(x, y, by)
+    }
+
+    public function qActivateStatic(x:int, y:int, by:IBomber):void {
+        EngineContext.qAddObject.dispatch(by.slot, x, y, BombType.ATOM)
+    }
 }
 }

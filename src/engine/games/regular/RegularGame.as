@@ -41,8 +41,6 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
     protected var _enemiesManager:IEnemiesManager;
 
-    private var _weaponsUsed:Array = new Array()
-
     public function RegularGame(location:LocationType) {
         super(location)
         mapBlockStateBuilder = new MapBlockStateBuilder();
@@ -143,13 +141,13 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
     private function activateWeapon(b:IBomber, type:WeaponType, x:int, y:int):void {
         var w:IActivatableWeapon = _weaponsUsed[type.value]
         if (w != null) {
-            w.activateStatic(b, x, y)
+            w.activateStatic(x, y, b)
             return
         }
         w = weaponBuilder.fromWeaponType(type, 0) as IActivatableWeapon
         if (w == null)
             throw new Error("wrong weapon type " + type.key + ". IDeactivatable weapon expected")
-        w.activateStatic(b, x, y)
+        w.activateStatic(x, y, b)
         _weaponsUsed[type.value] = w
     }
 
@@ -225,9 +223,9 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
         var object:IDynObject = dynObjectBuilder.make(objType, b, player);
         b.setObject(object);
-        object.onAddedToMap()
+        object.grabCorrespondingWeapon()
         if (objType.waitToAdd > 0)
-            TweenMax.delayedCall(objType.waitToAdd / 1000, function():void {
+            TweenMax.delayedCall(objType.waitToAdd, function():void {
                 dynObjectManager.addObject(object);
             })
         else
@@ -259,7 +257,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
 
     public function get monstersManager():MonstersManager {
         //todo:shit
-        return new MonstersManager()
+        return new MonstersManager(_playerManager)
     }
 }
 }

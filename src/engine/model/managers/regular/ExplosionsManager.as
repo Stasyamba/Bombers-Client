@@ -66,7 +66,7 @@ public class ExplosionsManager implements IExplosionsManager {
             if (type != ExplosionPointType.NONE) {
                 var pp:ExplosionPoint = new ExplosionPoint(block.x, block.y, type)
                 pp.layers = layers
-                result.addPoint(p)
+                result.addPoint(pp)
             }
         }
         _allExplosions = result;

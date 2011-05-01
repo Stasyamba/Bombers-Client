@@ -9,7 +9,7 @@ public interface IDynObjectType {
 
     function get key():String;
 
-    function get waitToAdd():int;
+    function get waitToAdd():Number;
 
     function get stringId():String
 }

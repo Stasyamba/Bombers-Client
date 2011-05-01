@@ -20,11 +20,15 @@ public class GlueBlock implements IActiveMapBlockState {
         creature.setSpeed(20)
     }
 
+    public function deactivateOn(creature:CreatureBase):void {
+        creature.resetSpeed()
+    }
+
     public function explodesAndStopsExplosion():Boolean {
         return false
     }
 
-    public function canGoThrough():Boolean {
+    public function canGoThrough(creature:CreatureBase = null):Boolean {
         return true
     }
 
@@ -61,5 +65,10 @@ public class GlueBlock implements IActiveMapBlockState {
 
     public function set hiddenObject(value:IDynObject):void {
     }
+
+    public function get blinks():Boolean {
+        return false
+    }
+
 }
 }

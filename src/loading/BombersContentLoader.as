@@ -10,6 +10,7 @@ import components.common.worlds.locations.LocationType
 
 import engine.games.quest.monsters.MonsterType
 
+import flash.display.MovieClip
 import flash.system.ApplicationDomain
 import flash.system.LoaderContext
 import flash.utils.Dictionary
@@ -152,7 +153,7 @@ public class BombersContentLoader {
     private static function onMonstersXmlComplete(e:LoaderEvent):void {
         _monstersXml = (e.target as XMLLoader).content
         for each (var m:XML in _monstersXml.M) {
-            MonsterType.add(new MonsterType(m.@id, m.@graphicsId, m.@speed, m.@life, m.@immortalTime, m.@name))
+            MonsterType.add(new MonsterType(m.@id, m.@graphicsId, m.@speed, m.@life, m.@immortalTime,m.@damage, m.@name))
         }
     }
 
@@ -373,6 +374,28 @@ public class BombersContentLoader {
                 .onError(
                 function(e:LoaderEvent):void {
                     throw new Error("error loading creatures swf: " + e.text)
+                }))
+        l.load()
+    }
+
+    //BO swf
+    public static const BO_SWF_ADDRESS:String = "http://www.vensella.ru/eg/gate.swf"
+    public static var boSwf:MovieClip
+
+    public static function loadBO():void {
+        var l:SWFLoader = new SWFLoader(BO_SWF_ADDRESS, new SWFLoaderVars()
+                .name("bo_swf")
+                .context(new LoaderContext(false, ApplicationDomain.currentDomain))
+                .noCache(true)
+                .onComplete(
+                function(e:LoaderEvent):void {
+                    boSwf = (e.target as SWFLoader).rawContent
+                    if (boSwf == null)
+                        throw new Error("couldn't find boSwf at " + BO_SWF_ADDRESS)
+                })
+                .onError(
+                function(e:LoaderEvent):void {
+                    throw new Error("error loading bo swf: " + e.text)
                 }))
         l.load()
     }

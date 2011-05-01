@@ -5,7 +5,7 @@
 
 package engine.maps.mapBlocks.mapBlockStates {
 import engine.bombers.CreatureBase
-import engine.bombers.interfaces.IBomber
+import engine.bombers.interfaces.IPlayerBomber
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.interfaces.IActiveMapBlockState
 import engine.maps.interfaces.IDynObject
@@ -19,19 +19,23 @@ public class FireBlock implements IActiveMapBlockState {
     }
 
     public function activateOn(creature:CreatureBase):void {
-       if (creature is IBomber) {
-            if (!((creature as IBomber).hasAura(WeaponType.FIRE_AURA))) {
-                creature.life--
-                creature.makeImmortalFor(creature.immortalTime,true)
+       var b:IPlayerBomber = creature as IPlayerBomber
+       if (b != null) {
+            if (!b.hasAura(WeaponType.FIRE_AURA)) {
+                b.hitWithoutImmortal(1)
             }
         }
+    }
+
+    public function deactivateOn(bomber:CreatureBase):void {
+        //nothing to do
     }
 
     public function explodesAndStopsExplosion():Boolean {
         return false
     }
 
-    public function canGoThrough():Boolean {
+    public function canGoThrough(creature:CreatureBase = null):Boolean {
         return true
     }
 
@@ -68,5 +72,10 @@ public class FireBlock implements IActiveMapBlockState {
 
     public function set hiddenObject(value:IDynObject):void {
     }
+
+    public function get blinks():Boolean {
+        return false
+    }
+
 }
 }

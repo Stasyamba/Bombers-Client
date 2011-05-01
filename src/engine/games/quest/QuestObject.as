@@ -5,6 +5,7 @@
 
 package engine.games.quest {
 import engine.games.quest.goals.GoalsBuilder
+import engine.games.quest.goals.IGoal
 import engine.games.quest.medals.Medal
 import engine.games.quest.medals.MedalBase
 
@@ -13,8 +14,6 @@ import mx.collections.ArrayCollection
 public class QuestObject {
 
     private var _xml:XML
-
-    private var _goals:ArrayCollection = new ArrayCollection()
 
     private var _goldMedal:MedalBase
     private var _silverMedal:MedalBase
@@ -32,12 +31,16 @@ public class QuestObject {
 
     public function QuestObject(xml:XML) {
         _xml = xml;
-        _goals = GoalsBuilder.array(xml.goals)
-        var medalType:String = xml.medals.@type
+//        _goals = GoalsBuilder.array(xml.medals)
 
-        _bronzeMedal = Medal.fromXml(xml.medals.Bronze[0], medalType)
-        _silverMedal = Medal.fromXml(xml.medals.Silver[0], medalType)
-        _goldMedal = Medal.fromXml(xml.medals.Gold[0], medalType)
+        var commonGoal:IGoal = null
+        if (xml.medals.commonGoal[0] != null) {
+            commonGoal = GoalsBuilder.makeFromXml(xml.medals.commonGoal[0])
+        }
+
+        _bronzeMedal = Medal.fromXml(xml.medals.Bronze[0], commonGoal)
+        _silverMedal = Medal.fromXml(xml.medals.Silver[0], commonGoal)
+        _goldMedal = Medal.fromXml(xml.medals.Gold[0], commonGoal)
 
         _timeLimit = xml.timeLimit
     }
@@ -59,12 +62,6 @@ public class QuestObject {
     [Bindable]
     public function get locationId():int {
         return int(_xml.location)
-    }
-
-    //array of IGoal. Exact types in engine.quest.goals
-    [Bindable]
-    public function get goals():ArrayCollection {
-        return _goals
     }
 
 

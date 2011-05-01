@@ -7,13 +7,17 @@ package engine.games.quest {
 import components.common.worlds.locations.LocationType
 
 import engine.EngineContext
+import engine.bombers.CreatureBase
 import engine.bombers.PlayersBuilder
+import engine.bombers.QuestPlayerBomber
 import engine.bombers.interfaces.IBomber
-import engine.bombers.interfaces.IPlayerBomber
-import engine.data.Consts
 import engine.explosionss.ExplosionsBuilder
 import engine.games.*
+import engine.games.quest.goals.CollectedDOObject
+import engine.games.quest.goals.DefeatedMonsterObject
+import engine.games.quest.goals.DestroyedMapBlockObject
 import engine.games.quest.goals.IGoal
+import engine.games.quest.medals.Medal
 import engine.games.quest.monsters.Monster
 import engine.games.quest.monsters.MonsterType
 import engine.games.quest.monsters.walking.IWalkingStrategy
@@ -27,29 +31,30 @@ import engine.maps.mapBlocks.MapBlockType
 import engine.model.managers.quest.MonstersManager
 import engine.model.managers.quest.QuestDOManager
 import engine.model.managers.quest.QuestExplosionsManager
-import engine.model.managers.regular.MapManager
-import engine.model.managers.regular.PlayerManager
+import engine.model.managers.quest.QuestMapManager
+import engine.model.managers.quest.QuestPlayerManager
 import engine.playerColors.PlayerColor
 import engine.profiles.GameProfile
 import engine.profiles.PlayerGameProfile
 import engine.weapons.WeaponBuilder
 import engine.weapons.WeaponType
-import engine.weapons.interfaces.IDeactivatableWeapon
+import engine.weapons.interfaces.IActivatableWeapon
 
 import greensock.TweenMax
 
-import mx.collections.ArrayList
 import mx.controls.Alert
 
 public class QuestGame extends GameBase implements IQuestGame {
 
-    private var _goals:ArrayList = new ArrayList();
     private var _gameStats:GameStats = new GameStats();
 
     private var _gameId:String
     private var _questObject:QuestObject
 
     private var _monstersManager:MonstersManager
+    private var _bronzeGoal:IGoal
+    private var _silverGoal:IGoal
+    private var _goldGoal:IGoal
 
     public function QuestGame(gameId:String, quest:QuestObject) {
         super(LocationType.byValue(quest.locationId))
@@ -59,85 +64,162 @@ public class QuestGame extends GameBase implements IQuestGame {
         dynObjectBuilder = new DynObjectBuilder();
         mapBlockBuilder = new MapBlockBuilder(mapBlockStateBuilder, dynObjectBuilder)
 
-        _mapManager = new MapManager(mapBlockBuilder);
+        _mapManager = new QuestMapManager(mapBlockBuilder);
 
         explosionsBuilder = new ExplosionsBuilder(mapManager);
+        dynObjectBuilder.setExplosionsBuilder(explosionsBuilder)
 
-
-        _playerManager = new PlayerManager();
-        _monstersManager = new MonstersManager();
+        _playerManager = new QuestPlayerManager();
+        _monstersManager = new MonstersManager(_playerManager);
 
         _explosionsManager = new QuestExplosionsManager(explosionsBuilder, mapManager, playerManager, monstersManager);
         _dynObjectManager = new QuestDOManager(playerManager, monstersManager, mapManager);
         weaponBuilder = new WeaponBuilder(_mapManager)
         playersBuilder = new PlayersBuilder(weaponBuilder)
         //game events
-        Context.gameModel.gameStarted.addOnce(function():void {
+        Context.gameModel.questStarted.addOnce(function():void {
 
             EngineContext.frameEntered.add(playerManager.movePlayer);
             EngineContext.frameEntered.add(monstersManager.moveMonsters);
             EngineContext.frameEntered.add(explosionsManager.checkExplosions);
             EngineContext.frameEntered.add(dynObjectManager.checkObjectsActivated);
+            EngineContext.frameEntered.add(monstersManager.checkMonstersHitPlayer);
+            EngineContext.frameEntered.add((playerManager as QuestPlayerManager).checkPlayerMetActiveBlock);
 
-            EngineContext.triedToActivateWeapon.add(function (slot:int, x:int, y:int, type:WeaponType):void {
-                EngineContext.weaponActivated.dispatch(slot, x, y, type);
-            });
-            EngineContext.weaponActivated.add(onWeaponUsed);
+            EngineContext.qActivateWeapon.add(onWeaponUsed);
 
-            EngineContext.objectAdded.add(onObjectAdded)
-            EngineContext.objectActivated.add(onObjectActivated);
+            EngineContext.qAddObject.add(addObject)
+            EngineContext.qPlayerActivateObject.add(onPlayerActivateObject);
+            EngineContext.qMonsterActivateObject.add(onMonsterActivateObject);
+
+            EngineContext.qMonsterDied.add(onMonsterDied);
 
             EngineContext.explosionGroupAdded.add(onExplosionsAdded)
             EngineContext.explosionsRemoved.add(onExplosionsRemoved)
 
-            EngineContext.taskAccomplished.add(onTaskAccomplished)
 
-            EngineContext.needToAddMonster.add(addMonster)
+            EngineContext.qNeedToAddMonster.add(onNeedToAddMonster)
+
+            //goals
+            EngineContext.frameEntered.add(checkGoals);
+
+            Context.gameModel.questCompleted.add(onQuestCompleted)
+
+            Context.gameModel.questEnded.addOnce(onEndedGE)
+            Context.gameModel.leftQuest.addOnce(onEndedLG)
         })
 
-        //goals
-        EngineContext.frameEntered.add(checkGoals);
+
     }
 
-    private function onObjectAdded(slot:int, x:int, y:int, type:IDynObjectType):void {
+
+    private function onEndedGE(p1:*, p2:*):void {
+        destroy()
+        Context.gameModel.leftQuest.remove(onEndedLG)
+    }
+
+    private function destroy():void {
+        EngineContext.frameEntered.remove(checkGoals);
+        EngineContext.frameEntered.remove(playerManager.movePlayer);
+        EngineContext.frameEntered.remove(monstersManager.moveMonsters);
+        EngineContext.frameEntered.remove(explosionsManager.checkExplosions);
+        EngineContext.frameEntered.remove(dynObjectManager.checkObjectsActivated);
+        EngineContext.frameEntered.remove(monstersManager.checkMonstersHitPlayer);
+        EngineContext.frameEntered.remove((playerManager as QuestPlayerManager).checkPlayerMetActiveBlock);
+    }
+
+    private function onEndedLG():void {
+        destroy()
+        Context.gameModel.questEnded.remove(onEndedGE)
+    }
+
+    private function onMonsterDied(m:Monster):void {
+        gameStats.defeatedMonsters.addItem(new DefeatedMonsterObject(m.slot, m.monsterType))
+    }
+
+    public function addObject(slot:int, x:int, y:int, type:IDynObjectType):void {
         var b:IMapBlock = mapManager.map.getBlock(x, y);
-        var object:IDynObject = dynObjectBuilder.make(type, b);
+        var player:IBomber = getPlayer(slot) as IBomber
+
+        var object:IDynObject = dynObjectBuilder.make(type, b, player);
         b.setObject(object);
-        dynObjectManager.addObject(object);
+        if (type.waitToAdd > 0)
+            TweenMax.delayedCall(type.waitToAdd, function():void {
+                dynObjectManager.addObject(object);
+            })
+        else
+            dynObjectManager.addObject(object);
     }
 
-    private function onObjectActivated(id:int, x:int, y:int, objType:IDynObjectType):void {
-        var bomber:IBomber = getPlayer(id);
+    private function onPlayerActivateObject(id:int, x:int, y:int, objType:IDynObjectType):void {
+        var bomber:IBomber = getPlayer(id) as IBomber;
         dynObjectManager.activateObject(x, y, bomber);
+        gameStats.collectedObjects.addItem(new CollectedDOObject(objType, x, y))
     }
 
-    private function onTaskAccomplished():void {
-        Alert.show("task accomplished");
-        Context.gameModel.gameEnded.dispatch();
+    private function onMonsterActivateObject(id:int, x:int, y:int, objType:IDynObjectType):void {
+        //now it does nothing
+        throw new Error("for now monsters aren't allowed to activate objects")
     }
 
-    private function checkGoals(a:int):Boolean {
-        for each (var goal:IGoal in _goals.source) {
-            if (!goal.check(this)) return false
+    private function onQuestCompleted(medal:Medal):void {
+        Alert.show("task accomplished with medal " + medal.string);
+        Context.gameModel.questEnded.dispatch(true, medal);
+    }
+
+    private function checkGoals(p0:int):Boolean {
+        if (!Context.gameModel.isPlayingNow) return false;
+        var m:Medal = null
+        if (_bronzeGoal.check(this))
+            m = Medal.BRONZE
+        if (_silverGoal.check(this))
+            m = Medal.SILVER
+        if (_goldGoal.check(this))
+            m = Medal.GOLD
+        if (m != null) {
+            Context.gameModel.isPlayingNow = false
+            Context.gameModel.questCompleted.dispatch(m)
+            return true;
         }
-        EngineContext.taskAccomplished.dispatch()
-        return true;
+        return false
     }
 
     private function onWeaponUsed(slot:int, x:int, y:int, type:WeaponType):void {
-        var b:IBomber = getPlayer(slot);
-        //todo: govnocode!!!
-        var bomber:IPlayerBomber = b as IPlayerBomber
-        bomber.activateWeapon(x, y, type);
-        if (bomber.currentWeapon is IDeactivatableWeapon) {
-            var dw:IDeactivatableWeapon = IDeactivatableWeapon(bomber.currentWeapon)
-            TweenMax.delayedCall(dw.duration / 1000, bomber.deactivateWeapon)
-        }
 
+        var b:QuestPlayerBomber = getPlayer(slot) as QuestPlayerBomber;
+        if (b != null) {
+            b.activateWeapon(x, y, type);
+        } else {
+            var w:IActivatableWeapon = _weaponsUsed[type.value]
+            if (w != null) {
+                w.qActivateStatic(x, y, b)
+                return
+            }
+            w = weaponBuilder.fromWeaponType(type, 0) as IActivatableWeapon
+            if (w == null)
+                throw new Error("wrong weapon type " + type.key + ". IActivatable weapon expected")
+            w.qActivateStatic(x, y, b)
+            _weaponsUsed[type.value] = w
+        }
     }
 
-    public function addGoal(goal:IGoal):void {
-        _goals.addItem(goal);
+    public function addGoal(medal:Medal, goal:IGoal):void {
+        if (goal == null || medal == null)
+            throw new Error("goal or medal == null")
+        trace(medal, Medal.BRONZE, Medal.SILVER, Medal.GOLD)
+        switch (medal) {
+            case Medal.BRONZE:
+                _bronzeGoal = goal
+                break
+            case Medal.SILVER:
+                _silverGoal = goal
+                break
+            case Medal.GOLD:
+                _goldGoal = goal
+                break
+            default:
+                throw new Error("no such medal: " + medal.value)
+        }
     }
 
     public function addPlayer(x:int, y:int, color:PlayerColor):void {
@@ -145,26 +227,47 @@ public class QuestGame extends GameBase implements IQuestGame {
         playerManager.setPlayer(playersBuilder.makeQuestPlayer(this, gp, new PlayerGameProfile(1, gp.currentBomberType, x, y, gp.aursTurnedOn), color));
     }
 
-    public function addMonster(x:int, y:int, monsterType:MonsterType, slot:int = -1, walkingStrategy:IWalkingStrategy = null):void {
-        var monster:Monster = playersBuilder.makeMonster(this,x,y, slot > 0 ? slot : monstersManager.getNewSlot(), monsterType, walkingStrategy)
+    private function onNeedToAddMonster(monsterType:MonsterType, x:int, y:int, ws:IWalkingStrategy):void {
+        addMonster(x, y, monsterType, ws)
+    }
+
+
+    public function addMonster(x:int, y:int, monsterType:MonsterType, walkingStrategy:IWalkingStrategy, slot:int = -1):void {
+        var monster:Monster = playersBuilder.makeMonster(this, x, y, slot > 0 ? slot : monstersManager.getNewSlot(), monsterType, walkingStrategy)
+        monster.putOnMap(mapManager.map, monster.startX, monster.startY)
         monstersManager.addMonster(monster)
-        EngineContext.monsterAdded.dispatch(monster)
+        EngineContext.qMonsterAdded.dispatch(monster)
     }
 
-    public function get type():GameType {
-        return GameType.QUEST;
-    }
 
-    private function onMapLoaded(xml:XML):void {
-        mapManager.make(xml);
+    public function applyMapXml(map:XML):void {
+        mapManager.make(map);
         playerManager.me.putOnMap(mapManager.map, mapManager.map.spawns[0].x, mapManager.map.spawns[0].y);
         monstersManager.forEachAliveMonster(function(monster:Monster, slot:int):void {
             monster.putOnMap(mapManager.map, monster.startX, monster.startY)
         })
         mapManager.map.blockDestroyed.add(function(x:int, y:int, type:MapBlockType):void {
-            gameStats.destroyedBlocks.addItem({type:type,x:x,y:y});
+            gameStats.destroyedBlocks.addItem(new DestroyedMapBlockObject(type, x, y));
         })
         _ready = true;
+    }
+
+    public function getPlayer(slot:int):CreatureBase {
+        if (slot == playerManager.mySlot)
+            return playerManager.me as CreatureBase;
+        return monstersManager.getMonsterBySlot(slot);
+    }
+
+    public function get monstersManager():MonstersManager {
+        return _monstersManager
+    }
+
+    public function get questObject():QuestObject {
+        return _questObject
+    }
+
+    public function get type():GameType {
+        return GameType.QUEST;
     }
 
     public function get gameStats():GameStats {
@@ -175,26 +278,8 @@ public class QuestGame extends GameBase implements IQuestGame {
         return _location
     }
 
-    public function applyMapXml(map:XML):void {
-        onMapLoaded(map);
-    }
-
     public function get gameId():String {
         return _gameId
-    }
-
-    public function getPlayer(slot:int):IBomber {
-        if (slot == playerManager.mySlot)
-            return playerManager.me;
-        return monstersManager.getMonsterBySlot(slot);
-    }
-
-    public function get monstersManager():MonstersManager {
-        return _monstersManager
-    }
-
-    public function get questObject():QuestObject {
-        return _questObject
     }
 }
 }

@@ -4,6 +4,7 @@
  */
 
 package engine.maps.interfaces {
+import engine.bombers.CreatureBase
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.mapBlocks.MapBlockType
 import engine.model.explosionss.ExplosionType
@@ -12,7 +13,7 @@ public interface IMapBlockState {
 
     function explodesAndStopsExplosion():Boolean
 
-    function canGoThrough():Boolean;
+    function canGoThrough(creature:CreatureBase = null):Boolean;
 
     function canSetBomb():Boolean;
 
@@ -31,5 +32,7 @@ public interface IMapBlockState {
     function get hiddenObject():IDynObject;
 
     function set hiddenObject(value:IDynObject):void ;
+
+    function get blinks():Boolean
 }
 }

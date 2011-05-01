@@ -65,7 +65,7 @@ public class BombBase {
         return true
     }
 
-    public function onAddedToMap():void {
+    public function grabCorrespondingWeapon():void {
         if (Context.game.playerManager.isItMe(_owner))
             Context.game.playerManager.me.decWeapon(WeaponType.byValue(type.value))
     }

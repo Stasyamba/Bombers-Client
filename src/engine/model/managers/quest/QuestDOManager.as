@@ -8,6 +8,7 @@ import engine.EngineContext
 import engine.games.quest.monsters.Monster
 import engine.maps.interfaces.ICollectableDynObject
 import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IDynObjectType
 import engine.maps.interfaces.ITimeActivatableDynObject
 import engine.model.managers.interfaces.IMapManager
 import engine.model.managers.interfaces.IPlayerManager
@@ -31,16 +32,18 @@ public class QuestDOManager extends DynObjectManager {
                 checkCollectableObject(object as ICollectableDynObject)
             if (object is ITimeActivatableDynObject)
                 checkTimeActivatedObject(object as ITimeActivatableDynObject, elapsedMilliSecs)
+            if (l > _objects.length) {
+                i--;
+                l--
+            }
         }
         checkBuffer(elapsedMilliSecs)
-
-
     }
 
     private function checkTimeActivatedObject(object:ITimeActivatableDynObject, elapsedMilliSecs:int):void {
         object.onTimeElapsed(elapsedMilliSecs);
         if (object.timeToActivate <= 0) {
-            activateObject(object.x, object.y, object.victim)
+            EngineContext.qPlayerActivateObject.dispatch(object.victim == null ? -1 : object.victim.slot, object.block.x, object.block.y, object.type)
         }
     }
 
@@ -49,15 +52,17 @@ public class QuestDOManager extends DynObjectManager {
             if (!object.wasTriedToBeTaken) {
                 trace("player tried to take")
                 object.tryToTake();
-                EngineContext.objectActivated.dispatch(playerManager.mySlot, object.block.x, object.block.y, object.type);
+                EngineContext.qPlayerActivateObject.dispatch(playerManager.mySlot, object.block.x, object.block.y, object.type);
             }
         }
         _monstersManager.forEachAliveMonster(function todo(monster:Monster, id:int) {
             if (_monstersManager.checkMonsterTakenObject(monster, object)) {
                 if (!object.wasTriedToBeTaken) {
                     trace("monster " + id + " tried to take")
-                    object.tryToTake();
-                    EngineContext.objectActivated.dispatch(id, object.block.x, object.block.y, object.type);
+                    if(monster.activatesObjects(object.type)){
+                        object.tryToTake()
+                        EngineContext.qMonsterActivateObject.dispatch(id, object.block.x, object.block.y, object.type);
+                    }
                 }
             }
         })

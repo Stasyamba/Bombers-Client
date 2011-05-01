@@ -25,5 +25,9 @@ public interface IPlayerBomber extends IBomber {
     function get currentWeapon():IWeapon;
 
     function decWeapon(wt:WeaponType):void;
+
+    function hit(damage:int):void
+
+    function hitWithoutImmortal(damage:int):void
 }
 }

@@ -7,6 +7,7 @@ package engine.bombers.interfaces {
 import components.common.bombers.BomberType
 
 import engine.explosionss.interfaces.IExplosion
+import engine.games.quest.monsters.ICreatureType
 import engine.maps.IMap
 import engine.model.signals.StateAddedSignal
 import engine.model.signals.StateRemovedSignal
@@ -96,6 +97,8 @@ public interface IBomber {
 
     function getTotalBlockChance(bt:BomberType):Number
 
-    function get bomberType():BomberType
+    function get type():ICreatureType
+
+
 }
 }

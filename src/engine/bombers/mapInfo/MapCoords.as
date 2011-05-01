@@ -4,6 +4,7 @@
  */
 
 package engine.bombers.mapInfo {
+import engine.bombers.CreatureBase
 import engine.bombers.interfaces.IMapCoords
 import engine.data.Consts
 import engine.maps.IMap
@@ -24,7 +25,10 @@ public class MapCoords implements IMapCoords {
     private var horDefFunc:Function;
     private var vertDefFunc:Function;
 
-    public function MapCoords(map:IMap, elemX:uint, elemY:uint, xDef:Number, yDef:Number):void {
+    private var _owner:CreatureBase
+
+    public function MapCoords(owner:CreatureBase,map:IMap, elemX:uint, elemY:uint, xDef:Number, yDef:Number):void {
+        _owner = owner
         _elemX = elemX;
         _elemY = elemY;
         _xDef = xDef;
@@ -242,22 +246,22 @@ public class MapCoords implements IMapCoords {
 
     public function canMoveLeft():Boolean {
         var b:IMapBlock = map.getNeighbour(elemX, elemY, Direction.LEFT);
-        return b.canGoThrough();
+        return b.canGoThrough(_owner);
     }
 
     public function canMoveRight():Boolean {
         var b:IMapBlock = map.getNeighbour(elemX, elemY, Direction.RIGHT);
-        return b.canGoThrough();
+        return b.canGoThrough(_owner);
     }
 
     public function canMoveUp():Boolean {
         var b:IMapBlock = map.getNeighbour(elemX, elemY, Direction.UP);
-        return b.canGoThrough();
+        return b.canGoThrough(_owner);
     }
 
     public function canMoveDown():Boolean {
         var b:IMapBlock = map.getNeighbour(elemX, elemY, Direction.DOWN);
-        return b.canGoThrough();
+        return b.canGoThrough(_owner);
     }
 
     private function canMoveLeftNext():Boolean {
@@ -274,13 +278,13 @@ public class MapCoords implements IMapCoords {
             if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX - 1, elemY + 1);
-            return bThrough.canGoThrough() && bTarget.canGoThrough();
+            return bThrough.canGoThrough(_owner) && bTarget.canGoThrough(_owner);
         } else {  //up
             bThrough = map.getNeighbour(elemX, elemY, Direction.UP);
             if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX - 1, elemY - 1);
-            return bThrough.canGoThrough() && bTarget.canGoThrough();
+            return bThrough.canGoThrough(_owner) && bTarget.canGoThrough(_owner);
         }
     }
 
@@ -298,13 +302,13 @@ public class MapCoords implements IMapCoords {
             if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX + 1, elemY + 1);
-            return bThrough.canGoThrough() && bTarget.canGoThrough();
+            return bThrough.canGoThrough(_owner) && bTarget.canGoThrough(_owner);
         } else {  //up
             bThrough = map.getNeighbour(elemX, elemY, Direction.UP);
             if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX + 1, elemY - 1);
-            return bThrough.canGoThrough() && bTarget.canGoThrough();
+            return bThrough.canGoThrough(_owner) && bTarget.canGoThrough(_owner);
         }
     }
 
@@ -322,13 +326,13 @@ public class MapCoords implements IMapCoords {
             if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX + 1, elemY - 1);
-            return bThrough.canGoThrough() && bTarget.canGoThrough();
+            return bThrough.canGoThrough(_owner) && bTarget.canGoThrough(_owner);
         } else {  //left
             bThrough = map.getNeighbour(elemX, elemY, Direction.LEFT);
             if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX - 1, elemY - 1);
-            return bThrough.canGoThrough() && bTarget.canGoThrough();
+            return bThrough.canGoThrough(_owner) && bTarget.canGoThrough(_owner);
         }
     }
 
@@ -346,13 +350,13 @@ public class MapCoords implements IMapCoords {
             if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX + 1, elemY + 1);
-            return bThrough.canGoThrough() && bTarget.canGoThrough();
+            return bThrough.canGoThrough(_owner) && bTarget.canGoThrough(_owner);
         } else {  //left
             bThrough = map.getNeighbour(elemX, elemY, Direction.LEFT);
             if (bThrough == NullMapBlock.getInstance())
                 return false
             bTarget = map.getBlock(elemX - 1, elemY + 1);
-            return bThrough.canGoThrough() && bTarget.canGoThrough();
+            return bThrough.canGoThrough(_owner) && bTarget.canGoThrough(_owner);
         }
     }
 
@@ -481,5 +485,8 @@ public class MapCoords implements IMapCoords {
     }
 
 
+    public function block():IMapBlock {
+        return map.getBlock(elemX,elemY)
+    }
 }
 }

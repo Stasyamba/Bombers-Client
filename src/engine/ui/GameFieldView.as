@@ -23,8 +23,12 @@ import engine.maps.mapBlocks.view.MapBlocksView
 
 import flash.display.Sprite
 import flash.events.Event
+import flash.geom.Point
+
+import greensock.TweenMax
 
 import mx.collections.ArrayList
+import mx.controls.Label
 import mx.core.UIComponent
 
 import spark.components.Group
@@ -46,6 +50,7 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
     public var mapBlocksView:MapBlocksView;
     //enemies
     public var enemiesViews:ArrayList = new ArrayList();
+    public var enemiesView:Sprite = new Sprite()
     //player
     public var playerView:PlayerView;
     //interactive big objects players walk under
@@ -84,15 +89,16 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
             (game as RegularGame).enemiesManager.forEachAliveEnemy(function todo(item:IEnemyBomber, slot:int):void {
                 var enemyView:EnemyView = new EnemyView(item);
                 enemiesViews.addItem(enemyView);
-                contentUI.addChild(enemyView);
+                enemiesView.addChild(enemyView);
             })
         }
 
         game.monstersManager.forEachAliveMonster(function todo(item:Monster, slot:int):void {
             var monsterView:MonsterView = new MonsterView(item);
             enemiesViews.addItem(monsterView);
-            contentUI.addChild(monsterView);
+            enemiesView.addChild(monsterView);
         })
+        contentUI.addChild(enemiesView)
 
         playerView = new PlayerView(game.playerManager.me);
         contentUI.addChild(playerView);
@@ -109,6 +115,31 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
         onPlayerCoordinatesChanged(game.playerManager.me.coords.getRealX(), game.playerManager.me.coords.getRealY())
         EngineContext.playerCoordinatesChanged.add(onPlayerCoordinatesChanged);
         EngineContext.smokeAdded.add(onSmokeAdded)
+
+        EngineContext.qMonsterAdded.add(onMonsterAdded)
+
+        EngineContext.redBaloon.add(function(p1:Point, p2:Point):void {
+            var sp:Sprite = new Sprite()
+            sp.graphics.beginFill(0xFF0000, 0.8)
+            sp.graphics.drawRect(0, 0, 200, 200)
+            sp.graphics.endFill()
+
+            var l:Label = new Label()
+            l.text = p1.toString() + " -> " + p2.toString()
+            l.setStyle("fontSize", 40);
+            l.width = 200
+            l.height = 200
+            sp.addChild(l)
+
+            sp.x = 100
+            sp.y = 100
+            contentUI.addChild(sp)
+            TweenMax.delayedCall(2, contentUI.removeChild, [sp])
+        })
+    }
+
+    private function onMonsterAdded(m:Monster):void {
+        enemiesView.addChild(new MonsterView(m))
     }
 
     private function onSmokeAdded(x:int, y:int):void {

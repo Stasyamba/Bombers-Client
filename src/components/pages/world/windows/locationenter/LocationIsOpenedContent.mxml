@@ -80,8 +80,6 @@
             } else {
                 setWarningGroupVisible(true);
             }
-
-            //setBetaGroupVisible(true);
         }
 
         private function setWarningGroupVisible(visible:Boolean):void {

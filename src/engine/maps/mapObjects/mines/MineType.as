@@ -27,8 +27,8 @@ public class MineType implements IDynObjectType {
         return _key
     }
 
-    public function get waitToAdd():int {
-        return 2000
+    public function get waitToAdd():Number {
+        return 2
     }
 
     public function get stringId():String {

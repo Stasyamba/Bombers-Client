@@ -24,7 +24,8 @@ public interface IDynObject {
 
     function activateOn(player:IBomber):void;
 
-    function onAddedToMap():void
+    //only in multiplayer games!
+    function grabCorrespondingWeapon():void
 
     function get removeAfterActivation():Boolean
 }

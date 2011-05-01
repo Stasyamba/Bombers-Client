@@ -7,9 +7,9 @@ package engine.games.quest.monsters.walking {
 import engine.bombers.interfaces.IMapCoords
 import engine.utils.Direction
 
-public class AlongRightWallWalkingStrategy implements IWalkingStrategy {
+public class AlongRightWallWS implements IWalkingStrategy {
 
-    public function AlongRightWallWalkingStrategy() {
+    public function AlongRightWallWS() {
         super();
     }
 

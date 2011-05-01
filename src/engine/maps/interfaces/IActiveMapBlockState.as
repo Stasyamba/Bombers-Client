@@ -5,9 +5,11 @@
 
 package engine.maps.interfaces {
 import engine.bombers.CreatureBase
-import engine.bombers.interfaces.IBomber
 
 public interface IActiveMapBlockState extends IMapBlockState {
-    function activateOn(bomber:CreatureBase):void
+
+    function activateOn(creature:CreatureBase):void
+
+    function deactivateOn(creature:CreatureBase):void
 }
 }

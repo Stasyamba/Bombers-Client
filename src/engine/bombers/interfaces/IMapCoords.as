@@ -51,5 +51,7 @@ public interface IMapCoords {
     function canMoveUp():Boolean;
 
     function canMoveDown():Boolean;
+
+    function block():IMapBlock
 }
 }

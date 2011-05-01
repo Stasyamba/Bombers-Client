@@ -18,7 +18,7 @@ public class QuestMapManager implements IMapManager {
     }
 
     public function make(xml:XML):IMap {
-        _map = new Map(xml, mapBlockBuilder);
+        _map = new QuestMap(xml, mapBlockBuilder);
         return _map;
     }
 

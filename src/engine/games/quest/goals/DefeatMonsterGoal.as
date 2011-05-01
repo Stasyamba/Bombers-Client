@@ -6,15 +6,16 @@
 package engine.games.quest.goals {
 import engine.bombers.interfaces.IEnemyBomber
 import engine.games.quest.IQuestGame
+import engine.games.quest.monsters.Monster
 
-public class DefeatEnemyGoal extends GoalBase implements IGoal {
+public class DefeatMonsterGoal extends GoalBase implements IGoal {
     private var _id:int;
     private var _all:Boolean;
-    public static const name:String = "DefeatEnemyGoal";
+    public static const name:String = "DefeatMonsterGoal";
 
     public function checkAll(game:IQuestGame):Boolean {
         var aliveFlag:Boolean = false;
-        game.monstersManager.forEachAliveMonster(function todo(enemy:IEnemyBomber, slot:int):void {
+        game.monstersManager.forEachAliveMonster(function todo(enemy:Monster, slot:int):void {
             aliveFlag = true;
         })
         return !aliveFlag;
@@ -35,7 +36,7 @@ public class DefeatEnemyGoal extends GoalBase implements IGoal {
         return checkOne(game);
     }
 
-    public function DefeatEnemyGoal(text:String, all:Boolean, id:int = 0) {
+    public function DefeatMonsterGoal(text:String, all:Boolean, id:int = 0) {
         super(text)
         _all = all;
         if (all) return;

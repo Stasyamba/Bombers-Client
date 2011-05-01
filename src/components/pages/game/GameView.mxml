@@ -8,11 +8,11 @@
         <!-- Place non-visual elements (e.g., services, value objects) here -->
     </fx:Declarations>
     <fx:Script><![CDATA[
-        import components.ApplicationView;
-        import components.common.worlds.locations.LocationType;
-        
-        import engine.EngineContext;
-        import engine.ui.GameFieldView;
+        import components.ApplicationView
+
+        import engine.EngineContext
+        import engine.games.GameType
+        import engine.ui.GameFieldView
 
         private var now:int,then:int;
 
@@ -26,6 +26,20 @@
         }
 
         public function everyGameTabOpeningInit():void {
+            switch(Context.gameModel.gameType){
+                case GameType.QUEST:
+                    initQuest();
+                    break
+                case GameType.REGULAR:
+                    initMultiPlayer();
+                    break
+                default:
+                    throw new Error("unknown game type" + Context.gameModel.gameType.value)
+            }
+            subscribeEnterFrameEvent();
+        }
+
+        private function initMultiPlayer():void {
             //listener'll be removed in gameModel
             Context.gameModel.gameReady.add(function ():void {
                 gameView = new GameFieldView(Context.game);
@@ -37,17 +51,6 @@
                 while (hasEventListener(Event.ENTER_FRAME))
                     unsubscribeEnterFrameEvent();
             })
-
-            if (Context.gameModel.gameType.isMultiplayer) {
-                initMultiPlayer();
-            } else {
-                initSinglePlayer();
-            }
-
-            subscribeEnterFrameEvent();
-        }
-
-        private function initMultiPlayer():void {
             //listener'll be removed in gameModel
             Context.gameModel.gameEnded.add(function (winnerId:String, winnerExp:int):void {
 
@@ -56,15 +59,23 @@
             });
         }
 
-        private function initSinglePlayer():void {
+        private function initQuest():void {
             //listener'll be removed in gameModel
-            Context.gameModel.gameEnded.add(function (p0:String,p1:int):void {
+            Context.gameModel.questReady.add(function ():void {
+                gameView = new GameFieldView(Context.game);
+                addElement(gameView);
+            });
 
+            Context.gameModel.leftQuest.add(function():void {
+                endGame()
+                while (hasEventListener(Event.ENTER_FRAME))
+                    unsubscribeEnterFrameEvent();
+            })
+            //listener'll be removed in gameModel
+            Context.gameModel.questEnded.add(function (p0:String, p1:int):void {
                 endGame();
-                Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW)
-                Context.gameModel.readyToPlayAgain.addOnce(function ():void {
-                    changeTabBack();
-                })
+                //Context.Model.dispatchCustomEvent(ContextEvent.GPAGE_NEED_TO_SHOW_RESULTS_WINDOW)
+                changeTabBack();
             });
         }
 
@@ -101,11 +112,8 @@
             if (hasEventListener(Event.ENTER_FRAME))
                 unsubscribeEnterFrameEvent();
         }
-		
-		
-		
         ]]></fx:Script>
-	
+
     <s:BorderContainer id="patternBorderContainer" width="100%" height="100%"
                        backgroundImage="@Embed(source='/assets/pagegame/grassPattern.jpg')"
                        backgroundImageFillMode="repeat"

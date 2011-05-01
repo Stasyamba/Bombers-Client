@@ -13,9 +13,9 @@ public class MonsterView extends CreatureViewBase implements IDestroyable {
 
     public function MonsterView(monster:Monster) {
         super(monster);
-        EngineContext.monsterDirectionChanged.add(directionChanged);
-        EngineContext.monsterCoordsChanged.add(updateCoords)
-        EngineContext.monsterDied.add(onMonsterDied);
+        EngineContext.qMonsterDirectionChanged.add(directionChanged);
+        EngineContext.qMonsterCoordsChanged.add(updateCoords)
+        EngineContext.qMonsterDied.add(onMonsterDied);
     }
 
     private function directionChanged(slot:int, x:Number, y:Number, dir:Direction):void {

@@ -42,7 +42,7 @@ public class NullBomb implements ITimeActivatableDynObject {
     public function activateOn(player:IBomber):void {
     }
 
-    public function onAddedToMap():void {
+    public function grabCorrespondingWeapon():void {
     }
 
     public function get owner():IBomber {

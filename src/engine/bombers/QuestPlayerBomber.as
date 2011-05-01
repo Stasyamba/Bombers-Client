@@ -10,10 +10,10 @@ import components.common.items.categories.ItemCategory
 import engine.EngineContext
 import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
-import engine.bombers.skin.BasicSkin
 import engine.bombss.BombType
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
+import engine.maps.mapObjects.DynObjectType
 import engine.playerColors.PlayerColor
 import engine.profiles.GameProfile
 import engine.utils.Direction
@@ -40,7 +40,7 @@ public class QuestPlayerBomber extends BomberBase implements IPlayerBomber {
     private var _spectatorMode:Boolean = false
 
     public function QuestPlayerBomber(game:IGame, slot:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder) {
-        super(game, slot, gameProfile.currentBomberType, gameProfile.nick, color, Context.imageService.bomberSkin(gameProfile.currentBomberType),gameProfile.aursTurnedOn);
+        super(game, slot, gameProfile.currentBomberType, gameProfile.nick, color, Context.imageService.bomberSkin(gameProfile.currentBomberType), gameProfile.aursTurnedOn);
         _weaponBuilder = weaponBuilder
         this._gameProfile = gameProfile
         for (var i:int = 0; i < _gameProfile.gotItems.length; i++) {
@@ -55,7 +55,7 @@ public class QuestPlayerBomber extends BomberBase implements IPlayerBomber {
 
         EngineContext.currentWeaponChanged.add(onCurrentWeaponChanged)
         EngineContext.weaponUnitSpent.add(onWeaponUnitSpent)
-        EngineContext.playerDied.addOnce(function():void{
+        EngineContext.playerDied.addOnce(function():void {
             _spectatorMode = true;
         })
     }
@@ -83,26 +83,26 @@ public class QuestPlayerBomber extends BomberBase implements IPlayerBomber {
 
     public function performMotion(moveAmount:Number):void {
 
-        if (_direction.direction == Direction.NONE)
+        if (_direction.direction == Direction.NONE || isDead)
             return;
         var x:int = _coords.getRealX();
         var y:int = _coords.getRealY();
 
         switch (_direction.direction) {
             case Direction.LEFT:
-                _coords.stepLeft(moveAmount,_spectatorMode);
+                _coords.stepLeft(moveAmount, _spectatorMode);
                 checkViewHorDirectionChanged(x);
                 break;
             case Direction.RIGHT:
-                _coords.stepRight(moveAmount,_spectatorMode);
+                _coords.stepRight(moveAmount, _spectatorMode);
                 checkViewHorDirectionChanged(x);
                 break;
             case Direction.UP:
-                _coords.stepUp(moveAmount,_spectatorMode);
+                _coords.stepUp(moveAmount, _spectatorMode);
                 checkViewVertDirectionChanged(x);
                 break;
             case Direction.DOWN:
-                _coords.stepDown(moveAmount,_spectatorMode);
+                _coords.stepDown(moveAmount, _spectatorMode);
                 checkViewVertDirectionChanged(x);
                 break;
         }
@@ -169,22 +169,33 @@ public class QuestPlayerBomber extends BomberBase implements IPlayerBomber {
         trace(">>> " + _map.getBlock(coords.elemX, coords.elemY).canSetBomb() + " " + bombCount)
         if (_map.getBlock(coords.elemX, coords.elemY).canSetBomb() && bombCount > 0 && !isDead) {
             trace("tried to set when left " + bombCount)
-            EngineContext.triedToActivateWeapon.dispatch(slot, coords.elemX, coords.elemY, WeaponType.byValue(bombType.value));
+            EngineContext.qActivateWeapon.dispatch(slot, coords.elemX, coords.elemY, WeaponType.byValue(bombType.value));
         }
     }
 
     public override function explode(expl:IExplosion):void {
-        if (expl.damage <= 0) //smoke explosion
+        hit(expl.damage)
+    }
+
+    public function hit(dmg:int):void {
+        if (dmg <= 0) //smoke expl
             return
-        life -= expl.damage;
+        hitWithoutImmortal(dmg)
+        if (!isDead)
+            super.makeImmortalFor(immortalTime);
+    }
+
+
+    public function hitWithoutImmortal(dmg:int):void {
+        if (dmg <= 0)
+            return
+        life -= dmg;
         if (life < 0) life = 0;
 
-        EngineContext.playerDamaged.dispatch(expl.damage, isDead)
+        EngineContext.playerDamaged.dispatch(dmg, isDead)
         if (isDead) {
             EngineContext.playerDied.dispatch();
-            return;
         }
-        super.makeImmortalFor(immortalTime);
     }
 
     public override function kill():void {
@@ -197,9 +208,8 @@ public class QuestPlayerBomber extends BomberBase implements IPlayerBomber {
         if (isDead) return;
         if (currentWeapon is IActivatableWeapon) {
             if (IActivatableWeapon(currentWeapon).canActivate(_coords.elemX, _coords.elemY, this))
-                EngineContext.triedToActivateWeapon.dispatch(slot, _coords.elemX, _coords.elemY, currentWeapon.type);
+                activateWeapon(_coords.elemX, _coords.elemY, currentWeapon.type)
         }
-
     }
 
     public function get currentWeapon():IWeapon {
@@ -207,15 +217,25 @@ public class QuestPlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     public function activateWeapon(x:int, y:int, type:WeaponType):void {
-        if (_weapons[type.value] is IActivatableWeapon) {
-            (_weapons[type.value] as IActivatableWeapon).activate(x, y, this);
-            EngineContext.weaponUnitSpent.dispatch(type)
+        //regular bomb special case
+        if (type.value == this.bomberType.baseBomb.value) {
+            EngineContext.qAddObject.dispatch(slot, x, y, DynObjectType.byValue(type.value))
+            takeBomb()
+        } else {
+            var aw:IActivatableWeapon = _weapons[type.value]
+            var daw:IDeactivatableWeapon = _weapons[type.value]
+            if (aw != null) {
+                aw.qActivate(x, y, this);
+                EngineContext.weaponUnitSpent.dispatch(type)
+            }
         }
     }
 
     public function deactivateWeapon(type:WeaponType):void {
         if (_weapons[type.value] is IDeactivatableWeapon) {
-            (_weapons[type.value] as IDeactivatableWeapon).deactivate(this);
+            (_weapons[type.value] as IDeactivatableWeapon).qDeactivate(this);
+        } else {
+            throw new Error("tried to deactivate unsupported weapon " + type.key)
         }
     }
 

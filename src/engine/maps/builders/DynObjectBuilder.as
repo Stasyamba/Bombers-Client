@@ -24,12 +24,18 @@ import engine.maps.mapObjects.bonuses.BonusHeal
 import engine.maps.mapObjects.bonuses.BonusType
 import engine.maps.mapObjects.mines.MineType
 import engine.maps.mapObjects.mines.RegularMine
+import engine.maps.mapObjects.special.SpecialObject
+import engine.maps.mapObjects.special.SpecialObjectType
 
 public class DynObjectBuilder {
 
     private var explosionsBuilder:ExplosionsBuilder
 
     public function make(objType:IDynObjectType, block:IMapBlock, owner:IBomber = null):IDynObject {
+
+        if (objType is SpecialObjectType) {
+            return new SpecialObject(block, objType as SpecialObjectType)
+        }
         switch (objType) {
             case DynObjectType.NULL:
                 return NullDynObject.getInstance();
@@ -57,7 +63,7 @@ public class DynObjectBuilder {
             case MineType.REGULAR:
                 return new RegularMine(block, owner);
         }
-        throw new Error("NotImplemented");
+        throw new Error("NotImplemented: " + objType.key);
     }
 
     public function setExplosionsBuilder(explosionsBuilder:ExplosionsBuilder):void {

@@ -4,6 +4,7 @@
  */
 
 package engine.weapons {
+import engine.EngineContext
 import engine.bombers.interfaces.IBomber
 import engine.maps.interfaces.IMapBlock
 import engine.maps.mapObjects.DynObjectType
@@ -21,7 +22,16 @@ public class RegularMineWeapon extends ActivatableWeaponBase implements IMineWea
         _mapManager = mapManager
     }
 
-    public function activateStatic(b:IBomber, x:int, y:int):void {
+    public function activateStatic(x:int, y:int, by:IBomber):void {
+    }
+
+    public function qActivate(x:uint, y:uint, by:IBomber):void {
+        _charges--
+        qActivateStatic(x,y,by)
+    }
+
+    public function qActivateStatic(x:int, y:int, by:IBomber):void {
+        EngineContext.qAddObject.dispatch(by.slot, x, y, type)
     }
 
     public function explode():void {

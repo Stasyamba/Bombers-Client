@@ -6,10 +6,9 @@
 package engine {
 import engine.games.quest.monsters.Monster
 import engine.games.quest.monsters.MonsterType
+import engine.games.quest.monsters.walking.IWalkingStrategy
 import engine.model.signals.DieWallAppearedSignal
 import engine.model.signals.FrameEnteredSignal
-import engine.model.signals.MissionAccomplishedSignal
-import engine.model.signals.MissionFailedSignal
 import engine.model.signals.MonsterCoordsChangedSignal
 import engine.model.signals.MonsterDirectionChangedSignal
 import engine.model.signals.MoveTickSignal
@@ -34,8 +33,9 @@ import engine.model.signals.movement.PlayerCoordsChangedSignal
 import engine.model.signals.movement.PlayerInputDirectionChangedSignal
 import engine.model.signals.movement.PlayerViewDirectionChangedSignal
 import engine.model.signals.weapons.TriedToActivateWeaponSignal
-
 import engine.utils.Direction
+
+import flash.geom.Point
 
 import org.osflash.signals.Signal
 
@@ -50,7 +50,7 @@ public class EngineContext {
     private var _playerViewDirectionChanged:PlayerViewDirectionChangedSignal = new PlayerViewDirectionChangedSignal();
     private var _playerInputDirectionChanged:PlayerInputDirectionChangedSignal = new PlayerInputDirectionChangedSignal();
     private var _enemyInputDirectionChanged:EnemyInputDirectionChangedSignal = new EnemyInputDirectionChangedSignal();
-    private var _enemyDirectionForecast:Signal = new Signal(int,Direction)
+    private var _enemyDirectionForecast:Signal = new Signal(int, Direction)
     private var _enemySmoothMovePerformed:EnemySmoothMovePerformedSignal = new EnemySmoothMovePerformedSignal();
     //---weapons
     private var _currentWeaponChanged:Signal = new Signal();
@@ -74,20 +74,27 @@ public class EngineContext {
     private var _playerDied:PlayerDiedSignal = new PlayerDiedSignal();
     private var _enemyDied:EnemyDiedSignal = new EnemyDiedSignal();
     private var _deathWallAppeared:DieWallAppearedSignal = new DieWallAppearedSignal();
-    //---goals
-    private var _taskAccomplished:MissionAccomplishedSignal = new MissionAccomplishedSignal();
-    private var _taskFailed:MissionFailedSignal = new MissionFailedSignal();
 
     //---frame
     private var _frameEntered:FrameEnteredSignal = new FrameEnteredSignal();
     private var _smokeAdded:SmokeAddedSignal = new SmokeAddedSignal()
 
     //---quests only
-    private var _monsterDirectionChanged:MonsterDirectionChangedSignal = new MonsterDirectionChangedSignal()
-    private var _monsterCoordsChanged:MonsterCoordsChangedSignal = new MonsterCoordsChangedSignal()
-    private var _needToAddMonster:Signal = new Signal(MonsterType, Number, Number)
-    private var _monsterAdded:Signal = new Signal(Monster)
-    private var _monsterDied:Signal = new Signal(Monster)
+    private var _qMonsterDirectionChanged:MonsterDirectionChangedSignal = new MonsterDirectionChangedSignal()
+    private var _qMonsterCoordsChanged:MonsterCoordsChangedSignal = new MonsterCoordsChangedSignal()
+    private var _qNeedToAddMonster:Signal = new Signal(MonsterType, int, int, IWalkingStrategy)
+    private var _qMonsterAdded:Signal = new Signal(Monster)
+    private var _qMonsterDied:Signal = new Signal(Monster)
+    private var _qActivateWeapon:WeaponActivatedSignal = new WeaponActivatedSignal()
+    //---goals
+    private var _qAddObject:ObjectAddedSignal = new ObjectAddedSignal()
+    private var _qPlayerActivateObject:ObjectActivatedSignal = new ObjectActivatedSignal()
+    private var _qMonsterActivateObject:ObjectActivatedSignal = new ObjectActivatedSignal()
+    private var _qMonsterDamaged:Signal = new Signal(Monster, int)
+
+    public static var redBaloon:Signal = new Signal(Point, Point);
+    public static var greenBaloon:Signal = new Signal(Number, Number, Direction)
+    //Monster, damage
 
 
     function EngineContext() {
@@ -192,18 +199,61 @@ public class EngineContext {
         return instance._deathWallAppeared;
     }
 
-    public static function get taskAccomplished():MissionAccomplishedSignal {
-        return instance._taskAccomplished;
+    public static function get moveTick():MoveTickSignal {
+        return instance._moveTick
     }
 
-    public static function get taskFailed():MissionFailedSignal {
-        return instance._taskFailed;
+    public static function get enemyDirectionForecast():Signal {
+        return instance._enemyDirectionForecast
     }
+
 
     public static function get frameEntered():FrameEnteredSignal {
         return instance._frameEntered;
     }
 
+    //quest
+    public static function get qMonsterDirectionChanged():MonsterDirectionChangedSignal {
+        return instance._qMonsterDirectionChanged
+    }
+
+    public static function get qMonsterCoordsChanged():MonsterCoordsChangedSignal {
+        return instance._qMonsterCoordsChanged
+    }
+
+    public static function get qMonsterDied():Signal {
+        return instance._qMonsterDied
+    }
+
+    public static function get qNeedToAddMonster():Signal {
+        return instance._qNeedToAddMonster
+    }
+
+    public static function get qMonsterAdded():Signal {
+        return instance._qMonsterAdded
+    }
+
+    public static function get qActivateWeapon():WeaponActivatedSignal {
+        return instance._qActivateWeapon
+    }
+
+    public static function get qAddObject():ObjectAddedSignal {
+        return instance._qAddObject
+    }
+
+    public static function get qPlayerActivateObject():ObjectActivatedSignal {
+        return instance._qPlayerActivateObject
+    }
+
+    public static function get qMonsterActivateObject():ObjectActivatedSignal {
+        return instance._qMonsterActivateObject
+    }
+
+    public static function get qMonsterDamaged():Signal {
+        return instance._qMonsterDamaged
+    }
+
+    //clear
     public static function clear():void {
         //---movement
         playerCoordinatesChanged.removeAll()
@@ -234,37 +284,18 @@ public class EngineContext {
         playerDied.removeAll()
         enemyDied.removeAll()
         deathWallAppeared.removeAll()
-        //---goals
-        taskAccomplished.removeAll()
-        taskFailed.removeAll()
-    }
 
-    public static function get moveTick():MoveTickSignal {
-        return instance._moveTick
-    }
-
-    public static function get monsterDirectionChanged():MonsterDirectionChangedSignal {
-        return instance._monsterDirectionChanged
-    }
-
-    public static function get monsterCoordsChanged():MonsterCoordsChangedSignal {
-        return instance._monsterCoordsChanged
-    }
-
-    public static function get monsterDied():Signal {
-        return instance._monsterDied
-    }
-
-    public static function get needToAddMonster():Signal {
-        return instance._needToAddMonster
-    }
-
-    public static function get monsterAdded():Signal {
-        return instance._monsterAdded
-    }
-
-    public static function get enemyDirectionForecast():Signal {
-        return instance._enemyDirectionForecast
+        //---quests
+        qActivateWeapon.removeAll()
+        qAddObject.removeAll()
+        qMonsterActivateObject.removeAll()
+        qMonsterAdded.removeAll()
+        qMonsterCoordsChanged.removeAll()
+        qMonsterDamaged.removeAll()
+        qMonsterDied.removeAll()
+        qMonsterDirectionChanged.removeAll()
+        qNeedToAddMonster.removeAll()
+        qPlayerActivateObject.removeAll()
     }
 }
 }

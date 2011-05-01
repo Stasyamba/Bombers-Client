@@ -34,7 +34,16 @@ public class SmokeBombWeapon extends ActivatableWeaponBase implements IActivatab
         return WeaponType.SMOKE_BOMB_WEAPON;
     }
 
-    public function activateStatic(b:IBomber, x:int, y:int):void {
+    public function activateStatic(x:int, y:int, by:IBomber):void {
+        EngineContext.smokeAdded.dispatch(x, y)
+    }
+
+    public function qActivate(x:uint, y:uint, by:IBomber):void {
+        _charges--;
+        qActivateStatic(x, y, by)
+    }
+
+    public function qActivateStatic(x:int, y:int, by:IBomber):void {
         EngineContext.smokeAdded.dispatch(x, y)
     }
 }

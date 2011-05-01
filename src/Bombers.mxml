@@ -73,26 +73,24 @@
 
     <fx:Script>
 		<![CDATA[
-        import api.vkontakte.VkontakteGlobals
-
-        import appmodel.ApplicationModel
-
-        import components.ApplicationView
-        import components.WallView
-        import components.common.profiles.VkontakteProfile
-        import components.common.utils.enviroment.vkontakte.ApiResult
-        import components.common.utils.enviroment.vkontakte.FlashVars
-        import components.common.worlds.locations.LocationType
-        import components.pages.world.windows.friendsgame.TypeGameToggle
-
-        import greensock.TweenMax
-        import greensock.events.LoaderEvent
-        import greensock.loading.SWFLoader
-        import greensock.loading.data.SWFLoaderVars
-
-        import loading.BombersContentLoader
-
-        import mx.core.IVisualElement
+			import api.vkontakte.VkontakteGlobals;
+			
+			import appmodel.ApplicationModel;
+			
+			import components.ApplicationView;
+			import components.WallView;
+			import components.common.utils.enviroment.vkontakte.ApiResult;
+			import components.common.utils.enviroment.vkontakte.FlashVars;
+			import components.common.worlds.locations.LocationType;
+			import components.pages.world.windows.friendsgame.TypeGameToggle;
+			
+			import engine.EngineContext;
+			import engine.utils.Direction;
+			
+			import loading.BombersContentLoader;
+			
+			import mx.collections.ArrayCollection;
+			import mx.core.IVisualElement;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
@@ -100,6 +98,9 @@
         public static const APP_STARTED_DEVELOPMENT:int = 3;
 
         private var mainContentGroup:IVisualElement;
+			
+		[Bindable]
+        private var bsc:ArrayCollection = new ArrayCollection()
 
         /* private function testTarget(e: MouseEvent): void
          {
@@ -245,13 +246,17 @@
                         })
                         Context.gameModel.init();
                     }
-
+					EngineContext.greenBaloon.add(function(x:Number,y:Number,dir:Direction):void{
+						bsc.addItem({x:x,y:y,dir:dir})
+					})
+					bsc.addItem({x:-1,y:-1,dir:Direction.NONE})
                     break;
                 case APP_STARTED_DEVELOPMENT:
 
                     chooseModeGroup.visible = false;
                     basePreloaderGroup.visible = false;
                     developmentGroup.visible = true;
+ 
                     break;
                 default:
                     break;
@@ -391,4 +396,17 @@
     <mx:UIComponent id="testContent" width="300" height="300" x="100" y="100"/>
     <s:Button id="createTestGame" click="createTestGame_clickHandler(event)" x="100" y="100" content="create test"/>
     <s:Button id="joinTestGame" click="joinTestGame_clickHandler(event)" x="100" y="130" content="join test"/>
+    <s:List x="100" y="520" width="300" height="200" id="badServer" dataProvider="{bsc}" allowMultipleSelection="true">
+		<s:itemRenderer>
+			<fx:Component>
+				<s:ItemRenderer>
+					<s:HGroup>
+						<s:Label text="{data.x}"/>
+						<s:Label text="{data.y}"/>	
+						<s:Label text="{data.dir.key}"/>	
+					</s:HGroup>
+				</s:ItemRenderer>
+			</fx:Component>
+		</s:itemRenderer>
+	</s:List>
 </vkUI:VkontakteApplication>

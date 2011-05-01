@@ -26,6 +26,7 @@ public class WeaponType {
     public static const BOMB_COUNT_AURA:WeaponType = new WeaponType(74, "BOMB_COUNT_AURA");
     public static const BOMB_POWER_AURA:WeaponType = new WeaponType(75, "BOMB_POWER_AURA");
     public static const START_LIFE_AURA:WeaponType = new WeaponType(76, "START_LIFE_AURA");
+    public static const ELECTRO_AURA:WeaponType = new WeaponType(77, "ELECTRO AURA");
 
 
     private var _value:int;

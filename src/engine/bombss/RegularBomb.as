@@ -28,7 +28,7 @@ public class RegularBomb extends BombBase implements ITimeActivatableDynObject {
         return BombType.REGULAR;
     }
 
-    public override function onAddedToMap():void {
+    public override function grabCorrespondingWeapon():void {
         owner.takeBomb()
     }
 

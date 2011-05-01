@@ -14,7 +14,7 @@ public class NullDynObject implements IDynObject {
 
     private static var instance:NullDynObject;
 
-    public function onAddedToMap():void {
+    public function grabCorrespondingWeapon():void {
     }
 
     public function get removeAfterActivation():Boolean {

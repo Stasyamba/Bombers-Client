@@ -4,6 +4,7 @@
  */
 
 package engine.maps.mapBlocks.mapBlockStates {
+import engine.bombers.CreatureBase
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.bigObjects.BigObjectBase
 import engine.maps.bigObjects.SimpleBigObject
@@ -30,7 +31,7 @@ public class BlockUnderBigObject implements IMapBlockState {
         return _explodesAndStopsExplosion;
     }
 
-    public function canGoThrough():Boolean {
+    public function canGoThrough(creature:CreatureBase = null):Boolean {
         return _canGoThrough;
     }
 
@@ -90,5 +91,8 @@ public class BlockUnderBigObject implements IMapBlockState {
         return _objectAfterObjectDestroyed;
     }
 
+    public function get blinks():Boolean {
+        return true
+    }
 }
 }

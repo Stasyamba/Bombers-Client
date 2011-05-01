@@ -1,28 +1,26 @@
 /*
- * Copyright (c) 2010.
+ * Copyright (c) 2011.
  * Pavkin Vladimir
  */
 
 package engine.maps.mapBlocks {
-import engine.EngineContext
-import engine.bombers.CreatureBase
-import engine.explosionss.interfaces.IExplosion
-import engine.maps.builders.DynObjectBuilder
-import engine.maps.builders.MapBlockStateBuilder
-import engine.maps.interfaces.IDynObject
-import engine.maps.interfaces.IMapBlock
-import engine.maps.interfaces.IMapBlockState
-import engine.maps.mapObjects.DynObjectType
-import engine.maps.mapObjects.NullDynObject
-import engine.model.explosionss.ExplosionType
+import engine.EngineContext;
+import engine.bombers.CreatureBase;
+import engine.explosionss.interfaces.IExplosion;
+import engine.maps.builders.DynObjectBuilder;
+import engine.maps.builders.MapBlockStateBuilder;
+import engine.maps.interfaces.IDynObject;
+import engine.maps.interfaces.IMapBlock;
+import engine.maps.interfaces.IMapBlockState;
+import engine.maps.mapObjects.DynObjectType;
+import engine.maps.mapObjects.NullDynObject;
+import engine.model.explosionss.ExplosionType;
 
-import mx.controls.Alert
+import mx.controls.Alert;
 
-import org.osflash.signals.Signal
+import org.osflash.signals.Signal;
 
-//builders are injected after creation
-public class MapBlock extends MapBlockBase implements IMapBlock {
-
+public class QuestMapBlock extends MapBlockBase implements IMapBlock {
 
     private var _mapBlockStateBuilder:MapBlockStateBuilder;
     private var _mapObjectBuilder:DynObjectBuilder;
@@ -127,7 +125,7 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
     /*
      * use mapblock builder instead
      * */
-    function MapBlock(x:int, y:int, block:IMapBlockState, mapBlockStateBuilder:MapBlockStateBuilder, mapObjectBuilder:DynObjectBuilder) {
+    function QuestMapBlock(x:int, y:int, block:IMapBlockState, mapBlockStateBuilder:MapBlockStateBuilder, mapObjectBuilder:DynObjectBuilder) {
         _x = x;
         _y = y;
         _state = block;
@@ -204,10 +202,9 @@ public class MapBlock extends MapBlockBase implements IMapBlock {
     public function get destroyed():Signal {
         return _destroyed;
     }
-
-	public function get blinks():Boolean {
+	
+    public function get blinks():Boolean{
 		return _state.blinks
 	}
-
 }
 }

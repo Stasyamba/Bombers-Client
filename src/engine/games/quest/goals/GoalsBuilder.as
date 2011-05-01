@@ -25,7 +25,7 @@ public class GoalsBuilder {
         switch (String(xml.@t)) {
             case DestroyBlocksGoal.name:
                 return makeDestroyBlocksGoal(xml)
-            case DefeatEnemyGoal.name:
+            case DefeatMonsterGoal.name:
                 return makeDefeatEnemyGoal(xml)
             case CollectObjectsGoal.name:
                 return makeCollectObjectsGoal(xml)
@@ -59,15 +59,15 @@ public class GoalsBuilder {
     }
 
     private static function makeCollectObjectsGoal(xml:XML):IGoal {
-        return new CollectObjectsGoal(xml.@text, new MapObjectAmount(DynObjectType.byValue(xml.@type), int(xml.@amount)))
+        return new CollectObjectsGoal(xml.@text, new MapObjectAmount(DynObjectType.byValue(int(xml.@type)), int(xml.@amount)))
     }
 
-    private static function makeDefeatEnemyGoal(xml:XML):DefeatEnemyGoal {
+    private static function makeDefeatEnemyGoal(xml:XML):DefeatMonsterGoal {
         var all:Boolean = (xml.@id == "all");
         if (all)
-            return new DefeatEnemyGoal(xml.@text, true)
+            return new DefeatMonsterGoal(xml.@text, true)
         else
-            return new DefeatEnemyGoal(xml.@text, false, int(xml.@id))
+            return new DefeatMonsterGoal(xml.@text, false, int(xml.@id))
     }
 
     private static function makeDestroyBlocksGoal(xml:XML):DestroyBlocksGoal {

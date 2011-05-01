@@ -15,17 +15,21 @@
             <size width="20" height="16"/>
             <spawns>
                 <Spawn x="1" y="0"/>
-                <MonsterSpawn x="15" y="14"
-                              monsterId="00.monsters.rat_02" freq="0.1" start="0" object="2"/>
+                <MonsterSpawn x="5" y="2"
+                              monsterId="00.monsters.rat_02" freq="0.1" start="0" object="2">
+                    <ws type="random" maxSec="4"/>
+                </MonsterSpawn>
                 <!--frequency=[Hz], start=[sec]-->
-                <MonsterSpawn x="15" y="14"
-                              monsterId="00.monsters.rat_04" freq="0.01" start="25"/>
+                <MonsterSpawn x="5" y="3"
+                              monsterId="00.monsters.rat_04" freq="0.1" start="7">
+                    <ws type="right_wall"/>
+                </MonsterSpawn>
             </spawns>
             <rows>
-                <Row val="ffffffffffffffffffff"/>
-                <Row val="ffffffffffffffffffff"/>
-                <Row val="ffffffffffffffffffff"/>
-                <Row val="ffffffffffffffffffff"/>
+                <Row val="fffffffffffffffGffff"/>
+                <Row val="fffffffffffffffGffff"/>
+                <Row val="fffffffffffffffGffff"/>
+                <Row val="fffffffffffffffGffff"/>
                 <Row val="ffffffIIIbbFFFff---f"/>
                 <Row val="ffffffIIIwwFFFff|||f"/>
                 <Row val="ffffffffffffffffffff"/>
@@ -44,19 +48,42 @@
                 <Shadow x="0" y="12" width="4" height="3" shape="ell"/>
             </shadows>
             <objects>
-                <Object id="101">
-                    <Instance x="2" y="0"/>
-                    <Instance x="2" y="4"/>
-                </Object>
-                <Object id="103">
-                    <Instance x="2" y="1"/>
-                    <Instance x="2" y="2"/>
-                </Object>
+                <Object id="101" x="2" y="0"/>
+                <Object id="101" x="2" y="4"/>
+                <Object id="103" x="2" y="1"/>
+                <Object id="103" x="2" y="2"/>
                 <!--something special like mushrooms-->
-                <Object id="1100">
-                    <Instance x="3" y="3"/>
-                    <Instance x="4" y="4"/>
-                </Object>
+                <!--violet-->
+                <Object id="1011" x="3" y="3"/>
+                <Object id="1011" x="3" y="4"/>
+                <Object id="1011" x="3" y="5"/>
+                <!--yellow-->
+                <Object id="1012" x="19" y="0"/>
+                <Object id="1012" x="19" y="1"/>
+                <Object id="1012" x="19" y="2"/>
+                <Object id="1012" x="19" y="3"/>
+                <Object id="1012" x="19" y="4"/>
+                <Object id="1012" x="19" y="5"/>
+                <Object id="1012" x="19" y="6"/>
+                <Object id="1012" x="19" y="7"/>
+                <Object id="1012" x="19" y="8"/>
+                <Object id="1012" x="19" y="9"/>
+                <!--red-->
+                <Object id="1013" x="0" y="15"/>
+                <Object id="1013" x="1" y="15"/>
+                <Object id="1013" x="2" y="15"/>
+                <Object id="1013" x="3" y="15"/>
+                <Object id="1013" x="4" y="15"/>
+                <Object id="1013" x="5" y="15"/>
+                <Object id="1013" x="6" y="15"/>
+                <Object id="1013" x="7" y="15"/>
+                <Object id="1013" x="8" y="15"/>
+                <Object id="1013" x="9" y="15"/>
+                <Object id="1013" x="10" y="15"/>
+                <Object id="1013" x="11" y="15"/>
+                <Object id="1013" x="12" y="15"/>
+                <Object id="1013" x="13" y="15"/>
+                <Object id="1013" x="14" y="15"/>
             </objects>
             <bigObjects>
                 <!--3 BO types-->
@@ -110,26 +137,21 @@
         </Map>
     </map>
     <monsters>
-        <Monster walks="right_wall" monsterId="00.monsters.rat_01" slot="2" x="0" y="10"/>
-        <Monster walks="right_wall" monsterId="00.monsters.rat_03" slot="3" x="1" y="10"/>
+        <Monster monsterId="00.monsters.rat_01" slot="2" x="0" y="10">
+            <ws type="random" maxSec="4"/>
+        </Monster>
+        <Monster monsterId="00.monsters.rat_03" slot="3" x="1" y="10">
+            <ws type="ptp">
+                <Point x="1" y="10"/>
+                <Point x="19" y="10"/>
+                <Point x="19" y="0"/>
+                <Point x="0" y="0"/>
+            </ws>
+        </Monster>
     </monsters>
-    <!--goals types:
-        - DefeatEnemyGoal
-        - CollectObjectsGoal
-        - DestroyBOGoal
-        - ActivateBOGoal
-        - ReachCoordsGoal-->
-    <goals>
-        <Goal t="SelectiveGoal" text="Одно из заданий: ">
-            <goals>
-                <Goal t="CollectObjectsGoal" type="1011" amount="3" text="Собрать 3 фиолетовых гриба"/>
-                <Goal t="CollectObjectsGoal" type="1012" amount="10" text="Собрать 10 желтых грибов"/>
-                <Goal t="CollectObjectsGoal" type="1013" amount="15" text="Собрать 15 красных грибов"/>
-            </goals>
-        </Goal>
-    </goals>
+
     <!--done panel components:
-        - EnemiesAlive (number)
+        - MonstersAlive (number)
         - BOActivated (activated/all)
         - BODestroyed (destroyed/all)
         - ObjectsCollected (collected/all)
@@ -138,33 +160,34 @@
     <donePanel>
         <Element t="enemiesAlive"/>
     </donePanel>
-    <!--2 types: count and time-->
-    <medals type="time">
-        <Bronze time="03:00">
-            <Resource id="00" val="100"/>
+    <!--goals types:
+           - DefeatMonsterGoal
+           - CollectObjectsGoal
+           - DestroyBOGoal
+           - ActivateBOGoal
+           - ReachCoordsGoal-->
+    <!--todo: time goals-->
+    <medals>
+        <Bronze>
+            <goal t="CollectObjectsGoal" type="1013" amount="15" text="Собрать 15 красных грибов"/>
+            <prize>
+                <Resource id="00" val="100"/>
+            </prize>
         </Bronze>
-        <Silver time="02:00">
-            <Resource id="00" val="300"/>
-            <Experience val="20"/>
+        <Silver>
+            <goal t="CollectObjectsGoal" type="1012" amount="10" text="Собрать 10 желтых грибов"/>
+            <prize>
+                <Resource id="00" val="300"/>
+                <Experience val="20"/>
+            </prize>
         </Silver>
-        <Gold time="01:00">
-            <Resource id="00" val="500"/>
-            <Experience val="30"/>
-            <Object id="03" val="1"/>
+        <Gold>
+            <goal t="CollectObjectsGoal" type="1011" amount="3" text="Собрать 3 фиолетовых гриба"/>
+            <prize>
+                <Resource id="00" val="500"/>
+                <Experience val="30"/>
+                <Object id="03" val="1"/>
+            </prize>
         </Gold>
     </medals>
-    <!--<medals type="count" obj="1100" until="03:00">
-        <Bronze count="10">
-            <Resource id="00" val="100"/>
-        </Bronze>
-        <Silver count="15">
-            <Resource id="00" val="300"/>
-            <Experience val="20"/>
-        </Silver>
-        <Gold count="20">
-            <Resource id="00" val="500"/>
-            <Experience val="30"/>
-            <Object id="03" val="1"/>
-        </Gold>
-    </medals>-->
 </Game>

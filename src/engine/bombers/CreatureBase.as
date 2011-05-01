@@ -57,7 +57,7 @@ public class CreatureBase {
 
     public function putOnMap(map:IMap, x:int, y:int):void {
         _map = map;
-        _coords = new MapCoords(map, x, y, 0, 0);
+        _coords = new MapCoords(this, map, x, y, 0, 0);
     }
 
     public function incSpeed():void {

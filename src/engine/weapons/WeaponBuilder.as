@@ -6,15 +6,15 @@
 package engine.weapons {
 import components.common.items.ItemType
 
-import engine.model.managers.regular.MapManager
+import engine.model.managers.interfaces.IMapManager
 import engine.weapons.interfaces.IActivatableWeapon
 import engine.weapons.interfaces.IMineWeapon
 import engine.weapons.interfaces.IWeapon
 
 public class WeaponBuilder {
-    private var _mapManager:MapManager
+    private var _mapManager:IMapManager
 
-    public function WeaponBuilder(mapManager:MapManager) {
+    public function WeaponBuilder(mapManager:IMapManager) {
         _mapManager = mapManager
     }
 
@@ -32,7 +32,7 @@ public class WeaponBuilder {
         throw new ArgumentError("unknown special bomb type");
     }
 
-    public function makePotion(duration:int, charges:int, type:WeaponType):IActivatableWeapon {
+    public function makePotion(duration:Number, charges:int, type:WeaponType):IActivatableWeapon {
         switch (type) {
             case WeaponType.HAMELEON:
                 return new HameleonWeapon(duration, charges)

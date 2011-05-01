@@ -9,10 +9,9 @@ import components.common.bombers.BomberType
 
 import engine.bombers.interfaces.IBomber
 import engine.bombers.skin.BasicSkin
-import engine.bombers.skin.ColoredGameSkin
-import engine.bombers.skin.SimpleGameSkin
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
+import engine.games.quest.monsters.ICreatureType
 import engine.playerColors.PlayerColor
 import engine.weapons.WeaponType
 

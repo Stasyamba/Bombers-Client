@@ -12,10 +12,13 @@ public interface IDeactivatableWeapon extends IActivatableWeapon {
 
     function deactivate(by:IBomber):void
 
+    function qDeactivate(by:IBomber):void
+
     function get isActivated():Boolean
 
-    function get duration():int;
+    function get duration():Number;
 
-    function deactivateStatic(b:IBomber):void
+    function deactivateStatic(by:IBomber):void
+    function qDeactivateStatic(by:IBomber):void
 }
 }

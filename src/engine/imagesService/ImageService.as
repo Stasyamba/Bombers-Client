@@ -31,6 +31,8 @@ import greensock.loading.display.ContentDisplay
 import loading.BombersContentLoader
 import loading.LoadedObject
 
+import mx.utils.ObjectUtil
+
 public class ImageService {
 
 
@@ -102,10 +104,10 @@ public class ImageService {
 
     //todo:add variety support
     public function mapBlock(blockType:MapBlockType, locationType:LocationType):BitmapData {
-        if(!blockType.draws)
+        if (!blockType.draws)
             throw new Error("no image for not drawn block " + blockType.key)
-        if(blockType.graphicsName == MapBlockType.DEFAULT_GRAPHICS_NAME){
-            if(blockType.nameAs != null)
+        if (blockType.graphicsName == MapBlockType.DEFAULT_GRAPHICS_NAME) {
+            if (blockType.nameAs != null)
                 return loadedObject(locationType.stringId + ".map." + blockType.nameAs + "1").content.bitmapData as BitmapData
             return loadedObject(locationType.stringId + ".map." + blockType.key.toLowerCase() + "1").content.bitmapData as BitmapData
         }
@@ -151,10 +153,12 @@ public class ImageService {
     /*
      * if locType != null id is constructed this way: locId.bo.id
      * */
-    public function bigObject(id:String, locType:LocationType = null):BitmapData {
-        if (locType != null)
-            return loadedObject(locType.stringId + ".bo." + id).content.bitmapData as BitmapData
-        return loadedObject(id).content.bitmapData as BitmapData
+    public function bigObjectSWF(id:String, locType:LocationType = null):MovieClip {
+        //real code
+//        if (locType != null)
+//            return loadedObject(locType.stringId + ".bo." + id).content.bitmapData as BitmapData
+//        return loadedObject(id).content.bitmapData as BitmapData
+        return BombersContentLoader.boSwf
     }
 
     public function smoke():BitmapData {
@@ -206,7 +210,7 @@ public class ImageService {
         return new BasicSkin(b.name, skinElements, colorsObject);
     }
 
-    public function creatureSWF(graphicsId:String):MovieClip{
+    public function creatureSWF(graphicsId:String):MovieClip {
         var m:MovieClip = new BombersContentLoader.enemiesClass()
         //m.setCreature(graphicsId)
         return m

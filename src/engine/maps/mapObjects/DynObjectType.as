@@ -75,7 +75,7 @@ public class DynObjectType implements IDynObjectType {
         throw new ArgumentError("bad value " + key)
     }
 
-    public function get waitToAdd():int {
+    public function get waitToAdd():Number {
         return 0
     }
 

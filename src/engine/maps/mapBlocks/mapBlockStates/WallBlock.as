@@ -4,6 +4,7 @@
  */
 
 package engine.maps.mapBlocks.mapBlockStates {
+import engine.bombers.CreatureBase
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlockState
@@ -23,7 +24,7 @@ public class WallBlock implements IMapBlockState {
         return MapBlockType.WALL;
     }
 
-    public function canGoThrough():Boolean {
+    public function canGoThrough(creature:CreatureBase = null):Boolean {
         return false;
     }
 
@@ -60,5 +61,10 @@ public class WallBlock implements IMapBlockState {
 
     public function set hiddenObject(value:IDynObject):void {
     }
+
+    public function get blinks():Boolean {
+        return true
+    }
+
 }
 }

@@ -4,12 +4,14 @@
  */
 
 package engine.games.quest.medals {
+import engine.games.quest.goals.IGoal
+
 public class TimeMedal extends MedalBase {
 
     private var _time:int
 
-    public function TimeMedal(text:String, prizes:Array, time:int) {
-        super(text, prizes)
+    public function TimeMedal(text:String, prizes:Array, goal:IGoal, time:Number) {
+        super(text, prizes, goal)
         _time = time
     }
 

@@ -1,10 +1,11 @@
 /*
- * Copyright (c) 2010.
+ * Copyright (c) 2011.
  * Pavkin Vladimir
  */
 
 package engine.maps {
 import engine.games.quest.monsters.MonsterType
+import engine.games.quest.monsters.walking.WalkingStrategy
 import engine.games.quest.spawns.MonsterSpawn
 import engine.maps.bigObjects.ActivatedBigObject
 import engine.maps.bigObjects.BigObjectActivator
@@ -16,23 +17,27 @@ import engine.maps.interfaces.IMapBlock
 import engine.maps.mapBlocks.MapBlockType
 import engine.shadows.ShadowObject
 import engine.shadows.ShadowShape
+import engine.utils.Direction
+
+import mx.collections.ArrayList
 
 import mx.controls.Alert
 
 import org.osflash.signals.Signal
 
-public class Map extends MapBase implements IMap {
+public class QuestMap extends MapBase implements IMap{
+
 
     private var _monsterSpawns:Array = new Array()
-
 
     private var _blockDestroyed:Signal = new Signal(int, int, MapBlockType)
 
     //blockBuilder is injected via mapBuilder
-    public function Map(xml:XML, blockBuilder:MapBlockBuilder) {
+    public function QuestMap(xml:XML, blockBuilder:MapBlockBuilder) {
         this.blockBuilder = blockBuilder;
         fill(xml);
     }
+
 
     public function fill(xml:XML):void {
 
@@ -46,7 +51,7 @@ public class Map extends MapBase implements IMap {
             var rowStr:String = rowXml.@val;
             for (var x:int = 0; x < rowStr.length; x++) {
                 try {
-                    _blocks[index(x, y)] = blockBuilder.make(x, y, MapBlockType.fromChar(rowStr.charCodeAt(x)));
+                    _blocks[index(x, y)] = blockBuilder.make(x, y, MapBlockType.fromChar(rowStr.charCodeAt(x)),true);
                     _blocks[index(x, y)].destroyed.add(function(x:int, y:int, type:MapBlockType):void {
                         _blockDestroyed.dispatch(x, y, type);
                     })
@@ -100,21 +105,26 @@ public class Map extends MapBase implements IMap {
         for each (var spawn:XML in xml.spawns.Spawn) {
             _spawns.push({x:spawn.@x,y:spawn.@y})
         }
-
+        for each (var mSpawn:XML in xml.spawns.MonsterSpawn) {
+            _monsterSpawns.push(new MonsterSpawn(mSpawn.@x, mSpawn.@y, MonsterType.byId(mSpawn.@monsterId), mSpawn.@freq,mSpawn.ws[0], mSpawn.@start, mSpawn.@stop))
+        }
         //shadows
         for each (var s:XML in xml.shadows.Shadow) {
             _shadows.push(new ShadowObject(s.@x, s.@y, s.@width, s.@height, ShadowShape.fromString(s.@shape)))
         }
+
     }
 
     //getters
+
     public function get blockDestroyed():Signal {
         return _blockDestroyed;
     }
 
-    public function get monsterSpawns():* {
+    public function get monsterSpawns():Array {
         return _monsterSpawns
     }
 
 }
+
 }

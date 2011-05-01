@@ -28,8 +28,8 @@ public class CollectObjectsGoal extends GoalBase implements IGoal {
 
     public function check(game:IQuestGame):Boolean {
         var i:int = 0;
-        for each (var mapObject:IDynObject in game.gameStats.collectedObjects.source) {
-            if (mapObject.type == _amount.type)
+        for each (var obj:CollectedDOObject in game.gameStats.collectedObjects.source) {
+            if (obj.type == _amount.type)
                 i++
             if (i >= _amount.amount)
                 return true

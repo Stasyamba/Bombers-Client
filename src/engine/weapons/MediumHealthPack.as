@@ -19,11 +19,20 @@ public class MediumHealthPack extends ActivatableWeaponBase implements IActivata
     }
 
     public function activate(x:uint, y:uint, by:IBomber):void {
+        activateStatic(x, y, by)
+    }
+
+    public function activateStatic(x:int, y:int, by:IBomber):void {
         by.life = by.life + HEALING_POWER > by.startLife ? by.startLife : by.life + HEALING_POWER
     }
 
-    public function activateStatic(b:IBomber, x:int, y:int):void {
-        activate(x, y, b)
+    public function qActivate(x:uint, y:uint, by:IBomber):void {
+        _charges--
+        qActivateStatic(x, y, by)
+    }
+
+    public function qActivateStatic(x:int, y:int, by:IBomber):void {
+        by.life = by.life + HEALING_POWER > by.startLife ? by.startLife : by.life + HEALING_POWER
     }
 
     public override function get type():WeaponType {

@@ -6,6 +6,7 @@
 package engine.games.quest.spawns {
 import engine.EngineContext
 import engine.games.quest.monsters.MonsterType
+import engine.games.quest.monsters.walking.WalkingStrategy
 
 import flash.events.TimerEvent
 import flash.utils.Timer
@@ -22,6 +23,8 @@ public class MonsterSpawn {
 
     private var _spawnTimer:Timer
     private var _monsterType:MonsterType
+
+    private var _wsXML:XML
 
     public function get x():int {
         return _x
@@ -43,7 +46,7 @@ public class MonsterSpawn {
         return _stop
     }
 
-    public function MonsterSpawn(x:int, y:int, monsterType:MonsterType, freq:Number, start:Number = 0, stop:Number = 0) {
+    public function MonsterSpawn(x:int, y:int, monsterType:MonsterType, freq:Number, ws:XML, start:Number = 0, stop:Number = 0) {
         _x = x
         _y = y
         _monsterType = monsterType
@@ -51,8 +54,10 @@ public class MonsterSpawn {
         _start = start
         _stop = stop
 
-        Context.gameModel.gameStarted.addOnce(onGameStarted)
-        Context.gameModel.leftGame.addOnce(stopSpawning)
+        _wsXML = ws
+
+        Context.gameModel.questStarted.addOnce(onGameStarted)
+        Context.gameModel.questEnded.addOnce(stopSpawning)
     }
 
     private function onGameStarted():void {
@@ -65,7 +70,8 @@ public class MonsterSpawn {
             TweenMax.delayedCall(_stop, stopSpawning)
     }
 
-    private function stopSpawning():void {
+    private function stopSpawning(p0:*, p1:*):void {
+        _spawnTimer.stop()
         if (_spawnTimer.hasEventListener(TimerEvent.TIMER))
             _spawnTimer.removeEventListener(TimerEvent.TIMER, spawn)
     }
@@ -73,11 +79,12 @@ public class MonsterSpawn {
     private function startSpawning():void {
         _spawnTimer = new Timer(1000 / freq)
         _spawnTimer.addEventListener(TimerEvent.TIMER, spawn)
+        _spawnTimer.start()
     }
 
     private function spawn(e:TimerEvent):void {
         if (Context.gameModel.isPlayingNow)
-            EngineContext.needToAddMonster.dispatch(_monsterType, x, y)
+            EngineContext.qNeedToAddMonster.dispatch(_monsterType, x, y, WalkingStrategy.xml(_wsXML))
     }
 }
 }

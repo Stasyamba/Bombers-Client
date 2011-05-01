@@ -13,7 +13,9 @@ import engine.data.Consts
 import engine.data.quests.Quests
 import engine.games.GameBuilder
 import engine.games.GameType
+import engine.games.quest.QuestFailReason
 import engine.games.quest.QuestObject
+import engine.games.quest.medals.Medal
 import engine.model.signals.GameEndedSignal
 import engine.model.signals.GameReadySignal
 import engine.model.signals.MapLoadedSignal
@@ -71,6 +73,13 @@ public class GameModel {
     //quest
     public var questGameCreated:Signal = new Signal()
     public var createQuestFailed:Signal = new Signal()
+    public var questCompleted:Signal = new Signal(Medal)
+    public var questFailed:Signal = new Signal(QuestFailReason)
+    public var leftQuest:Signal = new Signal()
+    public var questStarted:Signal = new Signal()
+    public var questEnded:Signal = new Signal(Boolean,Medal) //success,medal
+    public var questReady:Signal = new Signal()
+
 
     //not used now
     public var joinedToRoom:JoinedToRoomSignal = new JoinedToRoomSignal();
@@ -102,6 +111,7 @@ public class GameModel {
         BombersContentLoader.loadQuests()
         BombersContentLoader.loadMonsters()
         BombersContentLoader.loadCreatures()
+        BombersContentLoader.loadBO()
         BombersContentLoader.readyToUseAppView.addOnce(function() {
             BombersContentLoader.loadGraphics()
 
@@ -166,6 +176,64 @@ public class GameModel {
         threeSecondsToStart.dispatch(null, 0)
     }
 
+    // quest handlers
+    private function onQuestCreated(questId:String, gameId:String):void {
+        createQuestFailed.removeAll()
+        questGameCreated.removeAll()
+        leftQuest.add(onLeftQuest)
+
+        questStarted.addOnce(function():void {
+            isPlayingNow = true
+            questEnded.addOnce(function(p1:*,p2:*):void {
+                leftQuest.dispatch()
+            })
+        })
+
+        threeSecondsToStart.addOnce(function(p0:*, p1:*):void {
+            questReady.dispatch()
+            TweenMax.delayedCall(3, function():void {
+                questStarted.dispatch();
+            })
+        })
+
+        if (readyToCreateQuest()) {
+            TweenMax.delayedCall(0.2, createQuestGame, [questId, gameId])
+        } else {
+            var taskSignal:Signal = new Signal()
+            taskSignal.addOnce(function():void {
+                createQuestGame(questId, gameId)
+            })
+            BombersContentLoader.addTask(taskSignal, [currentLocation.stringId,"bombers","common"])
+
+        }
+    }
+
+    private function onLeftQuest():void {
+        isPlayingNow = false
+        EngineContext.clear()
+
+        createQuestFailed.removeAll()
+        questGameCreated.removeAll()
+        leftQuest.removeAll()
+        questCompleted.removeAll()
+        questFailed.removeAll()
+        threeSecondsToStart.removeAll()
+        questReady.removeAll()
+        questStarted.removeAll()
+        questEnded.removeAll()
+    }
+
+    private function readyToCreateQuest():Boolean {
+        return Context.imageService.isLoaded(currentLocation.stringId) && Context.imageService.isLoaded("common");
+    }
+
+
+    private function onCreateQuestFailed():void {
+        questGameCreated.removeAll()
+        createQuestFailed.removeAll()
+        _gameType = null
+        _currentLocation = null
+    }
 
     //----------multiplayer-----------
 
@@ -254,48 +322,6 @@ public class GameModel {
         Context.gameServer.joinDefaultRoom();
     }
 
-    private function onQuestCreated(questId:String, gameId:String):void {
-        createQuestFailed.removeAll()
-        questGameCreated.removeAll()
-        leftGame.add(onLeftGame)
-
-        gameStarted.addOnce(function():void {
-            isPlayingNow = true
-            gameEnded.addOnce(function(p0:*,p1:*):void {
-                leftGame.dispatch()
-            })
-        })
-
-        threeSecondsToStart.addOnce(function(p0:*, p1:*):void {
-            gameReady.dispatch()
-            TweenMax.delayedCall(3, function():void {
-                gameStarted.dispatch();
-            })
-        })
-
-        if (readyToCreateQuest()) {
-            TweenMax.delayedCall(0.2, createQuestGame, [questId, gameId])
-        } else {
-            var taskSignal:Signal = new Signal()
-            taskSignal.addOnce(function():void {
-                createQuestGame(questId, gameId)
-            })
-            BombersContentLoader.addTask(taskSignal, [currentLocation.stringId,"bombers","common"])
-
-        }
-    }
-
-    private function readyToCreateQuest():Boolean {
-        return Context.imageService.isLoaded(currentLocation.stringId) && Context.imageService.isLoaded("common");
-    }
-
-
-    private function onCreateQuestFailed():void {
-        questGameCreated.removeAll()
-        createQuestFailed.removeAll()
-        _gameType = null
-        _currentLocation = null
-    }
 
     private function onJoinedToGame(p1:*):void {
         fastJoinFailed.removeAll()

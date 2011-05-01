@@ -44,7 +44,7 @@ public class SpecialObjectType implements IDynObjectType {
         return _key;
     }
 
-    public function get waitToAdd():int {
+    public function get waitToAdd():Number {
         return 0
     }
 

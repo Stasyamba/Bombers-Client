@@ -51,5 +51,9 @@ public class Direction {
         }
         throw new ArgumentError("Invalid direction value");
     }
+
+    public static function random():Direction {
+        return byValue(int(Math.random() * 5))
+    }
 }
 }

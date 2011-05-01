@@ -25,13 +25,15 @@ import mx.collections.ArrayList
 
 public class GameBase {
 
+    protected var _weaponsUsed:Array = new Array()
+
     public function GameBase(location:LocationType) {
         _location = location
     }
 
     protected var _location:LocationType
     //managers
-    protected var _mapManager:MapManager;
+    protected var _mapManager:IMapManager;
     protected var _playerManager:IPlayerManager;
 
     protected var _explosionsManager:IExplosionsManager;

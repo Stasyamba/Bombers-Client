@@ -9,7 +9,7 @@ public class DeactivatableWeaponBase extends ActivatableWeaponBase {
 
     protected var _isActivated:Boolean;
 
-    public function DeactivatableWeaponBase(charges:int, duration:int) {
+    public function DeactivatableWeaponBase(charges:int, duration:Number) {
         super(charges)
         _duration = duration
     }
@@ -18,7 +18,7 @@ public class DeactivatableWeaponBase extends ActivatableWeaponBase {
         return _isActivated;
     }
 
-    public function get duration():int {
+    public function get duration():Number {
         return _duration
     }
 }

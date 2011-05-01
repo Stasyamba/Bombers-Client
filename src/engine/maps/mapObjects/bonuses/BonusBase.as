@@ -52,7 +52,7 @@ public class BonusBase {
         return _wasTriedToBeTaken;
     }
 
-    public function onAddedToMap():void {
+    public function grabCorrespondingWeapon():void {
     }
 
     public function get removeAfterActivation():Boolean {

@@ -14,7 +14,11 @@ public interface IActivatableWeapon extends IWeapon {
 
     function get charges():int;
 
-    function activateStatic(b:IBomber, x:int, y:int):void
+    function activateStatic(x:int, y:int, by:IBomber):void
+
+    function qActivate(x:uint, y:uint, by:IBomber):void;
+
+    function qActivateStatic(x:int, y:int,by:IBomber):void
 
     function decCharges():void
 }

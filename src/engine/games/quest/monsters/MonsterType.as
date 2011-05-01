@@ -21,6 +21,8 @@ public class MonsterType implements ICreatureType {
     private var _startLife:int
     private var _immortalTime:Number
 
+    private var _damage:int
+
     public function get value():int {
         throw new Error("no value for monster")
     }
@@ -53,12 +55,13 @@ public class MonsterType implements ICreatureType {
         return _graphicsId
     }
 
-    public function MonsterType(id:String, graphicsId:String, speed:Number, startLife:int, immortalTime:Number, name:String) {
+    public function MonsterType(id:String, graphicsId:String, speed:Number, startLife:int, immortalTime:Number, damage:int, name:String) {
         _id = id
         _graphicsId = graphicsId
         _name = name
         _speed = speed
         _startLife = startLife
+        _damage = damage
         _immortalTime = immortalTime
     }
 
@@ -76,6 +79,10 @@ public class MonsterType implements ICreatureType {
         if (res == null)
             throw new Error("no monster with id = " + id)
         return res
+    }
+
+    public function get damage():int {
+        return _damage
     }
 }
 }

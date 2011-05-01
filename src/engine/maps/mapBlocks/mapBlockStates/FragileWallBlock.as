@@ -4,6 +4,7 @@
  */
 
 package engine.maps.mapBlocks.mapBlockStates {
+import engine.bombers.CreatureBase
 import engine.explosionss.interfaces.IExplosion
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlockState
@@ -29,7 +30,7 @@ public class FragileWallBlock implements IMapBlockState {
         return lifePoints > 1 ? MapBlockType.FRAGILE_WALL : MapBlockType.FREE;
     }
 
-    public function canGoThrough():Boolean {
+    public function canGoThrough(creature:CreatureBase = null):Boolean {
         return false;
     }
 
@@ -64,5 +65,10 @@ public class FragileWallBlock implements IMapBlockState {
     public function set hiddenObject(value:IDynObject):void {
         _hiddenObject = value;
     }
+
+    public function get blinks():Boolean {
+        return true
+    }
+
 }
 }

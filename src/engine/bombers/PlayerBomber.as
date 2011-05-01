@@ -11,6 +11,7 @@ import engine.EngineContext
 import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
 import engine.bombss.BombType
+import engine.data.Consts
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
 import engine.playerColors.PlayerColor
@@ -23,9 +24,11 @@ import engine.weapons.interfaces.IActivatableWeapon
 import engine.weapons.interfaces.IDeactivatableWeapon
 import engine.weapons.interfaces.IWeapon
 
+import flash.geom.Point
+
 public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
-    private static const MOVE_TICK_IGNORE:int = 2
+    private static const MOVE_TICK_IGNORE:int = 5
     private var _ignoredTicks:int = 0
     private var _prevDir:Direction = Direction.NONE
 
@@ -70,8 +73,14 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
     private function onMoveTick(obj:Object):void {
         var tickObject:Object = obj[slot]
-        _coords.setXExplicit(tickObject.x)
-        _coords.setYExplicit(tickObject.y)
+        if (tickObject.x % 40 != 0 && tickObject.y % 40 != 0) {
+            EngineContext.greenBaloon.dispatch(tickObject.x, tickObject.y, tickObject.dir)
+        }
+        if (Point.distance(new Point(_coords.getRealX(), _coords.getRealY()), new Point(tickObject.x, tickObject.y)) > Consts.BLOCK_SIZE) {
+            EngineContext.redBaloon.dispatch(new Point(_coords.getRealX(), _coords.getRealY()), new Point(tickObject.x, tickObject.y))
+            _coords.setXExplicit(tickObject.x)
+            _coords.setYExplicit(tickObject.y)
+        }
         if (_serverDir != tickObject.dir) {
             if (_ignoredTicks < MOVE_TICK_IGNORE) {
                 _ignoredTicks++
@@ -196,17 +205,29 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     public override function explode(expl:IExplosion):void {
-        if (expl.damage <= 0) //smoke explosion
+        hit(expl.damage)
+    }
+
+
+    public function hit(dmg:int):void {
+        if (dmg <= 0) //smoke explosion
             return
-        life -= expl.damage;
+        hitWithoutImmortal(dmg)
+        if(!isDead)
+            super.makeImmortalFor(immortalTime);
+    }
+
+
+    public function hitWithoutImmortal(dmg:int):void {
+        if (dmg <= 0) //smoke explosion
+            return
+        life -= dmg;
         if (life < 0) life = 0;
 
-        EngineContext.playerDamaged.dispatch(expl.damage, isDead)
+        EngineContext.playerDamaged.dispatch(dmg, isDead)
         if (isDead) {
             EngineContext.playerDied.dispatch();
-            return;
         }
-        super.makeImmortalFor(immortalTime);
     }
 
     public override function kill():void {

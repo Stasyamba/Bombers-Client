@@ -9,7 +9,6 @@ import engine.data.Consts
 import engine.interfaces.IDrawable
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
-import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapObjects.DynObjectType
 
 import flash.display.BitmapData
@@ -31,18 +30,23 @@ public class MapBlockView extends Sprite implements IDrawable {
 
         block.viewUpdated.add(draw);
 
-        block.explosionStarted.add(function():void {
-            EngineContext.frameEntered.add(onBlink)
-            blinking = true;
-            draw();
-        })
-        block.explosionStopped.add(function():void {
-            EngineContext.frameEntered.remove(onBlink)
-            blinking = false;
-        })
-
+        if (block.state.blinks) {
+            block.explosionStarted.add(function():void {
+                EngineContext.frameEntered.add(onBlink)
+                blinking = true;
+                draw();
+            })
+            block.explosionStopped.add(function():void {
+                EngineContext.frameEntered.remove(onBlink)
+                blinking = false;
+            })
+        }
         block.objectSet.add(onObjectSet);
         block.objectCollected.add(onObjectCollected);
+
+        if (block.object != null && block.object.type != DynObjectType.NULL) {
+            onObjectSet(block.object)
+        }
 
         draw();
     }

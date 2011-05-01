@@ -19,7 +19,7 @@ public class DestroyBlocksGoal extends GoalBase implements IGoal {
 
     public function check(game:IQuestGame):Boolean {
         var i:int = 0;
-        for each (var obj:Object in game.gameStats.destroyedBlocks.source) {
+        for each (var obj:DestroyedMapBlockObject in game.gameStats.destroyedBlocks.source) {
             if (obj.type == blockType)
                 i++
             if (i >= _amount.amount)

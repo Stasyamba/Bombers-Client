@@ -19,7 +19,7 @@ public class BoxBombWeapon extends ActivatableWeaponBase implements IActivatable
         this.mapManager = mapManager
     }
 
-    public function activateStatic(b:IBomber, x:int, y:int):void {
+    public function activateStatic(x:int, y:int, by:IBomber):void {
     }
 
     public function canActivate(x:uint, y:uint, by:IBomber):Boolean {
@@ -31,6 +31,15 @@ public class BoxBombWeapon extends ActivatableWeaponBase implements IActivatable
     public function activate(x:uint, y:uint, by:IBomber):void {
         _charges--;
         EngineContext.triedToActivateWeapon.dispatch(by.slot, x, y, BombType.BOX)
+    }
+
+    public function qActivate(x:uint, y:uint, by:IBomber):void {
+        _charges--
+        qActivateStatic(x,y,by)
+    }
+
+    public function qActivateStatic(x:int, y:int,by:IBomber):void {
+        EngineContext.qAddObject.dispatch(by.slot, x, y, BombType.BOX)
     }
 
     public override function get type():WeaponType {

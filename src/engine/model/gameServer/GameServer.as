@@ -102,9 +102,9 @@ public class GameServer extends SmartFox {
     private static const LOBBY_PROFILES:String = "game.lobby.playersProfiles"
     private static const LOBBY_READY:String = "game.lobby.readyChanged"
 
-	private static const ADMIN_RELOAD_MAPS: String = "admin.reloadMapManager";
-	private static const ADMIN_RELOAD_PRICE: String = "admin.reloadPricelistManager";
-		
+    private static const ADMIN_RELOAD_MAPS:String = "admin.reloadMapManager";
+    private static const ADMIN_RELOAD_PRICE:String = "admin.reloadPricelistManager";
+
 
     private static const LOBBY_LOCATION:String = "game.lobby.location"
 
@@ -347,38 +347,33 @@ public class GameServer extends SmartFox {
         tenSecondsTimer.start()
     }
 
-	public function tryLottery():void
-	{
-		var params:ISFSObject = new SFSObject();
-		send(new ExtensionRequest(INT_TRY_LUCK, params, null));
-	}
-	
-	public function buyLuck():void
-	{
-		var params:ISFSObject = new SFSObject();
-		params.putInt("interface.buyLuck.fields.luck", 3);
-		
-		send(new ExtensionRequest(INT_BUY_LUCK, params, null));
-	}
-	
-	public function takePrize():void
-	{
-		var params:ISFSObject = new SFSObject();
-		send(new ExtensionRequest(INT_TAKE_PRIZE, params, null));
-	}
-	
-	public function adminReloadMaps():void 
-	{
-		var params:ISFSObject = new SFSObject();
-		send(new ExtensionRequest(ADMIN_RELOAD_MAPS, params, null));
-	}
-	
-	public function adminReloadPrice():void 
-	{
-		var params:ISFSObject = new SFSObject();
-		send(new ExtensionRequest(ADMIN_RELOAD_PRICE, params, null));
-	}
-	
+    public function tryLottery():void {
+        var params:ISFSObject = new SFSObject();
+        send(new ExtensionRequest(INT_TRY_LUCK, params, null));
+    }
+
+    public function buyLuck():void {
+        var params:ISFSObject = new SFSObject();
+        params.putInt("interface.buyLuck.fields.luck", 3);
+
+        send(new ExtensionRequest(INT_BUY_LUCK, params, null));
+    }
+
+    public function takePrize():void {
+        var params:ISFSObject = new SFSObject();
+        send(new ExtensionRequest(INT_TAKE_PRIZE, params, null));
+    }
+
+    public function adminReloadMaps():void {
+        var params:ISFSObject = new SFSObject();
+        send(new ExtensionRequest(ADMIN_RELOAD_MAPS, params, null));
+    }
+
+    public function adminReloadPrice():void {
+        var params:ISFSObject = new SFSObject();
+        send(new ExtensionRequest(ADMIN_RELOAD_PRICE, params, null));
+    }
+
     //----------------------Handlers---------------------------
 
     private function onConnected(event:SFSEvent):void {
@@ -455,18 +450,21 @@ public class GameServer extends SmartFox {
                     var dir:Direction = Direction.byValue(dirArr.getInt(i))
                     var cx:Number = cxArr.getDouble(i)
                     var cy:Number = cyArr.getDouble(i)
-                    slot = Context.gameModel.getLobbyProfileById(name).slot
-                    moveTickObject[slot] = {dir:dir,x:cx,y:cy}
-                    trace(ObjectUtil.toString(moveTickObject))
+                    var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)
+                    if (lp != null) {
+                        slot = lp.slot
+                        moveTickObject[slot] = {dir:dir,x:cx,y:cy}
+                        trace(ObjectUtil.toString(moveTickObject))
+                    }
                 }
                 EngineContext.moveTick.dispatch(moveTickObject)
                 break;
             case ENEMY_DIRECTION_FORECAST:
-                var name:String = responseParams.getUtfString("U")
-                var slot:int = Context.gameModel.getLobbyProfileById(name).slot
-                var dir:Direction = Direction.byValue(responseParams.getInt("I"))
-                EngineContext.enemyDirectionForecast.dispatch(slot,dir)
-				break;
+//                var name:String = responseParams.getUtfString("U")
+//                var slot:int = Context.gameModel.getLobbyProfileById(name).slot
+//                var dir:Direction = Direction.byValue(responseParams.getInt("I"))
+                //EngineContext.enemyDirectionForecast.dispatch(slot, dir)
+                break;
 //            case INPUT_DIRECTION_CHANGED:
 //                //special case, message is broadcasted
 //                var slot:int = responseParams.getInt("slot");

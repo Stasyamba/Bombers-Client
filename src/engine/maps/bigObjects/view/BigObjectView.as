@@ -26,6 +26,8 @@ public class BigObjectView extends Sprite implements IDrawable,IStatedView {
     private var _tunableProperties:Object = {x:true,y:true,alpha:true,blendMode:true,scaleX:true,scaleY:true};
     private var _defaultAlpha:Number = 1;
 
+    private var _self:Sprite
+
     public function BigObjectView(obj:BigObjectBase) {
         super();
         object = obj;
@@ -37,9 +39,8 @@ public class BigObjectView extends Sprite implements IDrawable,IStatedView {
 //        obj.explosionStarted.add(onExplosionStarted)
 //        obj.explosionStopped.add(onExplosionStopped)
 //        obj.destroyed.add(onDestroyed)
-
-        draw();
-
+        _self = Context.imageService.bigObjectSWF(object.graphicsId)
+        addChild(_self)
     }
 
     private function addState(state:ViewState):void {
@@ -71,6 +72,7 @@ public class BigObjectView extends Sprite implements IDrawable,IStatedView {
     }
 
     public function draw():void {
+
 //        graphics.clear();
 //        graphics.beginBitmapFill(Context.imageService.bigObject(object.description.skin));
 //        graphics.drawRect(0, 0, object.description.width * Consts.BLOCK_SIZE, object.description.height * Consts.BLOCK_SIZE);

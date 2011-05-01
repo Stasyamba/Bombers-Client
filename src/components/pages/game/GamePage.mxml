@@ -108,10 +108,10 @@
                 if (Context.gameModel.isPlayingNow)
                     Context.game.playerManager.me.addDirection(Utils.arrowKeyCodeToDirection(event.keyCode))
             } else if (event.keyCode == Keyboard.SPACE) {
-                if (Context.gameModel.isPlayingNow != null)
+                if (Context.gameModel.isPlayingNow)
                     Context.game.playerManager.me.setBomb(BombType.REGULAR);
             } else if (event.keyCode == 88) {   //x
-                if (Context.gameModel.isPlayingNow != null)
+                if (Context.gameModel.isPlayingNow)
                     Context.game.playerManager.me.tryActivateWeapon();
             } else if (event.keyCode == 90) {   //z
                 Context.gameModel.increaseWeaponIndex()

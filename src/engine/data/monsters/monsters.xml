@@ -9,23 +9,27 @@
        speed="60"
        life="1"
        immortalTime="2"
+       damage="1"
        name="Говнокрыса"/>
     <M id="00.monsters.rat_02"
        graphicsId="00.monsters.rat"
        speed="80"
        life="3"
        immortalTime="2"
+       damage="1"
        name="Крыса"/>
     <M id="00.monsters.rat_03"
        graphicsId="00.monsters.rat"
        speed="100"
        life="5"
        immortalTime="3"
+       damage="2"
        name="Крутая крыса"/>
     <M id="00.monsters.rat_04"
        graphicsId="00.monsters.rat"
        speed="100"
        life="6"
        immortalTime="4"
+       damage="2"
        name="Мегаговнокрыса"/>
 </Monsters>

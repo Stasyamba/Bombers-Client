@@ -5,20 +5,19 @@
 
 package engine.maps.mapBlocks.mapBlockStates {
 import engine.bombers.CreatureBase
-import engine.bombers.interfaces.IBomber
 import engine.explosionss.interfaces.IExplosion
-import engine.maps.interfaces.IActiveMapBlockState
 import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IMapBlockState
 import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapObjects.NullDynObject
 import engine.model.explosionss.ExplosionType
 
-public class FreeBlock implements IActiveMapBlockState {
+public class FreeBlock implements IMapBlockState {
 
     public function FreeBlock() {
     }
 
-    public function canGoThrough():Boolean {
+    public function canGoThrough(creature:CreatureBase = null):Boolean {
         return true;
     }
 
@@ -62,8 +61,10 @@ public class FreeBlock implements IActiveMapBlockState {
 
     }
 
-    public function activateOn(creature:CreatureBase):void {
-        creature.resetSpeed()
+    public function get blinks():Boolean {
+        return false
     }
+
+
 }
 }

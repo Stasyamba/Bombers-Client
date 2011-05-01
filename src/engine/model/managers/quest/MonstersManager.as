@@ -4,22 +4,25 @@
  */
 
 package engine.model.managers.quest {
-import engine.bombers.interfaces.IEnemyBomber
+import engine.bombers.interfaces.IPlayerBomber
 import engine.data.Consts
 import engine.explosionss.ExplosionPoint
 import engine.explosionss.interfaces.IExplosion
 import engine.games.quest.monsters.Monster
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IMapBlock
+import engine.model.managers.interfaces.IPlayerManager
 
 public class MonstersManager {
 
     protected var _monsters:Array = new Array();
     private var _count:int = 0;
 
-    public function MonstersManager() {
-    }
+    private var _playerManager:IPlayerManager
 
+    public function MonstersManager(playerManager:IPlayerManager) {
+        _playerManager = playerManager
+    }
 
     public function addMonster(monster:Monster):void {
         _monsters[monster.slot] = monster;
@@ -31,7 +34,7 @@ public class MonstersManager {
         _count--;
     }
 
-    public function getMonsterBySlot(slot:int):IEnemyBomber {
+    public function getMonsterBySlot(slot:int):Monster {
         return _monsters[slot];
     }
 
@@ -80,6 +83,24 @@ public class MonstersManager {
         var b:IMapBlock = monster.coords.getPartBlock();
         return (monster.coords.elemX == object.x && monster.coords.elemY == object.y
                 || b.x == object.x && b.y == object.y)
+    }
+
+    public function checkMonstersHitPlayer(elapsedMilliSecs:int):void {
+        var me:IPlayerBomber = _playerManager.me
+        if (me.isDead)
+            return;
+        if (me.isImmortal) return;
+        var x:Number = me.coords.getRealX()
+        var y:Number = me.coords.getRealY()
+
+        forEachAliveMonster(function(monster:Monster,slot:int):void {
+            if (me.isImmortal) return;
+            if (monster.monsterType.damage <= 0) return
+            if ((me.coords.elemY == monster.coords.elemY && Math.abs(x - monster.coords.getRealX()) < Consts.BOMBER_SIZE) ||
+                    (me.coords.elemX == monster.coords.elemX && Math.abs(y - monster.coords.getRealY()) < Consts.BOMBER_SIZE)){
+               me.hit(monster.monsterType.damage)
+            }
+        })
     }
 
     public function getNewSlot():int {

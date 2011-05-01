@@ -8,6 +8,7 @@ import engine.maps.interfaces.IMapBlock
 import engine.maps.mapBlocks.MapBlock
 import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapBlocks.NullMapBlock
+import engine.maps.mapBlocks.QuestMapBlock
 
 public class MapBlockBuilder {
 
@@ -19,9 +20,11 @@ public class MapBlockBuilder {
         this.dynObjectBuilder = dynObjectBuilder;
     }
 
-    public function make(x:int, y:int, type:MapBlockType):IMapBlock {
+    public function make(x:int, y:int, type:MapBlockType,isQuest:Boolean = false):IMapBlock {
         if (type == MapBlockType.NULL)
             return NullMapBlock.getInstance()
+        if(isQuest)
+            return new QuestMapBlock(x, y, mapBlockStateBuilder.make(type), mapBlockStateBuilder, dynObjectBuilder)
         return new MapBlock(x, y, mapBlockStateBuilder.make(type), mapBlockStateBuilder, dynObjectBuilder);
     }
 }
