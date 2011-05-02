@@ -19,7 +19,7 @@ public class QuestObject {
     private var _silverMedal:MedalBase
     private var _bronzeMedal:MedalBase
 
-    private var _timeLimit:int
+    private var _timeLimit:Number
 
 
     public var best:Array
@@ -67,7 +67,7 @@ public class QuestObject {
 
     //seconds. zero means no limit
     [Bindable]
-    public function get timeLimit():int {
+    public function get timeLimit():Number{
         return _timeLimit
     }
 

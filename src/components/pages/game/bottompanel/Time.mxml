@@ -11,6 +11,8 @@
 		<![CDATA[
         import components.ApplicationView
 
+        import engine.games.quest.QuestGame
+
         [Bindable]
         private var timeStringView:String = "0 : 00";
 
@@ -23,12 +25,7 @@
                     everyGameTabOpenInit()
                 }
             })
-            timer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void {
-                if (time > 0) {
-                    time -= 1
-                    timeStringView = getStringTime()
-                }
-            })
+
             everyGameTabOpenInit()
         }
 
@@ -40,6 +37,7 @@
 
         private function stop():void {
             timer.stop()
+            timer.removeEventListener(TimerEvent.TIMER, gameTimer)
             time = 0
             timeStringView = getStringTime()
         }
@@ -50,13 +48,52 @@
             timer.start()
         }
 
+        private function stopQuest():void {
+            timer.stop()
+            time = 0
+            timeStringView = getStringTime()
+        }
+
+        private function startQuest():void {
+            time = 0
+            timeStringView = getStringTime()
+            timer.start()
+        }
+
         private function everyGameTabOpenInit():void {
-            Context.gameModel.gameStarted.add(function():void {
-                start()
-            })
-            Context.gameModel.gameEnded.add(function(p1:*, p2:*):void {
-                stop()
-            })
+            timeLabel.setStyle("color", 0x8ed300)
+            if (Context.gameModel.gameType.isMultiplayer) {
+                timer.addEventListener(TimerEvent.TIMER, gameTimer)
+                Context.gameModel.gameStarted.add(function():void {
+                    start()
+                })
+                Context.gameModel.gameEnded.add(function(p1:*, p2:*):void {
+                    stop()
+                })
+            } else {
+                timer.addEventListener(TimerEvent.TIMER, questTimer)
+                Context.gameModel.questStarted.add(function():void {
+                    startQuest()
+                })
+                Context.gameModel.questEnded.add(function(p1:*, p2:*):void {
+                    stopQuest()
+                })
+            }
+        }
+
+        private function gameTimer(e:TimerEvent):void {
+            if (time > 0) {
+                time -= 1
+                timeStringView = getStringTime()
+            }
+        }
+
+        private function questTimer(e:TimerEvent):void {
+            time += 1
+            timeStringView = getStringTime()
+            if (time >= (Context.game as QuestGame).questObject.timeLimit - 10) {
+                timeLabel.setStyle("color", 0xFF0000)
+            }
         }
         ]]>
 	</fx:Script>
@@ -77,7 +114,7 @@
     <s:HGroup width="100%" height="100%"
               verticalAlign="middle" horizontalAlign="center"
               paddingTop="3">
-        <s:Label text="{timeStringView}"
+        <s:Label id="timeLabel" text="{timeStringView}"
                  fontFamily="mpbc" fontSize="28" color="0x8ed300"
                 />
     </s:HGroup>

@@ -9,21 +9,21 @@
     <description>В этой миссии вы должны выпилить дверь за минимально возможное время.</description>
     <questImage>http://www.vensella.ru/eg/bombers/furyJoe/furyJoeBigImage.png</questImage>
     <previewImage>http://www.vensella.ru/eg/bombers/furyJoe/furyJoeBigImage.png</previewImage>
-    <maxTime>03:00</maxTime>
+    <timeLimit>30</timeLimit>
     <map>
         <Map>
             <size width="20" height="16"/>
             <spawns>
                 <Spawn x="1" y="0"/>
                 <MonsterSpawn x="5" y="2"
-                              monsterId="00.monsters.rat_02" freq="0.1" start="0" object="2">
+                              monsterId="00.monsters.rat_02" freq="0.5" start="0" maxCount="3" object="2">
                     <ws type="random" maxSec="4"/>
                 </MonsterSpawn>
                 <!--frequency=[Hz], start=[sec]-->
-                <MonsterSpawn x="5" y="3"
-                              monsterId="00.monsters.rat_04" freq="0.1" start="7">
-                    <ws type="right_wall"/>
-                </MonsterSpawn>
+                <!--<MonsterSpawn x="5" y="3"-->
+                              <!--monsterId="00.monsters.rat_04" freq="0.1" start="7">-->
+                    <!--<ws type="right_wall"/>-->
+                <!--</MonsterSpawn>-->
             </spawns>
             <rows>
                 <Row val="fffffffffffffffGffff"/>

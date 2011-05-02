@@ -26,6 +26,9 @@ public class MonsterSpawn {
 
     private var _wsXML:XML
 
+    private var _spawnedCount:int = 0
+    private var _maxCount:int
+
     public function get x():int {
         return _x
     }
@@ -46,7 +49,7 @@ public class MonsterSpawn {
         return _stop
     }
 
-    public function MonsterSpawn(x:int, y:int, monsterType:MonsterType, freq:Number, ws:XML, start:Number = 0, stop:Number = 0) {
+    public function MonsterSpawn(x:int, y:int, monsterType:MonsterType, freq:Number, ws:XML, start:Number = 0, stop:Number = 0, maxCount:int = 0) {
         _x = x
         _y = y
         _monsterType = monsterType
@@ -55,6 +58,11 @@ public class MonsterSpawn {
         _stop = stop
 
         _wsXML = ws
+
+        if(maxCount > 0)
+            _maxCount = maxCount
+        else
+            _maxCount = int.MAX_VALUE
 
         Context.gameModel.questStarted.addOnce(onGameStarted)
         Context.gameModel.questEnded.addOnce(stopSpawning)
@@ -67,10 +75,10 @@ public class MonsterSpawn {
             TweenMax.delayedCall(_start, startSpawning)
 
         if (_stop != 0)
-            TweenMax.delayedCall(_stop, stopSpawning)
+            TweenMax.delayedCall(_stop, stopSpawning,[null,null])
     }
 
-    private function stopSpawning(p0:*, p1:*):void {
+    private function stopSpawning(p0:*,p1:*):void {
         _spawnTimer.stop()
         if (_spawnTimer.hasEventListener(TimerEvent.TIMER))
             _spawnTimer.removeEventListener(TimerEvent.TIMER, spawn)
@@ -83,8 +91,10 @@ public class MonsterSpawn {
     }
 
     private function spawn(e:TimerEvent):void {
-        if (Context.gameModel.isPlayingNow)
+        if (Context.gameModel.isPlayingNow && _spawnedCount < _maxCount){
             EngineContext.qNeedToAddMonster.dispatch(_monsterType, x, y, WalkingStrategy.xml(_wsXML))
+            _spawnedCount++
+        }
     }
 }
 }

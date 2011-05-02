@@ -59,6 +59,7 @@ public class QuestGame extends GameBase implements IQuestGame {
     public function QuestGame(gameId:String, quest:QuestObject) {
         super(LocationType.byValue(quest.locationId))
         _gameId = gameId
+        _questObject = quest
 
         mapBlockStateBuilder = new MapBlockStateBuilder();
         dynObjectBuilder = new DynObjectBuilder();
@@ -105,11 +106,32 @@ public class QuestGame extends GameBase implements IQuestGame {
 
             Context.gameModel.questCompleted.add(onQuestCompleted)
 
+            EngineContext.playerDied.add(onPlayerDied)
+            EngineContext.qTimeOut.add(onTimeOut)
+            Context.gameModel.questFailed.addOnce(onQuestFailed)
+
             Context.gameModel.questEnded.addOnce(onEndedGE)
             Context.gameModel.leftQuest.addOnce(onEndedLG)
+
+            if(questObject.timeLimit > 0){
+                TweenMax.delayedCall(questObject.timeLimit,EngineContext.qTimeOut.dispatch)
+            }
         })
 
 
+    }
+
+    private function onTimeOut():void {
+        Context.gameModel.questFailed.dispatch(QuestFailReason.TIME)
+    }
+
+    private function onQuestFailed(qfr:QuestFailReason):void {
+        Alert.show(qfr.text);
+        Context.gameModel.questEnded.dispatch(false,null)
+    }
+
+    private function onPlayerDied():void {
+        Context.gameModel.questFailed.dispatch(QuestFailReason.DEATH)
     }
 
 

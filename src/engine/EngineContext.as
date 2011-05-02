@@ -86,14 +86,17 @@ public class EngineContext {
     private var _qMonsterAdded:Signal = new Signal(Monster)
     private var _qMonsterDied:Signal = new Signal(Monster)
     private var _qActivateWeapon:WeaponActivatedSignal = new WeaponActivatedSignal()
+
     //---goals
     private var _qAddObject:ObjectAddedSignal = new ObjectAddedSignal()
     private var _qPlayerActivateObject:ObjectActivatedSignal = new ObjectActivatedSignal()
     private var _qMonsterActivateObject:ObjectActivatedSignal = new ObjectActivatedSignal()
     private var _qMonsterDamaged:Signal = new Signal(Monster, int)
+    private var _qTimeOut:Signal = new Signal()
 
     public static var redBaloon:Signal = new Signal(Point, Point);
     public static var greenBaloon:Signal = new Signal(Number, Number, Direction)
+
     //Monster, damage
 
 
@@ -253,6 +256,10 @@ public class EngineContext {
         return instance._qMonsterDamaged
     }
 
+    public static function get qTimeOut():Signal {
+        return instance._qTimeOut
+    }
+
     //clear
     public static function clear():void {
         //---movement
@@ -296,6 +303,7 @@ public class EngineContext {
         qMonsterDirectionChanged.removeAll()
         qNeedToAddMonster.removeAll()
         qPlayerActivateObject.removeAll()
+        qTimeOut.removeAll()
     }
 }
 }

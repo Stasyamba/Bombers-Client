@@ -106,7 +106,7 @@ public class QuestMap extends MapBase implements IMap{
             _spawns.push({x:spawn.@x,y:spawn.@y})
         }
         for each (var mSpawn:XML in xml.spawns.MonsterSpawn) {
-            _monsterSpawns.push(new MonsterSpawn(mSpawn.@x, mSpawn.@y, MonsterType.byId(mSpawn.@monsterId), mSpawn.@freq,mSpawn.ws[0], mSpawn.@start, mSpawn.@stop))
+            _monsterSpawns.push(new MonsterSpawn(mSpawn.@x, mSpawn.@y, MonsterType.byId(mSpawn.@monsterId), mSpawn.@freq,mSpawn.ws[0], mSpawn.@start, mSpawn.@stop, mSpawn.@maxCount))
         }
         //shadows
         for each (var s:XML in xml.shadows.Shadow) {

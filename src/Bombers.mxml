@@ -88,9 +88,11 @@
 			import engine.utils.Direction;
 			
 			import loading.BombersContentLoader;
-			
-			import mx.collections.ArrayCollection;
-			import mx.core.IVisualElement;
+
+            import mx.charts.DateTimeAxis
+            import mx.collections.ArrayCollection;
+            import mx.controls.Alert
+            import mx.core.IVisualElement;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
