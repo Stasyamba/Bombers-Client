@@ -11,7 +11,6 @@ import engine.EngineContext
 import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
 import engine.bombss.BombType
-import engine.data.Consts
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
 import engine.playerColors.PlayerColor
@@ -28,14 +27,10 @@ import flash.geom.Point
 
 public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
-    private static const MOVE_TICK_IGNORE:int = 5
-    private var _ignoredTicks:int = 0
     private var _prevDir:Direction = Direction.NONE
-
+    private var _serverDir:Direction = Direction.NONE;
     private var _direction:InputDirection;
 
-    private var _serverDir:Direction = Direction.NONE;
-    private var _lastViewDir:Direction = Direction.NONE;
 
     private var _gameProfile:GameProfile
     /*
@@ -45,6 +40,10 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     protected var _currentWeapon:IWeapon
     protected var _weapons:Array = new Array()
     private var _spectatorMode:Boolean = false
+
+
+    private var _sendTime:int = 0
+    private var _waitingToSend:Boolean = false
 
 
     public function PlayerBomber(game:IGame, slot:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder) {
@@ -71,23 +70,42 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         })
     }
 
+    public function sendDirection(miliSecs:int):void {
+        if (_sendTime + miliSecs > 100 && _waitingToSend) {
+            _sendTime = 0
+            _waitingToSend = false
+            Context.gameServer.sendPlayerDirectionChanged(coords.getRealX(), coords.getRealY(), _serverDir, false)
+        } else
+            _sendTime += miliSecs
+    }
+
     private function onMoveTick(obj:Object):void {
+        if (!Context.gameModel.isPlayingNow)
+            return
         var tickObject:Object = obj[slot]
-        if (tickObject.x % 40 != 0 && tickObject.y % 40 != 0) {
+        if(tickObject == null)
+            return
+//        var xPogr:Number = Math.abs(tickObject.x - Math.round(tickObject.x))
+//        var yPogr:Number = Math.abs(tickObject.y - Math.round(tickObject.y))
+//        if (xPogr < 10e-6)
+//            tickObject.x = Math.round(tickObject.x)
+//
+//        if (yPogr < 10e-6)
+//            tickObject.y = Math.round(tickObject.y)
+
+
+        _coords.setExplicit(tickObject.x,tickObject.y)
+
+        EngineContext.playerCoordinatesChanged.dispatch(_coords.getRealX(), _coords.getRealY());
+
+        if (!_coords.correctCoords(tickObject.x, tickObject.y)) {
+        } else {
             EngineContext.greenBaloon.dispatch(tickObject.x, tickObject.y, tickObject.dir)
         }
-        if (Point.distance(new Point(_coords.getRealX(), _coords.getRealY()), new Point(tickObject.x, tickObject.y)) > Consts.BLOCK_SIZE) {
-            EngineContext.redBaloon.dispatch(new Point(_coords.getRealX(), _coords.getRealY()), new Point(tickObject.x, tickObject.y))
-            _coords.setXExplicit(tickObject.x)
-            _coords.setYExplicit(tickObject.y)
-        }
-        if (_serverDir != tickObject.dir) {
-            if (_ignoredTicks < MOVE_TICK_IGNORE) {
-                _ignoredTicks++
-            } else {
-                _serverDir = tickObject.dir
-                updateInputDirection()
-            }
+
+        if (!_waitingToSend && _serverDir != tickObject.dir) {
+            _serverDir = tickObject.dir
+            updateInputDirection()
         }
     }
 
@@ -113,8 +131,6 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     public function performMotion(moveAmount:Number):void {
-        if (!Context.gameModel.isPlayingNow)
-            return
         if (_serverDir == Direction.NONE)
             return;
         var x:int = _coords.getRealX();
@@ -123,51 +139,23 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         switch (_serverDir) {
             case Direction.LEFT:
                 _coords.stepLeft(moveAmount, _spectatorMode);
-                checkViewHorDirectionChanged(x);
                 break;
             case Direction.RIGHT:
                 _coords.stepRight(moveAmount, _spectatorMode);
-                checkViewHorDirectionChanged(x);
                 break;
             case Direction.UP:
                 _coords.stepUp(moveAmount, _spectatorMode);
-                checkViewVertDirectionChanged(x);
                 break;
             case Direction.DOWN:
                 _coords.stepDown(moveAmount, _spectatorMode);
-                checkViewVertDirectionChanged(x);
                 break;
         }
         if (x != _coords.getRealX() || y != _coords.getRealY()) {
             EngineContext.playerCoordinatesChanged.dispatch(_coords.getRealX(), _coords.getRealY());
-        } else if (_lastViewDir != Direction.NONE) {
-            _lastViewDir = Direction.NONE;
-            EngineContext.playerViewDirectionChanged.dispatch(_coords.getRealX(), _coords.getRealY(), Direction.NONE);
         }
-    }
-
-    private function checkViewHorDirectionChanged(oldX:int):void {
-        if (_coords.getRealX() != oldX && _lastViewDir != _serverDir) {
-            _lastViewDir = _serverDir;
-            EngineContext.playerViewDirectionChanged.dispatch(_coords.getRealX(), _coords.getRealY(), _serverDir);
-        }
-    }
-
-    private function checkViewVertDirectionChanged(oldY:int):void {
-        if (_coords.getRealY() != oldY && _lastViewDir != _serverDir) {
-            _lastViewDir = _serverDir;
-            EngineContext.playerViewDirectionChanged.dispatch(_coords.getRealX(), _coords.getRealY(), _serverDir);
-        }
-    }
-
-    private function viewDirectionChanged():Boolean {
-        return (Direction.isHorizontal(_serverDir) && _coords.yDef == 0) ||
-                (Direction.isVertical(_serverDir) && _coords.xDef == 0) ||
-                (_serverDir == Direction.NONE && _lastViewDir != Direction.NONE );
     }
 
     private function updateInputDirection():void {
-        _ignoredTicks = 0
         EngineContext.playerInputDirectionChanged.dispatch(_coords.getRealX(), _coords.getRealY(), _serverDir, false)
     }
 
@@ -188,6 +176,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     private function checkNewDir():void {
         if (_prevDir != _direction.direction) {
             _serverDir = _direction.direction
+            _waitingToSend = true
             updateInputDirection()
         }
     }
@@ -213,7 +202,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
         if (dmg <= 0) //smoke explosion
             return
         hitWithoutImmortal(dmg)
-        if(!isDead)
+        if (!isDead)
             super.makeImmortalFor(immortalTime);
     }
 

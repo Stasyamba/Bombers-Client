@@ -4,8 +4,6 @@
  */
 
 package engine.maps {
-import engine.games.quest.monsters.MonsterType
-import engine.games.quest.spawns.MonsterSpawn
 import engine.maps.bigObjects.ActivatedBigObject
 import engine.maps.bigObjects.BigObjectActivator
 import engine.maps.bigObjects.BigObjectBase

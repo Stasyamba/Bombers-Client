@@ -12,6 +12,8 @@ import engine.playerColors.PlayerColor
 import engine.profiles.PlayerGameProfile
 import engine.utils.Direction
 
+import flash.geom.Point
+
 public class EnemyBomber extends BomberBase implements IEnemyBomber {
 
     protected var _serverDir:Direction = Direction.NONE;
@@ -27,8 +29,8 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
         EngineContext.enemyDirectionForecast.add(onEnemyDirectionForecast)
     }
 
-    private function onEnemyDirectionForecast(slot:int,dir:Direction):void {
-        if(slot != _slot)
+    private function onEnemyDirectionForecast(slot:int, dir:Direction):void {
+        if (slot != _slot)
             return
         _serverDir = dir
     }
@@ -37,8 +39,20 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
         if (!Context.gameModel.isPlayingNow)
             return
         var tickObject:Object = obj[slot]
-        _coords.setXExplicit(tickObject.x)
-        _coords.setYExplicit(tickObject.y)
+        if(tickObject == null)
+            return
+//        var xPogr:Number = Math.abs(tickObject.x - Math.round(tickObject.x))
+//        var yPogr:Number = Math.abs(tickObject.y - Math.round(tickObject.y))
+//        if (xPogr < 10e-6)
+//            tickObject.x = Math.round(tickObject.x)
+//
+//        if (yPogr < 10e-6)
+//            tickObject.y = Math.round(tickObject.y)
+
+        _coords.setExplicit(tickObject.x,tickObject.y)
+
+        if (!_coords.correctCoords(tickObject.x, tickObject.y)) {
+        }
         if (_serverDir != tickObject.dir) {
             _serverDir = tickObject.dir
             EngineContext.enemyInputDirectionChanged.dispatch(slot, coords.getRealX(), coords.getRealY(), _serverDir)

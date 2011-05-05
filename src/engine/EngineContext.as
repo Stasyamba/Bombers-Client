@@ -94,7 +94,7 @@ public class EngineContext {
     private var _qMonsterDamaged:Signal = new Signal(Monster, int)
     private var _qTimeOut:Signal = new Signal()
 
-    public static var redBaloon:Signal = new Signal(Point, Point);
+    public static var redBaloon:Signal = new Signal(Point,int);
     public static var greenBaloon:Signal = new Signal(Number, Number, Direction)
 
     //Monster, damage
@@ -262,12 +262,18 @@ public class EngineContext {
 
     //clear
     public static function clear():void {
+        redBaloon.removeAll()
+        greenBaloon.removeAll()
+
         //---movement
         playerCoordinatesChanged.removeAll()
         playerViewDirectionChanged.removeAll()
         playerInputDirectionChanged.removeAll()
         enemyInputDirectionChanged.removeAll()
         enemySmoothMovePerformed.removeAll()
+
+        moveTick.removeAll()
+        enemyDirectionForecast.removeAll()
         //---weapons
         triedToActivateWeapon.removeAll()
         weaponActivated.removeAll()

@@ -4,6 +4,7 @@
  */
 
 package engine.bombers.mapInfo {
+import engine.EngineContext
 import engine.bombers.CreatureBase
 import engine.bombers.interfaces.IMapCoords
 import engine.data.Consts
@@ -12,6 +13,8 @@ import engine.maps.interfaces.IMapBlock
 import engine.maps.mapBlocks.NullMapBlock
 import engine.utils.Direction
 import engine.utils.Utils
+
+import flash.geom.Point
 
 public class MapCoords implements IMapCoords {
 
@@ -27,7 +30,7 @@ public class MapCoords implements IMapCoords {
 
     private var _owner:CreatureBase
 
-    public function MapCoords(owner:CreatureBase,map:IMap, elemX:uint, elemY:uint, xDef:Number, yDef:Number):void {
+    public function MapCoords(owner:CreatureBase, map:IMap, elemX:uint, elemY:uint, xDef:Number, yDef:Number):void {
         _owner = owner
         _elemX = elemX;
         _elemY = elemY;
@@ -98,7 +101,7 @@ public class MapCoords implements IMapCoords {
             _xDef = 0;
         } else {
             elemX -= getBlocksCount(value);
-            _xDef = Consts.BLOCK_END - getMinusDeflection(value);
+            _xDef = Consts.BLOCK_END - getDeflection(value);
         }
     }
 
@@ -108,7 +111,7 @@ public class MapCoords implements IMapCoords {
             _xDef = 0;
         } else {
             elemX += getBlocksCount(value);
-            _xDef = Consts.BLOCK_START + getPlusDeflection(value);
+            _xDef = Consts.BLOCK_START + getDeflection(value);
         }
     }
 
@@ -118,7 +121,7 @@ public class MapCoords implements IMapCoords {
             _yDef = 0;
         } else {
             elemY -= getBlocksCount(value);
-            _yDef = Consts.BLOCK_END - getMinusDeflection(value);
+            _yDef = Consts.BLOCK_END - getDeflection(value);
         }
     }
 
@@ -128,7 +131,7 @@ public class MapCoords implements IMapCoords {
             _yDef = 0;
         } else {
             elemY += getBlocksCount(value);
-            _yDef = Consts.BLOCK_START + getPlusDeflection(value);
+            _yDef = Consts.BLOCK_START + getDeflection(value);
         }
     }
 
@@ -137,15 +140,11 @@ public class MapCoords implements IMapCoords {
     }
 
     private function isPlusOverflow(value:Number):Boolean {
-        return value > Consts.BLOCK_END;
+        return value >= Consts.BLOCK_END;
     }
 
-    private function getPlusDeflection(value:Number):Number {
-        return (Math.abs(value) - Consts.BLOCK_END) % Consts.BLOCK_SIZE
-    }
-
-    private function getMinusDeflection(value:Number):Number {
-        return (Math.abs(value) - Consts.BLOCK_START) % Consts.BLOCK_SIZE
+    private function getDeflection(value:Number):Number {
+        return (Math.abs(value) - Consts.BLOCK_SIZE_2) % Consts.BLOCK_SIZE
     }
 
     private function getBlocksCount(value:Number):uint {
@@ -153,7 +152,7 @@ public class MapCoords implements IMapCoords {
     }
 
     private function isValueWithinBlock(value:Number):Boolean {
-        return Utils.between(Consts.BLOCK_START, value, Consts.BLOCK_END)
+        return Utils.between(Consts.BLOCK_START, value, Consts.BLOCK_END) && value != Consts.BLOCK_END
     }
 
 
@@ -195,7 +194,7 @@ public class MapCoords implements IMapCoords {
         var result:Number;
 
         if (isEnoughMoveAmountX(-moveAmount, 0)) {
-            result = moveAmount + xDef;    //xDef < 0
+            result = moveAmount - Math.abs(xDef);    //xDef < 0
             xDef = 0;
         } else {
             result = 0;
@@ -466,27 +465,56 @@ public class MapCoords implements IMapCoords {
         return Math.abs(yDef);
     }
 
-    public function setXExplicit(x:Number):void {
-        elemX = int(x / Consts.BLOCK_SIZE);
-        xDef = x % Consts.BLOCK_SIZE;
-    }
+    public function setExplicit(x:Number, y:Number):void {
 
-    public function setYExplicit(y:Number):void {
-        elemY = int(y / Consts.BLOCK_SIZE);
-        yDef = y % Consts.BLOCK_SIZE;
-    }
+        horDefFunc = null
+        vertDefFunc = null
 
-    private function getExplBlocksCount(value:Number):int {
-        return int(Math.abs(value) / Consts.BLOCK_SIZE);
-    }
+        elemX = int((x + Consts.BLOCK_SIZE_2) / Consts.BLOCK_SIZE);
+        _xDef = (x + Consts.BLOCK_SIZE_2) % Consts.BLOCK_SIZE - Consts.BLOCK_SIZE_2;
 
-    private function getExplDeflection(value:Number):int {
-        return value - getExplBlocksCount(value) * Consts.BLOCK_SIZE
+        elemY = int((y + Consts.BLOCK_SIZE_2) / Consts.BLOCK_SIZE);
+        _yDef = (y + Consts.BLOCK_SIZE_2) % Consts.BLOCK_SIZE - Consts.BLOCK_SIZE_2;
     }
-
 
     public function block():IMapBlock {
-        return map.getBlock(elemX,elemY)
+        return map.getBlock(elemX, elemY)
+    }
+
+
+    public function correctCoords(x:Number, y:Number):Boolean {
+        var eX:int = int(x / Consts.BLOCK_SIZE);
+        var eY:int = int(y / Consts.BLOCK_SIZE);
+        var xD:Number = x % Consts.BLOCK_SIZE;
+        var yD:Number = y % Consts.BLOCK_SIZE;
+
+        if (xD != 0 && yD != 0) {
+            EngineContext.redBaloon.dispatch(new Point(x, y), 0)
+            return false
+        }
+        if (!map.getBlock(eX, eY).canGoThrough(_owner)) {
+            EngineContext.redBaloon.dispatch(new Point(x, y), 1)
+            return false
+        }
+        var pb:IMapBlock
+
+        var d:int = 2
+        if (yD != 0) d = 3
+
+        if (xD > 0)
+            pb = map.getNeighbour(eX, eY, Direction.RIGHT);
+        if (xD < 0)
+            pb = map.getNeighbour(eX, eY, Direction.LEFT);
+        if (yD > 0)
+            pb = map.getNeighbour(eX, eY, Direction.DOWN);
+        if (yD < 0)
+            pb = map.getNeighbour(eX, eY, Direction.UP);
+
+        if (pb != null && !pb.canGoThrough(_owner)) {
+            EngineContext.redBaloon.dispatch(new Point(x, y), d)
+            return false
+        }
+        return true
     }
 }
 }

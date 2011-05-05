@@ -5,13 +5,13 @@
 
 package tests
 {
-	import tests.UnicodeToPostIdEncoderTest;
-	
-	[Suite]
+import tests.map.CoordsTest
+
+[Suite]
 	[RunWith("org.flexunit.runners.Suite")]
 	public class EncoderTests
 	{
-		public var test1:tests.UnicodeToPostIdEncoderTest;
+		public var test1:CoordsTest;
 		
 	}
 }

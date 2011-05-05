@@ -24,9 +24,7 @@ public interface IMapCoords {
 
     function set yDef(value:Number):void;
 
-    function setXExplicit(x:Number):void;
-
-    function setYExplicit(y:Number):void;
+    function setExplicit(x:Number,y:Number):void;
 
     function stepLeft(moveAmount:Number, spectatorMode:Boolean = false):void;
 
@@ -53,5 +51,7 @@ public interface IMapCoords {
     function canMoveDown():Boolean;
 
     function block():IMapBlock
+
+    function correctCoords(x:Number, y:Number):Boolean
 }
 }

@@ -7,6 +7,7 @@ package engine.games.regular {
 import components.common.worlds.locations.LocationType
 
 import engine.EngineContext
+import engine.bombers.PlayerBomber
 import engine.bombers.PlayersBuilder
 import engine.bombers.interfaces.IBomber
 import engine.bombers.interfaces.IEnemyBomber
@@ -62,7 +63,8 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
         //game events
         Context.gameModel.gameStarted.addOnce(function():void {
 
-            EngineContext.playerInputDirectionChanged.add(onPlayerInputDirectionChanged);
+            //EngineContext.playerInputDirectionChanged.add(onPlayerInputDirectionChanged);
+            EngineContext.frameEntered.add((playerManager.me as PlayerBomber).sendDirection)
 
             EngineContext.frameEntered.add(playerManager.movePlayer);
             EngineContext.frameEntered.add(enemiesManager.moveEnemies);
@@ -101,6 +103,7 @@ public class RegularGame extends GameBase implements IMultiPlayerGame {
     }
 
     private function destroy():void {
+        EngineContext.frameEntered.remove((playerManager.me as PlayerBomber).sendDirection);
         EngineContext.frameEntered.remove(playerManager.movePlayer);
         EngineContext.frameEntered.remove(enemiesManager.moveEnemies);
         EngineContext.frameEntered.remove(explosionsManager.checkExplosions);

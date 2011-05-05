@@ -248,10 +248,10 @@
                         })
                         Context.gameModel.init();
                     }
-					EngineContext.greenBaloon.add(function(x:Number,y:Number,dir:Direction):void{
-						bsc.addItem({x:x,y:y,dir:dir})
-					})
-					bsc.addItem({x:-1,y:-1,dir:Direction.NONE})
+//					EngineContext.greenBaloon.add(function(x:Number,y:Number,dir:Direction):void{
+//						bsc.addItem({x:x,y:y,dir:dir})
+//					})
+//					bsc.addItem({x:-1,y:-1,dir:Direction.NONE})
                     break;
                 case APP_STARTED_DEVELOPMENT:
 
@@ -304,7 +304,7 @@
                 Context.Model.windowsManager.closeAll(true);
                 Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
             })
-            Context.gameModel.joinConcreteGame("test", "test")
+            Context.gameModel.joinConcreteGame("test1", "test")
 
         }
 
@@ -325,7 +325,7 @@
                 Context.Model.windowsManager.closeAll(true);
                 Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
             })
-            Context.gameModel.tryCreateRegularGame("test", "test", LocationType.WORLD1_GRASSFIELDS)
+            Context.gameModel.tryCreateRegularGame("test1", "test", LocationType.WORLD1_GRASSFIELDS)
         }
         ]]>
 	</fx:Script>
@@ -398,17 +398,17 @@
     <mx:UIComponent id="testContent" width="300" height="300" x="100" y="100"/>
     <s:Button id="createTestGame" click="createTestGame_clickHandler(event)" x="100" y="100" content="create test"/>
     <s:Button id="joinTestGame" click="joinTestGame_clickHandler(event)" x="100" y="130" content="join test"/>
-    <s:List x="100" y="520" width="300" height="200" id="badServer" dataProvider="{bsc}" allowMultipleSelection="true">
+   <!-- <s:List x="100" y="520" width="300" height="200" id="badServer" dataProvider="{bsc}" allowMultipleSelection="true">
 		<s:itemRenderer>
 			<fx:Component>
 				<s:ItemRenderer>
 					<s:HGroup>
 						<s:Label text="{data.x}"/>
-						<s:Label text="{data.y}"/>	
-						<s:Label text="{data.dir.key}"/>	
+						<s:Label text="{data.y}"/>
+						<s:Label text="{data.dir.key}"/>
 					</s:HGroup>
 				</s:ItemRenderer>
 			</fx:Component>
 		</s:itemRenderer>
-	</s:List>
+	</s:List>-->
 </vkUI:VkontakteApplication>

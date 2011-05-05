@@ -447,7 +447,11 @@ public class GameServer extends SmartFox {
                 var moveTickObject:Object = {}
                 for (var i:int = 0; i < namesOrder.length; i++) {
                     var name:String = namesOrder[i];
-                    var dir:Direction = Direction.byValue(dirArr.getInt(i))
+                    var dirCode:int = dirArr.getInt(i)
+                    if (dirCode == -1){
+                        continue
+                    }
+                    var dir:Direction = Direction.byValue(dirCode)
                     var cx:Number = cxArr.getDouble(i)
                     var cy:Number = cyArr.getDouble(i)
                     var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)

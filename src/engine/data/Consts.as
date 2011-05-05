@@ -11,8 +11,9 @@ public class Consts {
     public static const BLOCK_SIZE:uint = 40;
     public static const BLOCK_SIZE_2:uint = BLOCK_SIZE / 2;
 
+    //creature is within the block if it's def is:  BLOCK_START <= def < BLOCK_END
     public static const BLOCK_START:int = -BLOCK_SIZE_2;
-    public static const BLOCK_END:int = BLOCK_SIZE_2 - 1;
+    public static const BLOCK_END:int = BLOCK_SIZE_2;
 
     public static const BOMBER_SIZE:Number = 40;
     public static const BOMBER_SIZE_2:Number = BOMBER_SIZE / 2;

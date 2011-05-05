@@ -1,6 +1,6 @@
 package components.common.base.access.rules.levelrule {
-import components.common.base.access.rules.AccessRuleType
-import components.common.base.access.rules.IAccessRule
+import components.common.base.access.rules.AccessRuleType;
+import components.common.base.access.rules.IAccessRule;
 
 public class AccessLevelRule implements IAccessRule {
     private var type:AccessRuleType;
@@ -19,12 +19,13 @@ public class AccessLevelRule implements IAccessRule {
         type = AccessRuleType.LEVEL_RULE;
 
         var res:Boolean = false;
-        var currentLevel:int = Context.Model.experianceManager.getLevel(Context.Model.currentSettings.gameProfile.experience).level;
-
-        if (currentLevel >= minimumLevel) {
-            res = true;
-        }
-
+		try{
+	        var currentLevel:int = Context.Model.experianceManager.getLevel(Context.Model.currentSettings.gameProfile.experience).level;
+			
+	        if (currentLevel >= minimumLevel) {
+	            res = true;
+	        }
+		}catch(e:Error){}
         return res;
     }
 

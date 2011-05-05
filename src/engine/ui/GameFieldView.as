@@ -20,6 +20,7 @@ import engine.maps.MapView
 import engine.maps.OverMapView
 import engine.maps.bigObjects.view.BigObjectsView
 import engine.maps.mapBlocks.view.MapBlocksView
+import engine.utils.Direction
 
 import flash.display.Sprite
 import flash.events.Event
@@ -28,7 +29,6 @@ import flash.geom.Point
 import greensock.TweenMax
 
 import mx.collections.ArrayList
-import mx.controls.Label
 import mx.core.UIComponent
 
 import spark.components.Group
@@ -118,25 +118,80 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
 
         EngineContext.qMonsterAdded.add(onMonsterAdded)
 
-        EngineContext.redBaloon.add(function(p1:Point, p2:Point):void {
+        EngineContext.redBaloon.add(function(p1:Point, c:int):void {
             var sp:Sprite = new Sprite()
-            sp.graphics.beginFill(0xFF0000, 0.8)
-            sp.graphics.drawRect(0, 0, 200, 200)
+            sp.graphics.beginFill(0xff, 0.3)
+            sp.graphics.drawRect(0, 0, 40, 40)
+            sp.graphics.endFill()
+            switch (c) {
+                case 0:
+                    sp.graphics.beginFill(0xFF0000, 0.5)
+                    sp.graphics.drawRect(0, 10, 40, 20)
+                    sp.graphics.drawRect(10, 0, 20, 40)
+                    sp.graphics.endFill()
+                    break
+                case 2:
+                    sp.graphics.beginFill(0xFF0000, 0.5)
+                    sp.graphics.drawRect(0, 10, 40, 20)
+                    sp.graphics.endFill()
+                    break
+                case 3:
+                    sp.graphics.beginFill(0xFF0000, 0.5)
+                    sp.graphics.drawRect(10, 0, 20, 40)
+                    sp.graphics.endFill()
+                    break
+                case 1:
+//                    sp.graphics.beginFill(0xFF00FF)
+//                    sp.graphics.drawCircle(20, 20, 20)
+//                    sp.graphics.endFill()
+            }
+
+            sp.x = p1.x
+            sp.y = p1.y
+            contentUI.addChild(sp)
+            TweenMax.to(sp, 5, {alpha:0,onComplete:contentUI.removeChild,onCompleteParams:[sp]})
+        })
+
+        EngineContext.greenBaloon.add(function(x:Number, y:Number, dir:Direction):void {
+            var sp:Sprite = new Sprite()
+            sp.graphics.beginFill(0xFF00, 0.5)
+            switch (dir) {
+                case Direction.NONE:
+                    sp.graphics.drawRect(0, 0, 40, 40)
+                    break
+                case Direction.RIGHT:
+                    sp.graphics.lineTo(40, 20)
+                    sp.graphics.lineTo(0, 40)
+                    sp.graphics.lineTo(0, 0)
+                    break
+                case Direction.LEFT:
+                    sp.graphics.moveTo(40, 0)
+                    sp.graphics.lineTo(40, 40)
+                    sp.graphics.lineTo(0, 20)
+                    sp.graphics.lineTo(40, 0)
+                    break
+                case Direction.UP:
+                    sp.graphics.moveTo(40, 40)
+                    sp.graphics.lineTo(0, 40)
+                    sp.graphics.lineTo(20, 0)
+                    sp.graphics.lineTo(40, 40)
+                    break
+                case Direction.DOWN:
+                    sp.graphics.lineTo(40, 0)
+                    sp.graphics.lineTo(20, 40)
+                    sp.graphics.lineTo(0, 0)
+                    break
+            }
+
             sp.graphics.endFill()
 
-            var l:Label = new Label()
-            l.text = p1.toString() + " -> " + p2.toString()
-            l.setStyle("fontSize", 40);
-            l.width = 200
-            l.height = 200
-            sp.addChild(l)
-
-            sp.x = 100
-            sp.y = 100
+            sp.x = x
+            sp.y = y
             contentUI.addChild(sp)
-            TweenMax.delayedCall(2, contentUI.removeChild, [sp])
+            TweenMax.to(sp, 5, {alpha:0,onComplete:contentUI.removeChild,onCompleteParams:[sp]})
         })
     }
+
 
     private function onMonsterAdded(m:Monster):void {
         enemiesView.addChild(new MonsterView(m))

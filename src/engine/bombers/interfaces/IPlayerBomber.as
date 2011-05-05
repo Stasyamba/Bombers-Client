@@ -29,5 +29,7 @@ public interface IPlayerBomber extends IBomber {
     function hit(damage:int):void
 
     function hitWithoutImmortal(damage:int):void
+
+    function get direction():Direction
 }
 }
