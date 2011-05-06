@@ -96,6 +96,7 @@ public class EngineContext {
 
     public static var redBaloon:Signal = new Signal(Point,int);
     public static var greenBaloon:Signal = new Signal(Number, Number, Direction)
+    public static var pingChanged:Signal = new Signal(Point)
 
     //Monster, damage
 

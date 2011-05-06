@@ -55,5 +55,16 @@ public class Direction {
     public static function random():Direction {
         return byValue(int(Math.random() * 5))
     }
+
+    public function isOppositeTo(dir:Direction):Boolean {
+        return (this == LEFT && dir == RIGHT) ||
+                (this == RIGHT && dir == LEFT) ||
+                (this == UP && dir == DOWN) ||
+                (this == DOWN && dir == UP)
+    }
+
+    public function isTurnTo(dir:Direction):Boolean {
+        return (this != dir) && !this.isOppositeTo(dir) && dir != Direction.NONE && this != Direction.NONE
+    }
 }
 }

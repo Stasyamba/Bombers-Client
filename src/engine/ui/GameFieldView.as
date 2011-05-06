@@ -118,78 +118,74 @@ public class GameFieldView extends Group implements IDrawable,IDestroyable {
 
         EngineContext.qMonsterAdded.add(onMonsterAdded)
 
-        EngineContext.redBaloon.add(function(p1:Point, c:int):void {
-            var sp:Sprite = new Sprite()
-            sp.graphics.beginFill(0xff, 0.3)
-            sp.graphics.drawRect(0, 0, 40, 40)
-            sp.graphics.endFill()
-            switch (c) {
-                case 0:
-                    sp.graphics.beginFill(0xFF0000, 0.5)
-                    sp.graphics.drawRect(0, 10, 40, 20)
-                    sp.graphics.drawRect(10, 0, 20, 40)
-                    sp.graphics.endFill()
-                    break
-                case 2:
-                    sp.graphics.beginFill(0xFF0000, 0.5)
-                    sp.graphics.drawRect(0, 10, 40, 20)
-                    sp.graphics.endFill()
-                    break
-                case 3:
-                    sp.graphics.beginFill(0xFF0000, 0.5)
-                    sp.graphics.drawRect(10, 0, 20, 40)
-                    sp.graphics.endFill()
-                    break
-                case 1:
-//                    sp.graphics.beginFill(0xFF00FF)
-//                    sp.graphics.drawCircle(20, 20, 20)
+//        EngineContext.redBaloon.add(function(p1:Point, c:int):void {
+//            var sp:Sprite = new Sprite()
+//            sp.graphics.beginFill(0xff, 0.3)
+//            sp.graphics.drawRect(0, 0, 40, 40)
+//            sp.graphics.endFill()
+//            switch (c) {
+//                case 0:
+//                    sp.graphics.beginFill(0xFF0000, 0.5)
+//                    sp.graphics.drawRect(0, 10, 40, 20)
+//                    sp.graphics.drawRect(10, 0, 20, 40)
 //                    sp.graphics.endFill()
-            }
-
-            sp.x = p1.x
-            sp.y = p1.y
-            contentUI.addChild(sp)
-            TweenMax.to(sp, 5, {alpha:0,onComplete:contentUI.removeChild,onCompleteParams:[sp]})
-        })
-
-        EngineContext.greenBaloon.add(function(x:Number, y:Number, dir:Direction):void {
-            var sp:Sprite = new Sprite()
-            sp.graphics.beginFill(0xFF00, 0.5)
-            switch (dir) {
-                case Direction.NONE:
-                    sp.graphics.drawRect(0, 0, 40, 40)
-                    break
-                case Direction.RIGHT:
-                    sp.graphics.lineTo(40, 20)
-                    sp.graphics.lineTo(0, 40)
-                    sp.graphics.lineTo(0, 0)
-                    break
-                case Direction.LEFT:
-                    sp.graphics.moveTo(40, 0)
-                    sp.graphics.lineTo(40, 40)
-                    sp.graphics.lineTo(0, 20)
-                    sp.graphics.lineTo(40, 0)
-                    break
-                case Direction.UP:
-                    sp.graphics.moveTo(40, 40)
-                    sp.graphics.lineTo(0, 40)
-                    sp.graphics.lineTo(20, 0)
-                    sp.graphics.lineTo(40, 40)
-                    break
-                case Direction.DOWN:
-                    sp.graphics.lineTo(40, 0)
-                    sp.graphics.lineTo(20, 40)
-                    sp.graphics.lineTo(0, 0)
-                    break
-            }
-
-            sp.graphics.endFill()
-
-            sp.x = x
-            sp.y = y
-            contentUI.addChild(sp)
-            TweenMax.to(sp, 5, {alpha:0,onComplete:contentUI.removeChild,onCompleteParams:[sp]})
-        })
+//                    break
+//                case 2:
+//                    sp.graphics.beginFill(0xFF0000, 0.5)
+//                    sp.graphics.drawRect(0, 10, 40, 20)
+//                    sp.graphics.endFill()
+//                    break
+//                case 3:
+//                    sp.graphics.beginFill(0xFF0000, 0.5)
+//                    sp.graphics.drawRect(10, 0, 20, 40)
+//                    sp.graphics.endFill()
+//                    break
+//            }
+//
+//            sp.x = p1.x
+//            sp.y = p1.y
+//            contentUI.addChild(sp)
+//            TweenMax.to(sp, 5, {alpha:0,onComplete:contentUI.removeChild,onCompleteParams:[sp]})
+//        })
+//
+//        EngineContext.greenBaloon.add(function(x:Number, y:Number, dir:Direction):void {
+//            var sp:Sprite = new Sprite()
+//            sp.graphics.beginFill(0xFF00, 0.25)
+//            switch (dir) {
+//                case Direction.NONE:
+//                    sp.graphics.drawRect(0, 0, 40, 40)
+//                    break
+//                case Direction.RIGHT:
+//                    sp.graphics.lineTo(40, 20)
+//                    sp.graphics.lineTo(0, 40)
+//                    sp.graphics.lineTo(0, 0)
+//                    break
+//                case Direction.LEFT:
+//                    sp.graphics.moveTo(40, 0)
+//                    sp.graphics.lineTo(40, 40)
+//                    sp.graphics.lineTo(0, 20)
+//                    sp.graphics.lineTo(40, 0)
+//                    break
+//                case Direction.UP:
+//                    sp.graphics.moveTo(40, 40)
+//                    sp.graphics.lineTo(0, 40)
+//                    sp.graphics.lineTo(20, 0)
+//                    sp.graphics.lineTo(40, 40)
+//                    break
+//                case Direction.DOWN:
+//                    sp.graphics.lineTo(40, 0)
+//                    sp.graphics.lineTo(20, 40)
+//                    sp.graphics.lineTo(0, 0)
+//                    break
+//            }
+//
+//            sp.graphics.endFill()
+//
+//            sp.x = x
+//            sp.y = y
+//            contentUI.addChild(sp)
+//            TweenMax.to(sp, 5, {alpha:0,onComplete:contentUI.removeChild,onCompleteParams:[sp]})
+//        })
     }
 
 

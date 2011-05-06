@@ -8,9 +8,12 @@ import components.common.items.ItemProfileObject
 import components.common.items.categories.ItemCategory
 
 import engine.EngineContext
+import engine.bombers.interfaces.IMapCoords
 import engine.bombers.interfaces.IPlayerBomber
 import engine.bombers.mapInfo.InputDirection
+import engine.bombers.mapInfo.MapCoords
 import engine.bombss.BombType
+import engine.data.Consts
 import engine.explosionss.interfaces.IExplosion
 import engine.games.IGame
 import engine.playerColors.PlayerColor
@@ -31,6 +34,7 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     private var _serverDir:Direction = Direction.NONE;
     private var _direction:InputDirection;
 
+    private var _standStill:Boolean = true
 
     private var _gameProfile:GameProfile
     /*
@@ -44,7 +48,22 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
 
     private var _sendTime:int = 0
     private var _waitingToSend:Boolean = false
+    private var _waitingToACK:Boolean = false
 
+    //Array of MoveTickObject
+    private var _moveTicksArray:Array = new Array()
+    private var _interpolModifier:Number = 1
+    private const START_INTERPOL_TIME:int = 800
+    private const MOVE_INTERPOL_TIME:int = 400
+    private const MIN_INTERPOL_MOD:Number = 0.85
+    private const MAX_INTERPOL_MOD:Number = 1.15
+    private var _ignoreInterpolationFor:int = 0
+
+    private var _moveToTarget:MoveTickObject = null
+
+    private var _lastX:Number = -1
+    private var _lastY:Number = -1
+    private var _checkWrongWay:int = 0
 
     public function PlayerBomber(game:IGame, slot:int, gameProfile:GameProfile, color:PlayerColor, direction:InputDirection, weaponBuilder:WeaponBuilder) {
         super(game, slot, gameProfile.currentBomberType, gameProfile.nick, color, Context.imageService.bomberSkin(gameProfile.currentBomberType), gameProfile.aursTurnedOn);
@@ -71,42 +90,110 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     public function sendDirection(miliSecs:int):void {
-        if (_sendTime + miliSecs > 100 && _waitingToSend) {
+        if(!Context.gameModel.isPlayingNow || isDead)
+            return
+        if (_sendTime + miliSecs > 50 && _waitingToSend) {
+            Context.gameServer.sendPlayerDirectionChanged(coords.getRealX(), coords.getRealY(), _standStill ? Direction.NONE : _serverDir, false)
             _sendTime = 0
             _waitingToSend = false
-            Context.gameServer.sendPlayerDirectionChanged(coords.getRealX(), coords.getRealY(), _serverDir, false)
+            _waitingToACK = !_standStill
         } else
             _sendTime += miliSecs
     }
 
     private function onMoveTick(obj:Object):void {
-        if (!Context.gameModel.isPlayingNow)
+        if (!Context.gameModel.isPlayingNow || isDead)
             return
-        var tickObject:Object = obj[slot]
-        if(tickObject == null)
+        var tickObject:MoveTickObject = obj[slot]
+        if (tickObject == null)
             return
-//        var xPogr:Number = Math.abs(tickObject.x - Math.round(tickObject.x))
-//        var yPogr:Number = Math.abs(tickObject.y - Math.round(tickObject.y))
-//        if (xPogr < 10e-6)
-//            tickObject.x = Math.round(tickObject.x)
-//
-//        if (yPogr < 10e-6)
-//            tickObject.y = Math.round(tickObject.y)
 
-
-        _coords.setExplicit(tickObject.x,tickObject.y)
-
-        EngineContext.playerCoordinatesChanged.dispatch(_coords.getRealX(), _coords.getRealY());
-
+        //greenBaloon
         if (!_coords.correctCoords(tickObject.x, tickObject.y)) {
         } else {
             EngineContext.greenBaloon.dispatch(tickObject.x, tickObject.y, tickObject.dir)
         }
 
-        if (!_waitingToSend && _serverDir != tickObject.dir) {
+        if (_waitingToACK) {
+            if (tickObject.dir != _serverDir)
+                return
+            _waitingToACK = false
+        }
+
+        if ((_coords.getRealX() != tickObject.x && _coords.getRealY() != tickObject.y ) ||
+                Math.abs(_coords.getRealX() - tickObject.x) > Consts.BLOCK_SIZE ||
+                Math.abs(_coords.getRealY() - tickObject.y) > Consts.BLOCK_SIZE ||
+                diffWays(tickObject)) {
+
+            _coords.setExplicit(tickObject.x, tickObject.y)
+
+            _lastX = tickObject.x;
+            _lastY = tickObject.y
+            _ignoreInterpolationFor = 0
+            _moveToTarget = null
+            EngineContext.playerCoordinatesChanged.dispatch(_coords.getRealX(), _coords.getRealY());
+
+        } else {
+            if (tickObject.dir == Direction.NONE) {
+                _moveToTarget = tickObject
+                return
+            }
+            if (_ignoreInterpolationFor == 0) {
+                var diff:Number = getDiffTo(tickObject);
+                var realDir:Direction = getDirByTicks(tickObject)
+
+                if (realDir == Direction.LEFT || realDir == Direction.UP)
+                    diff = -diff
+                diff -= Context.gameServer.averagePing * speed / 1000
+                _interpolModifier = 1 + diff * 1000 / (speed * MOVE_INTERPOL_TIME)
+                if (_interpolModifier > MAX_INTERPOL_MOD)
+                    _interpolModifier = MAX_INTERPOL_MOD
+                if (_interpolModifier < MIN_INTERPOL_MOD)
+                    _interpolModifier = MIN_INTERPOL_MOD
+                _ignoreInterpolationFor = MOVE_INTERPOL_TIME
+            }
+        }
+
+        if (!_waitingToSend && !_standStill && _serverDir != tickObject.dir) {
             _serverDir = tickObject.dir
             updateInputDirection()
         }
+
+        _moveTicksArray.unshift(tickObject)
+        if (_moveTicksArray.length > 10) {
+            _moveTicksArray.pop()
+        }
+    }
+
+    private function diffWays(tickObject:MoveTickObject):Boolean {
+        if (_checkWrongWay > 0) {
+            var prevMTO:MoveTickObject = _moveTicksArray[0]
+            _checkWrongWay--
+            if (prevMTO == null || _lastX == -1 || _prevDir.isOppositeTo(_serverDir)) return false
+            return (Point.distance(new Point(prevMTO.x, prevMTO.y), new Point(_lastX, _lastY)) >
+                    Point.distance(new Point(tickObject.x, tickObject.y), new Point(_coords.getRealX(), _coords.getRealY())))
+        }
+        return false
+    }
+
+    private function getDiffTo(tickObject:MoveTickObject):Number {
+        if (_coords.getRealX() != tickObject.x)
+            return _coords.getRealX() - tickObject.x
+        return _coords.getRealY() - tickObject.y
+    }
+
+
+    private function getDirByTicks(tickObject:MoveTickObject):Direction {
+        var prevMTO:MoveTickObject = _moveTicksArray[0]
+        if (tickObject.x > prevMTO.x)
+            return Direction.RIGHT
+        if (tickObject.x < prevMTO.x)
+            return Direction.LEFT
+        if (tickObject.y > prevMTO.y)
+            return Direction.DOWN
+        if (tickObject.y < prevMTO.y)
+            return Direction.UP
+        return Direction.NONE
     }
 
     private function onWeaponUnitSpent(type:WeaponType):void {
@@ -130,29 +217,68 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
             _currentWeapon = NullWeapon.instance
     }
 
-    public function performMotion(moveAmount:Number):void {
-        if (_serverDir == Direction.NONE)
-            return;
-        var x:int = _coords.getRealX();
-        var y:int = _coords.getRealY();
-
-        switch (_serverDir) {
+    private function goTo(dir:Direction, moveAmount:Number, coords:IMapCoords = null):void {
+        var c:IMapCoords = coords == null ? _coords : coords
+        switch (dir) {
             case Direction.LEFT:
-                _coords.stepLeft(moveAmount, _spectatorMode);
+                c.stepLeft(moveAmount, _spectatorMode);
                 break;
             case Direction.RIGHT:
-                _coords.stepRight(moveAmount, _spectatorMode);
+                c.stepRight(moveAmount, _spectatorMode);
                 break;
             case Direction.UP:
-                _coords.stepUp(moveAmount, _spectatorMode);
+                c.stepUp(moveAmount, _spectatorMode);
                 break;
             case Direction.DOWN:
-                _coords.stepDown(moveAmount, _spectatorMode);
+                c.stepDown(moveAmount, _spectatorMode);
                 break;
         }
-        if (x != _coords.getRealX() || y != _coords.getRealY()) {
-            EngineContext.playerCoordinatesChanged.dispatch(_coords.getRealX(), _coords.getRealY());
+    }
+
+    public function performMotion(moveAmount:Number):void {
+        var dir:Direction = _serverDir
+        if (_serverDir == Direction.NONE && !_spectatorMode) {
+            if (_moveToTarget) {
+                var diff:Number = Math.abs(getDiffTo(_moveToTarget))
+                if (diff < 10e-3) {
+                    _moveToTarget = null
+                    return
+                }
+                dir = getDirToTarget(_moveToTarget)
+                moveAmount = diff > moveAmount ? moveAmount : diff
+            } else {
+                return
+            }
         }
+        _lastX = _coords.getRealX();
+        _lastY = _coords.getRealY();
+
+        goTo(dir, moveAmount)
+
+        if (_lastX != _coords.getRealX() || _lastY != _coords.getRealY()) {
+            EngineContext.playerCoordinatesChanged.dispatch(_coords.getRealX(), _coords.getRealY());
+            if (_standStill) {
+                _waitingToSend = true
+                _standStill = false
+            }
+        } else {
+            if (!_standStill) {
+                _waitingToSend = true
+                _standStill = true
+            }
+        }
+    }
+
+    private function getDirToTarget(_moveToTarget:MoveTickObject):Direction {
+        if (_moveToTarget.x > _coords.getRealX())
+            return Direction.RIGHT
+        if (_moveToTarget.x < coords.getRealX())
+            return Direction.LEFT
+        if (_moveToTarget.y > coords.getRealY())
+            return Direction.DOWN
+        if (_moveToTarget.y < coords.getRealY())
+            return Direction.UP
+        return Direction.NONE
     }
 
     private function updateInputDirection():void {
@@ -174,15 +300,61 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 
     private function checkNewDir():void {
+        var p:int = Context.gameServer.averagePing
+
         if (_prevDir != _direction.direction) {
             _serverDir = _direction.direction
+            _standStill = false
             _waitingToSend = true
+            _moveToTarget = null
+
+
+            if (_prevDir == Direction.NONE) {
+
+                _interpolModifier = START_INTERPOL_TIME / (p + START_INTERPOL_TIME)
+                if (_interpolModifier < MIN_INTERPOL_MOD)
+                    _interpolModifier = MIN_INTERPOL_MOD
+                _ignoreInterpolationFor = START_INTERPOL_TIME
+            } else
+
+            if (_serverDir.isTurnTo(_prevDir)) {
+                var lastTick:MoveTickObject = _moveTicksArray[0]
+                var dir:Direction = _prevDir
+                var ccc:MapCoords = new MapCoords(this, Context.game.mapManager.map, 0, 0, 0, 0)
+                ccc.setExplicit(lastTick.x, lastTick.y)
+                goTo(dir, speed * (p + int(new Date().getTime()) - lastTick.time) / 1000, ccc)
+                if (willTurnGood(ccc)) {
+                    //do nothing
+                } else {
+                    EngineContext.pingChanged.dispatch(new Point(ccc.getRealX(), ccc.getRealY()))
+                    _coords.setExplicit(ccc.getRealX(), ccc.getRealY())
+                }
+                _checkWrongWay = 2
+            }
+
             updateInputDirection()
         }
     }
 
+    private function willTurnGood(ccc:MapCoords):Boolean {
+        if (ccc.elemX == _coords.elemX && ccc.elemY == _coords.elemY)
+            return  ((ccc.xDef * _coords.xDef > 0) || (ccc.yDef * _coords.yDef > 0))
+        if (ccc.elemX == _coords.elemX - 1)
+            return ccc.xDef > 0 && _coords.xDef < 0
+        if (ccc.elemX == _coords.elemX + 1)
+            return ccc.xDef < 0 && _coords.xDef > 0
+        if (ccc.elemY == _coords.elemY - 1)
+            return ccc.yDef > 0 && _coords.yDef < 0
+        if (ccc.elemY == _coords.elemY + 1)
+            return ccc.yDef < 0 && _coords.yDef > 0
+        return false
+    }
+
     public override function move(elapsedMilliSecs:int):void {
-        performMotion(elapsedMilliSecs * speed / 1000)
+        performMotion(elapsedMilliSecs * speed * _interpolModifier / 1000)
+        if (_ignoreInterpolationFor > 0) {
+            _ignoreInterpolationFor = _ignoreInterpolationFor - elapsedMilliSecs >= 0 ? _ignoreInterpolationFor - elapsedMilliSecs : 0
+        }
     }
 
     public function setBomb(bombType:BombType):void {
@@ -286,3 +458,5 @@ public class PlayerBomber extends BomberBase implements IPlayerBomber {
     }
 }
 }
+
+

@@ -29,6 +29,7 @@ import components.common.worlds.locations.LocationType
 import components.wall.chest.WallChest
 
 import engine.EngineContext
+import engine.bombers.MoveTickObject
 import engine.maps.interfaces.IDynObject
 import engine.maps.interfaces.IDynObjectType
 import engine.maps.mapObjects.DynObjectType
@@ -77,6 +78,7 @@ public class GameServer extends SmartFox {
     private static const WEAPON_ACTIVATED:String = "game.WA";
     private static const WEAPON_DEACTIVATED:String = "game.WDA";
     private static const PING:String = "ping";
+    private static const PONG:String = "pong";
 
     //interface
     private static const INT_GAME_PROFILE_LOADED:String = "interface.gameProfileLoaded";
@@ -128,6 +130,13 @@ public class GameServer extends SmartFox {
     private var startPingFlag:Boolean = true
     private var tenSecondsTimer:Timer = new Timer(10000);
     private var namesOrder:Array
+
+    private var _averagePing:int = 0
+    private var _lastPingId:int = 0
+    private var _startedAt:int = 0
+    private var _measureMode:Boolean = false
+    private const within:Number = 2
+
 
     public function GameServer() {
         super(true)
@@ -338,8 +347,44 @@ public class GameServer extends SmartFox {
         send(new ExtensionRequest("bombersWall.submitPrize", params, null));
     }
 
+    public function measurePing():void {
+        tenSecondsTimer.stop()
+        _averagePing = 0
+        _lastPingId = int(Math.random() * 10000 + 1)
+        _startedAt = _lastPingId
+        _measureMode = true
+        var period:Number = within / 10
+        ping(0)
+        var p:Number = 0
+        for (var i:int = 1; i < 10; i++) {
+            TweenMax.delayedCall(p += period, ping, [0])
+        }
+        TweenMax.delayedCall(within + 1, stopMeasure)
+    }
+
+    private function stopMeasure():void {
+        _measureMode = 0
+        tenSecondsTimer.start()
+    }
+
     public function ping(e:*):void {
-        send(new ExtensionRequest(PING, null, null));
+        var pingId:int = _measureMode ? _lastPingId++ : 0;
+        var params:ISFSObject = new SFSObject();
+        params.putInt("id", pingId);
+        params.putDouble("time", int(new Date().getTime()))
+        send(new ExtensionRequest(PING, params, null));
+    }
+
+    private function onPONG(responseParams:ISFSObject):void {
+        var id:int = responseParams.getInt("id")
+        var time:int = responseParams.getInt("time")
+        if (_measureMode) {
+            if (id > 0)
+                _averagePing += int((int(new Date().getTime()) - time)/10)
+        }else{
+            _averagePing = int((_averagePing * 4 + (int(new Date().getTime()) - time))/5)
+        }
+       // EngineContext.pingChanged.dispatch(_averagePing)
     }
 
     private function startPing():void {
@@ -440,28 +485,11 @@ public class GameServer extends SmartFox {
     private function onExtensionResponse(event:SFSEvent):void {
         var responseParams:ISFSObject = event.params.params as SFSObject;
         switch (event.params.cmd) {
+            case PONG:
+                onPONG(responseParams)
+                break
             case MOVE_TICK:
-                var dirArr:ISFSArray = responseParams.getSFSArray("ID")
-                var cxArr:ISFSArray = responseParams.getSFSArray("CX")
-                var cyArr:ISFSArray = responseParams.getSFSArray("CY")
-                var moveTickObject:Object = {}
-                for (var i:int = 0; i < namesOrder.length; i++) {
-                    var name:String = namesOrder[i];
-                    var dirCode:int = dirArr.getInt(i)
-                    if (dirCode == -1){
-                        continue
-                    }
-                    var dir:Direction = Direction.byValue(dirCode)
-                    var cx:Number = cxArr.getDouble(i)
-                    var cy:Number = cyArr.getDouble(i)
-                    var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)
-                    if (lp != null) {
-                        slot = lp.slot
-                        moveTickObject[slot] = {dir:dir,x:cx,y:cy}
-                        trace(ObjectUtil.toString(moveTickObject))
-                    }
-                }
-                EngineContext.moveTick.dispatch(moveTickObject)
+                onMOVE_TICK(responseParams)
                 break;
             case ENEMY_DIRECTION_FORECAST:
 //                var name:String = responseParams.getUtfString("U")
@@ -481,68 +509,23 @@ public class GameServer extends SmartFox {
 //                        Direction.byValue(responseParams.getInt("dir")));
 //                break;
             case THREE_SECONDS_TO_START:
-                //move this shit to model
-                var playerGameData:Array = new Array();
-                var sfsArr:ISFSArray = responseParams.getSFSArray("game.lobby.3SecondsToStart.fields.PlayerGameProfiles")
-                namesOrder = new Array()
-                for (var i:int = 0; i < sfsArr.size(); i++) {
-                    var obj:ISFSObject = sfsArr.getSFSObject(i)
-                    var x:int = obj.getInt("StartX")
-                    var y:int = obj.getInt("StartY")
-                    var name:String = obj.getUtfString("UserId")
-                    namesOrder.push(name)
-                    var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)
-                    var auras:Array = new Array()
-                    var bType:BomberType = BomberType.byValue(obj.getInt("BomberId"))
-                    var a1:WeaponType = WeaponType.byValue(obj.getInt("AuraOne"))
-                    var a2:WeaponType = WeaponType.byValue(obj.getInt("AuraTwo"))
-                    var a3:WeaponType = WeaponType.byValue(obj.getInt("AuraThree"))
-                    if (a1 != WeaponType.NULL)
-                        auras.push(a1)
-                    if (a2 != WeaponType.NULL)
-                        auras.push(a2)
-                    if (a3 != WeaponType.NULL)
-                        auras.push(a3)
-                    playerGameData.push(new PlayerGameProfile(lp.slot, bType, x, y, auras))
-                }
-                var mapId:int = responseParams.getInt("game.lobby.3SecondsToStart.fields.MapId");
-                Context.gameModel.threeSecondsToStart.dispatch(playerGameData, mapId);
+                onTHREE_SECONDS_TO_START(responseParams)
                 break;
             case GAME_STARTED:
                 Context.gameModel.gameStarted.dispatch();
                 break;
             case DYNAMIC_OBJECT_ADDED:
-                slot = -1
-                var ot:IDynObjectType = DynObjectType.byValue(responseParams.getInt("game.DOAdd.f.type"))
-                name = responseParams.getUtfString("game.DOAdd.f.userId")
-                if (name != null && name != "")
-                    slot = Context.gameModel.getLobbyProfileById(name).slot
-                EngineContext.objectAdded.dispatch(
-                        slot,
-                        responseParams.getInt("game.DOAdd.f.x"),
-                        responseParams.getInt("game.DOAdd.f.y"),
-                        ot)
+                onDYNAMIC_OBJECT_ADDED(responseParams)
                 break
             case DYNAMIC_OBJECT_ACTIVATED:
-                slot = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("game.DOAct.f.userId")).slot
-                var ot:IDynObjectType = DynObjectType.byValue(responseParams.getInt("game.DOAct.f.type"))
-                EngineContext.objectActivated.dispatch(
-                        slot,
-                        responseParams.getInt("game.DOAct.f.x"),
-                        responseParams.getInt("game.DOAct.f.y"),
-                        ot)
+                onDYNAMIC_OBJECT_ACTIVATED(responseParams)
                 break;
             case WEAPON_ACTIVATED:
-                slot = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("game.WA.f.userId")).slot
-                var wt:WeaponType = WeaponType.byValue(responseParams.getInt("game.WA.f.type"))
-                var x:int = responseParams.getInt("game.WA.f.x")
-                var y:int = responseParams.getInt("game.WA.f.y")
-                EngineContext.weaponActivated.dispatch(slot, x, y, wt)
+                onWEAPON_ACTIVATED(responseParams)
+
                 break;
             case WEAPON_DEACTIVATED:
-                slot = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("game.WDA.f.userId")).slot
-                var wt:WeaponType = WeaponType.byValue(responseParams.getInt("game.WDA.f.type"))
-                EngineContext.weaponDeactivated.dispatch(slot, wt)
+                onWEAPON_DEACTIVATED(responseParams)
                 break;
             case PLAYER_DAMAGED:
                 slot = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("UserId")).slot
@@ -805,6 +788,7 @@ public class GameServer extends SmartFox {
         }
     }
 
+
     private function getNewLobbyProfile(newLPs:Array):LobbyProfile {
         if (Context.gameModel.lobbyProfiles == null)
             return null
@@ -837,6 +821,101 @@ public class GameServer extends SmartFox {
         lp.place = place
         lp.expEarned = exp - lp.experience
         lp.experience = exp
+    }
+
+    // EXTENSION
+    // RESPONSES
+    private function onMOVE_TICK(responseParams:ISFSObject):void {
+        var dirArr:ISFSArray = responseParams.getSFSArray("ID")
+        var cxArr:ISFSArray = responseParams.getSFSArray("CX")
+        var cyArr:ISFSArray = responseParams.getSFSArray("CY")
+        var moveTickObject:Object = {}
+        for (var i:int = 0; i < namesOrder.length; i++) {
+            var name:String = namesOrder[i];
+            var dirCode:int = dirArr.getInt(i)
+            if (dirCode == -1) {
+                continue
+            }
+            var dir:Direction = Direction.byValue(dirCode)
+            var cx:Number = cxArr.getInt(i) / 1000
+            var cy:Number = cyArr.getInt(i) / 1000
+            var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)
+            if (lp != null) {
+                var slot:int = lp.slot
+                moveTickObject[slot] = new MoveTickObject(cx,cy,new Date().getTime(),dir)
+                trace(ObjectUtil.toString(moveTickObject))
+            }
+        }
+        EngineContext.moveTick.dispatch(moveTickObject)
+    }
+
+    private function onTHREE_SECONDS_TO_START(responseParams:ISFSObject):void {
+        var playerGameData:Array = new Array();
+        var sfsArr:ISFSArray = responseParams.getSFSArray("game.lobby.3SecondsToStart.fields.PlayerGameProfiles")
+        namesOrder = new Array()
+        for (var i:int = 0; i < sfsArr.size(); i++) {
+            var obj:ISFSObject = sfsArr.getSFSObject(i)
+            var x:int = obj.getInt("StartX")
+            var y:int = obj.getInt("StartY")
+            var name:String = obj.getUtfString("UserId")
+            namesOrder.push(name)
+            var lp:LobbyProfile = Context.gameModel.getLobbyProfileById(name)
+            var auras:Array = new Array()
+            var bType:BomberType = BomberType.byValue(obj.getInt("BomberId"))
+            var a1:WeaponType = WeaponType.byValue(obj.getInt("AuraOne"))
+            var a2:WeaponType = WeaponType.byValue(obj.getInt("AuraTwo"))
+            var a3:WeaponType = WeaponType.byValue(obj.getInt("AuraThree"))
+            if (a1 != WeaponType.NULL)
+                auras.push(a1)
+            if (a2 != WeaponType.NULL)
+                auras.push(a2)
+            if (a3 != WeaponType.NULL)
+                auras.push(a3)
+            playerGameData.push(new PlayerGameProfile(lp.slot, bType, x, y, auras))
+        }
+        var mapId:int = responseParams.getInt("game.lobby.3SecondsToStart.fields.MapId");
+        Context.gameModel.threeSecondsToStart.dispatch(playerGameData, mapId);
+    }
+
+    private function onDYNAMIC_OBJECT_ADDED(responseParams:ISFSObject):void {
+        var slot:int = -1
+        var ot:IDynObjectType = DynObjectType.byValue(responseParams.getInt("game.DOAdd.f.type"))
+        var name:String = responseParams.getUtfString("game.DOAdd.f.userId")
+        if (name != null && name != "")
+            slot = Context.gameModel.getLobbyProfileById(name).slot
+        EngineContext.objectAdded.dispatch(
+                slot,
+                responseParams.getInt("game.DOAdd.f.x"),
+                responseParams.getInt("game.DOAdd.f.y"),
+                ot)
+    }
+
+    private function onDYNAMIC_OBJECT_ACTIVATED(responseParams:ISFSObject):void {
+        var slot:int = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("game.DOAct.f.userId")).slot
+        var ot:IDynObjectType = DynObjectType.byValue(responseParams.getInt("game.DOAct.f.type"))
+        EngineContext.objectActivated.dispatch(
+                slot,
+                responseParams.getInt("game.DOAct.f.x"),
+                responseParams.getInt("game.DOAct.f.y"),
+                ot)
+    }
+
+    private function onWEAPON_ACTIVATED(responseParams:ISFSObject):void {
+        var slot:int = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("game.WA.f.userId")).slot
+        var wt:WeaponType = WeaponType.byValue(responseParams.getInt("game.WA.f.type"))
+        var x:int = responseParams.getInt("game.WA.f.x")
+        var y:int = responseParams.getInt("game.WA.f.y")
+        EngineContext.weaponActivated.dispatch(slot, x, y, wt)
+    }
+
+    private function onWEAPON_DEACTIVATED(responseParams:ISFSObject):void {
+        var slot:int = Context.gameModel.getLobbyProfileById(responseParams.getUtfString("game.WDA.f.userId")).slot
+        var wt:WeaponType = WeaponType.byValue(responseParams.getInt("game.WDA.f.type"))
+        EngineContext.weaponDeactivated.dispatch(slot, wt)
+    }
+
+    public function get averagePing():int {
+        return _averagePing
     }
 }
 }

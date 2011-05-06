@@ -73,26 +73,27 @@
 
     <fx:Script>
 		<![CDATA[
-			import api.vkontakte.VkontakteGlobals;
-			
-			import appmodel.ApplicationModel;
-			
-			import components.ApplicationView;
-			import components.WallView;
-			import components.common.utils.enviroment.vkontakte.ApiResult;
-			import components.common.utils.enviroment.vkontakte.FlashVars;
-			import components.common.worlds.locations.LocationType;
-			import components.pages.world.windows.friendsgame.TypeGameToggle;
-			
-			import engine.EngineContext;
-			import engine.utils.Direction;
-			
-			import loading.BombersContentLoader;
+        import api.vkontakte.VkontakteGlobals;
 
-            import mx.charts.DateTimeAxis
-            import mx.collections.ArrayCollection;
-            import mx.controls.Alert
-            import mx.core.IVisualElement;
+        import appmodel.ApplicationModel;
+
+        import components.ApplicationView;
+        import components.WallView;
+        import components.common.utils.enviroment.vkontakte.ApiResult;
+        import components.common.utils.enviroment.vkontakte.FlashVars;
+        import components.common.worlds.locations.LocationType;
+        import components.pages.world.windows.friendsgame.TypeGameToggle;
+
+        import engine.EngineContext;
+        import engine.model.gameServer.GameServer
+        import engine.utils.Direction;
+
+        import loading.BombersContentLoader;
+
+        import mx.charts.DateTimeAxis
+        import mx.collections.ArrayCollection;
+        import mx.controls.Alert
+        import mx.core.IVisualElement;
 
         public static const APP_STARTED_FROM_WALL:int = 0;
         public static const APP_STARTED_COMMON:int = 1;
@@ -100,8 +101,8 @@
         public static const APP_STARTED_DEVELOPMENT:int = 3;
 
         private var mainContentGroup:IVisualElement;
-			
-		[Bindable]
+
+        [Bindable]
         private var bsc:ArrayCollection = new ArrayCollection()
 
         /* private function testTarget(e: MouseEvent): void
@@ -248,17 +249,16 @@
                         })
                         Context.gameModel.init();
                     }
-//					EngineContext.greenBaloon.add(function(x:Number,y:Number,dir:Direction):void{
-//						bsc.addItem({x:x,y:y,dir:dir})
-//					})
-//					bsc.addItem({x:-1,y:-1,dir:Direction.NONE})
+                    EngineContext.pingChanged.add(function(ping:Point):void {
+                        bsc.addItemAt(ping,0)
+                    })
                     break;
                 case APP_STARTED_DEVELOPMENT:
 
                     chooseModeGroup.visible = false;
                     basePreloaderGroup.visible = false;
                     developmentGroup.visible = true;
- 
+
                     break;
                 default:
                     break;
@@ -271,25 +271,25 @@
             }
         }
 
-//        private function setId(id:int):void {
-//
-//            mainContentGroup = new ApplicationView();
-//            mainApplicationGroup.addElement(mainContentGroup);
-//
-//            Context.Model.addCustomListener(ContextEvent.SHOW_MAIN_PREALODER, function(e:ContextEvent):void {
-//                basePreloaderGroup.visible = e.data as Boolean;
-//            });
-//            Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER, true)
-//            BombersContentLoader.bomberTypesLoaded.addOnce(function():void {
-//                Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER, false)
-//            })
-//
-//            Context.Model.currentSettings.socialProfile = new VkontakteProfile("test" + id.toString());
-//            Context.Model.currentSettings.flashVars.auth_key = "test" + id.toString();
-//            developmentGroup.visible = false;
-//
-//            Context.gameModel.init();
-//        }
+        //        private function setId(id:int):void {
+        //
+        //            mainContentGroup = new ApplicationView();
+        //            mainApplicationGroup.addElement(mainContentGroup);
+        //
+        //            Context.Model.addCustomListener(ContextEvent.SHOW_MAIN_PREALODER, function(e:ContextEvent):void {
+        //                basePreloaderGroup.visible = e.data as Boolean;
+        //            });
+        //            Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER, true)
+        //            BombersContentLoader.bomberTypesLoaded.addOnce(function():void {
+        //                Context.Model.dispatchCustomEvent(ContextEvent.SHOW_MAIN_PREALODER, false)
+        //            })
+        //
+        //            Context.Model.currentSettings.socialProfile = new VkontakteProfile("test" + id.toString());
+        //            Context.Model.currentSettings.flashVars.auth_key = "test" + id.toString();
+        //            developmentGroup.visible = false;
+        //
+        //            Context.gameModel.init();
+        //        }
 
         private function joinTestGame_clickHandler(event:MouseEvent):void {
             Context.gameModel.fastJoinFailed.addOnce(function():void {
@@ -326,6 +326,10 @@
                 Context.Model.dispatchCustomEvent(ContextEvent.NEED_TO_CHANGE_MAIN_TAB, ApplicationView.TAB_NAME_GAME);
             })
             Context.gameModel.tryCreateRegularGame("test1", "test", LocationType.WORLD1_GRASSFIELDS)
+        }
+
+        private function measurePing_clickHandler(event:MouseEvent):void {
+            Context.gameServer.measurePing()
         }
         ]]>
 	</fx:Script>
@@ -396,19 +400,19 @@
         <!--<s:Button label="ID3" click="setId(3);"/>-->
     </s:HGroup>
     <mx:UIComponent id="testContent" width="300" height="300" x="100" y="100"/>
-    <s:Button id="createTestGame" click="createTestGame_clickHandler(event)" x="100" y="100" content="create test"/>
-    <s:Button id="joinTestGame" click="joinTestGame_clickHandler(event)" x="100" y="130" content="join test"/>
-   <!-- <s:List x="100" y="520" width="300" height="200" id="badServer" dataProvider="{bsc}" allowMultipleSelection="true">
+    <s:Button id="createTestGame" click="createTestGame_clickHandler(event)" x="100" y="50" content="create test"/>
+    <s:Button id="joinTestGame" click="joinTestGame_clickHandler(event)" x="100" y="70" content="join test"/>
+    <s:Button id="measurePing" click="measurePing_clickHandler(event)" x="100" y="90" content="PING"/>
+    <s:List x="100" y="530" width="250" height="180" id="ping" dataProvider="{bsc}" allowMultipleSelection="true">
 		<s:itemRenderer>
 			<fx:Component>
 				<s:ItemRenderer>
 					<s:HGroup>
 						<s:Label text="{data.x}"/>
-						<s:Label text="{data.y}"/>
-						<s:Label text="{data.dir.key}"/>
+                        <s:Label text="{data.y}"/>
 					</s:HGroup>
 				</s:ItemRenderer>
 			</fx:Component>
 		</s:itemRenderer>
-	</s:List>-->
+	</s:List>
 </vkUI:VkontakteApplication>

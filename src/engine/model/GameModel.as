@@ -114,6 +114,7 @@ public class GameModel {
         BombersContentLoader.loadBO()
         BombersContentLoader.readyToUseAppView.addOnce(function() {
             BombersContentLoader.loadGraphics()
+            Context.gameServer.measurePing()
 
             Context.gameServer.connected.add(onGameServerConnected);
             Context.gameServer.loggedIn.add(onLoggedIn);
@@ -360,6 +361,7 @@ public class GameModel {
     }
 
     private function onThreeSecondsToStart(data:Array, mapId:int):void {
+        Context.gameServer.measurePing()
         gameStarted.addOnce(onGameStarted)
 
         this.playerGameProfiles = new Array()

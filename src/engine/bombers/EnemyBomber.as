@@ -36,7 +36,7 @@ public class EnemyBomber extends BomberBase implements IEnemyBomber {
     }
 
     private function onMoveTick(obj:Object):void {
-        if (!Context.gameModel.isPlayingNow)
+        if (!Context.gameModel.isPlayingNow || obj == null)
             return
         var tickObject:Object = obj[slot]
         if(tickObject == null)
