@@ -12,6 +12,8 @@ import engine.utils.Direction
 
 import mx.collections.ArrayList
 
+import org.osflash.signals.Signal
+
 public class MapBase {
     public var blockBuilder:MapBlockBuilder;
 
@@ -34,6 +36,8 @@ public class MapBase {
     private var _explosionPrints:ArrayList = new ArrayList();
 
     protected var _shadows:Array = new Array()
+
+    protected var _blockDestroyed:Signal = new Signal(int, int, MapBlockType)
 
     public function MapBase() {
     }
@@ -142,6 +146,23 @@ public class MapBase {
 
     public function get bigObjects():Array {
         return _bigObjects
+    }
+
+    public function getRandomBlock(filter:Function):IMapBlock {
+        var arr:Array = new Array()
+        for (var i:int = 0; i < _blocks.length; i++) {
+            var b:IMapBlock = _blocks[i];
+            if (Boolean(filter(b))){
+               arr.push(b)
+            }
+        }
+
+        var ind:int = int(Math.random() * arr.length)
+        return arr[ind]
+    }
+
+    public function get blockDestroyed():Signal {
+        return _blockDestroyed;
     }
 }
 }

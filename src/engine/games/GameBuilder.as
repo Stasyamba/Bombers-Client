@@ -9,12 +9,14 @@ import components.common.worlds.locations.LocationType
 import engine.data.quests.Quests
 import engine.games.quest.QuestGame
 import engine.games.quest.QuestObject
-import engine.games.quest.goals.IGoal
 import engine.games.quest.medals.Medal
 import engine.games.quest.monsters.MonsterType
 import engine.games.quest.monsters.walking.WalkingStrategy
 import engine.games.regular.RegularGame
+import engine.maps.interfaces.IMapBlock
+import engine.maps.mapBlocks.MapBlockType
 import engine.maps.mapObjects.DynObjectType
+import engine.maps.mapObjects.NullDynObject
 import engine.playerColors.PlayerColor
 import engine.profiles.PlayerGameProfile
 
@@ -54,13 +56,33 @@ public class GameBuilder {
         game.addPlayer(plSpawn.x, plSpawn.y, getColor(1))
 
         for each (var m:XML in xml.monsters.Monster) {
-            game.addMonster(m.@x, m.@y, MonsterType.byId(m.@monsterId),WalkingStrategy.xml(m.ws[0]), m.@slot != null ? m.@slot : -1)
+            game.addMonster(m.@x, m.@y, MonsterType.byId(m.@monsterId), WalkingStrategy.xml(m.ws[0]), m.@slot != null ? m.@slot : -1)
         }
 
         game.applyMapXml(xml.map.Map[0])
 
         for each (var obj:XML in xml.map.Map.objects.Object) {
-            game.addObject(-1,obj.@x,obj.@y,DynObjectType.byValue(int(obj.@id)))
+            game.addObject(-1, obj.@x, obj.@y, DynObjectType.byValue(int(obj.@id)))
+        }
+
+        for each (var rand:XML in xml.map.Map.objects.Random) {
+            var count:int = int(rand.@count)
+            var id:int = int(rand.@id)
+            for (var i:int = 0; i < count; i++) {
+                var b:IMapBlock;
+                switch (String(rand.@hide)) {
+                    case "box":
+                        b = game.mapManager.map.getRandomBlock(function(b:IMapBlock):Boolean {
+                            return b.type == MapBlockType.BOX && b.hiddenObject == NullDynObject.getInstance()
+                        })
+                        break;
+                    case "free":
+                        b = game.mapManager.map.getRandomBlock(function(b:IMapBlock):Boolean {
+                            return b.type == MapBlockType.FREE && b.object == NullDynObject.getInstance() && game.playerManager.me.coords.block() != b
+                        })
+                }
+                game.addObject(-1, b.x, b.y, DynObjectType.byValue(id))
+            }
         }
 
         game.addGoal(Medal.BRONZE, quest.bronzeMedal.goal);

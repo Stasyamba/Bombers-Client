@@ -922,6 +922,10 @@ class MockMap extends Mock implements IMap {
     public function get blockDestroyed():Signal {
         throw new Error()
     }
+
+    public function getRandomBlock(f:Function):IMapBlock {
+        throw new Error()
+    }
 }
 
 class MockMapBlock implements IMapBlock {
@@ -953,7 +957,7 @@ class MockMapBlock implements IMapBlock {
         throw new Error()
     }
 
-    public function setObject(object:IDynObject):void {
+    public function setObject(object:IDynObject):Boolean {
         throw new Error()
     }
 
@@ -1066,5 +1070,7 @@ class MockMapBlock implements IMapBlock {
     public function get blinks():Boolean {
         throw new Error()
     }
+
+
 }
 

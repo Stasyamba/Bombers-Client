@@ -19,7 +19,8 @@ public interface IMapBlock extends IMapBlockState {
 
     function get object():IDynObject;
 
-    function setObject(object:IDynObject):void;
+    //result - if object is active
+    function setObject(object:IDynObject):Boolean;
 
     function collectObject(byMe:Boolean):void;
 

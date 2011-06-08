@@ -4,21 +4,21 @@
  */
 
 package engine.maps.mapBlocks {
-import engine.EngineContext;
-import engine.bombers.CreatureBase;
-import engine.explosionss.interfaces.IExplosion;
-import engine.maps.builders.DynObjectBuilder;
-import engine.maps.builders.MapBlockStateBuilder;
-import engine.maps.interfaces.IDynObject;
-import engine.maps.interfaces.IMapBlock;
-import engine.maps.interfaces.IMapBlockState;
-import engine.maps.mapObjects.DynObjectType;
-import engine.maps.mapObjects.NullDynObject;
-import engine.model.explosionss.ExplosionType;
+import engine.EngineContext
+import engine.bombers.CreatureBase
+import engine.explosionss.interfaces.IExplosion
+import engine.maps.builders.DynObjectBuilder
+import engine.maps.builders.MapBlockStateBuilder
+import engine.maps.interfaces.IDynObject
+import engine.maps.interfaces.IMapBlock
+import engine.maps.interfaces.IMapBlockState
+import engine.maps.mapObjects.DynObjectType
+import engine.maps.mapObjects.NullDynObject
+import engine.model.explosionss.ExplosionType
 
-import mx.controls.Alert;
+import mx.controls.Alert
 
-import org.osflash.signals.Signal;
+import org.osflash.signals.Signal
 
 public class QuestMapBlock extends MapBlockBase implements IMapBlock {
 
@@ -97,7 +97,10 @@ public class QuestMapBlock extends MapBlockBase implements IMapBlock {
         if (_state.stateAfterExplosion(expl) != _state.type) {
             explosionStopped.addOnce(function():void {
                 if (_state.stateAfterExplosion(expl) == MapBlockType.FREE) {
-                    _object = _state.hiddenObject;
+                    if (_state.hiddenObject.type != DynObjectType.NULL) {
+                        _object = _state.hiddenObject;
+                        objectSet.dispatch(_object)
+                    }
                     _destroyed.dispatch(x, y, _state.type)
                 }
                 setState(_mapBlockStateBuilder.make(_state.stateAfterExplosion(expl)));
@@ -141,10 +144,10 @@ public class QuestMapBlock extends MapBlockBase implements IMapBlock {
         _object = NullDynObject.getInstance();
     }
 
-    public function setObject(object:IDynObject):void {
+    public function setObject(object:IDynObject):Boolean {
         if (object == null) {
             Alert.show("NULL OBJECT")
-            return
+            return false
         }
         objectSet.dispatch(object);
         if (state.canShowObjects) {
@@ -153,6 +156,7 @@ public class QuestMapBlock extends MapBlockBase implements IMapBlock {
         } else {
             state.hiddenObject = object;
         }
+        return state.canShowObjects
     }
 
     public function setDieWall():void {
@@ -202,9 +206,9 @@ public class QuestMapBlock extends MapBlockBase implements IMapBlock {
     public function get destroyed():Signal {
         return _destroyed;
     }
-	
-    public function get blinks():Boolean{
-		return _state.blinks
-	}
+
+    public function get blinks():Boolean {
+        return _state.blinks
+    }
 }
 }

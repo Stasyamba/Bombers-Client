@@ -5,7 +5,6 @@
 
 package engine.maps {
 import engine.games.quest.monsters.MonsterType
-import engine.games.quest.monsters.walking.WalkingStrategy
 import engine.games.quest.spawns.MonsterSpawn
 import engine.maps.bigObjects.ActivatedBigObject
 import engine.maps.bigObjects.BigObjectActivator
@@ -17,20 +16,14 @@ import engine.maps.interfaces.IMapBlock
 import engine.maps.mapBlocks.MapBlockType
 import engine.shadows.ShadowObject
 import engine.shadows.ShadowShape
-import engine.utils.Direction
-
-import mx.collections.ArrayList
 
 import mx.controls.Alert
-
-import org.osflash.signals.Signal
 
 public class QuestMap extends MapBase implements IMap{
 
 
     private var _monsterSpawns:Array = new Array()
 
-    private var _blockDestroyed:Signal = new Signal(int, int, MapBlockType)
 
     //blockBuilder is injected via mapBuilder
     public function QuestMap(xml:XML, blockBuilder:MapBlockBuilder) {
@@ -116,10 +109,6 @@ public class QuestMap extends MapBase implements IMap{
     }
 
     //getters
-
-    public function get blockDestroyed():Signal {
-        return _blockDestroyed;
-    }
 
     public function get monsterSpawns():Array {
         return _monsterSpawns

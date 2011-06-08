@@ -21,11 +21,6 @@ import org.osflash.signals.Signal
 
 public class Map extends MapBase implements IMap {
 
-    private var _monsterSpawns:Array = new Array()
-
-
-    private var _blockDestroyed:Signal = new Signal(int, int, MapBlockType)
-
     //blockBuilder is injected via mapBuilder
     public function Map(xml:XML, blockBuilder:MapBlockBuilder) {
         this.blockBuilder = blockBuilder;
@@ -105,14 +100,6 @@ public class Map extends MapBase implements IMap {
         }
     }
 
-    //getters
-    public function get blockDestroyed():Signal {
-        return _blockDestroyed;
-    }
-
-    public function get monsterSpawns():* {
-        return _monsterSpawns
-    }
 
 }
 }

@@ -14,9 +14,10 @@ import engine.model.explosionss.ExplosionType
 
 public class BoxBlock implements IMapBlockState {
 
-    private var _hiddenObject:IDynObject = NullDynObject.getInstance();
+    private var _hiddenObject:IDynObject;
 
     public function BoxBlock() {
+        _hiddenObject = NullDynObject.getInstance()
     }
 
     public function explodesAndStopsExplosion():Boolean {

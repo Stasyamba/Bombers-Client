@@ -113,8 +113,8 @@ public class QuestGame extends GameBase implements IQuestGame {
             Context.gameModel.questEnded.addOnce(onEndedGE)
             Context.gameModel.leftQuest.addOnce(onEndedLG)
 
-            if(questObject.timeLimit > 0){
-                TweenMax.delayedCall(questObject.timeLimit,EngineContext.qTimeOut.dispatch)
+            if (questObject.timeLimit > 0) {
+                TweenMax.delayedCall(questObject.timeLimit, EngineContext.qTimeOut.dispatch)
             }
         })
 
@@ -127,7 +127,7 @@ public class QuestGame extends GameBase implements IQuestGame {
 
     private function onQuestFailed(qfr:QuestFailReason):void {
         Alert.show(qfr.text);
-        Context.gameModel.questEnded.dispatch(false,null)
+        Context.gameModel.questEnded.dispatch(false, null)
     }
 
     private function onPlayerDied():void {
@@ -164,7 +164,8 @@ public class QuestGame extends GameBase implements IQuestGame {
         var player:IBomber = getPlayer(slot) as IBomber
 
         var object:IDynObject = dynObjectBuilder.make(type, b, player);
-        b.setObject(object);
+        b.setObject(object)
+
         if (type.waitToAdd > 0)
             TweenMax.delayedCall(type.waitToAdd, function():void {
                 dynObjectManager.addObject(object);

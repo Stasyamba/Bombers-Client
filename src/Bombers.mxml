@@ -36,28 +36,28 @@
         "componentes.*";
 
         @font-face {
-            src: url("../assets/fonts/MPBoldCond.otf")
+            src: url("/assets/fonts/MPBoldCond.otf")
         ;
             fontFamily: mpbc
         ;
         }
 
         @font-face {
-            src: url("../assets/fonts/MPSemibold.ttf")
+            src: url("/assets/fonts/MPSemibold.ttf")
         ;
             fontFamily: mps
         ;
         }
 
         @font-face {
-            src: url("../assets/fonts/MPRegular.otf")
+            src: url("/assets/fonts/MPRegular.otf")
         ;
             fontFamily: mpr
         ;
         }
 
         @font-face {
-            src: url("../assets/fonts/MPBoldCondItalic.otf")
+            src: url("/assets/fonts/MPBoldCondItalic.otf")
         ;
             fontFamily: mpbi
         ;

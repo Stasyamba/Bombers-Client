@@ -108,7 +108,8 @@ public class NullMapBlock extends MapBlockBase implements IMapBlock {
     public function NullMapBlock() {
     }
 
-    public function setObject(object:IDynObject):void {
+    public function setObject(object:IDynObject):Boolean {
+        return false
     }
 
     public function get canShowObjects():Boolean {

@@ -45,6 +45,7 @@
         public static const TAB_NAME_INVENORY:String = "InventoryPage";
 
         public var activeWindow:IVisualElement = null;
+        private var idIsSet:Boolean = false;
 
         public static function getTabIndexByName(name:String):int {
             var res:int = 0;
@@ -324,6 +325,10 @@
 
         // immitation
         private function setId(id:int):void {
+			if(idIsSet){
+				return
+			}
+			idIsSet = true
             Context.Model.currentSettings.socialProfile = new VkontakteProfile("test" + id.toString());
             Context.Model.currentSettings.flashVars.auth_key = "test" + id.toString();
             idGroup.visible = false;

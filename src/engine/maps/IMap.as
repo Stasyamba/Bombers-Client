@@ -43,5 +43,9 @@ public interface IMap {
     function get decorations():Vector.<BigObjectBase>;
 
     function get blockDestroyed():Signal;
+
+    //filter: function (b:IMapBlock):Boolean
+    //true passes the filter
+    function getRandomBlock(filter:Function):IMapBlock
 }
 }
